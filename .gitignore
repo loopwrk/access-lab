@@ -25,3 +25,11 @@ logs
 
 # Test coverage
 coverage/
+
+# Plan and progress files
+prototype.html
+prototype_img.png
+plan.md
+progress.md
+design-system
+AGENTS.md

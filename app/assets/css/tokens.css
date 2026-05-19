@@ -1,0 +1,149 @@
+/* ════════════════════════════════════════════════════════════════
+   AccessLab Design Tokens — CSS Custom Properties
+
+   Modes:
+     :root / .theme-light — default, no class needed
+     .theme-dark            — dark mode
+     .theme-high-contrast   — high-contrast light
+     .theme-dark.theme-high-contrast — high-contrast dark
+
+   Typography tokens are not mode-scoped; they live on :root.
+   ════════════════════════════════════════════════════════════════ */
+
+:root {
+  --al-font:
+    "OpenDyslexic", "Atkinson Hyperlegible", "Helvetica Neue", Helvetica, Arial,
+    sans-serif;
+  --al-font-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  --al-base-size: 16px;
+}
+
+/* ── Light theme (default) ──────────────────────────────────────── */
+:root,
+.theme-light {
+  --bg: #f6f5f1;
+  --surface: #fbfaf6;
+  --surface-2: #ece7db;
+  --border: #d8d2c5;
+  --border-strong: #6e5f8e;
+  --text-primary: #3b00a1;
+  --text-secondary: #334155;
+  --text-muted: #6e5f8e;
+  --brand: #5700ee;
+  --brand-hover: #4a00c9;
+  --brand-press: #2c0078;
+  --brand-soft: #f0ebff;
+  --brand-soft-2: #d6cbff;
+  --on-brand: #f6f5f1;
+  --success: #155728;
+  --success-soft: #ddeedf;
+  --warn: #6b4100;
+  --warn-soft: #f2e6cc;
+  --error: #9f1b17;
+  --error-soft: #f4d9d5;
+  --info: #1c44a8;
+  --info-soft: #dce3f5;
+  --focus-ring: #5700ee;
+  --scrim: rgba(15, 17, 20, 0.62);
+  --tip-bg: #1f1730;
+  --tip-fg: #f6f5f1;
+}
+
+/* ── Dark theme ────────────────────────────────────────��─────────── */
+.theme-dark {
+  --bg: #0f1114;
+  --surface: #1a1b22;
+  --surface-2: #08090b;
+  --border: #2a2532;
+  --border-strong: #6e5f8e;
+  --text-primary: #ece7ff;
+  --text-secondary: #a6b4cc;
+  --text-muted: #a89bc4;
+  --brand: #b79cff;
+  --brand-hover: #c8b4ff;
+  --brand-press: #a380ff;
+  --brand-soft: #1f1730;
+  --brand-soft-2: #3b2d5c;
+  --on-brand: #0f1114;
+  --success: #5dda8e;
+  --success-soft: #14241b;
+  --warn: #f5c97a;
+  --warn-soft: #2a2014;
+  --error: #ff9b96;
+  --error-soft: #2a1614;
+  --info: #9cb8ff;
+  --info-soft: #141a2a;
+  --focus-ring: #c8b4ff;
+  --scrim: rgba(246, 245, 241, 0.5);
+  --tip-bg: #f0ebff;
+  --tip-fg: #0f1114;
+}
+
+/* ── High-contrast theme (light base) ────────────────────────────── */
+.theme-high-contrast,
+.theme-light.theme-high-contrast {
+  --bg: #ffffff;
+  --surface: #ffffff;
+  --surface-2: #f0f0f0;
+  --border: #000000;
+  --border-strong: #000000;
+  --text-primary: #000000;
+  --text-secondary: #000000;
+  --text-muted: #333333;
+  --brand: #0000ee;
+  --brand-hover: #0000cc;
+  --brand-press: #000088;
+  --brand-soft: #e8e8ff;
+  --brand-soft-2: #d0d0ff;
+  --on-brand: #ffffff;
+  --success: #005500;
+  --success-soft: #e8ffe8;
+  --warn: #553300;
+  --warn-soft: #fff0e0;
+  --error: #990000;
+  --error-soft: #ffe8e8;
+  --info: #000088;
+  --info-soft: #e8e8ff;
+  --focus-ring: #0000ee;
+  --scrim: rgba(0, 0, 0, 0.5);
+  --tip-bg: #000000;
+  --tip-fg: #ffffff;
+}
+
+/* ── High-contrast dark ──────────────────────────────────────────── */
+.theme-dark.theme-high-contrast {
+  --bg: #000000;
+  --surface: #000000;
+  --surface-2: #111111;
+  --border: #ffffff;
+  --border-strong: #ffffff;
+  --text-primary: #ffffff;
+  --text-secondary: #ffffff;
+  --text-muted: #cccccc;
+  --brand: #ffff00;
+  --brand-hover: #ffdd00;
+  --brand-press: #ffaa00;
+  --brand-soft: #333300;
+  --brand-soft-2: #444400;
+  --on-brand: #000000;
+  --success: #00ff00;
+  --success-soft: #003300;
+  --warn: #ffcc00;
+  --warn-soft: #332200;
+  --error: #ff6666;
+  --error-soft: #330000;
+  --info: #66b2ff;
+  --info-soft: #001133;
+  --focus-ring: #ffff00;
+  --scrim: rgba(255, 255, 255, 0.3);
+  --tip-bg: #ffffff;
+  --tip-fg: #000000;
+}
+
+/* ── Base application styles ─────────────────────────────────────── */
+body {
+  font-family: var(--al-font);
+  font-size: var(--al-base-size);
+  background: var(--bg);
+  color: var(--text-secondary);
+}
