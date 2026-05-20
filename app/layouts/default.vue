@@ -55,10 +55,11 @@ const navItems: NavigationMenuItem[][] = [
     { label: 'Tabs', value: 'tabs', icon: 'i-lucide-panels-top-left' },
     { label: 'Form Field', value: 'form-field', icon: 'i-lucide-form-input' }
   ],
-  [
-    { label: 'Framework style', type: 'label' },
-    { label: 'None (bare HTML)', value: 'none', icon: 'i-lucide-code' }
-  ]
+  // TODO: Introduce framework styles after vanilla components are in place and we have a working POC
+  // [
+  //   { label: 'Framework style', type: 'label' },
+  //   { label: 'None (bare HTML)', value: 'none', icon: 'i-lucide-code' }
+  // ]
 ]
 
 async function skipToPanel(tabName: 'controls' | 'issues', elementId: string) {
@@ -145,7 +146,8 @@ async function skipToPanel(tabName: 'controls' | 'issues', elementId: string) {
       <!-- Left sidebar -->
       <aside v-show="sidebarOpen" class="sidebar" aria-label="Component navigation">
         <UNavigationMenu v-model="activeComponent" :items="navItems" orientation="vertical" highlight
-          highlight-color="primary" :ui="{ link: 'text-sm', linkLabel: 'truncate' }" />
+          highlight-color="primary"
+          :ui="{ link: 'text-sm py-2.5 pl-3', linkLabel: 'truncate', label: 'text-md pl-3 pt-3' }" />
       </aside>
 
       <!-- Collapsed sidebar rail -->
