@@ -71,14 +71,6 @@ const activeComponent = ref('button')
           <span class="brand-mark" aria-hidden="true" />
           <span class="brand-text">AccessLab</span>
         </NuxtLink>
-
-        <!-- Breadcrumb -->
-        <nav class="breadcrumb" aria-label="Breadcrumb">
-          <span class="breadcrumb-sep">/</span>
-          <span>Components</span>
-          <span class="breadcrumb-sep">/</span>
-          <span class="breadcrumb-current">Button</span>
-        </nav>
       </div>
 
       <div class="appbar-right">
@@ -339,24 +331,6 @@ const activeComponent = ref('button')
   background: var(--on-brand);
   border-radius: 2px;
   clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 100%, 50% 50%, 0 50%);
-}
-
-/* Breadcrumb */
-.breadcrumb {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: var(--al-font-size-body);
-  color: var(--text-secondary);
-}
-
-.breadcrumb-sep {
-  color: var(--text-muted);
-}
-
-.breadcrumb-current {
-  color: var(--text-primary);
-  font-weight: 500;
 }
 
 /* ── Left sidebar ───────────────────────────────────────────────── */
