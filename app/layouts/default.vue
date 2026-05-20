@@ -174,10 +174,9 @@ const activeComponent = ref('button')
           </div>
 
           <div class="preview-toolbar-right">
-            <!-- Counter pills -->
-            <span class="counter-pill counter-critical">3 critical</span>
-            <span class="counter-pill counter-warning">2 warnings</span>
-            <span class="counter-pill counter-pass">8 passing</span>
+            <UBadge color="error" variant="soft" size="md" label="3 critical" />
+            <UBadge color="warning" variant="soft" size="md" label="2 warnings" />
+            <UBadge color="success" variant="soft" size="md" label="8 passing" />
           </div>
         </div>
 
@@ -203,15 +202,8 @@ const activeComponent = ref('button')
 
       <!-- Right inspector -->
       <aside class="inspector" aria-label="Inspection panel">
-        <UTabs
-          v-model="activeTab"
-          :items="tabItems"
-          variant="link"
-          color="primary"
-          size="sm"
-          :content="false"
-          :ui="{ list: 'justify-around', label: 'overflow-visible whitespace-nowrap' }"
-        />
+        <UTabs v-model="activeTab" :items="tabItems" variant="link" color="primary" size="sm" :content="false"
+          :ui="{ list: 'justify-around', label: 'overflow-visible whitespace-nowrap' }" />
 
         <!-- Tab panels -->
         <div class="inspector-panels">
@@ -479,29 +471,6 @@ const activeComponent = ref('button')
 .preview-toolbar-right {
   display: flex;
   gap: 8px;
-}
-
-/* Counter pills */
-.counter-pill {
-  font-size: var(--al-font-size-caption);
-  font-weight: 500;
-  padding: 2px 10px;
-  border-radius: 999px;
-}
-
-.counter-critical {
-  background: var(--error-soft);
-  color: var(--error);
-}
-
-.counter-warning {
-  background: var(--warn-soft);
-  color: var(--warn);
-}
-
-.counter-pass {
-  background: var(--success-soft);
-  color: var(--success);
 }
 
 /* Preview area */
