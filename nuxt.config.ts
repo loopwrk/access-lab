@@ -11,10 +11,19 @@ export default defineNuxtConfig({
     "@pinia/nuxt",
   ],
 
+  app: {
+    head: {
+      htmlAttrs: {
+        lang: "en",
+      },
+      title: "AccessLab",
+    },
+  },
+
   ssr: false,
 
   devtools: {
-    enabled: true,
+    enabled: false,
   },
 
   css: ["~/assets/css/main.css"],

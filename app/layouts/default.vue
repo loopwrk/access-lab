@@ -60,6 +60,15 @@ const navItems: NavigationMenuItem[][] = [
     { label: 'None (bare HTML)', value: 'none', icon: 'i-lucide-code' }
   ]
 ]
+
+async function skipToPanel(tabName: 'controls' | 'issues', elementId: string) {
+  activeTab.value = tabName
+
+  const target = document.getElementById(elementId)
+  if (target) {
+    target.focus()
+  }
+}
 </script>
 
 <template>
@@ -67,8 +76,12 @@ const navItems: NavigationMenuItem[][] = [
     <!-- Skip links -->
     <div class="skip-links">
       <a href="#main-content" class="skip-link">Skip to main content</a>
-      <a href="#controls-panel" class="skip-link">Skip to controls</a>
-      <a href="#issues-panel" class="skip-link">Skip to issues</a>
+      <a href="#controls-panel" class="skip-link" @click="skipToPanel('controls', 'controls-panel')">
+        Skip to controls
+      </a>
+      <a href="#issues-panel" class="skip-link" @click="skipToPanel('issues', 'issues-panel')">
+        Skip to issues
+      </a>
     </div>
 
     <!-- App bar -->
@@ -131,23 +144,13 @@ const navItems: NavigationMenuItem[][] = [
     <div class="app-body">
       <!-- Left sidebar -->
       <aside v-show="sidebarOpen" class="sidebar" aria-label="Component navigation">
-        <UNavigationMenu
-          v-model="activeComponent"
-          :items="navItems"
-          orientation="vertical"
-          highlight
-          highlight-color="primary"
-          :ui="{ link: 'text-sm', linkLabel: 'truncate' }"
-        />
+        <UNavigationMenu v-model="activeComponent" :items="navItems" orientation="vertical" highlight
+          highlight-color="primary" :ui="{ link: 'text-sm', linkLabel: 'truncate' }" />
       </aside>
 
       <!-- Collapsed sidebar rail -->
       <div v-show="!sidebarOpen" class="sidebar-rail" aria-label="Component navigation">
-        <button
-          class="sidebar-rail-btn"
-          aria-label="Open sidebar"
-          @click="sidebarOpen = true"
-        >
+        <button class="sidebar-rail-btn" aria-label="Open sidebar" @click="sidebarOpen = true">
           <span aria-hidden="true" class="i-lucide-panel-left text-lg" />
         </button>
       </div>
@@ -176,15 +179,9 @@ const navItems: NavigationMenuItem[][] = [
 
         <!-- Code panel (collapsed by default) -->
         <UCollapsible class="code-drawer">
-          <UButton
-            label="Generated HTML"
-            color="neutral"
-            variant="ghost"
-            block
-            trailing-icon="i-lucide-chevron-down"
+          <UButton label="Generated HTML" color="neutral" variant="ghost" block trailing-icon="i-lucide-chevron-down"
             class="group"
-            :ui="{ trailingIcon: 'group-data-[state=open]:rotate-180 transition-transform duration-200' }"
-          />
+            :ui="{ trailingIcon: 'group-data-[state=open]:rotate-180 transition-transform duration-200' }" />
           <template #content>
             <div class="code-drawer-body">
               <pre class="code-block">&lt;button&gt;Save changes&lt;/button&gt;</pre>
@@ -203,25 +200,25 @@ const navItems: NavigationMenuItem[][] = [
 
         <!-- Tab panels -->
         <div class="inspector-panels">
-          <div v-if="activeTab === 'controls'" id="controls-panel" class="inspector-panel" tabindex="0">
+          <div v-show="activeTab === 'controls'" id="controls-panel" class="inspector-panel" tabindex="0">
             <p class="text-muted">
               Controls panel placeholder
             </p>
           </div>
 
-          <div v-if="activeTab === 'issues'" id="issues-panel" class="inspector-panel" tabindex="0">
+          <div v-show="activeTab === 'issues'" id="issues-panel" class="inspector-panel" tabindex="0">
             <p class="text-muted">
               Issues panel placeholder
             </p>
           </div>
 
-          <div v-if="activeTab === 'manual'" class="inspector-panel" tabindex="0">
+          <div v-show="activeTab === 'manual'" class="inspector-panel" tabindex="0">
             <p class="text-muted">
               Manual review panel placeholder
             </p>
           </div>
 
-          <div v-if="activeTab === 'learn'" class="inspector-panel" tabindex="0">
+          <div v-show="activeTab === 'learn'" class="inspector-panel" tabindex="0">
             <p class="text-muted">
               Learn panel placeholder
             </p>
