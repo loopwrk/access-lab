@@ -20,10 +20,10 @@ interface SizeOption {
 }
 
 const sizes: SizeOption[] = [
-  { label: 'S', value: '14px' },
-  { label: 'M', value: '16px' },
-  { label: 'L', value: '18px' },
-  { label: 'XL', value: '21px' }
+  { label: 'S', value: '87.5%' },
+  { label: 'M', value: '100%' },
+  { label: 'L', value: '112.5%' },
+  { label: 'XL', value: '131.25%' }
 ]
 
 // Sidebar collapse state
@@ -315,7 +315,7 @@ const activeComponent = ref('button')
   gap: 10px;
   font-weight: 500;
   color: var(--text-primary);
-  font-size: 15px;
+  font-size: 0.9375rem;
   letter-spacing: -0.01em;
   text-decoration: none;
 }
@@ -343,7 +343,7 @@ const activeComponent = ref('button')
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--text-secondary);
 }
 
@@ -377,7 +377,7 @@ const activeComponent = ref('button')
 }
 
 .sidebar-section-title {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -405,7 +405,7 @@ const activeComponent = ref('button')
   cursor: pointer;
   background: transparent;
   border: none;
-  font-size: 13.5px;
+  font-size: 0.84375rem;
   font-family: inherit;
 }
 
@@ -495,7 +495,7 @@ const activeComponent = ref('button')
 }
 
 .preview-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
   color: var(--text-primary);
   margin: 0;
@@ -508,7 +508,7 @@ const activeComponent = ref('button')
 
 /* Counter pills */
 .counter-pill {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 500;
   padding: 2px 10px;
   border-radius: 999px;
@@ -548,7 +548,7 @@ const activeComponent = ref('button')
 
 .code-drawer-summary {
   padding: 10px 20px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 500;
   color: var(--text-secondary);
   cursor: pointer;
@@ -573,7 +573,7 @@ const activeComponent = ref('button')
   border: 1px solid var(--border);
   border-radius: 4px;
   padding: 12px 16px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--text-primary);
   margin: 0;
   overflow-x: auto;
@@ -600,7 +600,7 @@ const activeComponent = ref('button')
 .inspector-tab {
   flex: 1;
   font-family: inherit;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 500;
   background: transparent;
   border: none;
@@ -647,14 +647,14 @@ const activeComponent = ref('button')
 /* ── Utility ────────────────────────────────────────────────────── */
 .text-muted {
   color: var(--text-muted);
-  font-size: 13px;
+  font-size: 0.8125rem;
 }
 
 .text-lg {
-  font-size: 18px;
+  font-size: 1.125rem;
 }
 
 .text-sm {
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 </style>

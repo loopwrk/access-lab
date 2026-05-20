@@ -1,1 +1,1 @@
-export type FontSize = "14px" | "16px" | "18px" | "21px";
+export type FontSize = "87.5%" | "100%" | "112.5%" | "131.25%";

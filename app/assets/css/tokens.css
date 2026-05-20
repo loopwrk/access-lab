@@ -12,7 +12,7 @@
 
 :root {
   --al-font:
-    "OpenDyslexic", "Atkinson Hyperlegible", "Helvetica Neue", Helvetica, Arial,
+    "OpenDyslexicRegular", "Atkinson Hyperlegible", "Helvetica Neue", Helvetica, Arial,
     sans-serif;
   --al-font-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
   --al-base-size: 16px;
@@ -141,9 +141,14 @@
 }
 
 /* ── Base application styles ─────────────────────────────────────── */
-body {
+html {
   font-family: var(--al-font);
   font-size: var(--al-base-size);
+}
+
+body {
+  font-family: inherit;
+  font-size: 1rem;
   background: var(--bg);
   color: var(--text-secondary);
 }
