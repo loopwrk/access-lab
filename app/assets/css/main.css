@@ -2,11 +2,51 @@
 @import "@nuxt/ui";
 @import "./tokens.css";
 
+/* ── Self-hosted fonts ──────────────────────────────────────────── */
+
+/* OpenDyslexic */
+@import "open-dyslexic/open-dyslexic-regular.css";
+
+/* Atkinson Hyperlegible */
+@import "@fontsource/atkinson-hyperlegible/index.css";
+
+/* Figtree (variable) */
+@import "@fontsource-variable/figtree/index.css";
+
+/* JetBrains Mono (variable, for code) */
+@import "@fontsource-variable/jetbrains-mono/index.css";
+
 @theme static {
   --font-sans: var(--al-font);
   --font-mono: var(--al-font-mono);
 
-  /* Brand */
+  /* AccessLab brand — full 50–950 shade scale for Nuxt UI */
+  --color-accesslab-50:  var(--brand-soft-2);
+  --color-accesslab-100: var(--brand-soft);
+  --color-accesslab-200: color-mix(in oklch, var(--brand) 25%, white);
+  --color-accesslab-300: color-mix(in oklch, var(--brand) 50%, white);
+  --color-accesslab-400: color-mix(in oklch, var(--brand) 75%, white);
+  --color-accesslab-500: var(--brand);
+  --color-accesslab-600: var(--brand-hover);
+  --color-accesslab-700: var(--brand-press);
+  --color-accesslab-800: color-mix(in oklch, var(--brand) 75%, black);
+  --color-accesslab-900: color-mix(in oklch, var(--brand) 50%, black);
+  --color-accesslab-950: color-mix(in oklch, var(--brand) 25%, black);
+
+  /* AccessLab neutral — maps our surface/text tokens into a scale Nuxt UI can use */
+  --color-accesslab-neutral-50:  var(--bg);
+  --color-accesslab-neutral-100: var(--surface);
+  --color-accesslab-neutral-200: var(--border);
+  --color-accesslab-neutral-300: var(--border-strong);
+  --color-accesslab-neutral-400: var(--text-muted);
+  --color-accesslab-neutral-500: var(--text-muted);
+  --color-accesslab-neutral-600: var(--text-secondary);
+  --color-accesslab-neutral-700: var(--text-secondary);
+  --color-accesslab-neutral-800: color-mix(in oklch, var(--text-secondary) 50%, black);
+  --color-accesslab-neutral-900: var(--text-primary);
+  --color-accesslab-neutral-950: color-mix(in oklch, var(--text-primary) 50%, black);
+
+  /* Flat tokens for direct Tailwind usage (e.g. bg-brand, text-muted) */
   --color-brand:        var(--brand);
   --color-brand-hover:  var(--brand-hover);
   --color-brand-press:  var(--brand-press);
@@ -45,4 +85,38 @@
   --color-tip-bg: var(--tip-bg);
   --color-tip-fg: var(--tip-fg);
   --color-scrim:  var(--scrim);
+}
+
+/* Override Nuxt UI v4's hardcoded light/dark values with our tokens.
+   These wire Nuxt UI's semantic colour shims (bg-elevated, text-default,
+   bg-inverted, text-inverted, etc.) directly to AccessLab tokens.
+
+   Note on text-inverted: by default Nuxt UI uses #fff for the inverted
+   text on light bg and neutral-900 on dark bg. We override to --on-brand
+   in both modes so that the active "primary solid" pill renders our
+   cream-on-purple (light) / dark-on-lavender (dark) text colour. */
+:root,
+.light {
+  --ui-bg:               var(--bg);
+  --ui-bg-elevated:      var(--surface);
+  --ui-bg-accented:      var(--surface-2);
+  --ui-border:           var(--border);
+  --ui-border-accented:  var(--border-strong);
+  --ui-text-highlighted: var(--text-primary);
+  --ui-text:             var(--text-secondary);
+  --ui-text-muted:       var(--text-muted);
+  --ui-text-inverted:    var(--on-brand);
+}
+
+.dark,
+.theme-dark {
+  --ui-bg:               var(--bg);
+  --ui-bg-elevated:      var(--surface);
+  --ui-bg-accented:      var(--surface-2);
+  --ui-border:           var(--border);
+  --ui-border-accented:  var(--border-strong);
+  --ui-text-highlighted: var(--text-primary);
+  --ui-text:             var(--text-secondary);
+  --ui-text-muted:       var(--text-muted);
+  --ui-text-inverted:    var(--on-brand);
 }

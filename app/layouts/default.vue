@@ -1,25 +1,30 @@
 <script setup lang="ts">
 import { useTheme } from '~/composables/useTheme'
+import { useFont } from '~/composables/useFont'
+import type { FontSize } from "~/types/typography.ts"
 
 const theme = useTheme()
+const font = useFont()
 
 // Font options
 const fonts = [
-  { label: 'OpenDyslexic', value: 'OpenDyslexic' },
+  { label: 'Dyslexic', value: 'OpenDyslexicRegular' },
   { label: 'Atkinson', value: 'Atkinson Hyperlegible' },
   { label: 'Figtree', value: 'Figtree' },
   { label: 'Comic Sans', value: '"Comic Sans MS", "Comic Sans", cursive' }
 ]
 
-const sizes = [
+interface SizeOption {
+  label: string;
+  value: FontSize; // This forces 'value' to match your union type exactly
+}
+
+const sizes: SizeOption[] = [
   { label: 'S', value: '14px' },
   { label: 'M', value: '16px' },
   { label: 'L', value: '18px' },
   { label: 'XL', value: '21px' }
 ]
-
-const currentFont = ref(fonts[0])
-const currentSize = ref(sizes[1])
 
 // Sidebar collapse state
 const sidebarOpen = ref(true)
@@ -78,43 +83,41 @@ const activeComponent = ref('button')
 
       <div class="appbar-right">
         <!-- Font picker -->
-        <fieldset class="segmented-control">
-          <legend class="sr-only">
-            Font family
-          </legend>
-          <template v-for="font in fonts" :key="font.value">
-            <input :id="`font-${font.value}`" v-model="currentFont" type="radio" name="font" :value="font"
-              class="sr-only">
-            <label :for="`font-${font.value}`" class="segment-label">
-              {{ font.label }}
-            </label>
-          </template>
-        </fieldset>
+        <UFieldGroup size="sm">
+          <UButton v-for="f in fonts" :key="f.value" :color="font.family === f.value ? 'primary' : 'neutral'"
+            :variant="font.family === f.value ? 'solid' : 'ghost'" @click="font.setFont(f.value)">
+            {{ f.label }}
+          </UButton>
+        </UFieldGroup>
 
         <!-- Size picker -->
-        <fieldset class="segmented-control">
-          <legend class="sr-only">
-            Text size
-          </legend>
-          <template v-for="size in sizes" :key="size.value">
-            <input :id="`size-${size.value}`" v-model="currentSize" type="radio" name="size" :value="size"
-              class="sr-only">
-            <label :for="`size-${size.value}`" class="segment-label">
-              {{ size.label }}
-            </label>
-          </template>
-        </fieldset>
+        <UFieldGroup size="sm">
+          <UButton v-for="s in sizes" :key="s.value" :color="font.size === s.value ? 'primary' : 'neutral'"
+            :variant="font.size === s.value ? 'solid' : 'ghost'" @click="font.setSize(s.value)">
+            {{ s.label }}
+          </UButton>
+        </UFieldGroup>
 
-        <!-- High contrast toggle -->
-        <UButton :color="theme.isHighContrast ? 'primary' : 'neutral'"
-          :variant="theme.isHighContrast ? 'solid' : 'ghost'" size="sm" :aria-pressed="theme.isHighContrast"
-          aria-label="Toggle high contrast" @click="theme.toggleContrast()">
-          <span aria-hidden="true">HC</span>
-        </UButton>
+        <!-- High contrast toggle (single-button field group for visual parity with the segmented pickers) -->
+        <UFieldGroup size="sm">
+          <UButton :color="theme.isHighContrast ? 'primary' : 'neutral'"
+            :variant="theme.isHighContrast ? 'solid' : 'ghost'" icon="i-lucide-contrast"
+            :aria-pressed="theme.isHighContrast" @click="theme.toggleContrast()">
+            High contrast
+          </UButton>
+        </UFieldGroup>
 
         <!-- Theme toggle -->
-        <UButton color="neutral" variant="ghost" size="sm" :icon="theme.isDark ? 'i-lucide-sun' : 'i-lucide-moon'"
-          :aria-label="`Switch to ${theme.isDark ? 'light' : 'dark'} mode`" @click="theme.toggleMode()" />
+        <UFieldGroup size="sm">
+          <UButton :color="!theme.isDark ? 'primary' : 'neutral'" :variant="!theme.isDark ? 'solid' : 'ghost'"
+            icon="i-lucide-sun" :aria-pressed="!theme.isDark" @click="theme.isDark && theme.toggleMode()">
+            Light
+          </UButton>
+          <UButton :color="theme.isDark ? 'primary' : 'neutral'" :variant="theme.isDark ? 'solid' : 'ghost'"
+            icon="i-lucide-moon" :aria-pressed="theme.isDark" @click="!theme.isDark && theme.toggleMode()">
+            Dark
+          </UButton>
+        </UFieldGroup>
 
         <!-- Sidebar toggle -->
         <UButton color="neutral" variant="ghost" size="sm" icon="i-lucide-panel-left"
@@ -353,42 +356,6 @@ const activeComponent = ref('button')
   font-weight: 500;
 }
 
-/* Segmented controls */
-.segmented-control {
-  display: inline-flex;
-  border: none;
-  padding: 0;
-  margin: 0;
-  border-radius: 6px;
-  background: var(--brand-soft);
-}
-
-.segment-label {
-  display: inline-flex;
-  align-items: center;
-  padding: 5px 10px;
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--text-secondary);
-  cursor: pointer;
-  border-radius: 5px;
-  transition: background 0.15s, color 0.15s;
-}
-
-.segment-label:hover {
-  color: var(--text-primary);
-}
-
-.segmented-control input:checked+.segment-label {
-  background: var(--brand);
-  color: var(--on-brand);
-}
-
-.segmented-control input:focus-visible+.segment-label {
-  outline: 3px solid var(--focus-ring);
-  outline-offset: 1px;
-}
-
 /* ── Left sidebar ───────────────────────────────────────────────── */
 .sidebar {
   width: 260px;
@@ -532,14 +499,6 @@ const activeComponent = ref('button')
   font-weight: 500;
   color: var(--text-primary);
   margin: 0;
-}
-
-.preview-framework {
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
 }
 
 .preview-toolbar-right {
@@ -686,18 +645,6 @@ const activeComponent = ref('button')
 }
 
 /* ── Utility ────────────────────────────────────────────────────── */
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border-width: 0;
-}
-
 .text-muted {
   color: var(--text-muted);
   font-size: 13px;

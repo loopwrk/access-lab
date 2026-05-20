@@ -1,34 +1,36 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   modules: [
-    '@nuxt/eslint',
-    '@nuxt/ui',
-    '@nuxt/a11y',
-    '@nuxt/content',
-    '@nuxt/hints',
-    '@nuxt/test-utils',
-    '@nuxtjs/google-fonts',
-    '@pinia/nuxt'
+    "@nuxt/eslint",
+    "@nuxt/ui",
+    "@nuxt/a11y",
+    "@nuxt/content",
+    "@nuxt/hints",
+    "@nuxt/test-utils",
+    "@nuxtjs/google-fonts",
+    "@pinia/nuxt",
   ],
 
+  ssr: false,
+
   devtools: {
-    enabled: true
+    enabled: true,
   },
 
-  css: ['~/assets/css/main.css'],
+  css: ["~/assets/css/main.css"],
 
   routeRules: {
-    '/': { prerender: true }
+    "/": { prerender: true },
   },
 
-  compatibilityDate: '2025-01-15',
+  compatibilityDate: "2025-01-15",
 
   eslint: {
     config: {
       stylistic: {
-        commaDangle: 'never',
-        braceStyle: '1tbs'
-      }
-    }
-  }
-})
+        commaDangle: "never",
+        braceStyle: "1tbs",
+      },
+    },
+  },
+});
