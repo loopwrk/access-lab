@@ -2,7 +2,7 @@
 import { useTheme } from '~/composables/useTheme'
 import { useFont } from '~/composables/useFont'
 import type { FontSize } from "~/types/typography"
-import type { TabsItem } from '@nuxt/ui'
+import type { TabsItem, NavigationMenuItem } from '@nuxt/ui'
 
 const theme = useTheme()
 const font = useFont()
@@ -41,18 +41,25 @@ const tabItems: TabsItem[] = [
 ]
 
 // Component nav items
-const components = [
-  { id: 'button', label: 'Button', issues: 3 },
-  { id: 'accordion', label: 'Accordion', issues: 5 },
-  { id: 'carousel', label: 'Carousel', issues: 7 },
-  { id: 'modal', label: 'Modal / Dialog', issues: 4 },
-  { id: 'menu', label: 'Menu / Dropdown', issues: 2 },
-  { id: 'tooltip', label: 'Tooltip', issues: 1 },
-  { id: 'tabs', label: 'Tabs', issues: 6 },
-  { id: 'form-field', label: 'Form Field', issues: 4 }
-]
-
 const activeComponent = ref('button')
+
+const navItems: NavigationMenuItem[][] = [
+  [
+    { label: 'Components', type: 'label' },
+    { label: 'Button', value: 'button', icon: 'i-lucide-square-mouse-pointer' },
+    { label: 'Accordion', value: 'accordion', icon: 'i-lucide-chevrons-down-up' },
+    { label: 'Carousel', value: 'carousel', icon: 'i-lucide-images' },
+    { label: 'Modal / Dialog', value: 'modal', icon: 'i-lucide-rectangle-ellipsis' },
+    { label: 'Menu / Dropdown', value: 'menu', icon: 'i-lucide-menu' },
+    { label: 'Tooltip', value: 'tooltip', icon: 'i-lucide-message-circle' },
+    { label: 'Tabs', value: 'tabs', icon: 'i-lucide-panels-top-left' },
+    { label: 'Form Field', value: 'form-field', icon: 'i-lucide-form-input' }
+  ],
+  [
+    { label: 'Framework style', type: 'label' },
+    { label: 'None (bare HTML)', value: 'none', icon: 'i-lucide-code' }
+  ]
+]
 </script>
 
 <template>
@@ -124,41 +131,23 @@ const activeComponent = ref('button')
     <div class="app-body">
       <!-- Left sidebar -->
       <aside v-show="sidebarOpen" class="sidebar" aria-label="Component navigation">
-        <nav class="sidebar-nav">
-          <!-- Components section -->
-          <div class="sidebar-section">
-            <h2 class="sidebar-section-title">
-              Components
-            </h2>
-            <ul class="sidebar-list" role="list">
-              <li v-for="comp in components" :key="comp.id">
-                <button class="sidebar-item" :class="{ 'is-active': activeComponent === comp.id }"
-                  @click="activeComponent = comp.id">
-                  <span class="sidebar-item-label">{{ comp.label }}</span>
-                </button>
-              </li>
-            </ul>
-          </div>
-
-          <!-- Framework section -->
-          <div class="sidebar-section">
-            <h2 class="sidebar-section-title">
-              Framework style
-            </h2>
-            <ul class="sidebar-list" role="list">
-              <li>
-                <button class="sidebar-item is-active">
-                  <span class="sidebar-item-label">None (bare HTML)</span>
-                </button>
-              </li>
-            </ul>
-          </div>
-        </nav>
+        <UNavigationMenu
+          v-model="activeComponent"
+          :items="navItems"
+          orientation="vertical"
+          highlight
+          highlight-color="primary"
+          :ui="{ link: 'text-sm', linkLabel: 'truncate' }"
+        />
       </aside>
 
-      <!-- Collapsed sidebar icon rail -->
-      <div v-show="!sidebarOpen" class="sidebar-rail" aria-label="Component navigation" role="navigation">
-        <button class="sidebar-rail-btn" aria-label="Open sidebar" @click="sidebarOpen = true">
+      <!-- Collapsed sidebar rail -->
+      <div v-show="!sidebarOpen" class="sidebar-rail" aria-label="Component navigation">
+        <button
+          class="sidebar-rail-btn"
+          aria-label="Open sidebar"
+          @click="sidebarOpen = true"
+        >
           <span aria-hidden="true" class="i-lucide-panel-left text-lg" />
         </button>
       </div>
@@ -330,70 +319,6 @@ const activeComponent = ref('button')
   background: var(--bg);
   overflow-y: auto;
   flex-shrink: 0;
-}
-
-.sidebar-nav {
-  padding: 12px 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.sidebar-section {
-  padding-top: 8px;
-}
-
-.sidebar-section-title {
-  font-size: var(--al-font-size-caption);
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--text-muted);
-  padding: 8px 14px 6px;
-  margin: 0;
-}
-
-.sidebar-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.sidebar-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-  padding: 9px 14px;
-  color: var(--text-secondary);
-  text-decoration: none;
-  border-radius: 4px;
-  text-align: left;
-  cursor: pointer;
-  background: transparent;
-  border: none;
-  font-size: var(--al-font-size-nav);
-  font-family: inherit;
-}
-
-.sidebar-item:hover {
-  background: var(--brand-soft);
-  color: var(--text-primary);
-}
-
-.sidebar-item.is-active {
-  background: var(--brand-soft);
-  color: var(--text-primary);
-  font-weight: 500;
-}
-
-.sidebar-item:focus-visible {
-  outline: 3px solid var(--focus-ring);
-  outline-offset: -1px;
-}
-
-.sidebar-item-label {
-  flex: 1;
 }
 
 /* Collapsed icon rail */
