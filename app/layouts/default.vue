@@ -8,9 +8,9 @@ const font = useFont()
 
 // Font options
 const fonts = [
+  { label: 'Figtree', value: 'Figtree Variable' },
   { label: 'Dyslexic', value: 'OpenDyslexicRegular' },
   { label: 'Atkinson', value: 'Atkinson Hyperlegible' },
-  { label: 'Figtree', value: 'Figtree' },
   { label: 'Comic Sans', value: '"Comic Sans MS", "Comic Sans", cursive' }
 ]
 

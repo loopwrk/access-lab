@@ -15,6 +15,8 @@ export const useTheme = defineStore('theme', () => {
   watchEffect(() => {
     if (!import.meta.client) return
     const html = document.documentElement
+    html.classList.toggle('light', mode.value === 'light')
+    html.classList.toggle('dark', mode.value === 'dark')
     html.classList.toggle('theme-dark', mode.value === 'dark')
     html.classList.toggle('theme-light', mode.value === 'light')
     html.classList.toggle('theme-high-contrast', contrast.value === 'high')

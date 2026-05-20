@@ -1,7 +1,7 @@
 import { useLocalStorage } from "@vueuse/core";
 import type { FontSize } from "~/types/typography";
 
-const defaultFont = "OpenDyslexicRegular";
+const defaultFont = "Figtree Variable";
 const defaultSize: FontSize = "100%";
 
 export const useFont = defineStore("font", () => {

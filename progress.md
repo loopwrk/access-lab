@@ -4,8 +4,8 @@
 
 ### Design token foundation (plan §9.1, §9.2)
 - [x] `app/assets/css/tokens.css` — all 28 token properties per mode: light (default), dark, high-contrast light, high-contrast dark. Includes typography tokens (`--al-font`, `--al-font-mono`, `--al-base-size`) and `--focus-ring`.
-- [x] `app/assets/css/main.css` — replaced green Nuxt UI starter palette with `@theme static` block referencing CSS custom properties from tokens.css.
-- [x] `app/app.config.ts` — mapped Nuxt UI color roles (`primary`, `neutral`, `error`, `warning`, `success`, `info`) to AccessLab brand/semantic tokens. Default button size set to `lg`.
+- [x] `app/assets/css/main.css` — replaced green Nuxt UI starter palette with `@theme static` block referencing CSS custom properties from tokens.css. `--ui-text-inverted` wired to `--on-brand` in light + dark.
+- [x] `app/app.config.ts` — mapped Nuxt UI color roles (`primary`, `neutral`, `error`, `warning`, `success`, `info`) to AccessLab brand/semantic tokens. Default button size set to `lg`. FieldGroup `base` slot extended with a 1px `--border-strong` inset ring (replacing an earlier global `[data-orientation="horizontal"]` rule that leaked into Tabs / Radio / Slider). Button compound variants extended so neutral-ghost buttons inside a horizontal FieldGroup render with surface bg / brand-soft hover — see AGENTS.md "Segmented-picker pattern".
 
 ### Project setup
 - [x] `AGENTS.md` — created for AI assistant session orientation.
