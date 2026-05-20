@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { useTheme } from '~/composables/useTheme'
 import { useFont } from '~/composables/useFont'
-import type { FontSize } from "~/types/typography.ts"
+import type { FontSize } from "~/types/typography"
+import type { TabsItem } from '@nuxt/ui'
 
 const theme = useTheme()
 const font = useFont()
@@ -30,13 +31,13 @@ const sizes: SizeOption[] = [
 const sidebarOpen = ref(true)
 
 // Inspector tab state
-const activeTab = ref<'controls' | 'issues' | 'manual' | 'learn'>('controls')
+const activeTab = ref('controls')
 
-const tabs = [
-  { key: 'controls' as const, label: 'Controls' },
-  { key: 'issues' as const, label: 'Issues' },
-  { key: 'manual' as const, label: 'Manual' },
-  { key: 'learn' as const, label: 'Learn' }
+const tabItems: TabsItem[] = [
+  { label: 'Controls', value: 'controls' },
+  { label: 'Issues', value: 'issues' },
+  { label: 'Manual', value: 'manual' },
+  { label: 'Learn', value: 'learn' }
 ]
 
 // Component nav items
@@ -202,40 +203,37 @@ const activeComponent = ref('button')
 
       <!-- Right inspector -->
       <aside class="inspector" aria-label="Inspection panel">
-        <!-- Tab bar -->
-        <div class="inspector-tabs" role="tablist">
-          <button v-for="tab in tabs" :key="tab.key" role="tab" class="inspector-tab"
-            :class="{ 'is-active': activeTab === tab.key }" :aria-selected="activeTab === tab.key"
-            :aria-controls="`${tab.key}-panel`" @click="activeTab = tab.key">
-            {{ tab.label }}
-          </button>
-        </div>
+        <UTabs
+          v-model="activeTab"
+          :items="tabItems"
+          variant="link"
+          color="primary"
+          size="sm"
+          :content="false"
+          :ui="{ list: 'justify-around' }"
+        />
 
         <!-- Tab panels -->
         <div class="inspector-panels">
-          <div id="controls-panel" role="tabpanel" class="inspector-panel"
-            :class="{ 'is-hidden': activeTab !== 'controls' }" :aria-labelledby="'controls'" tabindex="0">
+          <div v-if="activeTab === 'controls'" id="controls-panel" class="inspector-panel" tabindex="0">
             <p class="text-muted">
               Controls panel placeholder
             </p>
           </div>
 
-          <div id="issues-panel" role="tabpanel" class="inspector-panel"
-            :class="{ 'is-hidden': activeTab !== 'issues' }" aria-labelledby="issues" tabindex="0">
+          <div v-if="activeTab === 'issues'" id="issues-panel" class="inspector-panel" tabindex="0">
             <p class="text-muted">
               Issues panel placeholder
             </p>
           </div>
 
-          <div role="tabpanel" class="inspector-panel" :class="{ 'is-hidden': activeTab !== 'manual' }"
-            :aria-labelledby="'manual'" tabindex="0">
+          <div v-if="activeTab === 'manual'" class="inspector-panel" tabindex="0">
             <p class="text-muted">
               Manual review panel placeholder
             </p>
           </div>
 
-          <div role="tabpanel" class="inspector-panel" :class="{ 'is-hidden': activeTab !== 'learn' }"
-            :aria-labelledby="'learn'" tabindex="0">
+          <div v-if="activeTab === 'learn'" class="inspector-panel" tabindex="0">
             <p class="text-muted">
               Learn panel placeholder
             </p>
@@ -567,42 +565,6 @@ const activeComponent = ref('button')
   flex-shrink: 0;
 }
 
-/* Inspector tabs */
-.inspector-tabs {
-  display: flex;
-  border-bottom: 1px solid var(--border);
-  flex-shrink: 0;
-}
-
-.inspector-tab {
-  flex: 1;
-  font-family: inherit;
-  font-size: var(--al-font-size-detail);
-  font-weight: 500;
-  background: transparent;
-  border: none;
-  color: var(--text-secondary);
-  padding: 12px 8px;
-  cursor: pointer;
-  border-bottom: 2px solid transparent;
-  margin-bottom: -1px;
-  transition: color 0.15s, border-color 0.15s;
-}
-
-.inspector-tab:hover {
-  color: var(--text-primary);
-}
-
-.inspector-tab.is-active {
-  color: var(--text-primary);
-  border-bottom-color: var(--brand);
-}
-
-.inspector-tab:focus-visible {
-  outline: 3px solid var(--focus-ring);
-  outline-offset: -2px;
-}
-
 /* Inspector panels */
 .inspector-panels {
   flex: 1;
@@ -611,14 +573,6 @@ const activeComponent = ref('button')
 
 .inspector-panel {
   padding: 16px;
-}
-
-.inspector-panel.is-hidden {
-  display: none;
-}
-
-.inspector-panel:focus {
-  outline: none;
 }
 
 /* ── Utility ────────────────────────────────────────────────────── */
