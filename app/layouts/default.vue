@@ -175,18 +175,25 @@ const navItems: NavigationMenuItem[][] = [
         </div>
 
         <!-- Code panel (collapsed by default) -->
-        <details class="code-drawer">
-          <summary class="code-drawer-summary">
-            Generated HTML
-            <span aria-hidden="true" class="i-lucide-chevron-down text-sm" />
-          </summary>
-          <div class="code-drawer-body">
-            <pre class="code-block">&lt;button&gt;Save changes&lt;/button&gt;</pre>
-            <UButton size="xs" variant="outline" color="neutral">
-              Copy to clipboard
-            </UButton>
-          </div>
-        </details>
+        <UCollapsible class="code-drawer">
+          <UButton
+            label="Generated HTML"
+            color="neutral"
+            variant="ghost"
+            block
+            trailing-icon="i-lucide-chevron-down"
+            class="group"
+            :ui="{ trailingIcon: 'group-data-[state=open]:rotate-180 transition-transform duration-200' }"
+          />
+          <template #content>
+            <div class="code-drawer-body">
+              <pre class="code-block">&lt;button&gt;Save changes&lt;/button&gt;</pre>
+              <UButton size="xs" variant="outline" color="neutral">
+                Copy to clipboard
+              </UButton>
+            </div>
+          </template>
+        </UCollapsible>
       </main>
 
       <!-- Right inspector -->
@@ -413,21 +420,6 @@ const navItems: NavigationMenuItem[][] = [
 .code-drawer {
   border-top: 1px solid var(--border);
   background: var(--surface);
-}
-
-.code-drawer-summary {
-  padding: 10px 20px;
-  font-size: var(--al-font-size-detail);
-  font-weight: 500;
-  color: var(--text-secondary);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.code-drawer-summary:hover {
-  color: var(--text-primary);
 }
 
 .code-drawer-body {
