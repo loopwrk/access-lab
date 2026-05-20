@@ -20,6 +20,15 @@
   --font-sans: var(--al-font);
   --font-mono: var(--al-font-mono);
 
+  /* Typographic scale — mirrors tokens.css, enables Tailwind utilities */
+  --font-size-caption: var(--al-font-size-caption);
+  --font-size-detail:  var(--al-font-size-detail);
+  --font-size-body:    var(--al-font-size-body);
+  --font-size-nav:     var(--al-font-size-nav);
+  --font-size-heading: var(--al-font-size-heading);
+  --font-size-brand:   var(--al-font-size-brand);
+  --font-size-display: var(--al-font-size-display);
+
   /* AccessLab brand — full 50–950 shade scale for Nuxt UI */
   --color-accesslab-50:  var(--brand-soft-2);
   --color-accesslab-100: var(--brand-soft);

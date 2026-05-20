@@ -315,7 +315,7 @@ const activeComponent = ref('button')
   gap: 10px;
   font-weight: 500;
   color: var(--text-primary);
-  font-size: 0.9375rem;
+  font-size: var(--al-font-size-brand);
   letter-spacing: -0.01em;
   text-decoration: none;
 }
@@ -343,7 +343,7 @@ const activeComponent = ref('button')
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.8125rem;
+  font-size: var(--al-font-size-body);
   color: var(--text-secondary);
 }
 
@@ -377,7 +377,7 @@ const activeComponent = ref('button')
 }
 
 .sidebar-section-title {
-  font-size: 0.6875rem;
+  font-size: var(--al-font-size-caption);
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -405,7 +405,7 @@ const activeComponent = ref('button')
   cursor: pointer;
   background: transparent;
   border: none;
-  font-size: 0.84375rem;
+  font-size: var(--al-font-size-nav);
   font-family: inherit;
 }
 
@@ -495,7 +495,7 @@ const activeComponent = ref('button')
 }
 
 .preview-title {
-  font-size: 0.875rem;
+  font-size: var(--al-font-size-heading);
   font-weight: 500;
   color: var(--text-primary);
   margin: 0;
@@ -508,7 +508,7 @@ const activeComponent = ref('button')
 
 /* Counter pills */
 .counter-pill {
-  font-size: 0.6875rem;
+  font-size: var(--al-font-size-caption);
   font-weight: 500;
   padding: 2px 10px;
   border-radius: 999px;
@@ -548,7 +548,7 @@ const activeComponent = ref('button')
 
 .code-drawer-summary {
   padding: 10px 20px;
-  font-size: 0.75rem;
+  font-size: var(--al-font-size-detail);
   font-weight: 500;
   color: var(--text-secondary);
   cursor: pointer;
@@ -573,7 +573,7 @@ const activeComponent = ref('button')
   border: 1px solid var(--border);
   border-radius: 4px;
   padding: 12px 16px;
-  font-size: 0.8125rem;
+  font-size: var(--al-font-size-body);
   color: var(--text-primary);
   margin: 0;
   overflow-x: auto;
@@ -600,7 +600,7 @@ const activeComponent = ref('button')
 .inspector-tab {
   flex: 1;
   font-family: inherit;
-  font-size: 0.75rem;
+  font-size: var(--al-font-size-detail);
   font-weight: 500;
   background: transparent;
   border: none;
@@ -647,14 +647,14 @@ const activeComponent = ref('button')
 /* ── Utility ────────────────────────────────────────────────────── */
 .text-muted {
   color: var(--text-muted);
-  font-size: 0.8125rem;
+  font-size: var(--al-font-size-body);
 }
 
 .text-lg {
-  font-size: 1.125rem;
+  font-size: var(--al-font-size-display);
 }
 
 .text-sm {
-  font-size: 0.875rem;
+  font-size: var(--al-font-size-heading);
 }
 </style>
