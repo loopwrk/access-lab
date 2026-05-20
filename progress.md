@@ -28,7 +28,9 @@ Nothing currently in progress.
 - [ ] `composables/useContrast.ts`
 
 ### App shell (plan §3.1, §3.2, §4.3)
-- [ ] `components/AppShell.vue`
+- [x] `app.vue` — updated to `<NuxtLayout>` wrapper with AccessLab SEO meta
+- [x] `app/layouts/default.vue` — three-pane shell: app bar, collapsible sidebar, preview area, code drawer, tabbed inspector
+- [ ] `components/AppShell.vue` (covered by layout)
 - [ ] `components/AppBar.vue`
 - [ ] `components/ComponentSidebar.vue`
 - [ ] `components/FrameworkPicker.vue`
