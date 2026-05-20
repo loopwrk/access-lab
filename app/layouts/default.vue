@@ -210,7 +210,7 @@ const activeComponent = ref('button')
           color="primary"
           size="sm"
           :content="false"
-          :ui="{ list: 'justify-around' }"
+          :ui="{ list: 'justify-around', label: 'overflow-visible whitespace-nowrap' }"
         />
 
         <!-- Tab panels -->
