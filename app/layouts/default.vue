@@ -8,10 +8,10 @@ const font = useFont()
 
 // Font options
 const fonts = [
-  { label: 'Figtree', value: 'Figtree Variable' },
-  { label: 'Dyslexic', value: 'OpenDyslexicRegular' },
-  { label: 'Atkinson', value: 'Atkinson Hyperlegible' },
-  { label: 'Comic Sans', value: '"Comic Sans MS", "Comic Sans", cursive' }
+  { label: 'Figtree', value: 'Figtree Variable', family: 'Figtree Variable' },
+  { label: 'Dyslexic', value: 'OpenDyslexicRegular', family: 'OpenDyslexicRegular' },
+  { label: 'Atkinson', value: 'Atkinson Hyperlegible', family: 'Atkinson Hyperlegible' },
+  { label: 'Comic Sans', value: '"Comic Sans MS", "Comic Sans", cursive', family: '"Comic Sans MS", "Comic Sans", cursive' }
 ]
 
 interface SizeOption {
@@ -84,9 +84,12 @@ const activeComponent = ref('button')
       <div class="appbar-right">
         <!-- Font picker -->
         <UFieldGroup size="sm">
-          <UButton v-for="f in fonts" :key="f.value" :color="font.family === f.value ? 'primary' : 'neutral'"
-            :variant="font.family === f.value ? 'solid' : 'ghost'" @click="font.setFont(f.value)">
-            {{ f.label }}
+          <UButton v-for="fontFamily in fonts" :key="fontFamily.value"
+            :color="font.family === fontFamily.value ? 'primary' : 'neutral'"
+            :variant="font.family === fontFamily.value ? 'solid' : 'ghost'"
+            :style="{ fontFamily: `${fontFamily.family}` }" @click="
+              font.setFont(fontFamily.value)">
+            {{ fontFamily.label }}
           </UButton>
         </UFieldGroup>
 
