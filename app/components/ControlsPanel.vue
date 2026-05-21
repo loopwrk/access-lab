@@ -10,7 +10,7 @@ interface ButtonProps {
   paddingLeft: number
   fontSize: number
   bg: string
-  fg: string
+  fgText: string
 }
 
 const paddingControls = [
@@ -46,6 +46,16 @@ function updatePadding(value: number) {
 const { t } = useI18n()
 
 const isPaddingSplit = ref(false)
+
+const bgColor = computed({
+  get: () => props.modelValue.bg ?? '#EFEFEF',
+  set: (value: string) => update('bg', value)
+})
+
+const fgTextColor = computed({
+  get: () => props.modelValue.fgText ?? '#000000',
+  set: (value: string) => update('fgText', value)
+})
 </script>
 
 <template>
@@ -123,6 +133,41 @@ const isPaddingSplit = ref(false)
         </div>
       </UFormField>
     </fieldset>
+
+    <USeparator />
+
+    <fieldset class="flex flex-col gap-3 border-0 p-0 m-0">
+      <legend class="control-group-title mb-1.5">{{ t('controls.colours') }}</legend>
+
+      <ColorPicker v-model="bgColor" with-alpha with-initial-color with-eye-dropper with-hex-input with-rgb-input
+        v-slot="{ show }">
+        <div class="flex items-center justify-between gap-3">
+          <button type="button" class="color-swatch" @click="show">
+            <div class="color-swatch-inner" :style="{ backgroundColor: bgColor }" />
+          </button>
+          <div class="flex flex-col flex-1 min-w-0">
+            <span class="color-label-title">{{ t('controls.background') }}</span>
+            <span class="color-label-hex">{{ bgColor }}</span>
+          </div>
+          <UInput :model-value="bgColor" size="sm" class="w-24 shrink-0" @update:model-value="update('bg', $event)" />
+        </div>
+      </ColorPicker>
+
+      <ColorPicker v-model="fgTextColor" with-alpha with-initial-color with-eye-dropper with-hex-input with-rgb-input
+        v-slot="{ show }">
+        <div class="flex items-center justify-between gap-3">
+          <button type="button" class="color-swatch" @click="show">
+            <div class="color-swatch-inner" :style="{ backgroundColor: fgTextColor }" />
+          </button>
+          <div class="flex flex-col flex-1 min-w-0">
+            <span class="color-label-title">{{ t('controls.textColor') }}</span>
+            <span class="color-label-hex">{{ fgTextColor }}</span>
+          </div>
+          <UInput :model-value="fgTextColor" size="sm" class="w-24 shrink-0"
+            @update:model-value="update('fgText', $event)" />
+        </div>
+      </ColorPicker>
+    </fieldset>
   </div>
 </template>
 
@@ -158,5 +203,39 @@ const isPaddingSplit = ref(false)
   color: var(--text-muted);
   width: 16px;
   text-align: center;
+}
+
+.color-swatch {
+  width: 40px;
+  height: 40px;
+  padding: 4px;
+  border-radius: 6px;
+  border: 2px solid var(--border-strong);
+  background: transparent;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.color-swatch:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 0;
+}
+
+.color-swatch-inner {
+  width: 100%;
+  height: 100%;
+  border-radius: 3px;
+}
+
+.color-label-title {
+  font-size: var(--al-font-size-heading);
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.color-label-hex {
+  font-size: var(--al-font-size-detail);
+  color: var(--text-muted);
+  font-family: var(--al-font-mono);
 }
 </style>

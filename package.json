@@ -33,6 +33,7 @@
     "axe-core": "^4.11.4",
     "better-sqlite3": "^12.10.0",
     "nuxt": "^4.4.5",
+    "nuxt-color-picker": "^1.2.8",
     "open-dyslexic": "^1.0.3",
     "pinia": "^3.0.4",
     "tailwindcss": "^4.3.0"

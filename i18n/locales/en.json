@@ -53,7 +53,10 @@
     "height": "Height",
     "padding": "Padding",
     "text": "Text",
-    "fontSize": "Font size"
+    "fontSize": "Font size",
+    "colours": "Colours",
+    "background": "Background",
+    "textColor": "Text colour"
   },
 
   "inspector": {

@@ -10,6 +10,7 @@ export default defineNuxtConfig({
     "@nuxtjs/google-fonts",
     "@pinia/nuxt",
     "@nuxtjs/i18n",
+    "nuxt-color-picker",
   ],
 
   vite: {
