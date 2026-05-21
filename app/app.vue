@@ -1,4 +1,6 @@
 <script setup lang="ts">
+const { t } = useI18n()
+
 useHead({
   meta: [
     { name: 'viewport', content: 'width=device-width, initial-scale=1' }
@@ -9,10 +11,10 @@ useHead({
 })
 
 useSeoMeta({
-  title: 'AccessLab',
-  description: 'A browser-based accessibility laboratory for developers. Tune UI components in real time and surface WCAG 2.2 violations instantly.',
-  ogTitle: 'AccessLab',
-  ogDescription: 'A browser-based accessibility laboratory for developers.',
+  title: t('app.title'),
+  description: t('app.description'),
+  ogTitle: t('app.title'),
+  ogDescription: t('app.description'),
   twitterCard: 'summary_large_image'
 })
 </script>

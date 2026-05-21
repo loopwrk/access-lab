@@ -1,11 +1,15 @@
+<script setup lang="ts">
+const { t } = useI18n()
+</script>
+
 <template>
   <div class="flex items-center justify-center h-full">
     <div class="text-center max-w-md">
       <h2 class="text-xl font-medium mb-2" style="color: var(--text-primary)">
-        Welcome to AccessLab
+        {{ t('home.welcome') }}
       </h2>
       <p style="color: var(--text-secondary)">
-        Select a component from the sidebar to begin auditing.
+        {{ t('home.instruction') }}
       </p>
     </div>
   </div>

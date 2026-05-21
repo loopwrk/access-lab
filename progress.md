@@ -12,6 +12,7 @@
 - [x] Open questions resolved (plan §16) — all 6 decided and documented in plan.md and AGENTS.md.
 - [x] Build infrastructure — `@types/node` added, workspace config fixed, lint errors resolved.
 - [x] `pnpm typecheck`, `pnpm lint`, `pnpm test` all passing.
+- [x] Nuxt i18n v10 integrated — all UI text extracted to `i18n/locales/en.json`, `useI18n()` / `$t()` wired into layout, pages, and app.vue.
 
 ## In progress
 

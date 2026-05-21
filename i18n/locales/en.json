@@ -1,0 +1,76 @@
+{
+  "app": {
+    "title": "AccessLab",
+    "description": "A browser-based accessibility laboratory for developers. Tune UI components in real time and surface WCAG 2.2 violations instantly."
+  },
+  "skipLinks": {
+    "main": "Skip to main content",
+    "controls": "Skip to controls",
+    "issues": "Skip to issues"
+  },
+  "appBar": {
+    "brand": "AccessLab",
+    "ariaLabel": "Application bar"
+  },
+  "breadcrumb": {
+    "ariaLabel": "Breadcrumb",
+    "components": "Components",
+    "button": "Button"
+  },
+  "theme": {
+    "light": "Light",
+    "dark": "Dark",
+    "highContrast": "High contrast",
+    "switchToLight": "Switch to light mode",
+    "switchToDark": "Switch to dark mode",
+    "toggleHighContrast": "Toggle high contrast"
+  },
+  "sidebar": {
+    "toggleOpen": "Open sidebar",
+    "toggleClose": "Close sidebar",
+    "ariaLabel": "Component navigation"
+  },
+  "nav": {
+    "components": "Components",
+    "frameworkStyle": "Framework style",
+    "button": "Button",
+    "accordion": "Accordion",
+    "carousel": "Carousel",
+    "modal": "Modal / Dialog",
+    "menu": "Menu / Dropdown",
+    "tooltip": "Tooltip",
+    "tabs": "Tabs",
+    "formField": "Form Field",
+    "none": "None (bare HTML)"
+  },
+  "preview": {
+    "title": "Button",
+    "noFramework": "No framework",
+    "toolbar": {
+      "ariaLabel": "Preview toolbar"
+    }
+  },
+
+  "inspector": {
+    "ariaLabel": "Inspection panel",
+    "controls": "Controls",
+    "issues": "Issues",
+    "manual": "Manual",
+    "learn": "Learn"
+  },
+  "panel": {
+    "controlsPlaceholder": "Controls panel placeholder",
+    "issuesPlaceholder": "Issues panel placeholder",
+    "manualPlaceholder": "Manual review panel placeholder",
+    "learnPlaceholder": "Learn panel placeholder"
+  },
+  "counter": {
+    "critical": "3 critical",
+    "warnings": "2 warnings",
+    "passing": "8 passing"
+  },
+  "home": {
+    "welcome": "Welcome to AccessLab",
+    "instruction": "Select a component from the sidebar to begin auditing."
+  }
+}

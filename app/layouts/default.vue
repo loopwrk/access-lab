@@ -4,6 +4,7 @@ import { useFont } from '~/composables/useFont'
 import type { FontSize } from "~/types/typography"
 import type { TabsItem, NavigationMenuItem } from '@nuxt/ui'
 
+const { t } = useI18n()
 const theme = useTheme()
 const font = useFont()
 
@@ -33,34 +34,34 @@ const sidebarOpen = ref(true)
 // Inspector tab state
 const activeTab = ref('controls')
 
-const tabItems: TabsItem[] = [
-  { label: 'Controls', value: 'controls' },
-  { label: 'Issues', value: 'issues' },
-  { label: 'Manual', value: 'manual' },
-  { label: 'Learn', value: 'learn' }
-]
+const tabItems = computed<TabsItem[]>(() => [
+  { label: t('inspector.controls'), value: 'controls' },
+  { label: t('inspector.issues'), value: 'issues' },
+  { label: t('inspector.manual'), value: 'manual' },
+  { label: t('inspector.learn'), value: 'learn' }
+])
 
 // Component nav items
 const activeComponent = ref('button')
 
-const navItems: NavigationMenuItem[][] = [
+const navItems = computed<NavigationMenuItem[][]>(() => [
   [
-    { label: 'Components', type: 'label' },
-    { label: 'Button', value: 'button', icon: 'i-lucide-square-mouse-pointer' },
-    { label: 'Accordion', value: 'accordion', icon: 'i-lucide-chevrons-down-up' },
-    { label: 'Carousel', value: 'carousel', icon: 'i-lucide-images' },
-    { label: 'Modal / Dialog', value: 'modal', icon: 'i-lucide-rectangle-ellipsis' },
-    { label: 'Menu / Dropdown', value: 'menu', icon: 'i-lucide-menu' },
-    { label: 'Tooltip', value: 'tooltip', icon: 'i-lucide-message-circle' },
-    { label: 'Tabs', value: 'tabs', icon: 'i-lucide-panels-top-left' },
-    { label: 'Form Field', value: 'form-field', icon: 'i-lucide-form-input' }
-  ],
-  // TODO: Introduce framework styles after vanilla components are in place and we have a working POC
+    { label: t('nav.components'), type: 'label' },
+    { label: t('nav.button'), value: 'button', icon: 'i-lucide-square-mouse-pointer' },
+    { label: t('nav.accordion'), value: 'accordion', icon: 'i-lucide-chevrons-down-up' },
+    { label: t('nav.carousel'), value: 'carousel', icon: 'i-lucide-images' },
+    { label: t('nav.modal'), value: 'modal', icon: 'i-lucide-rectangle-ellipsis' },
+    { label: t('nav.menu'), value: 'menu', icon: 'i-lucide-menu' },
+    { label: t('nav.tooltip'), value: 'tooltip', icon: 'i-lucide-message-circle' },
+    { label: t('nav.tabs'), value: 'tabs', icon: 'i-lucide-panels-top-left' },
+    { label: t('nav.formField'), value: 'form-field', icon: 'i-lucide-form-input' }
+  ]
+  // TODO: Introduce framework styles after vanilla components are in place
   // [
-  //   { label: 'Framework style', type: 'label' },
-  //   { label: 'None (bare HTML)', value: 'none', icon: 'i-lucide-code' }
+  //   { label: t('nav.frameworkStyle'), type: 'label' },
+  //   { label: t('nav.none'), value: 'none', icon: 'i-lucide-code' }
   // ]
-]
+])
 
 async function skipToPanel(tabName: 'controls' | 'issues', elementId: string) {
   activeTab.value = tabName
@@ -76,22 +77,22 @@ async function skipToPanel(tabName: 'controls' | 'issues', elementId: string) {
   <div class="app-shell">
     <!-- Skip links -->
     <div class="skip-links">
-      <a href="#main-content" class="skip-link">Skip to main content</a>
+      <a href="#main-content" class="skip-link">{{ t('skipLinks.main') }}</a>
       <a href="#controls-panel" class="skip-link" @click="skipToPanel('controls', 'controls-panel')">
-        Skip to controls
+        {{ t('skipLinks.controls') }}
       </a>
       <a href="#issues-panel" class="skip-link" @click="skipToPanel('issues', 'issues-panel')">
-        Skip to issues
+        {{ t('skipLinks.issues') }}
       </a>
     </div>
 
     <!-- App bar -->
-    <header class="appbar" role="banner" aria-label="Application bar">
+    <header class="appbar" role="banner" :aria-label="t('appBar.ariaLabel')">
       <div class="appbar-left">
         <!-- Brand -->
         <NuxtLink to="/" class="brand">
           <span class="brand-mark" aria-hidden="true" />
-          <span class="brand-text">AccessLab</span>
+          <span class="brand-text">{{ t('appBar.brand') }}</span>
         </NuxtLink>
       </div>
 
@@ -115,12 +116,12 @@ async function skipToPanel(tabName: 'controls' | 'issues', elementId: string) {
           </UButton>
         </UFieldGroup>
 
-        <!-- High contrast toggle (single-button field group for visual parity with the segmented pickers) -->
+        <!-- High contrast toggle -->
         <UFieldGroup size="sm">
           <UButton :color="theme.isHighContrast ? 'primary' : 'neutral'"
             :variant="theme.isHighContrast ? 'solid' : 'ghost'" icon="i-lucide-contrast"
             :aria-pressed="theme.isHighContrast" @click="theme.toggleContrast()">
-            High contrast
+            {{ t('theme.highContrast') }}
           </UButton>
         </UFieldGroup>
 
@@ -128,31 +129,32 @@ async function skipToPanel(tabName: 'controls' | 'issues', elementId: string) {
         <UFieldGroup size="sm">
           <UButton :color="!theme.isDark ? 'primary' : 'neutral'" :variant="!theme.isDark ? 'solid' : 'ghost'"
             icon="i-lucide-sun" :aria-pressed="!theme.isDark" @click="theme.isDark && theme.toggleMode()">
-            Light
+            {{ t('theme.light') }}
           </UButton>
           <UButton :color="theme.isDark ? 'primary' : 'neutral'" :variant="theme.isDark ? 'solid' : 'ghost'"
             icon="i-lucide-moon" :aria-pressed="theme.isDark" @click="!theme.isDark && theme.toggleMode()">
-            Dark
+            {{ t('theme.dark') }}
           </UButton>
         </UFieldGroup>
 
         <!-- Sidebar toggle -->
         <UButton color="neutral" variant="ghost" size="sm" icon="i-lucide-panel-left"
-          :aria-label="sidebarOpen ? 'Close sidebar' : 'Open sidebar'" @click="sidebarOpen = !sidebarOpen" />
+          :aria-label="sidebarOpen ? t('sidebar.toggleClose') : t('sidebar.toggleOpen')"
+          @click="sidebarOpen = !sidebarOpen" />
       </div>
     </header>
 
     <div class="app-body">
       <!-- Left sidebar -->
-      <aside v-show="sidebarOpen" class="sidebar" aria-label="Component navigation">
+      <aside v-show="sidebarOpen" class="sidebar" :aria-label="t('sidebar.ariaLabel')">
         <UNavigationMenu v-model="activeComponent" :items="navItems" orientation="vertical" highlight
           highlight-color="primary"
           :ui="{ link: 'text-sm py-2.5 pl-3', linkLabel: 'truncate', label: 'text-md pl-3 pt-3' }" />
       </aside>
 
       <!-- Collapsed sidebar rail -->
-      <div v-show="!sidebarOpen" class="sidebar-rail" aria-label="Component navigation">
-        <button class="sidebar-rail-btn" aria-label="Open sidebar" @click="sidebarOpen = true">
+      <div v-show="!sidebarOpen" class="sidebar-rail" :aria-label="t('sidebar.ariaLabel')">
+        <button class="sidebar-rail-btn" :aria-label="t('sidebar.toggleOpen')" @click="sidebarOpen = true">
           <span aria-hidden="true" class="i-lucide-panel-left text-lg" />
         </button>
       </div>
@@ -163,14 +165,14 @@ async function skipToPanel(tabName: 'controls' | 'issues', elementId: string) {
         <div class="preview-toolbar">
           <div class="preview-toolbar-left">
             <h1 class="preview-title">
-              Button
+              {{ t('preview.title') }}
             </h1>
           </div>
 
           <div class="preview-toolbar-right">
-            <UBadge color="error" variant="soft" size="md" label="3 critical" />
-            <UBadge color="warning" variant="soft" size="md" label="2 warnings" />
-            <UBadge color="success" variant="soft" size="md" label="8 passing" />
+            <UBadge color="error" variant="soft" size="md" :label="t('counter.critical')" />
+            <UBadge color="warning" variant="soft" size="md" :label="t('counter.warnings')" />
+            <UBadge color="success" variant="soft" size="md" :label="t('counter.passing')" />
           </div>
         </div>
 

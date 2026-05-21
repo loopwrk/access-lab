@@ -9,13 +9,16 @@ export default defineNuxtConfig({
     "@nuxt/test-utils",
     "@nuxtjs/google-fonts",
     "@pinia/nuxt",
+    "@nuxtjs/i18n",
   ],
+
+  i18n: {
+    locales: [{ code: "en", name: "English", file: "en.json" }],
+    defaultLocale: "en",
+  },
 
   app: {
     head: {
-      htmlAttrs: {
-        lang: "en",
-      },
       title: "AccessLab",
     },
   },
