@@ -12,6 +12,12 @@ export default defineNuxtConfig({
     "@nuxtjs/i18n",
   ],
 
+  vite: {
+    optimizeDeps: {
+      include: ["@vue/devtools-core", "@vue/devtools-kit"],
+    },
+  },
+
   i18n: {
     locales: [{ code: "en", name: "English", file: "en.json" }],
     defaultLocale: "en",

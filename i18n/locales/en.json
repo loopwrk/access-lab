@@ -12,11 +12,6 @@
     "brand": "AccessLab",
     "ariaLabel": "Application bar"
   },
-  "breadcrumb": {
-    "ariaLabel": "Breadcrumb",
-    "components": "Components",
-    "button": "Button"
-  },
   "theme": {
     "light": "Light",
     "dark": "Dark",
@@ -49,6 +44,16 @@
     "toolbar": {
       "ariaLabel": "Preview toolbar"
     }
+  },
+  "controls": {
+    "label": "Button label",
+    "labelPlaceholder": "Click Me!",
+    "dimensions": "Dimensions",
+    "width": "Width",
+    "height": "Height",
+    "padding": "Padding",
+    "text": "Text",
+    "fontSize": "Font size"
   },
 
   "inspector": {

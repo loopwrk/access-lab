@@ -205,9 +205,6 @@ async function skipToPanel(tabName: 'controls' | 'issues', elementId: string) {
         <!-- Tab panels -->
         <div class="inspector-panels">
           <div v-show="activeTab === 'controls'" id="controls-panel" class="inspector-panel" tabindex="0">
-            <p class="text-muted">
-              Controls panel placeholder
-            </p>
           </div>
 
           <div v-show="activeTab === 'issues'" id="issues-panel" class="inspector-panel" tabindex="0">
