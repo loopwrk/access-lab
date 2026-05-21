@@ -38,12 +38,16 @@ export function useAxeAudit(iframeRef: {
   const errorMessage = ref<string | null>(null);
 
   const criticalCount = computed(
-    () => violations.value.filter((v) => v.impact === "critical").length,
+    () =>
+      violations.value.filter(
+        (v) => v.impact === "critical" || v.impact === "serious",
+      ).length,
   );
   const warningCount = computed(
     () =>
-      violations.value.filter((v) => v.impact && v.impact !== "critical")
-        .length,
+      violations.value.filter(
+        (v) => v.impact === "moderate" || v.impact === "minor",
+      ).length,
   );
 
   function handler(event: MessageEvent) {
