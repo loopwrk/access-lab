@@ -7,6 +7,11 @@ interface ButtonProps {
   paddingRight: number;
   paddingBottom: number;
   paddingLeft: number;
+  borderWidth: number;
+  borderTopWidth: number;
+  borderRightWidth: number;
+  borderBottomWidth: number;
+  borderLeftWidth: number;
   fontSize: number;
   bg: string;
   fgText: string;
@@ -42,6 +47,28 @@ export function renderButton(props?: Partial<ButtonProps>): string {
     style.push(`padding:${pt}px ${pr}px ${pb}px ${pl}px`);
   } else if (props.padding != null) {
     style.push(`padding:${props.padding}px`);
+  }
+
+  const hasIndividualBorder =
+    props.borderTopWidth != null ||
+    props.borderRightWidth != null ||
+    props.borderBottomWidth != null ||
+    props.borderLeftWidth != null;
+
+  if (hasIndividualBorder) {
+    const fallback = props.borderWidth ?? 0;
+    const bt = props.borderTopWidth ?? fallback;
+    const br = props.borderRightWidth ?? fallback;
+    const bb = props.borderBottomWidth ?? fallback;
+    const bl = props.borderLeftWidth ?? fallback;
+    style.push(
+      `border-top-width:${bt}px`,
+      `border-right-width:${br}px`,
+      `border-bottom-width:${bb}px`,
+      `border-left-width:${bl}px`,
+    );
+  } else if (props.borderWidth != null && props.borderWidth > 0) {
+    style.push(`border-width:${props.borderWidth}px`);
   }
 
   const styleStr = style.join(";");

@@ -8,6 +8,11 @@ interface ButtonProps {
   paddingRight: number
   paddingBottom: number
   paddingLeft: number
+  borderWidth: number
+  borderTopWidth: number
+  borderRightWidth: number
+  borderBottomWidth: number
+  borderLeftWidth: number
   fontSize: number
   bg: string
   fgText: string
@@ -46,6 +51,25 @@ function updatePadding(value: number) {
 const { t } = useI18n()
 
 const isPaddingSplit = ref(false)
+const isBorderSplit = ref(false)
+
+const borderControls = [
+  { id: 'top', key: 'borderTopWidth', label: 'T' },
+  { id: 'right', key: 'borderRightWidth', label: 'R' },
+  { id: 'bottom', key: 'borderBottomWidth', label: 'B' },
+  { id: 'left', key: 'borderLeftWidth', label: 'L' }
+] as const
+
+function updateBorderWidth(value: number) {
+  emit('update:modelValue', {
+    ...props.modelValue,
+    borderWidth: value,
+    borderTopWidth: value,
+    borderRightWidth: value,
+    borderBottomWidth: value,
+    borderLeftWidth: value
+  })
+}
 
 const bgColor = computed({
   get: () => props.modelValue.bg ?? '#EFEFEF',
@@ -114,6 +138,39 @@ const fgTextColor = computed({
 
             <span class="control-value-split">
               {{ modelValue[dir.key] ?? modelValue.padding ?? 8 }}px
+            </span>
+          </div>
+        </div>
+      </UFormField>
+
+      <UFormField class="control-field [&>div]:w-full [&_label]:w-full">
+        <template #label>
+          <span class="flex items-center justify-between w-full">
+            <span>{{ t('controls.borderWidth') }}</span>
+            <UButton size="xs" variant="ghost" color="neutral" class="pr-0"
+              :icon="isBorderSplit ? 'i-lucide-square' : 'i-lucide-grid-3x3'" trailing
+              @click="isBorderSplit = !isBorderSplit">
+              {{ isBorderSplit ? 'Merge' : 'Split' }}
+            </UButton>
+          </span>
+        </template>
+
+        <div v-if="!isBorderSplit" class="flex items-center gap-3">
+          <USlider :model-value="modelValue.borderWidth ?? 0" :min="0" :max="20" :step="1" color="primary" size="sm"
+            class="flex-1" @update:model-value="updateBorderWidth(Number($event))" />
+          <span class="control-value">{{ modelValue.borderWidth ?? 0 }}px</span>
+        </div>
+
+        <div v-else class="flex flex-col gap-2">
+          <div v-for="dir in borderControls" :key="dir.id" class="flex items-center gap-2">
+            <label :for="`border-${dir.id}`" class="control-split-label">{{ dir.label }}</label>
+
+            <USlider :id="`border-${dir.id}`" :model-value="modelValue[dir.key] ?? modelValue.borderWidth ?? 0" :min="0"
+              :max="20" :step="1" color="primary" size="sm" class="flex-1"
+              @update:model-value="update(dir.key, Number($event))" />
+
+            <span class="control-value-split">
+              {{ modelValue[dir.key] ?? modelValue.borderWidth ?? 0 }}px
             </span>
           </div>
         </div>
