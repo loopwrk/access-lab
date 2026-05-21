@@ -18,7 +18,7 @@ const fonts = [
 
 interface SizeOption {
   label: string;
-  value: FontSize; // This forces 'value' to match your union type exactly
+  value: FontSize;
 }
 
 const sizes: SizeOption[] = [
