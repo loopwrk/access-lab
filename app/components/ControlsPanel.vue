@@ -16,6 +16,7 @@ interface ButtonProps {
   fontSize: number
   bg: string
   fgText: string
+  borderColor: string
 }
 
 const paddingControls = [
@@ -79,6 +80,11 @@ const bgColor = computed({
 const fgTextColor = computed({
   get: () => props.modelValue.fgText ?? '#000000',
   set: (value: string) => update('fgText', value)
+})
+
+const borderColor = computed({
+  get: () => props.modelValue.borderColor ?? '#888888',
+  set: (value: string) => update('borderColor', value)
 })
 </script>
 
@@ -222,6 +228,21 @@ const fgTextColor = computed({
           </div>
           <UInput :model-value="fgTextColor" size="sm" class="w-24 shrink-0"
             @update:model-value="update('fgText', $event)" />
+        </div>
+      </ColorPicker>
+
+      <ColorPicker v-model="borderColor" with-alpha with-initial-color with-eye-dropper with-hex-input with-rgb-input
+        v-slot="{ show }">
+        <div class="flex items-center justify-between gap-3">
+          <button type="button" class="color-swatch" @click="show">
+            <div class="color-swatch-inner" :style="{ backgroundColor: borderColor }" />
+          </button>
+          <div class="flex flex-col flex-1 min-w-0">
+            <span class="color-label-title">{{ t('controls.borderColor') }}</span>
+            <span class="color-label-hex">{{ borderColor }}</span>
+          </div>
+          <UInput :model-value="borderColor" size="sm" class="w-24 shrink-0"
+            @update:model-value="update('borderColor', $event)" />
         </div>
       </ColorPicker>
     </fieldset>

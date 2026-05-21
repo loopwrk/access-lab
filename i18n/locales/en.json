@@ -58,7 +58,8 @@
     "fontSize": "Font size",
     "colours": "Colours",
     "background": "Background",
-    "textColor": "Text colour"
+    "textColor": "Text colour",
+    "borderColor": "Border colour"
   },
 
   "inspector": {

@@ -15,6 +15,7 @@ interface ButtonProps {
   fontSize: number;
   bg: string;
   fgText: string;
+  borderColor: string;
 }
 
 function escape(str: string): string {
@@ -66,9 +67,17 @@ export function renderButton(props?: Partial<ButtonProps>): string {
       `border-right-width:${br}px`,
       `border-bottom-width:${bb}px`,
       `border-left-width:${bl}px`,
+      `border-style:solid`,
     );
   } else if (props.borderWidth != null && props.borderWidth > 0) {
-    style.push(`border-width:${props.borderWidth}px`);
+    style.push(`border-width:${props.borderWidth}px`, 'border-style:solid');
+  }
+
+  if (props.borderColor && (
+    (hasIndividualBorder) ||
+    (props.borderWidth != null && props.borderWidth > 0)
+  )) {
+    style.push(`border-color:${props.borderColor}`);
   }
 
   const styleStr = style.join(";");
