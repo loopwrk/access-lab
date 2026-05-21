@@ -46,7 +46,10 @@ Nothing currently in progress.
 - [ ] `components/a11y/FocusRing.vue`
 
 ### Preview iframe (plan §5)
-- [ ] `public/preview-shell.html`
+- [x] `public/preview-shell.html` — iframe shell with axe-core, postMessage bridge
+- [x] `composables/useAxeAudit.ts` — listens for axe results, exposes violations/passes/incomplete reactively
+- [x] `components/PreviewIframe.vue` — sandboxed iframe, renders preview-shell, exposes `render()` method
+- [ ] Wire to ControlsPanel (render fn, props → HTML → iframe)
 
 ### Routing (plan §4.3)
 - [ ] `pages/index.vue` — replace starter landing with redirect or AccessLab landing
