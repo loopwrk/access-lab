@@ -1,16 +1,29 @@
 <script setup lang="ts">
-const { t } = useI18n()
+import { renderButton } from '~/components/inspected/button/render'
+
+const previewRef = ref<{ render: (html: string, css?: string) => void } | null>(null)
+
+onMounted(() => {
+  previewRef.value?.render(renderButton())
+})
 </script>
 
 <template>
-  <div class="flex items-center justify-center h-full">
-    <div class="text-center max-w-md">
-      <h2 class="text-xl font-medium mb-2" style="color: var(--text-primary)">
-        {{ t('home.welcome') }}
-      </h2>
-      <p style="color: var(--text-secondary)">
-        {{ t('home.instruction') }}
-      </p>
+  <div class="page-home">
+    <div class="home-preview">
+      <PreviewIframe ref="previewRef" />
     </div>
   </div>
 </template>
+
+<style scoped>
+.page-home {
+  display: flex;
+  flex: 1;
+}
+
+.home-preview {
+  flex: 1;
+  display: flex;
+}
+</style>
