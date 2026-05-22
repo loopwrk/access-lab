@@ -9,6 +9,26 @@ const { t } = useI18n()
 const theme = useTheme()
 const font = useFont()
 const { criticalCount, warningCount, passingCount } = useAxeCounts()
+const { renderedHtml } = useRenderedHtml()
+const { convert: toClassHtml } = useInlineToClass()
+
+const copied = ref<'inline' | 'class' | 'error' | null>(null)
+
+async function copyHtml(mode: 'inline' | 'class') {
+  const text = mode === 'inline'
+    ? renderedHtml.value
+    : (toClassHtml(renderedHtml.value) ?? renderedHtml.value)
+  try {
+    await navigator.clipboard.writeText(text)
+    copied.value = mode
+    setTimeout(() => { copied.value = null }, 800)
+  } catch (err) {
+    copied.value = mode;
+    console.error('Failed to copy to clipboard:', err)
+    copied.value = 'error'
+    setTimeout(() => { copied.value = null }, 800)
+  }
+}
 
 // Font options
 const fonts = [
@@ -190,15 +210,32 @@ async function skipToPanel(tabName: 'controls' | 'issues', elementId: string) {
 
         <!-- Code panel (collapsed by default) -->
         <UCollapsible class="code-drawer">
-          <UButton label="Generated HTML" color="neutral" variant="ghost" block trailing-icon="i-lucide-chevron-down"
-            class="group"
+          <UButton :label="t('codeDrawer.label')" color="neutral" variant="ghost" block
+            trailing-icon="i-lucide-chevron-down" class="group"
             :ui="{ trailingIcon: 'group-data-[state=open]:rotate-180 transition-transform duration-200' }" />
           <template #content>
-            <div class="code-drawer-body">
-              <pre class="code-block">&lt;button&gt;Save changes&lt;/button&gt;</pre>
-              <UButton size="xs" variant="outline" color="neutral">
-                Copy to clipboard
-              </UButton>
+            <div class="flex flex-col gap-2 px-5 pb-4">
+              <ProsePre v-if="renderedHtml" language="html" :code="renderedHtml">{{ renderedHtml }}</ProsePre>
+              <p v-else class="text-(length:--al-font-size-body) text-(--text-muted) m-0 py-2">
+                {{ t('codeDrawer.empty') }}
+              </p>
+              <p class="text-(length:--al-font-size-caption) font-semibold text-(--text-muted) uppercase tracking-[0.06em] m-0">
+                {{ t('codeDrawer.copyLabel') }}
+              </p>
+              <div class="flex gap-2 justify-start">
+                <UFieldGroup>
+                  <UButton class="min-w-[110px] flex justify-center" size="md" variant="ghost" color="neutral"
+                    :disabled="!renderedHtml" @click="copyHtml('inline')">
+                    {{ copied === 'inline' ? t('codeDrawer.copied') : t('codeDrawer.copyInline') }}
+                  </UButton>
+                </UFieldGroup>
+                <UFieldGroup>
+                  <UButton class="min-w-[150px] flex justify-center" size="md" variant="ghost" color="neutral"
+                    :disabled="!renderedHtml" @click="copyHtml('class')">
+                    {{ copied === 'class' ? t('codeDrawer.copied') : t('codeDrawer.copyClasses') }}
+                  </UButton>
+                </UFieldGroup>
+              </div>
             </div>
           </template>
         </UCollapsible>
@@ -419,24 +456,6 @@ async function skipToPanel(tabName: 'controls' | 'issues', elementId: string) {
 .code-drawer {
   border-top: 1px solid var(--border);
   background: var(--surface);
-}
-
-.code-drawer-body {
-  padding: 0 20px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.code-block {
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  padding: 12px 16px;
-  font-size: var(--al-font-size-body);
-  color: var(--text-primary);
-  margin: 0;
-  overflow-x: auto;
 }
 
 /* ── Right inspector ────────────────────────────────────────────── */

@@ -106,6 +106,14 @@
     "welcome": "Welcome to AccessLab",
     "instruction": "Select a component from the sidebar to begin auditing."
   },
+  "codeDrawer": {
+    "label": "Generated HTML",
+    "copyInline": "Copy in-line",
+    "copyClasses": "Copy with classes",
+    "copyLabel": "Copy to clipboard",
+    "copied": "Copied",
+    "empty": "No HTML generated yet."
+  },
   "manual": {
     "title": "Manual Review",
     "preface": "Automated tools like this one can't catch all accessibility barriers. This manual checklist guides you through the remaining, context-dependent checks that require human judgment.",

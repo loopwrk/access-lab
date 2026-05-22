@@ -9,11 +9,14 @@ const buttonProps = ref<Partial<Record<string, unknown>>>({})
 let renderTimer: ReturnType<typeof setTimeout> | null = null
 
 const customRules = useCustomRules([targetSizeAA, targetSizeAAA])
+const { setHtml } = useRenderedHtml()
 
 watch(buttonProps, () => {
   if (renderTimer) clearTimeout(renderTimer)
   renderTimer = setTimeout(() => {
-    previewRef.value?.render(renderButton(buttonProps.value as any))
+    const html = renderButton(buttonProps.value as any)
+    previewRef.value?.render(html)
+    setHtml(html)
     customRules.evaluate(buttonProps.value)
   }, 10)
 }, { deep: true, immediate: true })
