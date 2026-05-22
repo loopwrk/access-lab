@@ -14,6 +14,7 @@ interface NodeResult {
   any: CheckResult[]
   all: CheckResult[]
   none: CheckResult[]
+  failureSummary?: string
 }
 
 export interface AxeResult {
