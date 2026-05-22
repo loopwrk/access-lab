@@ -46,8 +46,8 @@
   --on-brand: #f6f5f1;
   --success: #155728;
   --success-soft: #ddeedf;
-  --warn: #6b4100;
-  --warn-soft: #f2e6cc;
+  --warning: #6b4100;
+  --warning-soft: #f2e6cc;
   --error: #9f1b17;
   --error-soft: #f4d9d5;
   --info: #1c44a8;
@@ -76,8 +76,8 @@
   --on-brand: #0f1114;
   --success: #5dda8e;
   --success-soft: #14241b;
-  --warn: #f5c97a;
-  --warn-soft: #2a2014;
+  --warning: #f5c97a;
+  --warning-soft: #2a2014;
   --error: #ff9b96;
   --error-soft: #2a1614;
   --info: #9cb8ff;
@@ -107,8 +107,8 @@
   --on-brand: #ffffff;
   --success: #005500;
   --success-soft: #e8ffe8;
-  --warn: #553300;
-  --warn-soft: #fff0e0;
+  --warning: #553300;
+  --warning-soft: #fff0e0;
   --error: #990000;
   --error-soft: #ffe8e8;
   --info: #000088;
@@ -137,8 +137,8 @@
   --on-brand: #000000;
   --success: #00ff00;
   --success-soft: #003300;
-  --warn: #ffcc00;
-  --warn-soft: #332200;
+  --warning: #ffcc00;
+  --warning-soft: #332200;
   --error: #ff6666;
   --error-soft: #330000;
   --info: #66b2ff;

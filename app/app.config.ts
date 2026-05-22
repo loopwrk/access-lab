@@ -4,7 +4,7 @@ export default defineAppConfig({
       primary: "accesslab",
       neutral: "accesslab-neutral",
       error: "error",
-      warning: "warn",
+      warning: "warning",
       success: "success",
       info: "info",
     },

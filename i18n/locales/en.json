@@ -59,7 +59,13 @@
     "colours": "Colours",
     "background": "Background",
     "textColor": "Text colour",
-    "borderColor": "Border colour"
+    "borderColor": "Border colour",
+    "aria": "ARIA",
+    "ariaLabel": "aria-label",
+    "ariaLabelPlaceholder": "e.g. Search products",
+    "contentType": "Button content",
+    "contentTypeText": "Text",
+    "contentTypeIcon": "Icon"
   },
 
   "inspector": {
@@ -75,10 +81,17 @@
     "manualPlaceholder": "Manual review panel placeholder",
     "learnPlaceholder": "Learn panel placeholder"
   },
+  "issues": {
+    "empty": "No accessibility violations detected.",
+    "passSummary": "{count} checks passed",
+    "whyItMatters": "Why it matters & how to fix",
+    "nextSteps": "Review the WCAG criterion for this rule. Check the affected element in your HTML and apply the recommended fix. Re-run the audit to verify the issue is resolved.",
+    "learnMore": "Learn more about this rule"
+  },
   "counter": {
-    "critical": "3 critical",
-    "warnings": "2 warnings",
-    "passing": "8 passing"
+    "critical": "{count} critical",
+    "warnings": "{count} warning | {count} warnings",
+    "passing": "{count} passing"
   },
   "home": {
     "welcome": "Welcome to AccessLab",

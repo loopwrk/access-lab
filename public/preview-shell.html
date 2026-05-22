@@ -34,7 +34,19 @@
 
           document.fonts.ready.then(function () {
             axe
-              .run(mount)
+              .run(mount, {
+                runOnly: {
+                  type: "tag",
+                  values: [
+                    "wcag2a",
+                    "wcag2aa",
+                    "wcag21a",
+                    "wcag21aa",
+                    "wcag22aa",
+                    "best-practice",
+                  ],
+                },
+              })
               .then(function (result) {
                 parent.postMessage(
                   {

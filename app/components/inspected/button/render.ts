@@ -16,6 +16,8 @@ interface ButtonProps {
   bg: string;
   fgText: string;
   borderColor: string;
+  ariaLabel: string;
+  contentType: "text" | "icon";
 }
 
 function escape(str: string): string {
@@ -70,21 +72,30 @@ export function renderButton(props?: Partial<ButtonProps>): string {
       `border-style:solid`,
     );
   } else if (props.borderWidth != null && props.borderWidth > 0) {
-    style.push(`border-width:${props.borderWidth}px`, 'border-style:solid');
+    style.push(`border-width:${props.borderWidth}px`, "border-style:solid");
   }
 
-  if (props.borderColor && (
-    (hasIndividualBorder) ||
-    (props.borderWidth != null && props.borderWidth > 0)
-  )) {
+  if (
+    props.borderColor &&
+    (hasIndividualBorder ||
+      (props.borderWidth != null && props.borderWidth > 0))
+  ) {
     style.push(`border-color:${props.borderColor}`);
   }
 
   const styleStr = style.join(";");
 
-  const label = escape(props.label || "Click Me!");
+  const label = escape(props.label ?? "Click Me!");
 
-  return styleStr
-    ? `<button style="${styleStr}">${label}</button>`
-    : `<button>${label}</button>`;
+  const attrs: string[] = [];
+  if (props.ariaLabel) attrs.push(`aria-label="${escape(props.ariaLabel)}"`);
+
+  const content =
+    props.contentType === "icon"
+      ? '<span aria-hidden="true">&#128269;</span>'
+      : label;
+
+  const html = `<button${attrs.length ? " " + attrs.join(" ") : ""}${styleStr ? ` style="${styleStr}"` : ""}>${content}</button>`;
+
+  return html;
 }

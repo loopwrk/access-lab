@@ -17,6 +17,8 @@ interface ButtonProps {
   bg: string
   fgText: string
   borderColor: string
+  ariaLabel: string
+  contentType: 'text' | 'icon'
 }
 
 const paddingControls = [
@@ -91,7 +93,7 @@ const borderColor = computed({
 <template>
   <div class="flex flex-col gap-4">
     <UFormField :label="t('controls.label')" class="flex flex-col">
-      <UInput :model-value="modelValue.label ?? ''" :placeholder="t('controls.labelPlaceholder')" class="w-full"
+      <UInput :model-value="modelValue.label ?? 'Click Me!'" class="w-full"
         @update:model-value="update('label', $event)" />
     </UFormField>
 
@@ -102,7 +104,7 @@ const borderColor = computed({
 
       <UFormField :label="t('controls.width')" class="flex flex-col">
         <div class="flex items-center gap-3">
-          <USlider :model-value="modelValue.width ?? 70" :min="20" :max="400" :step="10" color="primary" size="sm"
+          <USlider :model-value="modelValue.width ?? 70" :min="16" :max="400" :step="10" color="primary" size="sm"
             class="flex-1" @update:model-value="update('width', Number($event))" />
           <span class="control-value">{{ modelValue.width ?? 70 }}px</span>
         </div>
@@ -110,7 +112,7 @@ const borderColor = computed({
 
       <UFormField :label="t('controls.height')" class="flex flex-col">
         <div class="flex items-center gap-3">
-          <USlider :model-value="modelValue.height ?? 21" :min="20" :max="400" :step="10" color="primary" size="sm"
+          <USlider :model-value="modelValue.height ?? 21" :min="16" :max="400" :step="10" color="primary" size="sm"
             class="flex-1" @update:model-value="update('height', Number($event))" />
           <span class="control-value">{{ modelValue.height ?? 21 }}px</span>
         </div>
@@ -245,6 +247,35 @@ const borderColor = computed({
             @update:model-value="update('borderColor', $event)" />
         </div>
       </ColorPicker>
+    </fieldset>
+
+    <USeparator />
+
+    <fieldset class="flex flex-col gap-3 border-0 p-0 m-0">
+      <legend class="control-group-title mb-1.5">{{ t('controls.aria') }}</legend>
+
+      <UFormField class="flex flex-col">
+        <template #label>
+          <span>{{ t('controls.contentType') }}</span>
+        </template>
+        <UFieldGroup size="sm">
+          <UButton :color="(modelValue.contentType ?? 'text') === 'text' ? 'primary' : 'neutral'"
+            :variant="(modelValue.contentType ?? 'text') === 'text' ? 'solid' : 'ghost'"
+            @click="update('contentType', 'text')">
+            {{ t('controls.contentTypeText') }}
+          </UButton>
+          <UButton :color="modelValue.contentType === 'icon' ? 'primary' : 'neutral'"
+            :variant="modelValue.contentType === 'icon' ? 'solid' : 'ghost'" icon="i-lucide-search"
+            @click="update('contentType', 'icon')">
+            {{ t('controls.contentTypeIcon') }}
+          </UButton>
+        </UFieldGroup>
+      </UFormField>
+
+      <UFormField :label="t('controls.ariaLabel')" class="flex flex-col">
+        <UInput :model-value="modelValue.ariaLabel ?? ''" :placeholder="t('controls.ariaLabelPlaceholder')"
+          class="w-full" @update:model-value="update('ariaLabel', $event)" />
+      </UFormField>
     </fieldset>
   </div>
 </template>

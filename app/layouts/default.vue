@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { useTheme } from '~/composables/useTheme'
 import { useFont } from '~/composables/useFont'
+import { useAxeCounts } from '~/composables/useAxeResults'
 import type { FontSize } from "~/types/typography"
 import type { TabsItem, NavigationMenuItem } from '@nuxt/ui'
 
 const { t } = useI18n()
 const theme = useTheme()
 const font = useFont()
+const { criticalCount, warningCount, passingCount } = useAxeCounts()
 
 // Font options
 const fonts = [
@@ -170,9 +172,15 @@ async function skipToPanel(tabName: 'controls' | 'issues', elementId: string) {
           </div>
 
           <div class="preview-toolbar-right">
-            <UBadge color="error" variant="soft" size="md" :label="t('counter.critical')" />
-            <UBadge color="warning" variant="soft" size="md" :label="t('counter.warnings')" />
-            <UBadge color="success" variant="soft" size="md" :label="t('counter.passing')" />
+            <UBadge color="error" variant="soft" size="md">
+              {{ t('counter.critical', { count: criticalCount }) }}
+            </UBadge>
+            <UBadge color="warning" variant="soft" size="md">
+              {{ t('counter.warnings', { count: warningCount }) }}
+            </UBadge>
+            <UBadge color="success" variant="soft" size="md">
+              {{ t('counter.passing', { count: passingCount }) }}
+            </UBadge>
           </div>
         </div>
 
@@ -202,15 +210,18 @@ async function skipToPanel(tabName: 'controls' | 'issues', elementId: string) {
         <UTabs v-model="activeTab" :items="tabItems" variant="link" color="primary" size="sm" :content="false"
           :ui="{ list: 'justify-around', label: 'overflow-visible whitespace-nowrap' }" />
 
-        <!-- Tab panels -->
+        <!-- Tab panels 
+          Content currently created in index.vue and
+          teleported here during development and testing.
+          Refactoring will take place once the content and 
+          structure of each panel is finalized.
+        -->
+
         <div class="inspector-panels">
           <div v-show="activeTab === 'controls'" id="controls-panel" class="inspector-panel" tabindex="0">
           </div>
 
           <div v-show="activeTab === 'issues'" id="issues-panel" class="inspector-panel" tabindex="0">
-            <p class="text-muted">
-              Issues panel placeholder
-            </p>
           </div>
 
           <div v-show="activeTab === 'manual'" class="inspector-panel" tabindex="0">
