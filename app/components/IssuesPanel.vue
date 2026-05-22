@@ -145,7 +145,8 @@ const { t } = useI18n()
         :ui="{ trailingIcon: 'group-data-[state=open]:rotate-180 transition-transform duration-200' }" />
 
       <template #content>
-        <div v-if="criticalViolations.length === 0" class="issues-empty py-2 pl-2 text-(--al-font-size-body) m-0">
+        <div v-if="criticalViolations.length === 0"
+          class="text-(length:--al-font-size-body) text-(--text-muted) m-0 py-2 pl-2">
           {{ t('issues.noCritical') }}
         </div>
 
@@ -155,12 +156,13 @@ const { t } = useI18n()
               <div class="flex flex-col gap-1 max-h-min p-0">
                 <UBadge :label="formatRuleId(violation.id)" class="mb-1" :color="impactColor(violation.impact)"
                   variant="soft" size="md" />
-                <h3 class="issue-heading text-(--text-primary) leading-[1.3] font-semibold m-0">{{ violation.help }}
+                <h3 class="text-(length:--al-font-size-body) text-(--text-primary) leading-[1.3] font-semibold m-0">{{
+                  violation.help }}
                 </h3>
               </div>
             </template>
 
-            <p class="issue-body max-h-min text-(--text-secondary) m-0 leading-normal">
+            <p class="text-(length:--al-font-size-body) text-(--text-secondary) m-0 leading-normal max-h-min">
               {{
                 violation.description }}</p>
 
@@ -170,42 +172,42 @@ const { t } = useI18n()
                   trailing-icon="i-lucide-chevron-down" class="group"
                   :ui="{ trailingIcon: 'group-data-[state=open]:rotate-180 transition-transform duration-200' }" />
                 <template #content>
-                  <div
-                    class="issue-collapsible-content flex flex-col gap-2 pt-2 text-(--text-secondary) leading-normal">
+                  <div class="flex flex-col gap-2 pt-2 text-(--text-secondary) leading-normal">
                     <div v-if="tagWhy(violation.tags)"
-                      class="failure-why flex flex-col gap-1 py-2 px-2.5 bg-(--brand-soft) rounded border-l-[3px] border-l-(--brand)">
-                      <p class="failure-section-label text-(--al-font-size-caption) uppercase tracking-[0.06em] m-0">
+                      class="flex flex-col gap-1 py-2 px-2.5 bg-(--brand-soft) rounded border-l-[3px] border-l-(--brand)">
+                      <p
+                        class="text-(length:--al-font-size-caption) font-semibold text-(--text-muted) uppercase tracking-[0.06em] m-0">
                         {{ t('issues.whySection') }}</p>
-                      <p class="failure-why-text text-(--al-font-size-detail) m-0 leading-normal">
+                      <p class="text-(length:--al-font-size-detail) m-0 leading-normal">
                         {{ tagWhy(violation.tags) }}</p>
                     </div>
                     <template v-for="node in violation.nodes" :key="node.html">
-                      <div v-if="node.failureSummary"
-                        class="failure-summary flex flex-col gap-1.5 py-2 px-[10px] rounded-none">
-                        <p
-                          class="failure-section-label text-(--al-font-size-caption) font-semibol uppercase tracking-[0.06em] m-0">
+                      <div v-if="node.failureSummary" class="flex flex-col gap-1.5 py-2 px-2.5 rounded-none">
+                        <p class="text-(length:--al-font-size-caption) font-semibold uppercase tracking-[0.06em] m-0">
                           {{ t('issues.howToFixSection') }}</p>
                         <template v-for="(section, si) in parseFailureSummary(node.failureSummary)" :key="si">
-                          <p class="failure-directive text-(--al-font-size-detail) font-semibold  mb-0.5">
+                          <p class="text-(length:--al-font-size-detail) font-semibold text-(--text-primary) mb-0.5">
                             {{ section.directive }}</p>
-                          <ul class="failure-items m-0 pl-[18px] flex flex-col gap-1 list-disc">
+                          <ul class="m-0 px-4.5 flex flex-col gap-1 list-disc">
                             <li v-for="(item, ii) in section.items" :key="ii"
-                              class="failure-item m-0 pl-[18px] flex flex-col gap-1 list-disc">{{ item }}</li>
+                              class="text-(length:--al-font-size-detail) text-(--text-secondary) leading-normal">{{ item
+                              }}</li>
                           </ul>
                         </template>
                       </div>
-                      <div v-if="node.none.length" class="check-list flex flex-col gap-1.5">
-                        <div v-for="check in node.none" :key="check.id" class="check-item flex flex-col gap-0.5">
-                          <span class="check-id text-(--al-font-size-caption) font-semibold uppercase">{{
-                            formatRuleId(check.id) }}</span>
-                          <p class="check-message text-(--al-font-size-detail) m-0 leading-[1.4]">
+                      <div v-if="node.none.length" class="flex flex-col gap-1.5">
+                        <div v-for="check in node.none" :key="check.id" class="flex flex-col gap-0.5">
+                          <span
+                            class="text-(length:--al-font-size-caption) font-semibold text-(--text-muted) uppercase">{{
+                              formatRuleId(check.id) }}</span>
+                          <p class="text-(length:--al-font-size-detail) text-(--text-secondary) m-0 leading-[1.4]">
                             {{
                               check.message }}</p>
                         </div>
                       </div>
                     </template>
                     <a v-if="violation.helpUrl" :href="violation.helpUrl" target="_blank" rel="noopener noreferrer"
-                      class="issue-help-link inline-flex items-center ... no-underline hover:text-(--brand-hover) hover:underline">
+                      class="inline-flex items-center text-(length:--al-font-size-detail) text-(--brand) no-underline hover:text-(--brand-hover) hover:underline">
                       {{ t('issues.learnMore') }}
                       <span class="i-lucide-external-link text-xs ml-1" aria-hidden="true" />
                     </a>
@@ -225,7 +227,8 @@ const { t } = useI18n()
         :ui="{ trailingIcon: 'group-data-[state=open]:rotate-180 transition-transform duration-200' }" />
 
       <template #content>
-        <div v-if="warningViolations.length === 0" class="issues-empty py-2 pl-2 text-(--al-font-size-body)  m-0">
+        <div v-if="warningViolations.length === 0"
+          class="text-(length:--al-font-size-body) text-(--text-muted) m-0 py-2 pl-2">
           {{ t('issues.noWarnings') }}
         </div>
 
@@ -235,12 +238,13 @@ const { t } = useI18n()
               <div class="flex flex-col gap-1 max-h-min">
                 <UBadge :label="formatRuleId(violation.id)" class="mb-1" :color="impactColor(violation.impact)"
                   variant="soft" size="md" />
-                <h3 class="issue-heading text-(--text-primary) leading-[1.3] font-semibold m-0">{{ violation.help }}
+                <h3 class="text-(length:--al-font-size-body) text-(--text-primary) leading-[1.3] font-semibold m-0">{{
+                  violation.help }}
                 </h3>
               </div>
             </template>
 
-            <p class="issue-body max-h-min text-(--text-secondary) m-0 leading-normal">
+            <p class="text-(length:--al-font-size-body) text-(--text-secondary) m-0 leading-normal max-h-[min-content]">
               {{
                 violation.description }}</p>
 
@@ -250,43 +254,41 @@ const { t } = useI18n()
                   trailing-icon="i-lucide-chevron-down" class="group"
                   :ui="{ trailingIcon: 'group-data-[state=open]:rotate-180 transition-transform duration-200' }" />
                 <template #content>
-                  <div
-                    class="issue-collapsible-content flex flex-col gap-2 pt-2 text-(--text-secondary) leading-normal">
+                  <div class="flex flex-col gap-2 pt-2 text-(--text-secondary) leading-normal">
                     <div v-if="tagWhy(violation.tags)"
-                      class="failure-why flex flex-col gap-1 py-2 px-2.5 bg-(--brand-soft) rounded border-l-[3px] border-l-(--brand)">
-                      <p
-                        class="failure-section-label text-(--al-font-size-caption) font-semibold uppercase tracking-[0.06em] m-0">
+                      class="flex flex-col gap-1 py-2 px-2.5 bg-(--brand-soft) rounded border-l-[3px] border-l-(--brand)">
+                      <p class="text-(length:--al-font-size-caption) font-semibold uppercase tracking-[0.06em] m-0">
                         {{ t('issues.whySection') }}</p>
-                      <p class="failure-why-text text-(--al-font-size-detail) m-0 leading-normal">
+                      <p class="text-(length:--al-font-size-detail) m-0 leading-normal">
                         {{ tagWhy(violation.tags) }}</p>
                     </div>
                     <template v-for="node in violation.nodes" :key="node.html">
-                      <div v-if="node.failureSummary"
-                        class="failure-summary flex flex-col gap-1.5 py-2 px-2.5 rounded-none">
-                        <p
-                          class="failure-section-label text-(--al-font-size-caption) font-semibold uppercase tracking-[0.06em] m-0">
+                      <div v-if="node.failureSummary" class="flex flex-col gap-1.5 py-2 px-2.5 rounded-none">
+                        <p class="text-(length:--al-font-size-caption) font-semibold uppercase tracking-[0.06em] m-0">
                           {{ t('issues.howToFixSection') }}</p>
                         <template v-for="(section, si) in parseFailureSummary(node.failureSummary)" :key="si">
-                          <p class="failure-directive text-(--al-font-size-detail) font-semibold mb-0.5">
+                          <p class="text-(length:--al-font-size-detail) font-semibold text-(--text-primary) mb-0.5">
                             {{ section.directive }}</p>
-                          <ul class="failure-items m-0 pl-4.5 flex flex-col gap-1 list-disc">
+                          <ul class="m-0 px-4.5 flex flex-col gap-1 list-disc">
                             <li v-for="(item, ii) in section.items" :key="ii"
-                              class="failure-item m-0 pl-4.5 flex flex-col gap-1 list-disc">{{ item }}</li>
+                              class="text-(length:--al-font-size-detail) text-(--text-secondary) leading-normal">{{ item
+                              }}</li>
                           </ul>
                         </template>
                       </div>
-                      <div v-if="node.none.length" class="check-list flex flex-col gap-1.5">
-                        <div v-for="check in node.none" :key="check.id" class="check-item flex flex-col gap-0.5">
-                          <span class="check-id text-(--al-font-size-caption) uppercase">{{
-                            formatRuleId(check.id) }}</span>
-                          <p class="check-message text-(--al-font-size-detail) m-0 leading-[1.4]">
+                      <div v-if="node.none.length" class="flex flex-col gap-1.5">
+                        <div v-for="check in node.none" :key="check.id" class="flex flex-col gap-0.5">
+                          <span
+                            class="text-(length:--al-font-size-caption) font-semibold text-(--text-muted) uppercase">{{
+                              formatRuleId(check.id) }}</span>
+                          <p class="text-(length:--al-font-size-detail) text-(--text-secondary) m-0 leading-[1.4]">
                             {{
                               check.message }}</p>
                         </div>
                       </div>
                     </template>
                     <a v-if="violation.helpUrl" :href="violation.helpUrl" target="_blank" rel="noopener noreferrer"
-                      class="issue-help-link inline-flex items-center ... no-underline hover:text-(--brand-hover) hover:underline">
+                      class="inline-flex items-center text-(length:--al-font-size-detail) text-(--brand) no-underline hover:text-(--brand-hover) hover:underline">
                       {{ t('issues.learnMore') }}
                       <span class="i-lucide-external-link text-xs ml-1" aria-hidden="true" />
                     </a>
@@ -306,7 +308,7 @@ const { t } = useI18n()
         :ui="{ trailingIcon: 'group-data-[state=open]:rotate-180 transition-transform duration-200' }" />
 
       <template #content>
-        <div v-if="passes.length === 0" class="issues-empty py-2 pl-2 text-(--al-font-size-body) m-0">
+        <div v-if="passes.length === 0" class="text-(length:--al-font-size-body) text-(--text-muted) m-0 py-2 pl-2">
           {{ t('issues.noPassing') }}
         </div>
 
@@ -315,11 +317,12 @@ const { t } = useI18n()
             <template #header>
               <div class="flex flex-col gap-1 max-h-min">
                 <UBadge :label="formatRuleId(pass.id)" class="mb-1" color="success" variant="soft" size="md" />
-                <h3 class="issue-heading text-(--text-primary) leading-[1.3] font-semibold m-0">{{ pass.help }}</h3>
+                <h3 class="text-(length:--al-font-size-body) text-(--text-primary) leading-[1.3] font-semibold m-0">{{
+                  pass.help }}</h3>
               </div>
             </template>
 
-            <p class="issue-body max-h-min text-(--text-secondary) m-0 leading-normal">
+            <p class="text-(length:--al-font-size-body) text-(--text-secondary) m-0 leading-normal max-h-min">
               {{
                 pass.description }}</p>
 
@@ -329,18 +332,16 @@ const { t } = useI18n()
                   trailing-icon="i-lucide-chevron-down" class="group"
                   :ui="{ trailingIcon: 'group-data-[state=open]:rotate-180 transition-transform duration-200' }" />
                 <template #content>
-                  <div
-                    class="issue-collapsible-content flex flex-col gap-2 pt-2 text-(--text-secondary) leading-normal">
+                  <div class="flex flex-col gap-2 pt-2 text-(--text-secondary) leading-normal">
                     <div v-if="tagWhy(pass.tags)"
-                      class="failure-why flex flex-col gap-1 py-2 px-4.5 bg--brand-soft) rounded border-l-[3px] border-l-(--brand)">
-                      <p
-                        class="failure-section-label text-(--al-font-size-caption) font-semibold uppercase tracking-[0.06em] m-0">
+                      class="flex flex-col gap-1 py-2 px-2.5 bg-(--brand-soft) rounded border-l-[3px] border-l-(--brand)">
+                      <p class="text-(length:--al-font-size-caption) font-semibold uppercase tracking-[0.06em] m-0">
                         {{ t('issues.whySection') }}</p>
-                      <p class="failure-why-text text-(--al-font-size-detail) m-0 leading-normal">
+                      <p class="text-(length:--al-font-size-detail) m-0 leading-normal">
                         {{ tagWhy(pass.tags) }}</p>
                     </div>
                     <a v-if="pass.helpUrl" :href="pass.helpUrl" target="_blank" rel="noopener noreferrer"
-                      class="issue-help-link inline-flex items-center ... no-underline hover:text-(--brand-hover) hover:underline">
+                      class="inline-flex items-center text-(length:--al-font-size-detail) text-(--brand) no-underline hover:text-(--brand-hover) hover:underline">
                       {{ t('issues.learnMore') }}
                       <span class="i-lucide-external-link text-xs ml-1" aria-hidden="true" />
                     </a>
@@ -354,53 +355,3 @@ const { t } = useI18n()
     </UCollapsible>
   </div>
 </template>
-
-<style scoped>
-.issue-heading {
-  font-size: var(--al-font-size-body);
-}
-
-.issue-body {
-  font-size: var(--al-font-size-body);
-}
-
-.failure-section-label {
-  font-size: var(--al-font-size-caption);
-}
-
-.failure-why-text {
-  font-size: var(--al-font-size-detail);
-}
-
-.failure-directive {
-  font-size: var(--al-font-size-detail);
-}
-
-.failure-items {
-  list-style-type: disc;
-}
-
-.failure-item {
-  font-size: var(--al-font-size-detail);
-}
-
-.check-id {
-  font-size: var(--al-font-size-caption);
-}
-
-.check-message {
-  font-size: var(--al-font-size-detail);
-}
-
-.issue-help-link {
-  font-size: var(--al-font-size-detail);
-}
-
-.issue-help-link:hover {
-  color: var(--brand-hover);
-}
-
-.issues-empty {
-  font-size: var(--al-font-size-body);
-}
-</style>
