@@ -1,5 +1,5 @@
 import type { AxeResult } from '~/composables/useAxeAudit'
-import type { Rule, ViolationResult } from '~~/rules/types'
+import type { Rule, ViolationResult } from '~/rules/types'
 
 function violationToAxeResult(rule: Rule, result: ViolationResult): AxeResult {
   return {

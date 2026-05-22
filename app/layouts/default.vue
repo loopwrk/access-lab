@@ -39,8 +39,7 @@ const activeTab = ref('controls')
 const tabItems = computed<TabsItem[]>(() => [
   { label: t('inspector.controls'), value: 'controls' },
   { label: t('inspector.issues'), value: 'issues' },
-  { label: t('inspector.manual'), value: 'manual' },
-  { label: t('inspector.learn'), value: 'learn' }
+  { label: t('inspector.manual'), value: 'manual' }
 ])
 
 // Component nav items
@@ -224,16 +223,7 @@ async function skipToPanel(tabName: 'controls' | 'issues', elementId: string) {
           <div v-show="activeTab === 'issues'" id="issues-panel" class="inspector-panel" tabindex="0">
           </div>
 
-          <div v-show="activeTab === 'manual'" class="inspector-panel" tabindex="0">
-            <p class="text-muted">
-              Manual review panel placeholder
-            </p>
-          </div>
-
-          <div v-show="activeTab === 'learn'" class="inspector-panel" tabindex="0">
-            <p class="text-muted">
-              Learn panel placeholder
-            </p>
+          <div v-show="activeTab === 'manual'" id="manual-panel" class="inspector-panel" tabindex="0">
           </div>
         </div>
       </aside>

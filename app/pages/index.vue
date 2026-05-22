@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { renderButton } from '~/components/inspected/button/render'
 import { useCustomRules } from '~/composables/useCustomRules'
-import { targetSizeAA, targetSizeAAA } from '~~/rules/button/target-size'
+import { targetSizeAA, targetSizeAAA } from '~/rules/button/target-size'
 
 const previewRef = ref<{ render: (html: string, css?: string) => void } | null>(null)
 
@@ -30,6 +30,9 @@ watch(buttonProps, () => {
   </Teleport>
   <Teleport to="#issues-panel">
     <IssuesPanel />
+  </Teleport>
+  <Teleport to="#manual-panel">
+    <ManualReviewPanel />
   </Teleport>
 </template>
 

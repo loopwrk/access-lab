@@ -127,7 +127,7 @@ function tagWhy(tags: string[]): string | null {
     if (TAG_WHY[tag]) return TAG_WHY[tag]
 
     const scMatch = tag.match(/^wcag(\d)(?:\d)(?:\d)(?:\d)?$/)
-    if (scMatch && PRINCIPLE_WHY[scMatch[1]]) return PRINCIPLE_WHY[scMatch[1]]
+    if (scMatch?.[1] && PRINCIPLE_WHY[scMatch[1]]) return PRINCIPLE_WHY[scMatch[1]] ?? null
   }
 
   return null

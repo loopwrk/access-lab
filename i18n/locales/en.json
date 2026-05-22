@@ -105,5 +105,14 @@
   "home": {
     "welcome": "Welcome to AccessLab",
     "instruction": "Select a component from the sidebar to begin auditing."
+  },
+  "manual": {
+    "title": "Manual Review",
+    "preface": "Automated tools like this one can't catch all accessibility barriers. This manual checklist guides you through the remaining, context-dependent checks that require human judgment.",
+    "progress": "{checked} of {total} reviewed",
+    "empty": "No manual review items. Axe may flag items as needing human review when it cannot fully determine compliance automatically.",
+    "checkAll": "Check all",
+    "uncheckAll": "Clear all",
+    "learnMore": "Learn more about this rule"
   }
 }
