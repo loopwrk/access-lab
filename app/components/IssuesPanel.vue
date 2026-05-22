@@ -46,6 +46,14 @@ function impactColor(impact: ImpactValue | undefined): 'error' | 'warning' | 'in
   }
 }
 
+const ACRONYMS = new Set(['aa', 'aaa', 'wcag', 'aria', 'html', 'css', 'svg', 'url', 'id'])
+
+function formatRuleId(id: string): string {
+  return id.split('-').map(word =>
+    ACRONYMS.has(word) ? word.toUpperCase() : word.charAt(0).toUpperCase() + word.slice(1)
+  ).join(' ')
+}
+
 const { t } = useI18n()
 </script>
 
@@ -64,7 +72,7 @@ const { t } = useI18n()
       <UCard v-for="violation in violations" :key="violation.id" variant="outline" class="issue-card">
         <template #header>
           <div class="flex flex-col gap-1 max-h-min">
-            <UBadge :label="violation.id" :color="impactColor(violation.impact)" variant="soft" size="md" />
+            <UBadge :label="formatRuleId(violation.id)" :color="impactColor(violation.impact)" variant="soft" size="md" />
             <h3 class="issue-heading">{{ violation.help }}</h3>
           </div>
         </template>
