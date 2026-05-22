@@ -31,6 +31,14 @@ const { allViolations: violations } = useAllViolations()
 const results = useAxeResults()
 const passes = computed(() => results.value.passes)
 
+const criticalViolations = computed(() =>
+  violations.value.filter(v => v.impact === 'critical' || v.impact === 'serious')
+)
+
+const warningViolations = computed(() =>
+  violations.value.filter(v => v.impact === 'moderate' || v.impact === 'minor')
+)
+
 function impactColor(impact: ImpactValue | undefined): 'error' | 'warning' | 'info' | 'neutral' {
   switch (impact) {
     case 'critical':
@@ -59,51 +67,139 @@ const { t } = useI18n()
 
 <template>
   <div class="flex flex-col gap-3">
-    <template v-if="violations.length === 0">
-      <div v-if="passes.length > 0" class="pass-summary">
-        <UBadge color="success" variant="soft" size="sm">
-          {{ t('issues.passSummary', { count: passes.length }) }}
-        </UBadge>
-      </div>
-      <p class="issues-empty">{{ t('issues.empty') }}</p>
-    </template>
+    <!-- Critical section -->
+    <UCollapsible :default-open="true">
+      <UButton variant="ghost" color="error" block size="sm" class="justify-between pl-2"
+        :label="t('issues.criticalSection', { count: criticalViolations.length })" trailing-icon="i-lucide-chevron-down"
+        :ui="{ trailingIcon: 'group-data-[state=open]:rotate-180 transition-transform duration-200' }" />
 
-    <template v-else>
-      <UCard v-for="violation in violations" :key="violation.id" variant="outline" class="issue-card">
-        <template #header>
-          <div class="flex flex-col gap-1 max-h-min">
-            <UBadge :label="formatRuleId(violation.id)" :color="impactColor(violation.impact)" variant="soft" size="md" />
-            <h3 class="issue-heading">{{ violation.help }}</h3>
-          </div>
-        </template>
+      <template #content>
+        <div v-if="criticalViolations.length === 0" class="issues-empty py-2 pl-2">
+          {{ t('issues.noCritical') }}
+        </div>
 
-        <p class="issue-body max-h-min">{{ violation.description }}</p>
-
-        <template #footer>
-          <UCollapsible :default-open="false">
-            <UButton variant="ghost" color="neutral" size="xs" :label="t('issues.whyItMatters')"
-              trailing-icon="i-lucide-chevron-down" class="group"
-              :ui="{ trailingIcon: 'group-data-[state=open]:rotate-180 transition-transform duration-200' }" />
-            <template #content>
-              <div class="issue-collapsible-content">
-                <p>{{ t('issues.nextSteps') }}</p>
-                <a v-if="violation.helpUrl" :href="violation.helpUrl" target="_blank" rel="noopener noreferrer"
-                  class="issue-help-link">
-                  {{ t('issues.learnMore') }}
-                  <span class="i-lucide-external-link text-xs ml-1" aria-hidden="true" />
-                </a>
+        <div v-else class="flex flex-col gap-3 py-2 px-1">
+          <UCard v-for="violation in criticalViolations" :key="violation.id" variant="outline" class="issue-card">
+            <template #header>
+              <div class="flex flex-col gap-1 max-h-min p-0">
+                <UBadge :label="formatRuleId(violation.id)" class="mb-1" :color="impactColor(violation.impact)"
+                  variant="soft" size="md" />
+                <h3 class="issue-heading">{{ violation.help }}</h3>
               </div>
             </template>
-          </UCollapsible>
-        </template>
-      </UCard>
 
-      <div v-if="passes.length > 0" class="pass-summary">
-        <span class="pass-summary-text">
-          + {{ t('issues.passSummary', { count: passes.length }) }}
-        </span>
-      </div>
-    </template>
+            <p class="issue-body max-h-min">{{ violation.description }}</p>
+
+            <template #footer>
+              <UCollapsible :default-open="false">
+                <UButton variant="ghost" color="neutral" size="xs" :label="t('issues.whyItMatters')"
+                  trailing-icon="i-lucide-chevron-down" class="group"
+                  :ui="{ trailingIcon: 'group-data-[state=open]:rotate-180 transition-transform duration-200' }" />
+                <template #content>
+                  <div class="issue-collapsible-content">
+                    <p>{{ t('issues.nextSteps') }}</p>
+                    <a v-if="violation.helpUrl" :href="violation.helpUrl" target="_blank" rel="noopener noreferrer"
+                      class="issue-help-link">
+                      {{ t('issues.learnMore') }}
+                      <span class="i-lucide-external-link text-xs ml-1" aria-hidden="true" />
+                    </a>
+                  </div>
+                </template>
+              </UCollapsible>
+            </template>
+          </UCard>
+        </div>
+      </template>
+    </UCollapsible>
+
+    <!-- Warnings section -->
+    <UCollapsible :default-open="true">
+      <UButton variant="ghost" color="warning" block size="sm" class="justify-between pl-2"
+        :label="t('issues.warningsSection', { count: warningViolations.length })" trailing-icon="i-lucide-chevron-down"
+        :ui="{ trailingIcon: 'group-data-[state=open]:rotate-180 transition-transform duration-200' }" />
+
+      <template #content>
+        <div v-if="warningViolations.length === 0" class="issues-empty py-2 pl-2">
+          {{ t('issues.noWarnings') }}
+        </div>
+
+        <div v-else class="flex flex-col gap-3 py-2 px-1">
+          <UCard v-for="violation in warningViolations" :key="violation.id" variant="outline" class="issue-card">
+            <template #header>
+              <div class="flex flex-col gap-1 max-h-min">
+                <UBadge :label="formatRuleId(violation.id)" class="mb-1" :color="impactColor(violation.impact)"
+                  variant="soft" size="md" />
+                <h3 class="issue-heading">{{ violation.help }}</h3>
+              </div>
+            </template>
+
+            <p class="issue-body max-h-min">{{ violation.description }}</p>
+
+            <template #footer>
+              <UCollapsible :default-open="false">
+                <UButton variant="ghost" color="neutral" size="xs" :label="t('issues.whyItMatters')"
+                  trailing-icon="i-lucide-chevron-down" class="group"
+                  :ui="{ trailingIcon: 'group-data-[state=open]:rotate-180 transition-transform duration-200' }" />
+                <template #content>
+                  <div class="issue-collapsible-content">
+                    <p>{{ t('issues.nextSteps') }}</p>
+                    <a v-if="violation.helpUrl" :href="violation.helpUrl" target="_blank" rel="noopener noreferrer"
+                      class="issue-help-link">
+                      {{ t('issues.learnMore') }}
+                      <span class="i-lucide-external-link text-xs ml-1" aria-hidden="true" />
+                    </a>
+                  </div>
+                </template>
+              </UCollapsible>
+            </template>
+          </UCard>
+        </div>
+      </template>
+    </UCollapsible>
+
+    <!-- Passing section -->
+    <UCollapsible :default-open="false">
+      <UButton variant="ghost" color="success" block size="sm" class="justify-between pl-2"
+        :label="t('issues.passingSection', { count: passes.length })" trailing-icon="i-lucide-chevron-down"
+        :ui="{ trailingIcon: 'group-data-[state=open]:rotate-180 transition-transform duration-200' }" />
+
+      <template #content>
+        <div v-if="passes.length === 0" class="issues-empty py-2 pl-2">
+          {{ t('issues.noPassing') }}
+        </div>
+
+        <div v-else class="flex flex-col gap-3 py-2 px-1">
+          <UCard v-for="pass in passes" :key="pass.id" variant="outline" class="issue-card">
+            <template #header>
+              <div class="flex flex-col gap-1 max-h-min">
+                <UBadge :label="formatRuleId(pass.id)" class="mb-1" color="success" variant="soft" size="md" />
+                <h3 class="issue-heading">{{ pass.help }}</h3>
+              </div>
+            </template>
+
+            <p class="issue-body max-h-min">{{ pass.description }}</p>
+
+            <template #footer>
+              <UCollapsible :default-open="false">
+                <UButton variant="ghost" color="neutral" size="xs" :label="t('issues.whyItMatters')"
+                  trailing-icon="i-lucide-chevron-down" class="group"
+                  :ui="{ trailingIcon: 'group-data-[state=open]:rotate-180 transition-transform duration-200' }" />
+                <template #content>
+                  <div class="issue-collapsible-content">
+                    <p>{{ t('issues.nextSteps') }}</p>
+                    <a v-if="pass.helpUrl" :href="pass.helpUrl" target="_blank" rel="noopener noreferrer"
+                      class="issue-help-link">
+                      {{ t('issues.learnMore') }}
+                      <span class="i-lucide-external-link text-xs ml-1" aria-hidden="true" />
+                    </a>
+                  </div>
+                </template>
+              </UCollapsible>
+            </template>
+          </UCard>
+        </div>
+      </template>
+    </UCollapsible>
   </div>
 </template>
 
@@ -150,15 +246,5 @@ const { t } = useI18n()
   font-size: var(--al-font-size-body);
   color: var(--text-muted);
   margin: 0;
-}
-
-.pass-summary {
-  display: flex;
-  align-items: center;
-}
-
-.pass-summary-text {
-  font-size: var(--al-font-size-detail);
-  color: var(--text-muted);
 }
 </style>

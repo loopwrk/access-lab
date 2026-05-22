@@ -11,7 +11,6 @@ export default defineAppConfig({
     fieldGroup: {
       base: "border border-[var(--border-strong)] rounded-none overflow-hidden p-1",
     },
-
     button: {
       base: "rounded-none",
 

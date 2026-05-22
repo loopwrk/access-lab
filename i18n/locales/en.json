@@ -86,7 +86,13 @@
     "passSummary": "{count} checks passed",
     "whyItMatters": "Why it matters & how to fix",
     "nextSteps": "Review the WCAG criterion for this rule. Check the affected element in your HTML and apply the recommended fix. Re-run the audit to verify the issue is resolved.",
-    "learnMore": "Learn more about this rule"
+    "learnMore": "Learn more about this rule",
+    "criticalSection": "Critical ({count})",
+    "warningsSection": "Warnings ({count})",
+    "passingSection": "Passing ({count})",
+    "noCritical": "No critical issues detected",
+    "noWarnings": "No warnings detected",
+    "noPassing": "No passing checks"
   },
   "counter": {
     "critical": "{count} critical",

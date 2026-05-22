@@ -467,6 +467,7 @@ async function skipToPanel(tabName: 'controls' | 'issues', elementId: string) {
 }
 
 .inspector-panel {
+  height: 1vh;
   padding: 16px;
 }
 
