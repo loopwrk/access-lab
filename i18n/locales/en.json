@@ -47,6 +47,7 @@
   },
   "nav": {
     "components": "Components",
+    "forms": "Forms",
     "frameworkStyle": "Framework style",
     "button": "Button",
     "accordion": "Accordion",
@@ -55,7 +56,7 @@
     "menu": "Menu / Dropdown",
     "tooltip": "Tooltip",
     "tabs": "Tabs",
-    "formField": "Form Field",
+    "input": "Input",
     "none": "None (bare HTML)"
   },
   "preview": {

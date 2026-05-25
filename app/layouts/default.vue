@@ -84,8 +84,12 @@ const navItems = computed<NavigationMenuItem[][]>(() => [
     { label: t('nav.modal'), value: 'modal', to: '/components/modal', icon: 'i-lucide-rectangle-ellipsis' },
     { label: t('nav.menu'), value: 'menu', to: '/components/menu', icon: 'i-lucide-menu' },
     { label: t('nav.tooltip'), value: 'tooltip', to: '/components/tooltip', icon: 'i-lucide-message-circle' },
-    { label: t('nav.tabs'), value: 'tabs', to: '/components/tabs', icon: 'i-lucide-panels-top-left' },
-    { label: t('nav.formField'), value: 'form-field', to: '/components/form-field', icon: 'i-lucide-form-input' }
+    { label: t('nav.tabs'), value: 'tabs', to: '/components/tabs', icon: 'i-lucide-panels-top-left' }
+  ],
+  [
+    { label: t('nav.forms'), type: 'label' },
+    { label: t('nav.input'), value: 'input', to: '/components/input', icon: 'i-lucide-text-cursor-input' }
+
   ]
   // TODO: Introduce framework styles after vanilla components are in place
   // [

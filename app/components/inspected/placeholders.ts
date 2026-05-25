@@ -27,12 +27,12 @@ function createPlaceholder(
 }
 
 /**
- * Keyed by every ComponentId except `button` — the one real definition.
- * Spread into the main registry; promoting a component means removing its
- * key from here.
+ * Keyed by every ComponentId that doesn't yet have a real definition.
+ * Spread into the main registry; promoting a component means removing
+ * its key from here and importing its real definition in `index.ts`.
  */
 export const placeholderDefinitions: Record<
-  Exclude<ComponentId, "button">,
+  Exclude<ComponentId, "button" | "input">,
   ComponentDefinition
 > = {
   accordion: createPlaceholder("accordion", "Accordion", "div"),
@@ -41,5 +41,4 @@ export const placeholderDefinitions: Record<
   menu: createPlaceholder("menu", "Menu", "div"),
   tooltip: createPlaceholder("tooltip", "Tooltip", "div"),
   tabs: createPlaceholder("tabs", "Tabs", "div"),
-  "form-field": createPlaceholder("form-field", "Form Field", "input"),
 };

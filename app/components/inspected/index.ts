@@ -1,13 +1,15 @@
 import type { ComponentDefinition, ComponentId } from "~/types/component";
 import { buttonDefinition } from "./button/definition";
+import { inputDefinition } from "./input/definition";
 import { placeholderDefinitions } from "./placeholders";
 
 /**
  * Registry of every inspected component the studio can render.
  *
- * Keyed by ComponentId — the route slug used by
- * `pages/components/[component].vue`.
- *
+ * Keyed by ComponentId, which is the route slug used by
+ * `pages/components/[component].vue`. Real definitions are imported
+ * explicitly and override the placeholder spread, so the spread order
+ * here matters: placeholders first, real definitions after.
  */
 export const inspectedComponents: Record<
   ComponentId,
@@ -15,6 +17,9 @@ export const inspectedComponents: Record<
 > = {
   ...placeholderDefinitions,
   button: buttonDefinition as unknown as ComponentDefinition<
+    Record<string, unknown>
+  >,
+  input: inputDefinition as unknown as ComponentDefinition<
     Record<string, unknown>
   >,
 };

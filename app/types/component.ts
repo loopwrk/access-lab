@@ -16,7 +16,7 @@ export type ComponentId =
   | "menu"
   | "tooltip"
   | "tabs"
-  | "form-field";
+  | "input";
 
 /**
  * Schema entries for the auto-rendered controls panel. Discriminated by

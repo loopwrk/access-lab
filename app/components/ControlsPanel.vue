@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { ButtonProps } from '~/components/inspected/button/definition'
 import { buttonDefinition } from '~/components/inspected/button/definition'
+import { useUnitConversion } from '~/composables/useUnitConversion'
+import type { CssUnit, DimCssUnit } from '~/composables/useUnitConversion'
 
 const paddingControls = [
   { id: 'top', key: 'paddingTop', label: 'T' },
@@ -33,6 +35,15 @@ function updatePadding(value: number) {
 }
 
 const { t } = useI18n()
+const unitConv = useUnitConversion()
+const selectedUnit = computed<CssUnit>({
+  get: () => unitConv.unit.value,
+  set: (val: CssUnit) => { unitConv.unit.value = val }
+})
+const selectedDimUnit = computed<DimCssUnit>({
+  get: () => unitConv.dimensionUnit.value,
+  set: (val: DimCssUnit) => { unitConv.dimensionUnit.value = val }
+})
 const { defaults: browserDefaults, measureIntrinsicSize } = useBrowserDefaults(buttonDefinition.tagName)
 
 /**
@@ -92,7 +103,7 @@ function buildEffectiveCss(): string {
 }
 
 /** Mirror render.ts: icon mode uses a span with a magnifying glass glyph. */
-function probeContent(): { content: string; asHtml: boolean } {
+function probeContent(): { content: string, asHtml: boolean } {
   const m = props.modelValue
   if (m.contentType === 'icon') {
     return { content: '<span aria-hidden="true">&#128269;</span>', asHtml: true }
@@ -105,7 +116,7 @@ function rgbToHex(rgbStr: string): string {
   const match = rgbStr.match(/\d+/g)
   if (!match) return '#efefef'
   const [r = 239, g = 239, b = 239] = match.map(Number)
-  return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)
+  return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)
 }
 
 const isPaddingSplit = ref(false)
@@ -170,7 +181,7 @@ const DEFAULTS = computed(() => {
  * Placed after DEFAULTS so that `immediate: true` doesn't hit a TDZ on the
  * enabled refs referenced via buildEffectiveCss().
  */
-const naturalSize = ref<{ width: number; height: number }>({ width: 0, height: 0 })
+const naturalSize = ref<{ width: number, height: number }>({ width: 0, height: 0 })
 
 function recomputeNaturalSize() {
   if (!import.meta.client) return
@@ -186,11 +197,11 @@ watch(
       m.fontSize,
       m.padding, m.paddingTop, m.paddingRight, m.paddingBottom, m.paddingLeft,
       m.borderWidth, m.borderTopWidth, m.borderRightWidth, m.borderBottomWidth, m.borderLeftWidth,
-      fontSizeEnabled.value, paddingEnabled.value, borderEnabled.value,
+      fontSizeEnabled.value, paddingEnabled.value, borderEnabled.value
     ]
   },
   recomputeNaturalSize,
-  { immediate: true },
+  { immediate: true }
 )
 
 function clearPadding() {
@@ -354,34 +365,53 @@ const { focusLearnTopic } = useInspectorTab()
 
     <!-- DIMENSIONS -->
     <fieldset class="flex flex-col gap-3 border-0 p-0 m-0">
-      <legend class="control-group-title mb-1.5">{{ t('controls.dimensions') }}</legend>
+      <legend class="control-group-title mb-1.5">
+        {{ t('controls.dimensions') }}
+      </legend>
 
       <div class="flex flex-col gap-3">
         <div>
           <div class="flex items-center justify-between mb-1.5">
             <span class="text-(length:--al-font-size-detail) font-medium text-(--text-secondary)">{{ t('controls.width')
-            }}</span>
+              }}</span>
             <USwitch :model-value="widthEnabled" size="xs" color="primary" @update:model-value="toggleWidth" />
           </div>
           <div :class="[widthEnabled ? '' : 'opacity-50']" class="flex items-center gap-3">
             <USlider :model-value="modelValue.width ?? (naturalSize.width || DEFAULTS.width)" :min="16" :max="400"
               :step="10" color="primary" size="sm" :disabled="!widthEnabled" class="flex-1"
               @update:model-value="update('width', Number($event))" />
-            <span class="control-value">{{ modelValue.width ?? (naturalSize.width || DEFAULTS.width) }}px</span>
+            <div class="flex items-center gap-1">
+              <UInput
+                :model-value="String(unitConv.toDisplay(modelValue.width ?? (naturalSize.width || DEFAULTS.width), (naturalSize.width || DEFAULTS.width)))"
+                size="xs" type="number"
+                class="w-11 [&>input]:text-right [&>input]:-moz-appearance-textfield [&>input::-webkit-outer-spin-button]:appearance-none [&>input::-webkit-inner-spin-button]:appearance-none"
+                :disabled="!widthEnabled"
+                @update:model-value="update('width', unitConv.toPx(Number($event), (naturalSize.width || DEFAULTS.width)))" />
+              <USelect v-model="selectedDimUnit" :items="unitConv.dimensionUnitOptions" size="xs" class="w-16" />
+            </div>
           </div>
         </div>
 
         <div>
           <div class="flex items-center justify-between mb-1.5">
             <span class="text-(length:--al-font-size-detail) font-medium text-(--text-secondary)">{{
-              t('controls.height') }}</span>
+              t('controls.height')
+              }}</span>
             <USwitch :model-value="heightEnabled" size="xs" color="primary" @update:model-value="toggleHeight" />
           </div>
           <div :class="[heightEnabled ? '' : 'opacity-50']" class="flex items-center gap-3">
             <USlider :model-value="modelValue.height ?? (naturalSize.height || DEFAULTS.height)" :min="16" :max="400"
               :step="10" color="primary" size="sm" :disabled="!heightEnabled" class="flex-1"
               @update:model-value="update('height', Number($event))" />
-            <span class="control-value">{{ modelValue.height ?? (naturalSize.height || DEFAULTS.height) }}px</span>
+            <div class="flex items-center gap-1">
+              <UInput
+                :model-value="String(unitConv.toDisplay(modelValue.height ?? (naturalSize.height || DEFAULTS.height), (naturalSize.height || DEFAULTS.height)))"
+                size="xs" type="number" :step="unitConv.displayStep(10, (naturalSize.height || DEFAULTS.height))"
+                class="w-11 [&>input]:text-right [&>input]:-moz-appearance-textfield [&>input::-webkit-outer-spin-button]:appearance-none [&>input::-webkit-inner-spin-button]:appearance-none"
+                :disabled="!heightEnabled"
+                @update:model-value="update('height', unitConv.toPx(Number($event), (naturalSize.height || DEFAULTS.height)))" />
+              <USelect v-model="selectedDimUnit" :items="unitConv.dimensionUnitOptions" size="xs" class="w-16" />
+            </div>
           </div>
         </div>
       </div>
@@ -391,7 +421,9 @@ const { focusLearnTopic } = useInspectorTab()
 
     <!-- TEXT -->
     <fieldset class="flex flex-col gap-3 border-0 p-0 m-0">
-      <legend class="control-group-title mb-1.5">{{ t('controls.text') }}</legend>
+      <legend class="control-group-title mb-1.5">
+        {{ t('controls.text') }}
+      </legend>
 
       <div>
         <div class="flex items-center justify-between mb-1.5">
@@ -403,7 +435,13 @@ const { focusLearnTopic } = useInspectorTab()
           <USlider :model-value="modelValue.fontSize ?? DEFAULTS.fontSize" :min="8" :max="128" :step="2" color="primary"
             size="sm" :disabled="!fontSizeEnabled" class="flex-1"
             @update:model-value="update('fontSize', Number($event))" />
-          <span class="control-value">{{ modelValue.fontSize ?? DEFAULTS.fontSize }}px</span>
+          <div class="flex items-center gap-1">
+            <UInput :model-value="String(unitConv.toDisplay(modelValue.fontSize ?? DEFAULTS.fontSize))" size="xs"
+              type="number"
+              class="w-11 [&>input]:text-right [&>input]:-moz-appearance-textfield [&>input::-webkit-outer-spin-button]:appearance-none [&>input::-webkit-inner-spin-button]:appearance-none"
+              :disabled="!fontSizeEnabled" @update:model-value="update('fontSize', unitConv.toPx(Number($event)))" />
+            <USelect v-model="selectedUnit" :items="unitConv.unitOptions" size="xs" class="w-16" />
+          </div>
         </div>
       </div>
     </fieldset>
@@ -434,7 +472,12 @@ const { focusLearnTopic } = useInspectorTab()
             <USlider :model-value="modelValue.padding ?? DEFAULTS.padding" :min="0" :max="120" :step="2" color="primary"
               size="sm" :disabled="!paddingEnabled" class="flex-1"
               @update:model-value="updatePadding(Number($event))" />
-            <span class="control-value">{{ modelValue.padding ?? DEFAULTS.padding }}px</span>
+            <div class="flex items-center gap-1">
+              <UInput :model-value="String(unitConv.toDisplay(modelValue.padding ?? DEFAULTS.padding))" size="xs"
+                type="number" :disabled="!paddingEnabled"
+                @update:model-value="updatePadding(unitConv.toPx(Number($event)))" />
+              <USelect v-model="selectedUnit" :items="unitConv.unitOptions" size="xs" class="w-16" />
+            </div>
           </div>
 
           <div v-else class="flex flex-col gap-2">
@@ -444,9 +487,14 @@ const { focusLearnTopic } = useInspectorTab()
                 :model-value="modelValue[dir.key] ?? modelValue.padding ?? DEFAULTS.padding" :min="0" :max="120"
                 :step="2" color="primary" size="sm" :disabled="!paddingEnabled" class="flex-1"
                 @update:model-value="update(dir.key, Number($event))" />
-              <span class="control-value-split">
-                {{ (modelValue[dir.key] ?? modelValue.padding ?? DEFAULTS.padding) + 'px' }}
-              </span>
+              <div class="flex items-center gap-1">
+                <UInput
+                  :model-value="String(unitConv.toDisplay((modelValue[dir.key] ?? modelValue.padding ?? DEFAULTS.padding) as number))"
+                  size="xs" type="number" :step="unitConv.displayStep(2)"
+                  class="w-16 [&>input]:text-right [&>input]:-moz-appearance-textfield [&>input::-webkit-outer-spin-button]:appearance-none [&>input::-webkit-inner-spin-button]:appearance-none"
+                  :disabled="!paddingEnabled" @update:model-value="update(dir.key, unitConv.toPx(Number($event)))" />
+                <USelect v-model="selectedUnit" :items="unitConv.unitOptions" size="xs" class="w-16" />
+              </div>
             </div>
           </div>
         </UFormField>
@@ -479,7 +527,13 @@ const { focusLearnTopic } = useInspectorTab()
             <USlider :model-value="modelValue.borderWidth ?? DEFAULTS.borderWidth" :min="0" :max="20" :step="1"
               color="primary" size="sm" :disabled="!borderEnabled" class="flex-1"
               @update:model-value="updateBorderWidth(Number($event))" />
-            <span class="control-value">{{ modelValue.borderWidth ?? DEFAULTS.borderWidth }}px</span>
+            <div class="flex items-center gap-1">
+              <UInput :model-value="String(unitConv.toDisplay(modelValue.borderWidth ?? DEFAULTS.borderWidth))"
+                size="xs" type="number"
+                class="w-11 [&>input]:text-right [&>input]:-moz-appearance-textfield [&>input::-webkit-outer-spin-button]:appearance-none [&>input::-webkit-inner-spin-button]:appearance-none"
+                :disabled="!borderEnabled" @update:model-value="updateBorderWidth(unitConv.toPx(Number($event)))" />
+              <USelect v-model="selectedUnit" :items="unitConv.unitOptions" size="xs" class="w-16" />
+            </div>
           </div>
 
           <div v-else class="flex flex-col gap-2">
@@ -489,9 +543,14 @@ const { focusLearnTopic } = useInspectorTab()
                 :model-value="modelValue[dir.key] ?? modelValue.borderWidth ?? DEFAULTS.borderWidth" :min="0" :max="20"
                 :step="1" color="primary" size="sm" :disabled="!borderEnabled" class="flex-1"
                 @update:model-value="update(dir.key, Number($event))" />
-              <span class="control-value-split">
-                {{ (modelValue[dir.key] ?? modelValue.borderWidth ?? DEFAULTS.borderWidth) + 'px' }}
-              </span>
+              <div class="flex items-center gap-1">
+                <UInput
+                  :model-value="String(unitConv.toDisplay((modelValue[dir.key] ?? modelValue.borderWidth ?? DEFAULTS.borderWidth) as number))"
+                  size="xs" type="number" :step="unitConv.displayStep(1)"
+                  class="w-16 [&>input]:text-right [&>input]:-moz-appearance-textfield [&>input::-webkit-outer-spin-button]:appearance-none [&>input::-webkit-inner-spin-button]:appearance-none"
+                  :disabled="!borderEnabled" @update:model-value="update(dir.key, unitConv.toPx(Number($event)))" />
+                <USelect v-model="selectedUnit" :items="unitConv.unitOptions" size="xs" class="w-16" />
+              </div>
             </div>
           </div>
         </UFormField>
@@ -508,8 +567,8 @@ const { focusLearnTopic } = useInspectorTab()
       </legend>
 
       <div :class="[colorsEnabled ? '' : 'opacity-50 pointer-events-none']" class="flex flex-col gap-3">
-        <ColorPicker v-model="bgColor" with-alpha with-initial-color with-eye-dropper with-hex-input with-rgb-input
-          v-slot="{ show }">
+        <ColorPicker v-slot="{ show }" v-model="bgColor" with-alpha with-initial-color with-eye-dropper with-hex-input
+          with-rgb-input>
           <div class="flex items-center justify-between gap-3">
             <button type="button" class="color-swatch" :disabled="!colorsEnabled" @click="show">
               <div class="color-swatch-inner" :style="{ backgroundColor: bgColor }" />
@@ -523,8 +582,8 @@ const { focusLearnTopic } = useInspectorTab()
           </div>
         </ColorPicker>
 
-        <ColorPicker v-model="fgTextColor" with-alpha with-initial-color with-eye-dropper with-hex-input with-rgb-input
-          v-slot="{ show }">
+        <ColorPicker v-slot="{ show }" v-model="fgTextColor" with-alpha with-initial-color with-eye-dropper
+          with-hex-input with-rgb-input>
           <div class="flex items-center justify-between gap-3">
             <button type="button" class="color-swatch" :disabled="!colorsEnabled" @click="show">
               <div class="color-swatch-inner" :style="{ backgroundColor: fgTextColor }" />
@@ -542,8 +601,8 @@ const { focusLearnTopic } = useInspectorTab()
              Border colour follows separately below. -->
         <ContrastBadge :ratio="contrastRatio" :verdict="contrastVerdict" />
 
-        <ColorPicker v-model="borderColorComputed" with-alpha with-initial-color with-eye-dropper with-hex-input
-          with-rgb-input v-slot="{ show }">
+        <ColorPicker v-slot="{ show }" v-model="borderColorComputed" with-alpha with-initial-color with-eye-dropper
+          with-hex-input with-rgb-input>
           <div class="flex items-center justify-between gap-3">
             <button type="button" class="color-swatch" :disabled="!colorsEnabled" @click="show">
               <div class="color-swatch-inner" :style="{ backgroundColor: borderColorComputed }" />
@@ -563,7 +622,9 @@ const { focusLearnTopic } = useInspectorTab()
 
     <!-- ARIA -->
     <fieldset class="flex flex-col gap-3 border-0 p-0 m-0">
-      <legend class="control-group-title mb-1.5">{{ t('controls.aria') }}</legend>
+      <legend class="control-group-title mb-1.5">
+        {{ t('controls.aria') }}
+      </legend>
 
       <UFormField class="flex flex-col">
         <template #label>
@@ -599,23 +660,6 @@ const { focusLearnTopic } = useInspectorTab()
   text-transform: uppercase;
   letter-spacing: 0.08em;
   margin: 0;
-}
-
-.control-value,
-.control-value-split {
-  font-size: var(--al-font-size-detail);
-  color: var(--text-muted);
-  white-space: nowrap;
-}
-
-.control-value {
-  min-width: 52px;
-  text-align: right;
-}
-
-.control-value-split {
-  min-width: 44px;
-  text-align: right;
 }
 
 .control-split-label {
