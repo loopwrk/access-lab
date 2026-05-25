@@ -12,6 +12,12 @@
     "brand": "AccessLab",
     "ariaLabel": "Application bar"
   },
+  "mobileBlocker": {
+    "ariaLabel": "Screen size notice",
+    "title": "AccessLab requires a larger screen",
+    "p1": "AccessLab displays your code, a live preview, and accessibility feedback side-by-side so you can see the immediate impact of your changes. A larger screen is required to display this.",
+    "footer": "Please reopen AccessLab on a laptop or desktop display (1024 pixels wide or more)."
+  },
   "theme": {
     "light": "Light",
     "dark": "Dark",

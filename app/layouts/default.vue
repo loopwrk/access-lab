@@ -1,9 +1,12 @@
 <script setup lang="ts">
+import { useMediaQuery } from '@vueuse/core'
 import { useTheme } from '~/composables/useTheme'
 import { useFont } from '~/composables/useFont'
 import { useAxeCounts } from '~/composables/useAxeResults'
 import type { FontSize } from "~/types/typography"
 import type { TabsItem, NavigationMenuItem } from '@nuxt/ui'
+
+const isBelowDesktop = useMediaQuery('(max-width: 1023px)')
 
 const { t } = useI18n()
 const theme = useTheme()
@@ -97,7 +100,7 @@ async function skipToPanel(tabName: 'controls' | 'issues', elementId: string) {
 </script>
 
 <template>
-  <div class="app-shell">
+  <div class="app-shell" :inert="isBelowDesktop">
     <!-- Skip links -->
     <div class="skip-links">
       <a href="#main-content" class="skip-link">{{ t('skipLinks.main') }}</a>
@@ -221,7 +224,8 @@ async function skipToPanel(tabName: 'controls' | 'issues', elementId: string) {
               <p v-else class="text-(length:--al-font-size-body) text-(--text-muted) m-0 py-2">
                 {{ t('codeDrawer.empty') }}
               </p>
-              <p class="text-(length:--al-font-size-caption) font-semibold text-(--text-muted) uppercase tracking-[0.06em] m-0">
+              <p
+                class="text-(length:--al-font-size-caption) font-semibold text-(--text-muted) uppercase tracking-[0.06em] m-0">
                 {{ t('codeDrawer.copyLabel') }}
               </p>
               <div class="flex gap-2 justify-start">
@@ -271,6 +275,8 @@ async function skipToPanel(tabName: 'controls' | 'issues', elementId: string) {
       </aside>
     </div>
   </div>
+
+  <MobileBlocker />
 </template>
 
 <style scoped>
