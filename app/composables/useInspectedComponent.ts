@@ -1,6 +1,7 @@
 import type { ComponentDefinition } from "~/types/component";
 import { contentOverflow } from "~/rules/shared/overflow";
 import { invisibleText } from "~/rules/shared/invisible-text";
+import { vagueLabel } from "~/rules/shared/vague-label";
 
 /**
  * Drives the component studio for a given definition.
@@ -33,7 +34,11 @@ export function useInspectedComponent(
     ...definition.defaultProps,
   });
 
-  const customRules = useCustomRules([...definition.rules, invisibleText]);
+  const customRules = useCustomRules([
+    ...definition.rules,
+    invisibleText,
+    vagueLabel,
+  ]);
 
   useDomRules([contentOverflow]);
 

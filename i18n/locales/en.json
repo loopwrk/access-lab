@@ -174,6 +174,24 @@
       "contrastTitle": "Color Contrast",
       "contrastBody": "Text-to-background contrast must remain high enough to prevent the button from becoming unreadable for users with low vision or color blindness."
     },
+    "vagueLabel": {
+      "title": "Why button labels matter",
+      "intro": "Automated tools check that a button has an accessible name, but they can't check whether that name is meaningful. A button labelled \"OK\" or \"Submit\" passes the automated check just as cleanly as \"Save changes to invoice\" — leaving real users to guess what it does.",
+      "matterTitle": "Why labels matter",
+      "matterP1": "Screen reader users often navigate by element list — a feature that reads out every button, link, or heading on the page in sequence. Out of that context, a bare \"OK\" or \"More\" tells them nothing about what the button actually does. The user has to either guess or backtrack into the surrounding content to find out.",
+      "matterP2": "Sighted users are affected too. Clear labels reduce cognitive load — a well-named button answers \"what will happen if I press this?\" before the user has to read the surrounding context. It's especially valuable for users with attention or memory impairments, anyone in a hurry, or non-native speakers parsing an unfamiliar UI.",
+      "goodTitle": "What makes a good label",
+      "goodLead": "Two patterns produce labels that read clearly out of context:",
+      "goodVerbNoun": "Verb + noun. \"Save changes\" beats \"Save\". \"Delete account\" beats \"Delete\". The noun tells the user what the action operates on.",
+      "goodResult": "Describe the result, not the mechanism. \"Send email\" beats \"Submit\" — it tells the user what will happen, not which technical pattern triggers it.",
+      "okTitle": "When short labels are okay",
+      "okLead": "Single-word or generic labels are not always wrong. They can be appropriate when:",
+      "okContext": "The surrounding visual context already provides meaning. A search input with a button labelled \"Search\" — or even just \"Go\" — is unambiguous in that setting.",
+      "okPattern": "The button is part of a familiar pattern, like the \"Submit\" of a contact form or the \"Next\" of a wizard step. Users recognise these conventions without further explanation.",
+      "okIcon": "A visible icon disambiguates the action. A printer icon next to the word \"Print\" is redundant; the icon alone may suffice (with an appropriate aria-label).",
+      "testTitle": "The read-aloud test",
+      "testP": "A practical check: read the label out loud, alone, with no visible context. If a colleague can guess what the button does, the label is doing its job. If they can't, expand it until they can."
+    },
     "invisibleText": {
       "title": "\"Invisible\" Text Slips Past Automated Tests",
       "intro": "When text color matches its background color exactly, the text completely disappears from view. However, the code is still there. A screen reader will still read the words out loud, search engines will still index them, and the browser still builds space for them—but a sighted user will never see them.",

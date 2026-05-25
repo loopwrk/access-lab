@@ -331,13 +331,22 @@ const { ratio: contrastRatio, verdict: contrastVerdict } = useContrast(
     bold: false
   }
 )
+
+const { focusPanel } = useInspectorTab()
 </script>
 
 <template>
   <div class="flex flex-col gap-4">
     <ControlsIntro :element-name="buttonDefinition.name.toLowerCase()" />
 
-    <UFormField :label="t('controls.label')" class="flex flex-col">
+    <UFormField class="flex flex-col">
+      <template #label>
+        <a href="#topic-vague-label" class="control-label-link"
+          @click.prevent="focusPanel('learn', 'topic-vague-label')">
+          {{ t('controls.label') }}
+          <UIcon name="i-lucide-arrow-up-right" class="control-label-link-icon" aria-hidden="true" />
+        </a>
+      </template>
       <UInput :model-value="modelValue.label ?? 'Button Label'" class="w-full"
         @update:model-value="update('label', $event)" />
     </UFormField>
@@ -655,5 +664,32 @@ const { ratio: contrastRatio, verdict: contrastVerdict } = useContrast(
   font-size: var(--al-font-size-detail);
   color: var(--text-muted);
   font-family: var(--al-font-mono);
+}
+
+.control-label-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-primary);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.control-label-link:hover,
+.control-label-link:focus-visible {
+  color: var(--brand);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.control-label-link:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.control-label-link-icon {
+  font-size: var(--al-font-size-detail);
+  opacity: 0.7;
 }
 </style>
