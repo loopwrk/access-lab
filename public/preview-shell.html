@@ -33,6 +33,27 @@
           mount.innerHTML = e.data.html;
 
           document.fonts.ready.then(function () {
+            // Measure overflow on the rendered element. Done after fonts
+            // are ready so text metrics are stable; layout is then final.
+            // Posted as its own message so dom-rule consumers can react
+            // independently of axe (and so axe failures don't block this).
+            var target = mount.firstElementChild;
+            if (target) {
+              parent.postMessage(
+                {
+                  type: "overflow:result",
+                  measurement: {
+                    tagName: target.tagName.toLowerCase(),
+                    scrollWidth: target.scrollWidth,
+                    clientWidth: target.clientWidth,
+                    scrollHeight: target.scrollHeight,
+                    clientHeight: target.clientHeight,
+                  },
+                },
+                window.location.origin,
+              );
+            }
+
             axe
               .run(mount, {
                 runOnly: {

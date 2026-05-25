@@ -1,3 +1,5 @@
+import type { DomMeasurement } from '~/rules/types'
+
 type ImpactValue = 'minor' | 'moderate' | 'serious' | 'critical' | null
 
 interface CheckResult {
@@ -64,6 +66,11 @@ export function useAxeAudit(iframeRef: {
   )
   const passingCount = computed(() => state.value.passes.length)
 
+  // DOM-rule measurement posted by the iframe after each render. Stored
+  // here so rules can react via watch in useDomRules — keeps useAxeAudit
+  // ignorant of which DOM rules are registered.
+  const measurement = useState<DomMeasurement | null>('dom-measurement', () => null)
+
   function handler(event: MessageEvent) {
     const iframe = iframeRef.value
     if (!iframe || event.source !== iframe.contentWindow) return
@@ -83,6 +90,9 @@ export function useAxeAudit(iframeRef: {
         break
       case 'axe:error':
         state.value.errorMessage = data.message
+        break
+      case 'overflow:result':
+        measurement.value = data.measurement
         break
     }
   }

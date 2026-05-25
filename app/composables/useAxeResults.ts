@@ -21,10 +21,12 @@ export function useAxeResults() {
 export function useAllViolations() {
   const axeState = useAxeResults()
   const customViolations = useState<AxeResult[]>('custom-violations', () => [])
+  const domViolations = useState<AxeResult[]>('dom-violations', () => [])
 
   const allViolations = computed(() => [
     ...axeState.value.violations,
-    ...customViolations.value
+    ...customViolations.value,
+    ...domViolations.value
   ])
 
   return { allViolations }
@@ -33,26 +35,24 @@ export function useAllViolations() {
 export function useAxeCounts() {
   const axeState = useAxeResults()
   const customViolations = useState<AxeResult[]>('custom-violations', () => [])
+  const domViolations = useState<AxeResult[]>('dom-violations', () => [])
 
-  const criticalCount = computed(() => {
-    const axeCritical = axeState.value.violations.filter(
-      v => v.impact === 'critical' || v.impact === 'serious'
-    ).length
-    const customCritical = customViolations.value.filter(
-      v => v.impact === 'critical' || v.impact === 'serious'
-    ).length
-    return axeCritical + customCritical
-  })
+  const isCritical = (impact: string | null | undefined) =>
+    impact === 'critical' || impact === 'serious'
+  const isWarning = (impact: string | null | undefined) =>
+    impact === 'moderate' || impact === 'minor'
 
-  const warningCount = computed(() => {
-    const axeWarnings = axeState.value.violations.filter(
-      v => v.impact === 'moderate' || v.impact === 'minor'
-    ).length
-    const customWarnings = customViolations.value.filter(
-      v => v.impact === 'moderate' || v.impact === 'minor'
-    ).length
-    return axeWarnings + customWarnings
-  })
+  const criticalCount = computed(() =>
+    axeState.value.violations.filter(v => isCritical(v.impact)).length
+    + customViolations.value.filter(v => isCritical(v.impact)).length
+    + domViolations.value.filter(v => isCritical(v.impact)).length
+  )
+
+  const warningCount = computed(() =>
+    axeState.value.violations.filter(v => isWarning(v.impact)).length
+    + customViolations.value.filter(v => isWarning(v.impact)).length
+    + domViolations.value.filter(v => isWarning(v.impact)).length
+  )
 
   const passingCount = computed(() => axeState.value.passes.length)
 

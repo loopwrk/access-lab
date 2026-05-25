@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { buttonDefinition } from '~/components/inspected/button/definition'
 import { useCustomRules } from '~/composables/useCustomRules'
+import { useDomRules } from '~/composables/useDomRules'
+import { contentOverflow } from '~/rules/shared/overflow'
 
 const previewRef = ref<{ render: (html: string, css?: string) => void } | null>(null)
 
@@ -8,6 +10,10 @@ const buttonProps = ref<Partial<Record<string, unknown>>>({ ...buttonDefinition.
 let renderTimer: ReturnType<typeof setTimeout> | null = null
 
 const customRules = useCustomRules(buttonDefinition.rules)
+// Shared DOM-based rules — applied to every inspected component because the
+// concerns they cover (overflow, eventually clipping, etc.) aren't specific
+// to one element type.
+useDomRules([contentOverflow])
 const { setHtml } = useRenderedHtml()
 
 watch(buttonProps, () => {
