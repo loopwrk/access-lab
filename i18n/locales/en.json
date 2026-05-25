@@ -157,7 +157,12 @@
     "learnMore": "Learn more about this rule"
   },
   "learn": {
+    "index": {
+      "title": "Topics"
+    },
+    "backToTopics": "All topics",
     "nativeRendering": {
+      "summary": "Browsers paint form controls using the OS theme. Custom CSS overrides that, changing how the box is rendered.",
       "title": "How Browsers Handle Native Elements",
       "p1": "Browsers draw certain initial elements, mostly form elements, using a native rendering mode driven by your operating system's UI engine rather than standard CSS layout rules. The OS paints the button onto the screen, which is why a native button without any custom styling looks slightly different on Windows, macOS, iOS, or Android.",
       "p2": "At first paint, the default styles you see in the browser's stylesheet aren't traditional CSS rules; they are system rules. They essentially tell the browser to ask the operating system what its current theme looks like and copy it.",
@@ -175,26 +180,28 @@
       "contrastBody": "Text-to-background contrast must remain high enough to prevent the button from becoming unreadable for users with low vision or color blindness."
     },
     "vagueLabel": {
+      "summary": "Automated tools verify a button has a name, but they can't tell whether the name is meaningful out of context.",
       "title": "Why button labels matter",
-      "intro": "Automated tools check that a button has an accessible name, but they can't check whether that name is meaningful. A button labelled \"OK\" or \"Submit\" passes the automated check just as cleanly as \"Save changes to invoice\" — leaving real users to guess what it does.",
+      "intro": "Automated tools check that a button has an accessible name, but they can't check whether that name is meaningful. A button labelled \"OK\" or \"Submit\" passes the automated check just as cleanly as \"Save changes to invoice\". Real users are left to guess what it does.",
       "matterTitle": "Why labels matter",
-      "matterP1": "Screen reader users often navigate by element list — a feature that reads out every button, link, or heading on the page in sequence. Out of that context, a bare \"OK\" or \"More\" tells them nothing about what the button actually does. The user has to either guess or backtrack into the surrounding content to find out.",
-      "matterP2": "Sighted users are affected too. Clear labels reduce cognitive load — a well-named button answers \"what will happen if I press this?\" before the user has to read the surrounding context. It's especially valuable for users with attention or memory impairments, anyone in a hurry, or non-native speakers parsing an unfamiliar UI.",
+      "matterP1": "Screen reader users often navigate by element list, a feature that reads out every button, link, or heading on the page in sequence. Out of that context, a bare \"OK\" or \"More\" tells them nothing about what the button actually does. The user has to either guess or backtrack into the surrounding content to find out.",
+      "matterP2": "Sighted users are affected too. Clear labels reduce cognitive load. A well-named button answers \"what will happen if I press this?\" before the user has to read the surrounding context. It's especially valuable for users with attention or memory impairments, anyone in a hurry, or non-native speakers parsing an unfamiliar UI.",
       "goodTitle": "What makes a good label",
       "goodLead": "Two patterns produce labels that read clearly out of context:",
       "goodVerbNoun": "Verb + noun. \"Save changes\" beats \"Save\". \"Delete account\" beats \"Delete\". The noun tells the user what the action operates on.",
-      "goodResult": "Describe the result, not the mechanism. \"Send email\" beats \"Submit\" — it tells the user what will happen, not which technical pattern triggers it.",
+      "goodResult": "Describe the result, not the mechanism. \"Send email\" beats \"Submit\". It tells the user what will happen, not which technical pattern triggers it.",
       "okTitle": "When short labels are okay",
       "okLead": "Single-word or generic labels are not always wrong. They can be appropriate when:",
-      "okContext": "The surrounding visual context already provides meaning. A search input with a button labelled \"Search\" — or even just \"Go\" — is unambiguous in that setting.",
+      "okContext": "The surrounding visual context already provides meaning. A search input with a button labelled \"Search\", or even just \"Go\", is unambiguous in that setting.",
       "okPattern": "The button is part of a familiar pattern, like the \"Submit\" of a contact form or the \"Next\" of a wizard step. Users recognise these conventions without further explanation.",
       "okIcon": "A visible icon disambiguates the action. A printer icon next to the word \"Print\" is redundant; the icon alone may suffice (with an appropriate aria-label).",
       "testTitle": "The read-aloud test",
       "testP": "A practical check: read the label out loud, alone, with no visible context. If a colleague can guess what the button does, the label is doing its job. If they can't, expand it until they can."
     },
     "invisibleText": {
+      "summary": "When text colour matches its background exactly, automated contrast checks are skipped. But the text disappears.",
       "title": "\"Invisible\" Text Slips Past Automated Tests",
-      "intro": "When text color matches its background color exactly, the text completely disappears from view. However, the code is still there. A screen reader will still read the words out loud, search engines will still index them, and the browser still builds space for them—but a sighted user will never see them.",
+      "intro": "When text color matches its background color exactly, the text completely disappears from view. However, the code is still there. A screen reader will still read the words out loud, search engines will still index them, and the browser still builds space for them. But a sighted user will never see them.",
       "skipTitle": "Why Automated Checkers Deliberately Skip This",
       "skipP1": "Most automated accessibility tools skip contrast tests when the text colour and background colour are an exact match. They do this to avoid giving \"false alarm\" errors.",
       "skipP2": "Using matching colours is a common, though outdated, trick developers use to intentionally hide content from sighted users while keeping it available for screen readers (like hidden form labels or extra context for links). Because an automated tool cannot tell the difference between a mistake and an intentional design choice, it simply skips the test.",
@@ -210,7 +217,7 @@
       "wcagAA": "Level AA (Standard): Requires a contrast ratio of at least 4.5:1 for normal text.",
       "wcagAAA": "Level AAA (Highest): Raises that requirement to 7:1.",
       "wcagOutro": "A 1:1 ratio (where the text and background are identical) is a total failure of both standards.",
-      "fixTitle": "How to Fix It—or Hide Text Safely",
+      "fixTitle": "How to Fix It, or Hide Text Safely",
       "fixMistakeLead": "If the invisible text is a mistake:",
       "fixMistakeBody": "Update your code to use distinct text and background colours that meet the required contrast ratios.",
       "fixIntentLead": "If you actually want to hide the text for screen-reader users only:",

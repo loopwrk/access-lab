@@ -134,7 +134,7 @@ function tagWhy(tags: string[]): string | null {
 }
 
 const { t } = useI18n()
-const { focusPanel } = useInspectorTab()
+const { focusLearnTopic } = useInspectorTab()
 </script>
 
 <template>
@@ -210,7 +210,7 @@ const { focusPanel } = useInspectorTab()
                     <div class="flex flex-col gap-1.5">
                       <button v-if="violation.learnTopicId" type="button"
                         class="inline-flex items-center text-(length:--al-font-size-detail) text-(--brand) bg-transparent border-0 p-0 cursor-pointer hover:text-(--brand-hover) hover:underline self-start"
-                        @click="focusPanel('learn', violation.learnTopicId)">
+                        @click="focusLearnTopic(violation.learnTopicId)">
                         {{ t('issues.learnMoreInApp') }}
                         <span class="i-lucide-arrow-right text-xs ml-1" aria-hidden="true" />
                       </button>
@@ -299,7 +299,7 @@ const { focusPanel } = useInspectorTab()
                     <div class="flex flex-col gap-1.5">
                       <button v-if="violation.learnTopicId" type="button"
                         class="inline-flex items-center text-(length:--al-font-size-detail) text-(--brand) bg-transparent border-0 p-0 cursor-pointer hover:text-(--brand-hover) hover:underline self-start"
-                        @click="focusPanel('learn', violation.learnTopicId)">
+                        @click="focusLearnTopic(violation.learnTopicId)">
                         {{ t('issues.learnMoreInApp') }}
                         <span class="i-lucide-arrow-right text-xs ml-1" aria-hidden="true" />
                       </button>

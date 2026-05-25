@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
 @import "./tokens.css";
+@import "./learn.css";
 
 /* ── Self-hosted fonts ──────────────────────────────────────────── */
 

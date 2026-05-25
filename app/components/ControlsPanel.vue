@@ -332,7 +332,7 @@ const { ratio: contrastRatio, verdict: contrastVerdict } = useContrast(
   }
 )
 
-const { focusPanel } = useInspectorTab()
+const { focusLearnTopic } = useInspectorTab()
 </script>
 
 <template>
@@ -341,8 +341,7 @@ const { focusPanel } = useInspectorTab()
 
     <UFormField class="flex flex-col">
       <template #label>
-        <a href="#topic-vague-label" class="control-label-link"
-          @click.prevent="focusPanel('learn', 'topic-vague-label')">
+        <a href="#topic-vague-label" class="control-label-link" @click.prevent="focusLearnTopic('vague-label')">
           {{ t('controls.label') }}
           <UIcon name="i-lucide-arrow-up-right" class="control-label-link-icon" aria-hidden="true" />
         </a>
@@ -361,7 +360,7 @@ const { focusPanel } = useInspectorTab()
         <div>
           <div class="flex items-center justify-between mb-1.5">
             <span class="text-(length:--al-font-size-detail) font-medium text-(--text-secondary)">{{ t('controls.width')
-              }}</span>
+            }}</span>
             <USwitch :model-value="widthEnabled" size="xs" color="primary" @update:model-value="toggleWidth" />
           </div>
           <div :class="[widthEnabled ? '' : 'opacity-50']" class="flex items-center gap-3">

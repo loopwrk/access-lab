@@ -38,7 +38,7 @@ export const vagueLabel: Rule = {
   help: "Rewrite the label so it makes sense when read out of context. Aim for verb + noun where possible.",
   helpUrl:
     "https://www.w3.org/WAI/WCAG22/Understanding/headings-and-labels.html",
-  learnTopicId: "topic-vague-label",
+  learnTopicId: "vague-label",
   evaluate(props) {
     const isIcon = props.contentType === "icon";
     const ariaName = normalize(props.ariaLabel);
