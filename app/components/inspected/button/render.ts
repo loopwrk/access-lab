@@ -95,7 +95,7 @@ export function renderButton(props?: Partial<ButtonProps>): string {
       ? '<span aria-hidden="true">&#128269;</span>'
       : label;
 
-  const html = `<button${attrs.length ? " " + attrs.join(" ") : ""}${styleStr ? ` style="${styleStr}"` : ""}>${content}</button>`;
+  const html = `<button${attrs.length ? " " + attrs.join(" ") : ""}${styleStr ? ` style="${styleStr}"` : ""} onclick="parent.postMessage({type:'demo:click'},window.location.origin)">${content}</button>`;
 
   return html;
 }

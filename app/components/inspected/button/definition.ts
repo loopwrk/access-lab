@@ -31,7 +31,7 @@ export const buttonDefinition: ComponentDefinition<ButtonProps> = {
   tagName: "button",
 
   defaultProps: {
-    label: "Button Label",
+    label: "Trigger Demo Action",
     contentType: "text",
   },
 

@@ -10,6 +10,21 @@ const props = defineProps<{
 }>()
 
 const { previewRef, componentProps } = useInspectedComponent(props.definition)
+
+const toast = useToast()
+
+function onMessage(event: MessageEvent) {
+  if (event.data?.type === 'demo:click') {
+    toast.add({
+      title: 'Demo action successfully triggered',
+      icon: 'i-lucide-circle-check',
+      color: 'success'
+    })
+  }
+}
+
+onMounted(() => window.addEventListener('message', onMessage))
+onBeforeUnmount(() => window.removeEventListener('message', onMessage))
 </script>
 
 <template>

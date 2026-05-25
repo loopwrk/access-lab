@@ -23,4 +23,5 @@ useSeoMeta({
   <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>
+  <UToaster />
 </template>
