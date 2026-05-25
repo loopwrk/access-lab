@@ -1,6 +1,7 @@
 import { renderButton } from "./render";
 import { targetSizeAA, targetSizeAAA } from "~/rules/button/target-size";
 import { buttonManualChecklist } from "~/rules/button/manual-checklist";
+import type { ComponentDefinition } from "~/types/component";
 
 export interface ButtonProps {
   label: string;
@@ -24,24 +25,24 @@ export interface ButtonProps {
   contentType: "text" | "icon";
 }
 
-export const buttonDefinition = {
-  id: "button" as const,
+export const buttonDefinition: ComponentDefinition<ButtonProps> = {
+  id: "button",
   name: "Button",
-  tagName: "button" as const,
+  tagName: "button",
 
   defaultProps: {
     label: "Button Label",
-    contentType: "text" as const,
+    contentType: "text",
   },
 
   controls: [
-    { kind: "text" as const, key: "label", label: "Button Label" },
+    { kind: "text", key: "label", label: "Button Label" },
     {
-      kind: "group" as const,
+      kind: "group",
       label: "Dimensions",
       controls: [
         {
-          kind: "slider" as const,
+          kind: "slider",
           key: "width",
           label: "Width",
           min: 16,
@@ -50,7 +51,7 @@ export const buttonDefinition = {
           unit: "px",
         },
         {
-          kind: "slider" as const,
+          kind: "slider",
           key: "height",
           label: "Height",
           min: 16,
@@ -59,7 +60,7 @@ export const buttonDefinition = {
           unit: "px",
         },
         {
-          kind: "slider" as const,
+          kind: "slider",
           key: "padding",
           label: "Padding",
           min: 0,
@@ -71,11 +72,11 @@ export const buttonDefinition = {
       ],
     },
     {
-      kind: "group" as const,
+      kind: "group",
       label: "Border",
       controls: [
         {
-          kind: "slider" as const,
+          kind: "slider",
           key: "borderWidth",
           label: "Border width",
           min: 0,
@@ -87,11 +88,11 @@ export const buttonDefinition = {
       ],
     },
     {
-      kind: "group" as const,
+      kind: "group",
       label: "Text",
       controls: [
         {
-          kind: "slider" as const,
+          kind: "slider",
           key: "fontSize",
           label: "Font size",
           min: 8,
@@ -102,20 +103,20 @@ export const buttonDefinition = {
       ],
     },
     {
-      kind: "group" as const,
+      kind: "group",
       label: "Colours",
       controls: [
-        { kind: "colour" as const, key: "bg", label: "Background" },
-        { kind: "colour" as const, key: "fgText", label: "Text colour" },
-        { kind: "colour" as const, key: "borderColor", label: "Border colour" },
+        { kind: "colour", key: "bg", label: "Background" },
+        { kind: "colour", key: "fgText", label: "Text colour" },
+        { kind: "colour", key: "borderColor", label: "Border colour" },
       ],
     },
     {
-      kind: "group" as const,
+      kind: "group",
       label: "ARIA",
       controls: [
         {
-          kind: "segmented" as const,
+          kind: "segmented",
           key: "contentType",
           label: "Button content",
           options: [
@@ -124,7 +125,7 @@ export const buttonDefinition = {
           ],
         },
         {
-          kind: "text" as const,
+          kind: "text",
           key: "ariaLabel",
           label: "aria-label",
           placeholder: "e.g. Search products",

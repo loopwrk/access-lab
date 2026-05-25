@@ -1,10 +1,4 @@
-export interface ManualChecklistItem {
-  id: string;
-  title: string;
-  wcagSc: string;
-  description: string;
-  url: string;
-}
+import type { ManualChecklistItem } from "~/rules/types";
 
 export const buttonManualChecklist: ManualChecklistItem[] = [
   {
