@@ -6,6 +6,7 @@ export default defineNuxtConfig({
     "@nuxt/a11y",
     "@nuxt/content",
     "@nuxt/hints",
+    "@nuxt/image",
     "@nuxt/test-utils",
     "@nuxtjs/google-fonts",
     "@pinia/nuxt",

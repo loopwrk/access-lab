@@ -12,6 +12,20 @@
     "brand": "AccessLab",
     "ariaLabel": "Application bar"
   },
+  "comingSoon": {
+    "ariaLabel": "Coming soon notice",
+    "title": "{name} is coming soon",
+    "body": "We're still building support for this component. In the meantime, pick another component from the sidebar to start auditing — Button is ready to go."
+  },
+  "errorPage": {
+    "ariaLabel": "Error notice",
+    "title404": "404: page not found",
+    "titleGeneric": "Something went wrong",
+    "componentMissing": "Component \"{slug}\" is not in the registry.",
+    "body1": "You have arrived at a destination that doesn't exist. We would explain how you got here, but the link you clicked lacked any meaningful semantic context.",
+    "body2": "We are blaming the developer. It is the safest option.",
+    "actionLabel": "Take me somewhere useful"
+  },
   "mobileBlocker": {
     "ariaLabel": "Screen size notice",
     "title": "AccessLab requires a larger screen",

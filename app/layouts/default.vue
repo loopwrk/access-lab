@@ -67,20 +67,25 @@ const tabItems = computed<TabsItem[]>(() => [
   { label: t('inspector.learn'), value: 'learn' }
 ])
 
-// Component nav items
-const activeComponent = ref('button')
+const route = useRoute()
+
+const activeComponent = computed<string>(() => {
+  const param = route.params.component
+  if (Array.isArray(param)) return param[0] ?? 'button'
+  return (param as string | undefined) ?? 'button'
+})
 
 const navItems = computed<NavigationMenuItem[][]>(() => [
   [
     { label: t('nav.components'), type: 'label' },
-    { label: t('nav.button'), value: 'button', icon: 'i-lucide-square-mouse-pointer' },
-    { label: t('nav.accordion'), value: 'accordion', icon: 'i-lucide-chevrons-down-up' },
-    { label: t('nav.carousel'), value: 'carousel', icon: 'i-lucide-images' },
-    { label: t('nav.modal'), value: 'modal', icon: 'i-lucide-rectangle-ellipsis' },
-    { label: t('nav.menu'), value: 'menu', icon: 'i-lucide-menu' },
-    { label: t('nav.tooltip'), value: 'tooltip', icon: 'i-lucide-message-circle' },
-    { label: t('nav.tabs'), value: 'tabs', icon: 'i-lucide-panels-top-left' },
-    { label: t('nav.formField'), value: 'form-field', icon: 'i-lucide-form-input' }
+    { label: t('nav.button'), value: 'button', to: '/components/button', icon: 'i-lucide-square-mouse-pointer' },
+    { label: t('nav.accordion'), value: 'accordion', to: '/components/accordion', icon: 'i-lucide-chevrons-down-up' },
+    { label: t('nav.carousel'), value: 'carousel', to: '/components/carousel', icon: 'i-lucide-images' },
+    { label: t('nav.modal'), value: 'modal', to: '/components/modal', icon: 'i-lucide-rectangle-ellipsis' },
+    { label: t('nav.menu'), value: 'menu', to: '/components/menu', icon: 'i-lucide-menu' },
+    { label: t('nav.tooltip'), value: 'tooltip', to: '/components/tooltip', icon: 'i-lucide-message-circle' },
+    { label: t('nav.tabs'), value: 'tabs', to: '/components/tabs', icon: 'i-lucide-panels-top-left' },
+    { label: t('nav.formField'), value: 'form-field', to: '/components/form-field', icon: 'i-lucide-form-input' }
   ]
   // TODO: Introduce framework styles after vanilla components are in place
   // [
@@ -173,7 +178,7 @@ async function skipToPanel(tabName: 'controls' | 'issues', elementId: string) {
     <div class="app-body">
       <!-- Left sidebar -->
       <aside v-show="sidebarOpen" class="sidebar" :aria-label="t('sidebar.ariaLabel')">
-        <UNavigationMenu v-model="activeComponent" :items="navItems" orientation="vertical" highlight
+        <UNavigationMenu :model-value="activeComponent" :items="navItems" orientation="vertical" highlight
           highlight-color="primary"
           :ui="{ link: 'text-sm py-2.5 pl-3', linkLabel: 'truncate', label: 'text-md pl-3 pt-3' }" />
       </aside>
