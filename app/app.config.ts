@@ -34,5 +34,10 @@ export default defineAppConfig({
         },
       ],
     },
+    switch: {
+      slots: {
+        base: "data-[state=unchecked]:bg-[var(--text-secondary)]/30",
+      },
+    },
   },
 });

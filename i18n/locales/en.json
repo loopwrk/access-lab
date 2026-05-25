@@ -46,8 +46,14 @@
     }
   },
   "controls": {
+    "intro": {
+      "short": "The {element} uses browser defaults. Overriding any property switches it to CSS, which may change its appearance",
+      "expandLabel": "Learn more",
+      "collapseLabel": "Hide",
+      "expanded": "Browsers draw form elements like buttons using a native rendering mode. The operating system paints them, and they look slightly different from what CSS alone would produce. The moment you set your own border, padding, or background, the browser hands rendering back to CSS. That's why a \"2px\" border you set may look thicker than the \"2px\" the browser was already drawing: it's the same number, but a different paint mode. This shift creates a real accessibility consideration because overriding native styles often strips away the browser's default. Custom-styled buttons need explicit attention to focus rings, hit areas, and contrast that native buttons handle for you."
+    },
     "label": "Button label",
-    "labelPlaceholder": "Click Me!",
+    "labelPlaceholder": "Button Label",
     "dimensions": "Dimensions",
     "width": "Width",
     "height": "Height",

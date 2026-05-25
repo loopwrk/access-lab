@@ -1,20 +1,19 @@
 <script setup lang="ts">
-import { renderButton } from '~/components/inspected/button/render'
+import { buttonDefinition } from '~/components/inspected/button/definition'
 import { useCustomRules } from '~/composables/useCustomRules'
-import { targetSizeAA, targetSizeAAA } from '~/rules/button/target-size'
 
 const previewRef = ref<{ render: (html: string, css?: string) => void } | null>(null)
 
-const buttonProps = ref<Partial<Record<string, unknown>>>({})
+const buttonProps = ref<Partial<Record<string, unknown>>>({ ...buttonDefinition.defaultProps })
 let renderTimer: ReturnType<typeof setTimeout> | null = null
 
-const customRules = useCustomRules([targetSizeAA, targetSizeAAA])
+const customRules = useCustomRules(buttonDefinition.rules)
 const { setHtml } = useRenderedHtml()
 
 watch(buttonProps, () => {
   if (renderTimer) clearTimeout(renderTimer)
   renderTimer = setTimeout(() => {
-    const html = renderButton(buttonProps.value as any)
+    const html = buttonDefinition.render(buttonProps.value as any)
     previewRef.value?.render(html)
     setHtml(html)
     customRules.evaluate(buttonProps.value)

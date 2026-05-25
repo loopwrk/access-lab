@@ -25,14 +25,14 @@ function escape(str: string): string {
 }
 
 export function renderButton(props?: Partial<ButtonProps>): string {
-  if (!props) return "<button>Click Me!</button>";
+  if (!props) return "<button>Button Label</button>";
 
   const style: string[] = [];
 
   if (props.bg) style.push(`background:${props.bg}`);
   if (props.fgText) style.push(`color:${props.fgText}`);
-  if (props.width) style.push(`min-width:${props.width}px`);
-  if (props.height) style.push(`min-height:${props.height}px`);
+  if (props.width) style.push(`width:${props.width}px`);
+  if (props.height) style.push(`height:${props.height}px`);
   if (props.fontSize) style.push(`font-size:${props.fontSize}px`);
 
   const hasIndividualPadding =
@@ -85,7 +85,7 @@ export function renderButton(props?: Partial<ButtonProps>): string {
 
   const styleStr = style.join(";");
 
-  const label = escape(props.label ?? "Click Me!");
+  const label = escape(props.label ?? "Button Label");
 
   const attrs: string[] = [];
   if (props.ariaLabel) attrs.push(`aria-label="${escape(props.ariaLabel)}"`);
