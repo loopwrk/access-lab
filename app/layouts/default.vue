@@ -53,13 +53,15 @@ const sizes: SizeOption[] = [
 // Sidebar collapse state
 const sidebarOpen = ref(true)
 
-// Inspector tab state
-const activeTab = ref('controls')
+// Inspector tab state — shared composable so components teleported into the
+// inspector panels (e.g. ControlsIntro) can switch tabs themselves.
+const { activeTab } = useInspectorTab()
 
 const tabItems = computed<TabsItem[]>(() => [
   { label: t('inspector.controls'), value: 'controls' },
   { label: t('inspector.issues'), value: 'issues' },
-  { label: t('inspector.manual'), value: 'manual' }
+  { label: t('inspector.manual'), value: 'manual' },
+  { label: t('inspector.learn'), value: 'learn' }
 ])
 
 // Component nav items
@@ -261,6 +263,9 @@ async function skipToPanel(tabName: 'controls' | 'issues', elementId: string) {
           </div>
 
           <div v-show="activeTab === 'manual'" id="manual-panel" class="inspector-panel" tabindex="0">
+          </div>
+
+          <div v-show="activeTab === 'learn'" id="learn-panel" class="inspector-panel" tabindex="0">
           </div>
         </div>
       </aside>

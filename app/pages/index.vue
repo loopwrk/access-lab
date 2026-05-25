@@ -36,6 +36,9 @@ watch(buttonProps, () => {
   <Teleport to="#manual-panel">
     <ManualReviewPanel />
   </Teleport>
+  <Teleport to="#learn-panel">
+    <LearnPanel />
+  </Teleport>
 </template>
 
 <style scoped>
