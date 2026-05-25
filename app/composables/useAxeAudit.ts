@@ -101,7 +101,23 @@ export function useAxeAudit(iframeRef: {
     }
   }
 
-  onMounted(() => window.addEventListener("message", handler));
+  onMounted(() => {
+    // Reset readiness + stale results when a new PreviewIframe mounts.
+    // `axe-results` is shared via useState so it survives route changes
+    // (the layout's counter pills read it). Without this reset, the
+    // second time a user lands on a studio route, `isReady` is still
+    // `true` from the previous iframe — so render() fires postMessage
+    // before the new iframe shell has attached its message listener,
+    // the message is lost, and the new `preview:ready` flip doesn't
+    // re-trigger PreviewIframe's watch (no value change).
+    state.value.isReady = false;
+    state.value.violations = [];
+    state.value.passes = [];
+    state.value.incomplete = [];
+    state.value.errorMessage = null;
+    measurement.value = null;
+    window.addEventListener("message", handler);
+  });
   onBeforeUnmount(() => window.removeEventListener("message", handler));
 
   return {
