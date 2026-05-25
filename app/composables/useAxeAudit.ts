@@ -1,104 +1,108 @@
-import type { DomMeasurement } from '~/rules/types'
+import type { DomMeasurement } from "~/rules/types";
 
-type ImpactValue = 'minor' | 'moderate' | 'serious' | 'critical' | null
+type ImpactValue = "minor" | "moderate" | "serious" | "critical" | null;
 
 interface CheckResult {
-  id: string
-  impact?: ImpactValue
-  message: string
-  data: unknown
+  id: string;
+  impact?: ImpactValue;
+  message: string;
+  data: unknown;
 }
 
 interface NodeResult {
-  html: string
-  impact?: ImpactValue
-  target: string[]
-  any: CheckResult[]
-  all: CheckResult[]
-  none: CheckResult[]
-  failureSummary?: string
+  html: string;
+  impact?: ImpactValue;
+  target: string[];
+  any: CheckResult[];
+  all: CheckResult[];
+  none: CheckResult[];
+  failureSummary?: string;
 }
 
 export interface AxeResult {
-  id: string
-  description: string
-  help: string
-  helpUrl: string
-  impact?: ImpactValue
-  tags: string[]
-  nodes: NodeResult[]
+  id: string;
+  description: string;
+  help: string;
+  helpUrl: string;
+  impact?: ImpactValue;
+  tags: string[];
+  nodes: NodeResult[];
+  learnTopicId?: string;
 }
 
 export function useAxeAudit(iframeRef: {
-  readonly value: HTMLIFrameElement | null
+  readonly value: HTMLIFrameElement | null;
 }) {
   const state = useState<{
-    violations: AxeResult[]
-    passes: AxeResult[]
-    incomplete: AxeResult[]
-    isReady: boolean
-    errorMessage: string | null
-  }>('axe-results', () => ({
+    violations: AxeResult[];
+    passes: AxeResult[];
+    incomplete: AxeResult[];
+    isReady: boolean;
+    errorMessage: string | null;
+  }>("axe-results", () => ({
     violations: [],
     passes: [],
     incomplete: [],
     isReady: false,
-    errorMessage: null
-  }))
+    errorMessage: null,
+  }));
 
-  const violations = computed(() => state.value.violations)
-  const passes = computed(() => state.value.passes)
-  const incomplete = computed(() => state.value.incomplete)
-  const isReady = computed(() => state.value.isReady)
-  const errorMessage = computed(() => state.value.errorMessage)
+  const violations = computed(() => state.value.violations);
+  const passes = computed(() => state.value.passes);
+  const incomplete = computed(() => state.value.incomplete);
+  const isReady = computed(() => state.value.isReady);
+  const errorMessage = computed(() => state.value.errorMessage);
 
   const criticalCount = computed(
     () =>
       state.value.violations.filter(
-        (v) => v.impact === 'critical' || v.impact === 'serious',
+        (v) => v.impact === "critical" || v.impact === "serious",
       ).length,
-  )
+  );
   const warningCount = computed(
     () =>
       state.value.violations.filter(
-        (v) => v.impact === 'moderate' || v.impact === 'minor',
+        (v) => v.impact === "moderate" || v.impact === "minor",
       ).length,
-  )
-  const passingCount = computed(() => state.value.passes.length)
+  );
+  const passingCount = computed(() => state.value.passes.length);
 
   // DOM-rule measurement posted by the iframe after each render. Stored
   // here so rules can react via watch in useDomRules — keeps useAxeAudit
   // ignorant of which DOM rules are registered.
-  const measurement = useState<DomMeasurement | null>('dom-measurement', () => null)
+  const measurement = useState<DomMeasurement | null>(
+    "dom-measurement",
+    () => null,
+  );
 
   function handler(event: MessageEvent) {
-    const iframe = iframeRef.value
-    if (!iframe || event.source !== iframe.contentWindow) return
+    const iframe = iframeRef.value;
+    if (!iframe || event.source !== iframe.contentWindow) return;
 
-    const data = event.data
-    if (!data || typeof data.type !== 'string') return
+    const data = event.data;
+    if (!data || typeof data.type !== "string") return;
 
     switch (data.type) {
-      case 'preview:ready':
-        state.value.isReady = true
-        break
-      case 'axe:result':
-        state.value.violations = data.violations || []
-        state.value.passes = data.passes || []
-        state.value.incomplete = data.incomplete || []
-        state.value.errorMessage = null
-        break
-      case 'axe:error':
-        state.value.errorMessage = data.message
-        break
-      case 'overflow:result':
-        measurement.value = data.measurement
-        break
+      case "preview:ready":
+        state.value.isReady = true;
+        break;
+      case "axe:result":
+        state.value.violations = data.violations || [];
+        state.value.passes = data.passes || [];
+        state.value.incomplete = data.incomplete || [];
+        state.value.errorMessage = null;
+        break;
+      case "axe:error":
+        state.value.errorMessage = data.message;
+        break;
+      case "overflow:result":
+        measurement.value = data.measurement;
+        break;
     }
   }
 
-  onMounted(() => window.addEventListener('message', handler))
-  onBeforeUnmount(() => window.removeEventListener('message', handler))
+  onMounted(() => window.addEventListener("message", handler));
+  onBeforeUnmount(() => window.removeEventListener("message", handler));
 
   return {
     violations,
@@ -108,6 +112,6 @@ export function useAxeAudit(iframeRef: {
     errorMessage,
     criticalCount,
     warningCount,
-    passingCount
-  }
+    passingCount,
+  };
 }

@@ -7,6 +7,7 @@ function violationToAxeResult(rule: Rule, result: ViolationResult): AxeResult {
     description: rule.description,
     help: rule.help,
     helpUrl: rule.helpUrl ?? '',
+    learnTopicId: rule.learnTopicId,
     impact: result.severity,
     tags: [],
     nodes: [

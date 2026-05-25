@@ -11,6 +11,12 @@ export interface Rule {
   description: string
   help: string
   helpUrl?: string
+  /**
+   * Optional anchor into the Learn tab. When set, the Issues panel renders
+   * an internal "Read more in the Learn tab" link alongside the external
+   * `helpUrl`, which switches tabs and moves focus to the matching topic.
+   */
+  learnTopicId?: string
   evaluate: (props: Record<string, unknown>) => ViolationResult | null
 }
 
@@ -43,6 +49,8 @@ export interface DomRule {
   description: string
   help: string
   helpUrl?: string
+  /** See Rule.learnTopicId. */
+  learnTopicId?: string
   evaluate: (measurement: DomMeasurement) => ViolationResult | null
 }
 

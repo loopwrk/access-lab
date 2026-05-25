@@ -134,6 +134,7 @@ function tagWhy(tags: string[]): string | null {
 }
 
 const { t } = useI18n()
+const { focusPanel } = useInspectorTab()
 </script>
 
 <template>
@@ -206,11 +207,19 @@ const { t } = useI18n()
                         </div>
                       </div>
                     </template>
-                    <a v-if="violation.helpUrl" :href="violation.helpUrl" target="_blank" rel="noopener noreferrer"
-                      class="inline-flex items-center text-(length:--al-font-size-detail) text-(--brand) no-underline hover:text-(--brand-hover) hover:underline">
-                      {{ t('issues.learnMore') }}
-                      <span class="i-lucide-external-link text-xs ml-1" aria-hidden="true" />
-                    </a>
+                    <div class="flex flex-col gap-1.5">
+                      <button v-if="violation.learnTopicId" type="button"
+                        class="inline-flex items-center text-(length:--al-font-size-detail) text-(--brand) bg-transparent border-0 p-0 cursor-pointer hover:text-(--brand-hover) hover:underline self-start"
+                        @click="focusPanel('learn', violation.learnTopicId)">
+                        {{ t('issues.learnMoreInApp') }}
+                        <span class="i-lucide-arrow-right text-xs ml-1" aria-hidden="true" />
+                      </button>
+                      <a v-if="violation.helpUrl" :href="violation.helpUrl" target="_blank" rel="noopener noreferrer"
+                        class="inline-flex items-center text-(length:--al-font-size-detail) text-(--brand) no-underline hover:text-(--brand-hover) hover:underline self-start">
+                        {{ t('issues.learnMore') }}
+                        <span class="i-lucide-external-link text-xs ml-1" aria-hidden="true" />
+                      </a>
+                    </div>
                   </div>
                 </template>
               </UCollapsible>
@@ -287,11 +296,19 @@ const { t } = useI18n()
                         </div>
                       </div>
                     </template>
-                    <a v-if="violation.helpUrl" :href="violation.helpUrl" target="_blank" rel="noopener noreferrer"
-                      class="inline-flex items-center text-(length:--al-font-size-detail) text-(--brand) no-underline hover:text-(--brand-hover) hover:underline">
-                      {{ t('issues.learnMore') }}
-                      <span class="i-lucide-external-link text-xs ml-1" aria-hidden="true" />
-                    </a>
+                    <div class="flex flex-col gap-1.5">
+                      <button v-if="violation.learnTopicId" type="button"
+                        class="inline-flex items-center text-(length:--al-font-size-detail) text-(--brand) bg-transparent border-0 p-0 cursor-pointer hover:text-(--brand-hover) hover:underline self-start"
+                        @click="focusPanel('learn', violation.learnTopicId)">
+                        {{ t('issues.learnMoreInApp') }}
+                        <span class="i-lucide-arrow-right text-xs ml-1" aria-hidden="true" />
+                      </button>
+                      <a v-if="violation.helpUrl" :href="violation.helpUrl" target="_blank" rel="noopener noreferrer"
+                        class="inline-flex items-center text-(length:--al-font-size-detail) text-(--brand) no-underline hover:text-(--brand-hover) hover:underline self-start">
+                        {{ t('issues.learnMore') }}
+                        <span class="i-lucide-external-link text-xs ml-1" aria-hidden="true" />
+                      </a>
+                    </div>
                   </div>
                 </template>
               </UCollapsible>

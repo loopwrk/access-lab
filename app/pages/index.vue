@@ -3,13 +3,17 @@ import { buttonDefinition } from '~/components/inspected/button/definition'
 import { useCustomRules } from '~/composables/useCustomRules'
 import { useDomRules } from '~/composables/useDomRules'
 import { contentOverflow } from '~/rules/shared/overflow'
+import { invisibleText } from '~/rules/shared/invisible-text'
 
 const previewRef = ref<{ render: (html: string, css?: string) => void } | null>(null)
 
 const buttonProps = ref<Partial<Record<string, unknown>>>({ ...buttonDefinition.defaultProps })
 let renderTimer: ReturnType<typeof setTimeout> | null = null
 
-const customRules = useCustomRules(buttonDefinition.rules)
+// Shared prop-based rules (`invisibleText`) live alongside the component's
+// own rules in the single useCustomRules call — they share the same
+// `custom-violations` state slot, so they have to be merged here.
+const customRules = useCustomRules([...buttonDefinition.rules, invisibleText])
 // Shared DOM-based rules — applied to every inspected component because the
 // concerns they cover (overflow, eventually clipping, etc.) aren't specific
 // to one element type.

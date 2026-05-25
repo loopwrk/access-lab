@@ -15,12 +15,17 @@ export function useInspectorTab() {
    * Switch tabs and move focus into the target panel on the next tick.
    * Important for keyboard + screen-reader users — without this, focus
    * stays on the now-hidden trigger and the user loses their place.
+   *
    */
-  async function focusPanel(tab: InspectorTab) {
+  async function focusPanel(tab: InspectorTab, focusId?: string) {
     setActive(tab);
     await nextTick();
-    const el = document.getElementById(`${tab}-panel`);
-    el?.focus();
+    const target = focusId
+      ? document.getElementById(focusId)
+      : document.getElementById(`${tab}-panel`);
+    if (!target) return;
+    target.focus({ preventScroll: true });
+    target.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
   return { activeTab, setActive, focusPanel };

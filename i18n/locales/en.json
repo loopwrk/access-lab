@@ -94,6 +94,7 @@
     "howToFixSection": "How to fix",
     "nextSteps": "Review the WCAG criterion for this rule. Check the affected element in your HTML and apply the recommended fix. Re-run the audit to verify the issue is resolved.",
     "learnMore": "Learn more about this rule",
+    "learnMoreInApp": "Read more in the Learn tab",
     "criticalSection": "Critical ({count})",
     "warningsSection": "Warnings ({count})",
     "passingSection": "Passing ({count})",
@@ -144,6 +145,31 @@
       "hitAreasBody": "The button must maintain a sufficient physical size (at least 44x44 pixels) for touch screens and users with limited motor control.",
       "contrastTitle": "Color Contrast",
       "contrastBody": "Text-to-background contrast must remain high enough to prevent the button from becoming unreadable for users with low vision or color blindness."
+    },
+    "invisibleText": {
+      "title": "\"Invisible\" Text Slips Past Automated Tests",
+      "intro": "When text color matches its background color exactly, the text completely disappears from view. However, the code is still there. A screen reader will still read the words out loud, search engines will still index them, and the browser still builds space for them—but a sighted user will never see them.",
+      "skipTitle": "Why Automated Checkers Deliberately Skip This",
+      "skipP1": "Most automated accessibility tools skip contrast tests when the text colour and background colour are an exact match. They do this to avoid giving \"false alarm\" errors.",
+      "skipP2": "Using matching colours is a common, though outdated, trick developers use to intentionally hide content from sighted users while keeping it available for screen readers (like hidden form labels or extra context for links). Because an automated tool cannot tell the difference between a mistake and an intentional design choice, it simply skips the test.",
+      "skipP3": "The moment you change one of the colours by even a tiny fraction, the tool can calculate the contrast ratio again and will flag it as an error. Testing platforms built for human exploration fill this gap because they assume a person is checking the colours on purpose, meaning the chance of it being a deliberate hiding trick is almost zero.",
+      "productionTitle": "Why It Matters in Production",
+      "productionP1": "Accidentally invisible text is one of the easiest bugs to miss before launching a website. A developer's design file might look perfect, but a conflicting line of code or a broken variable in production can cause the colours to overlap, leaving text completely invisible while still passing every automated test.",
+      "productionLead": "This creates a split user experience:",
+      "productionSplitScreenReader": "Screen-reader users will hear the text perfectly and assume the page is fine.",
+      "productionSplitSighted": "Sighted users will see an empty space or an unlabeled button, assuming the page is broken.",
+      "productionOutro": "Catching this requires manually inspecting the final, computed colours on the screen, which standard quality assurance checks often miss.",
+      "wcagTitle": "Web Accessibility Standards (WCAG)",
+      "wcagLead": "Official web accessibility guidelines require text to stand out clearly from its background:",
+      "wcagAA": "Level AA (Standard): Requires a contrast ratio of at least 4.5:1 for normal text.",
+      "wcagAAA": "Level AAA (Highest): Raises that requirement to 7:1.",
+      "wcagOutro": "A 1:1 ratio (where the text and background are identical) is a total failure of both standards.",
+      "fixTitle": "How to Fix It—or Hide Text Safely",
+      "fixMistakeLead": "If the invisible text is a mistake:",
+      "fixMistakeBody": "Update your code to use distinct text and background colours that meet the required contrast ratios.",
+      "fixIntentLead": "If you actually want to hide the text for screen-reader users only:",
+      "fixIntentBody": "Do not use colour-matching. Instead, use a proper modern hiding technique. This usually involves a CSS class that shrinks the element out of sight (using properties like {pos} and {clip}) without removing it from the page's code. This safer method ensures the text remains accessible even if a user overrides your colours, turns on high-contrast mode, or highlights the text.",
+      "fixIntentLink": "Read more about how to implement this"
     }
   }
 }
