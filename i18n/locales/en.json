@@ -91,6 +91,14 @@
     "contentTypeText": "Text",
     "contentTypeIcon": "Icon"
   },
+  "contrast": {
+    "label": "Contrast",
+    "ratio": "{ratio}:1",
+    "verdictAAA": "AAA",
+    "verdictAA": "AA",
+    "verdictAALarge": "AA (large text only)",
+    "verdictFail": "Fails"
+  },
 
   "inspector": {
     "ariaLabel": "Inspection panel",

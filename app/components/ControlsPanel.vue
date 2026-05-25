@@ -317,6 +317,20 @@ const borderColorComputed = computed({
   get: () => props.modelValue.borderColor ?? DEFAULTS.value.borderColor,
   set: (value: string) => update('borderColor', value)
 })
+
+// Live WCAG contrast — uses the computed bg/fg (which already fall back
+// through user value → UA default → hardcoded) so the badge always
+// reflects what the iframe is actually rendering. The page backdrop
+// stays at the default (#ffffff) because the preview iframe's body is
+// unstyled. See research/contrast-calculation.md for the maths.
+const { ratio: contrastRatio, verdict: contrastVerdict } = useContrast(
+  fgTextColor,
+  bgColor,
+  {
+    fontSizePx: () => props.modelValue.fontSize ?? DEFAULTS.value.fontSize,
+    bold: false
+  }
+)
 </script>
 
 <template>
@@ -515,6 +529,10 @@ const borderColorComputed = computed({
               @update:model-value="update('fgText', $event)" />
           </div>
         </ColorPicker>
+
+        <!-- Sits after bg + text because those are the pair the badge compares.
+             Border colour follows separately below. -->
+        <ContrastBadge :ratio="contrastRatio" :verdict="contrastVerdict" />
 
         <ColorPicker v-model="borderColorComputed" with-alpha with-initial-color with-eye-dropper with-hex-input
           with-rgb-input v-slot="{ show }">
