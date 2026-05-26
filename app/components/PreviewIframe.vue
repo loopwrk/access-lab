@@ -12,29 +12,36 @@ const {
   passingCount
 } = useAxeAudit(iframeRef)
 
-const pendingRender = ref<{ html: string; css?: string } | null>(null)
+const pendingRender = ref<{ html: string; css?: string; rootFontSize?: number } | null>(null)
 
-function send(html: string, css?: string) {
+function send(html: string, css?: string, rootFontSize?: number) {
   const iframe = iframeRef.value
   if (!iframe || !iframe.contentWindow) return
 
   iframe.contentWindow.postMessage(
-    { type: 'preview:render', html, css: css ?? '' },
+    { type: 'preview:render', html, css: css ?? '', rootFontSize },
     window.location.origin
   )
 }
 
-function render(html: string, css?: string) {
+/**
+ * Render an HTML fragment into the iframe shell.
+ *
+ * `rootFontSize` (CSS px) sets the iframe's root font-size so rem-based
+ * CSS in the rendered HTML resolves against the same base the controls
+ * panel uses.
+ */
+function render(html: string, css?: string, rootFontSize?: number) {
   if (isReady.value) {
-    send(html, css)
+    send(html, css, rootFontSize)
   } else {
-    pendingRender.value = { html, css }
+    pendingRender.value = { html, css, rootFontSize }
   }
 }
 
 watch(isReady, (ready) => {
   if (ready && pendingRender.value) {
-    send(pendingRender.value.html, pendingRender.value.css)
+    send(pendingRender.value.html, pendingRender.value.css, pendingRender.value.rootFontSize)
     pendingRender.value = null
   }
 })

@@ -42,6 +42,15 @@ export const learnTopics: LearnTopic[] = [
       () => import("~/components/LearnTopic/VagueLabel.vue"),
     ),
   },
+  {
+    id: "rem-units",
+    titleKey: "learn.remUnits.title",
+    summaryKey: "learn.remUnits.summary",
+    category: "foundations",
+    component: defineAsyncComponent(
+      () => import("~/components/LearnTopic/RemUnits.vue"),
+    ),
+  },
 ];
 
 export function getLearnTopic(id: string): LearnTopic | undefined {

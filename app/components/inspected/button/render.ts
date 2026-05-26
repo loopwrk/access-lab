@@ -1,27 +1,19 @@
-interface ButtonProps {
-  label: string;
-  width: number;
-  height: number;
-  padding: number;
-  paddingTop: number;
-  paddingRight: number;
-  paddingBottom: number;
-  paddingLeft: number;
-  borderWidth: number;
-  borderTopWidth: number;
-  borderRightWidth: number;
-  borderBottomWidth: number;
-  borderLeftWidth: number;
-  fontSize: number;
-  bg: string;
-  fgText: string;
-  borderColor: string;
-  ariaLabel: string;
-  contentType: "text" | "icon";
-}
+import type { ButtonProps } from "./definition";
+import type { CssLength } from "~/composables/useUnitConversion";
 
 function escape(str: string): string {
   return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function fmt(length: CssLength): string {
+  return `${length.value}${length.unit}`;
+}
+
+function side(
+  explicit: CssLength | undefined,
+  shorthand: CssLength | undefined,
+): CssLength {
+  return explicit ?? shorthand ?? { value: 0, unit: "px" };
 }
 
 export function renderButton(props?: Partial<ButtonProps>): string {
@@ -31,9 +23,9 @@ export function renderButton(props?: Partial<ButtonProps>): string {
 
   if (props.bg) style.push(`background:${props.bg}`);
   if (props.fgText) style.push(`color:${props.fgText}`);
-  if (props.width) style.push(`width:${props.width}px`);
-  if (props.height) style.push(`height:${props.height}px`);
-  if (props.fontSize) style.push(`font-size:${props.fontSize}px`);
+  if (props.width) style.push(`width:${fmt(props.width)}`);
+  if (props.height) style.push(`height:${fmt(props.height)}`);
+  if (props.fontSize) style.push(`font-size:${fmt(props.fontSize)}`);
 
   const hasIndividualPadding =
     props.paddingTop != null ||
@@ -42,14 +34,13 @@ export function renderButton(props?: Partial<ButtonProps>): string {
     props.paddingLeft != null;
 
   if (hasIndividualPadding) {
-    const fallback = props.padding ?? 0;
-    const pt = props.paddingTop ?? fallback;
-    const pr = props.paddingRight ?? fallback;
-    const pb = props.paddingBottom ?? fallback;
-    const pl = props.paddingLeft ?? fallback;
-    style.push(`padding:${pt}px ${pr}px ${pb}px ${pl}px`);
+    const pt = side(props.paddingTop, props.padding);
+    const pr = side(props.paddingRight, props.padding);
+    const pb = side(props.paddingBottom, props.padding);
+    const pl = side(props.paddingLeft, props.padding);
+    style.push(`padding:${fmt(pt)} ${fmt(pr)} ${fmt(pb)} ${fmt(pl)}`);
   } else if (props.padding != null) {
-    style.push(`padding:${props.padding}px`);
+    style.push(`padding:${fmt(props.padding)}`);
   }
 
   const hasIndividualBorder =
@@ -59,27 +50,25 @@ export function renderButton(props?: Partial<ButtonProps>): string {
     props.borderLeftWidth != null;
 
   if (hasIndividualBorder) {
-    const fallback = props.borderWidth ?? 0;
-    const bt = props.borderTopWidth ?? fallback;
-    const br = props.borderRightWidth ?? fallback;
-    const bb = props.borderBottomWidth ?? fallback;
-    const bl = props.borderLeftWidth ?? fallback;
+    const bt = side(props.borderTopWidth, props.borderWidth);
+    const br = side(props.borderRightWidth, props.borderWidth);
+    const bb = side(props.borderBottomWidth, props.borderWidth);
+    const bl = side(props.borderLeftWidth, props.borderWidth);
     style.push(
-      `border-top-width:${bt}px`,
-      `border-right-width:${br}px`,
-      `border-bottom-width:${bb}px`,
-      `border-left-width:${bl}px`,
+      `border-top-width:${fmt(bt)}`,
+      `border-right-width:${fmt(br)}`,
+      `border-bottom-width:${fmt(bb)}`,
+      `border-left-width:${fmt(bl)}`,
       `border-style:solid`,
     );
-  } else if (props.borderWidth != null && props.borderWidth > 0) {
-    style.push(`border-width:${props.borderWidth}px`, "border-style:solid");
+  } else if (props.borderWidth != null && props.borderWidth.value > 0) {
+    style.push(`border-width:${fmt(props.borderWidth)}`, "border-style:solid");
   }
 
-  if (
-    props.borderColor &&
-    (hasIndividualBorder ||
-      (props.borderWidth != null && props.borderWidth > 0))
-  ) {
+  const hasBorder =
+    hasIndividualBorder ||
+    (props.borderWidth != null && props.borderWidth.value > 0);
+  if (props.borderColor && hasBorder) {
     style.push(`border-color:${props.borderColor}`);
   }
 

@@ -20,27 +20,16 @@ const { focusPanel } = useInspectorTab()
 </script>
 
 <template>
-  <UAlert
-    color="info"
-    variant="soft"
-    icon="i-lucide-info"
-    :title="t('controls.intro.short', { element: elementName })"
+  <UAlert color="info" variant="soft" icon="i-lucide-info" :title="t('controls.intro.short', { element: elementName })"
     :ui="{
       title: 'font-normal leading-snug text-(length:--al-font-size-detail)',
       description: 'mt-1',
       icon: 'shrink-0'
-    }"
-  >
+    }">
     <template #description>
-      <UButton
-        :label="t('controls.intro.expandLabel')"
-        trailing-icon="i-lucide-arrow-right"
-        variant="link"
-        color="info"
-        size="xs"
-        class="px-0"
-        @click="focusPanel('learn')"
-      />
+      <UButton :label="t('controls.intro.expandLabel')" trailing-icon="i-lucide-arrow-right" variant="link" color="info"
+        size="xs" class="px-0 items-start" :ui="{ label: 'whitespace-normal text-left' }"
+        @click="focusPanel('learn')" />
     </template>
   </UAlert>
 </template>

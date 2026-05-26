@@ -68,8 +68,11 @@
   },
   "controls": {
     "intro": {
-      "short": "Why does switching on some styles change the {element}'s appearance?",
-      "expandLabel": "Learn more"
+      "short": "Why does switching on some custom styles change the {element}'s appearance?",
+      "expandLabel": "Learn about native rendering"
+    },
+    "simulatedRoot": {
+      "label": "Root Em (rem) value"
     },
     "label": "Button label",
     "labelPlaceholder": "Trigger Demo Action",
@@ -179,6 +182,37 @@
       "hitAreasBody": "The button must maintain a sufficient physical size (at least 44x44 pixels) for touch screens and users with limited motor control.",
       "contrastTitle": "Color Contrast",
       "contrastBody": "Text-to-background contrast must remain high enough to prevent the button from becoming unreadable for users with low vision or color blindness."
+    },
+    "remUnits": {
+      "summary": "rem is a CSS length unit that scales with the user's browser font-size preference. Using it for layout values respects accessibility settings that px values ignore.",
+      "title": "How REM units work",
+      "intro": "rem stands for \"root em\". It's a CSS length unit whose value depends on the root font-size of the page, which is the font-size set on the html element. By default, browsers set this to 16px, so 1rem typically equals 16px. The root font-size can change, and rem-based values change with it.",
+      "responsiveTitle": "What makes rem responsive",
+      "responsiveP1": "A user can change their browser's default font-size in browser settings, often labelled \"page font size\" or \"default font size\". When they do, the root font-size of every web page they visit changes. CSS values written in rem scale automatically. CSS values written in px do not.",
+      "responsiveP2": "Set a button to width: 5rem. At the default root size of 16px, the button is 80px wide. If the user sets their browser root to 20px, the button becomes 100px. A button set to width: 80px stays at 80px no matter what the user prefers.",
+      "a11yTitle": "Why this matters for accessibility",
+      "a11yP1": "WCAG 1.4.4 Resize Text requires that text can be resized up to 200% without loss of content or functionality. If you use px for both your text and the container around it, increasing text size can cause overflow, clipping, or broken layouts. Using rem for the container as well means the layout scales with the text.",
+      "a11yLead": "For users who need larger text:",
+      "a11yPoint1": "A user with low vision may set their default browser font size to 24px or more.",
+      "a11yPoint2": "A user with a cognitive impairment may prefer larger, clearer text to reduce reading effort.",
+      "a11yPoint3": "An older user may find smaller text physically uncomfortable to read at length.",
+      "a11yOutro": "In all of these cases, a rem-based design respects the user's preference. A px-based design ignores it entirely.",
+      "comparisonTitle": "rem vs em vs px",
+      "comparisonLead": "Three common length units, three different behaviours:",
+      "comparisonPx": "px is absolute. 16px is 16px, always. It ignores the user's preferences.",
+      "comparisonEm": "em is relative to the element's own font-size, which inherits from its parent. This makes em values unpredictable in deeply nested layouts.",
+      "comparisonRem": "rem is relative to the root font-size only. Consistent across the page, and responsive to user preferences.",
+      "whenTitle": "When to use rem",
+      "whenRemLead": "Most CSS values that relate to layout and typography are good candidates for rem:",
+      "whenRem1": "Font sizes, especially headings and body text.",
+      "whenRem2": "Padding and margins around text.",
+      "whenRem3": "Widths and heights of components that contain text.",
+      "whenRem4": "Border-radii on elements that hold text.",
+      "whenPxLead": "Where px still makes sense:",
+      "whenPx1": "Hairline borders that you want pixel-precise regardless of user settings.",
+      "whenPx2": "Specific visual details that shouldn't scale, like dividers or small icons.",
+      "whenPx3": "One-off values from design tools when you need to match a mockup exactly.",
+      "whenOutro": "A useful test: if changing the value would affect how the user reads or interacts with the page, rem is probably the right choice. If it's purely decorative or structural, px is fine."
     },
     "vagueLabel": {
       "summary": "Automated tools verify a button has a name, but they can't tell whether the name is meaningful out of context.",

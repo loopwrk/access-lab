@@ -29,6 +29,13 @@
 
       window.addEventListener("message", function (e) {
         if (e.data && e.data.type === "preview:render") {
+          if (
+            typeof e.data.rootFontSize === "number" &&
+            e.data.rootFontSize > 0
+          ) {
+            document.documentElement.style.fontSize =
+              e.data.rootFontSize + "px";
+          }
           frameworkCss.textContent = e.data.css || "";
           mount.innerHTML = e.data.html;
 

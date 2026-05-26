@@ -9,13 +9,15 @@ import { vagueLabel } from "~/rules/shared/vague-label";
  * Owns the entire per-route lifecycle that used to live in the page's
  * setup script:
  *   - the reactive component-props ref, seeded from defaultProps
- *   - a debounced render pipeline (props → render fn → iframe → code drawer)
+ *   - a debounced render pipeline (props -> render fn -> iframe -> code drawer)
  *   - registration of prop-based custom rules (component's own + shared)
  *   - registration of DOM-based custom rules (shared, applied universally)
  *   - timer cleanup on unmount
+ *   - resolving CssLength props to flat px before passing to the rules
+ *     engine, so rule code stays unit-agnostic
  *
  * The caller wires `previewRef` to `<PreviewIframe ref="...">` and
- * v-binds `componentProps` to `<ControlsPanel v-model="...">`..
+ * v-binds `componentProps` to `<ControlsPanel v-model="...">`.
  *
  * @param definition  The component contract to drive.
  * @param options.debounceMs  Render debounce window. Defaults to 10ms.
@@ -27,7 +29,7 @@ export function useInspectedComponent(
   const debounceMs = options.debounceMs ?? 10;
 
   const previewRef = ref<{
-    render: (html: string, css?: string) => void;
+    render: (html: string, css?: string, rootFontSize?: number) => void;
   } | null>(null);
 
   const componentProps = ref<Partial<Record<string, unknown>>>({
@@ -43,18 +45,32 @@ export function useInspectedComponent(
   useDomRules([contentOverflow]);
 
   const { setHtml } = useRenderedHtml();
+  const unitConv = useUnitConversion();
 
   let renderTimer: ReturnType<typeof setTimeout> | null = null;
 
   watch(
-    componentProps,
+    // Both deps: re-render on prop changes AND on simulated-root changes
+    // (the slider in the controls panel sets the root; the iframe needs
+    // to repaint to honour the new base for rem values).
+    [componentProps, unitConv.simulatedRootPx],
     () => {
       if (renderTimer) clearTimeout(renderTimer);
       renderTimer = setTimeout(() => {
         const html = definition.render(componentProps.value);
-        previewRef.value?.render(html);
+        previewRef.value?.render(
+          html,
+          undefined,
+          unitConv.simulatedRootPx.value,
+        );
         setHtml(html);
-        customRules.evaluate(componentProps.value);
+        // Resolve any CssLength values to flat px so rule evaluators
+        // (target-size, contrast-via-fontSize, etc.) can keep reading
+        // props.<key> as numbers without caring about units.
+        const resolved = unitConv.resolveProps(
+          componentProps.value as Record<string, unknown>,
+        );
+        customRules.evaluate(resolved);
       }, debounceMs);
     },
     { deep: true, immediate: true },
