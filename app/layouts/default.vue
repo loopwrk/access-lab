@@ -197,21 +197,22 @@ async function skipToPanel(tabName: 'controls' | 'issues', elementId: string) {
       <!-- Main content -->
       <main id="main-content" class="main" tabindex="-1">
         <!-- Preview toolbar -->
-        <div class="preview-toolbar">
-          <div class="preview-toolbar-left">
-            <h1 class="preview-title">
+        <div
+          class="flex flex-wrap items-center justify-between gap-4 py-2.5 px-5 border-b border-(--border) bg-(--surface)">
+          <div class="flex items-center gap-3">
+            <h1 class="m-0 font-medium text-(length:--al-font-size-heading) text-(--text-primary)">
               {{ t('preview.title') }}
             </h1>
           </div>
 
-          <div class="preview-toolbar-right">
-            <UBadge color="error" variant="soft" size="md">
+          <div class="flex gap-2">
+            <UBadge color="error" variant="soft" size="lg">
               {{ t('counter.critical', { count: criticalCount }) }}
             </UBadge>
-            <UBadge color="warning" variant="soft" size="md">
+            <UBadge color="warning" variant="soft" size="lg">
               {{ t('counter.warnings', { count: warningCount }) }}
             </UBadge>
-            <UBadge color="success" variant="soft" size="md">
+            <UBadge color="success" variant="soft" size="lg">
               {{ t('counter.passing', { count: passingCount }) }}
             </UBadge>
           </div>
@@ -258,7 +259,7 @@ async function skipToPanel(tabName: 'controls' | 'issues', elementId: string) {
 
       <!-- Right inspector -->
       <aside class="inspector" aria-label="Inspection panel">
-        <UTabs v-model="activeTab" :items="tabItems" variant="link" color="primary" size="sm" :content="false"
+        <UTabs v-model="activeTab" :items="tabItems" variant="link" color="primary" size="lg" :content="false"
           :ui="{ list: 'justify-around', label: 'overflow-visible whitespace-nowrap' }" />
 
         <!-- Tab panels 
@@ -430,36 +431,6 @@ async function skipToPanel(tabName: 'controls' | 'issues', elementId: string) {
 
 .main:focus {
   outline: none;
-}
-
-/* Preview toolbar */
-.preview-toolbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 20px;
-  border-bottom: 1px solid var(--border);
-  background: var(--surface);
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-.preview-toolbar-left {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.preview-title {
-  font-size: var(--al-font-size-heading);
-  font-weight: 500;
-  color: var(--text-primary);
-  margin: 0;
-}
-
-.preview-toolbar-right {
-  display: flex;
-  gap: 8px;
 }
 
 /* Preview area */

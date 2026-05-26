@@ -8,6 +8,12 @@ export default defineAppConfig({
       success: "success",
       info: "info",
     },
+    alert: {
+      slots: {
+        title: "!text-(length:--al-font-size-alert)",
+        description: "!text-(length:--al-font-size-alert)",
+      },
+    },
     fieldGroup: {
       base: "border border-[var(--border-strong)] rounded-none overflow-hidden p-1",
     },

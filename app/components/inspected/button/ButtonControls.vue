@@ -38,19 +38,6 @@ const { t } = useI18n()
 const unitConv = useUnitConversion()
 const { defaults: browserDefaults, measureIntrinsicSize } = useBrowserDefaults(buttonDefinition.tagName)
 
-/**
- * Per-property unit picker handler. Reads the field's current unit
- * from its stored CssLength and writes a converted CssLength when the
- * picker changes, preserving the rendered pixel size at the moment of
- * switch.
- */
-function changeUnit<K extends keyof ButtonProps>(key: K, newUnit: CssUnit) {
-  const current = props.modelValue[key]
-  if (!unitConv.isCssLength(current)) return
-  if (current.unit === newUnit) return
-  update(key, unitConv.convertLength(current, newUnit) as ButtonProps[K])
-}
-
 function changeGroupUnit(
   keys: readonly (keyof ButtonProps)[],
   newUnit: CssUnit
@@ -387,24 +374,34 @@ const { ratio: contrastRatio, verdict: contrastVerdict } = useContrast(
 
 const { focusLearnTopic } = useInspectorTab()
 
-function displayLength(length: CssLength | undefined, fallbackPx: number): string {
-  return length ? String(length.value) : String(fallbackPx)
-}
-
-/**
- * Slider model-value: resolve CssLength to "slider px" (stable
- * reference of 16, independent of the simulated root) or use the px
- * fallback.
- */
 function pxOrFallback(length: CssLength | undefined, fallbackPx: number): number {
   return length ? unitConv.lengthToSliderPx(length) : fallbackPx
 }
 
-/** Pick the unit a writeback should use for a given field. Returns the
- *  field's committed unit if there is one, otherwise px.
-*/
 function unitFor(length: CssLength | undefined): CssUnit {
   return length?.unit ?? 'px'
+}
+
+function lengthOrFallback(length: CssLength | undefined, fallbackPx: number): CssLength {
+  return length ?? { value: fallbackPx, unit: 'px' }
+}
+
+function onSplitPaddingChange(key: typeof PADDING_KEYS[number], next: CssLength) {
+  const current = props.modelValue[key]
+  if (unitConv.isCssLength(current) && current.unit !== next.unit) {
+    changeGroupUnit(PADDING_KEYS, next.unit)
+  } else {
+    update(key, next)
+  }
+}
+
+function onSplitBorderChange(key: typeof BORDER_KEYS[number], next: CssLength) {
+  const current = props.modelValue[key]
+  if (unitConv.isCssLength(current) && current.unit !== next.unit) {
+    changeGroupUnit(BORDER_KEYS, next.unit)
+  } else {
+    update(key, next)
+  }
 }
 </script>
 
@@ -442,14 +439,9 @@ function unitFor(length: CssLength | undefined): CssUnit {
           <USlider :model-value="pxOrFallback(modelValue.fontSize, DEFAULTS.fontSize)" :min="8" :max="128" :step="2"
             color="primary" size="sm" :disabled="!fontSizeEnabled" class="flex-1"
             @update:model-value="update('fontSize', unitConv.fromSliderPx(Number($event), unitFor(modelValue.fontSize)))" />
-          <div v-if="fontSizeEnabled" class="flex items-center gap-1">
-            <UInput :model-value="displayLength(modelValue.fontSize, DEFAULTS.fontSize)" size="xs" type="number"
-              class="w-11 [&>input]:text-right [&>input]:-moz-appearance-textfield [&>input::-webkit-outer-spin-button]:appearance-none [&>input::-webkit-inner-spin-button]:appearance-none"
-              :disabled="!fontSizeEnabled"
-              @update:model-value="update('fontSize', { value: Number($event), unit: unitFor(modelValue.fontSize) })" />
-            <USelect :model-value="unitFor(modelValue.fontSize)" :items="unitConv.unitOptions" size="xs" class="w-16"
-              :disabled="!fontSizeEnabled" @update:model-value="changeUnit('fontSize', $event as CssUnit)" />
-          </div>
+          <LengthValueInput v-if="fontSizeEnabled"
+            :model-value="lengthOrFallback(modelValue.fontSize, DEFAULTS.fontSize)" :px-step="2"
+            :disabled="!fontSizeEnabled" @update:model-value="update('fontSize', $event)" />
         </div>
       </div>
     </fieldset>
@@ -466,22 +458,16 @@ function unitFor(length: CssLength | undefined): CssUnit {
         <div class="mb-1">
           <div class="flex items-center justify-between mb-2">
             <span class="control-group-title font-medium text-(--text-secondary)">{{ t('controls.width')
-              }}</span>
+            }}</span>
             <USwitch :model-value="widthEnabled" size="xs" color="primary" @update:model-value="toggleWidth" />
           </div>
           <div :class="[widthEnabled ? '' : 'opacity-50']" class="flex items-center gap-3">
             <USlider :model-value="pxOrFallback(modelValue.width, naturalSize.width || DEFAULTS.width)" :min="16"
               :max="400" :step="10" color="primary" size="sm" :disabled="!widthEnabled" class="flex-1"
               @update:model-value="update('width', unitConv.fromSliderPx(Number($event), unitFor(modelValue.width)))" />
-            <div v-if="widthEnabled" class="flex items-center gap-1">
-              <UInput :model-value="displayLength(modelValue.width, naturalSize.width || DEFAULTS.width)" size="xs"
-                type="number"
-                class="w-11 [&>input]:text-right [&>input]:-moz-appearance-textfield [&>input::-webkit-outer-spin-button]:appearance-none [&>input::-webkit-inner-spin-button]:appearance-none"
-                :disabled="!widthEnabled"
-                @update:model-value="update('width', { value: Number($event), unit: unitFor(modelValue.width) })" />
-              <USelect :model-value="unitFor(modelValue.width)" :items="unitConv.unitOptions" size="xs" class="w-16"
-                :disabled="!widthEnabled" @update:model-value="changeUnit('width', $event as CssUnit)" />
-            </div>
+            <LengthValueInput v-if="widthEnabled"
+              :model-value="lengthOrFallback(modelValue.width, naturalSize.width || DEFAULTS.width)" :px-step="10"
+              :disabled="!widthEnabled" @update:model-value="update('width', $event)" />
           </div>
         </div>
 
@@ -489,22 +475,16 @@ function unitFor(length: CssLength | undefined): CssUnit {
           <div class="flex items-center justify-between mb-2">
             <span class="control-group-title font-medium text-(--text-secondary)">{{
               t('controls.height')
-              }}</span>
+            }}</span>
             <USwitch :model-value="heightEnabled" size="xs" color="primary" @update:model-value="toggleHeight" />
           </div>
           <div :class="[heightEnabled ? '' : 'opacity-50']" class="flex items-center gap-3">
             <USlider :model-value="pxOrFallback(modelValue.height, naturalSize.height || DEFAULTS.height)" :min="16"
               :max="400" :step="10" color="primary" size="sm" :disabled="!heightEnabled" class="flex-1"
               @update:model-value="update('height', unitConv.fromSliderPx(Number($event), unitFor(modelValue.height)))" />
-            <div v-if="heightEnabled" class="flex items-center gap-1">
-              <UInput :model-value="displayLength(modelValue.height, naturalSize.height || DEFAULTS.height)" size="xs"
-                type="number" :step="unitConv.displayStep(10, unitFor(modelValue.height))"
-                class="w-11 [&>input]:text-right [&>input]:-moz-appearance-textfield [&>input::-webkit-outer-spin-button]:appearance-none [&>input::-webkit-inner-spin-button]:appearance-none"
-                :disabled="!heightEnabled"
-                @update:model-value="update('height', { value: Number($event), unit: unitFor(modelValue.height) })" />
-              <USelect :model-value="unitFor(modelValue.height)" :items="unitConv.unitOptions" size="xs" class="w-16"
-                :disabled="!heightEnabled" @update:model-value="changeUnit('height', $event as CssUnit)" />
-            </div>
+            <LengthValueInput v-if="heightEnabled"
+              :model-value="lengthOrFallback(modelValue.height, naturalSize.height || DEFAULTS.height)" :px-step="10"
+              :disabled="!heightEnabled" @update:model-value="update('height', $event)" />
           </div>
         </div>
       </div>
@@ -536,14 +516,9 @@ function unitFor(length: CssLength | undefined): CssUnit {
             <USlider :model-value="pxOrFallback(modelValue.padding, DEFAULTS.padding)" :min="0" :max="120" :step="2"
               color="primary" size="sm" :disabled="!paddingEnabled" class="flex-1"
               @update:model-value="updatePadding(unitConv.fromSliderPx(Number($event), unitFor(modelValue.padding)))" />
-            <div v-if="paddingEnabled" class="flex items-center gap-1">
-              <UInput :model-value="displayLength(modelValue.padding, DEFAULTS.padding)" size="xs" type="number"
-                class="w-11 [&>input]:text-right [&>input]:-moz-appearance-textfield [&>input::-webkit-outer-spin-button]:appearance-none [&>input::-webkit-inner-spin-button]:appearance-none"
-                :disabled="!paddingEnabled"
-                @update:model-value="updatePadding({ value: Number($event), unit: unitFor(modelValue.padding) })" />
-              <USelect :model-value="unitFor(modelValue.padding)" :items="unitConv.unitOptions" size="xs" class="w-16"
-                :disabled="!paddingEnabled" @update:model-value="changeGroupUnit(PADDING_KEYS, $event as CssUnit)" />
-            </div>
+            <LengthValueInput v-if="paddingEnabled"
+              :model-value="lengthOrFallback(modelValue.padding, DEFAULTS.padding)" :px-step="2"
+              :disabled="!paddingEnabled" @update:model-value="updatePadding($event)" />
           </div>
 
           <div v-else-if="effectivePaddingSplit" class="flex flex-col gap-2">
@@ -553,17 +528,9 @@ function unitFor(length: CssLength | undefined): CssUnit {
                 :model-value="pxOrFallback(modelValue[dir.key] ?? modelValue.padding, DEFAULTS.padding)" :min="0"
                 :max="120" :step="2" color="primary" size="sm" :disabled="!paddingEnabled" class="flex-1"
                 @update:model-value="update(dir.key, unitConv.fromSliderPx(Number($event), unitFor(modelValue[dir.key] ?? modelValue.padding)))" />
-              <div v-if="paddingEnabled" class="flex items-center gap-1">
-                <UInput :model-value="displayLength(modelValue[dir.key] ?? modelValue.padding, DEFAULTS.padding)"
-                  size="xs" type="number"
-                  :step="unitConv.displayStep(2, unitFor(modelValue[dir.key] ?? modelValue.padding))"
-                  class="w-16 [&>input]:text-right [&>input]:-moz-appearance-textfield [&>input::-webkit-outer-spin-button]:appearance-none [&>input::-webkit-inner-spin-button]:appearance-none"
-                  :disabled="!paddingEnabled"
-                  @update:model-value="update(dir.key, { value: Number($event), unit: unitFor(modelValue[dir.key] ?? modelValue.padding) })" />
-                <USelect :model-value="unitFor(modelValue[dir.key] ?? modelValue.padding)" :items="unitConv.unitOptions"
-                  size="xs" class="w-16" :disabled="!paddingEnabled"
-                  @update:model-value="changeGroupUnit(PADDING_KEYS, $event as CssUnit)" />
-              </div>
+              <LengthValueInput v-if="paddingEnabled"
+                :model-value="lengthOrFallback(modelValue[dir.key] ?? modelValue.padding, DEFAULTS.padding)"
+                :px-step="2" :disabled="!paddingEnabled" @update:model-value="onSplitPaddingChange(dir.key, $event)" />
             </div>
           </div>
         </UFormField>
@@ -596,15 +563,9 @@ function unitFor(length: CssLength | undefined): CssUnit {
             <USlider :model-value="pxOrFallback(modelValue.borderWidth, DEFAULTS.borderWidth)" :min="0" :max="20"
               :step="1" color="primary" size="sm" :disabled="!borderEnabled" class="flex-1"
               @update:model-value="updateBorderWidth(unitConv.fromSliderPx(Number($event), unitFor(modelValue.borderWidth)))" />
-            <div v-if="borderEnabled" class="flex items-center gap-1">
-              <UInput :model-value="displayLength(modelValue.borderWidth, DEFAULTS.borderWidth)" size="xs" type="number"
-                class="w-11 [&>input]:text-right [&>input]:-moz-appearance-textfield [&>input::-webkit-outer-spin-button]:appearance-none [&>input::-webkit-inner-spin-button]:appearance-none"
-                :disabled="!borderEnabled"
-                @update:model-value="updateBorderWidth({ value: Number($event), unit: unitFor(modelValue.borderWidth) })" />
-              <USelect :model-value="unitFor(modelValue.borderWidth)" :items="unitConv.unitOptions" size="xs"
-                class="w-16" :disabled="!borderEnabled"
-                @update:model-value="changeGroupUnit(BORDER_KEYS, $event as CssUnit)" />
-            </div>
+            <LengthValueInput v-if="borderEnabled"
+              :model-value="lengthOrFallback(modelValue.borderWidth, DEFAULTS.borderWidth)" :px-step="1"
+              :disabled="!borderEnabled" @update:model-value="updateBorderWidth($event)" />
           </div>
 
           <div v-else-if="effectiveBorderSplit" class="flex flex-col gap-2">
@@ -614,18 +575,9 @@ function unitFor(length: CssLength | undefined): CssUnit {
                 :model-value="pxOrFallback(modelValue[dir.key] ?? modelValue.borderWidth, DEFAULTS.borderWidth)"
                 :min="0" :max="20" :step="1" color="primary" size="sm" :disabled="!borderEnabled" class="flex-1"
                 @update:model-value="update(dir.key, unitConv.fromSliderPx(Number($event), unitFor(modelValue[dir.key] ?? modelValue.borderWidth)))" />
-              <div v-if="borderEnabled" class="flex items-center gap-1">
-                <UInput
-                  :model-value="displayLength(modelValue[dir.key] ?? modelValue.borderWidth, DEFAULTS.borderWidth)"
-                  size="xs" type="number"
-                  :step="unitConv.displayStep(1, unitFor(modelValue[dir.key] ?? modelValue.borderWidth))"
-                  class="w-16 [&>input]:text-right [&>input]:-moz-appearance-textfield [&>input::-webkit-outer-spin-button]:appearance-none [&>input::-webkit-inner-spin-button]:appearance-none"
-                  :disabled="!borderEnabled"
-                  @update:model-value="update(dir.key, { value: Number($event), unit: unitFor(modelValue[dir.key] ?? modelValue.borderWidth) })" />
-                <USelect :model-value="unitFor(modelValue[dir.key] ?? modelValue.borderWidth)"
-                  :items="unitConv.unitOptions" size="xs" class="w-16" :disabled="!borderEnabled"
-                  @update:model-value="changeGroupUnit(BORDER_KEYS, $event as CssUnit)" />
-              </div>
+              <LengthValueInput v-if="borderEnabled"
+                :model-value="lengthOrFallback(modelValue[dir.key] ?? modelValue.borderWidth, DEFAULTS.borderWidth)"
+                :px-step="1" :disabled="!borderEnabled" @update:model-value="onSplitBorderChange(dir.key, $event)" />
             </div>
           </div>
         </UFormField>
@@ -719,7 +671,7 @@ function unitFor(length: CssLength | undefined): CssUnit {
         </UFieldGroup>
       </UFormField>
 
-      <UFormField :label="t('controls.ariaLabel')" class="flex flex-col">
+      <UFormField :label="t('controls.ariaLabel')" class="flex flex-col mb-4">
         <UInput :model-value="modelValue.ariaLabel ?? ''" :placeholder="t('controls.ariaLabelPlaceholder')"
           class="w-full" @update:model-value="update('ariaLabel', $event)" />
       </UFormField>

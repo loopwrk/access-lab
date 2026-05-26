@@ -19,6 +19,11 @@ const { focusLearnTopic } = useInspectorTab()
         </span>
       </div>
       <USlider :model-value="unitConv.simulatedRootPx.value" :min="12" :max="32" :step="1" color="primary" size="sm"
+        :ui="{
+          track: 'bg-(--surface) ring-1 ring-(--border)',
+          range: 'bg-(--brand)',
+          thumb: 'ring-2 ring-(--brand)'
+        }"
         @update:model-value="unitConv.simulatedRootPx.value = Number($event)" />
     </div>
   </section>

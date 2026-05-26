@@ -21,6 +21,8 @@ const DEFAULT_ROOT_PX = 16;
 
 const SLIDER_REFERENCE_PX = 16;
 
+const REM_DECIMAL_PLACES = 2;
+
 export function useUnitConversion() {
   const simulatedRootPx = useState<number>(
     "al-simulated-root-px",
@@ -47,7 +49,7 @@ export function useUnitConversion() {
   function fromPx(pxValue: number, unit: CssUnit): CssLength {
     if (unit === "rem") {
       return {
-        value: parseFloat((pxValue / simulatedRootPx.value).toFixed(4)),
+        value: parseFloat((pxValue / simulatedRootPx.value).toFixed(REM_DECIMAL_PLACES)),
         unit: "rem",
       };
     }
@@ -57,7 +59,7 @@ export function useUnitConversion() {
   function fromSliderPx(pxValue: number, unit: CssUnit): CssLength {
     if (unit === "rem") {
       return {
-        value: parseFloat((pxValue / SLIDER_REFERENCE_PX).toFixed(4)),
+        value: parseFloat((pxValue / SLIDER_REFERENCE_PX).toFixed(REM_DECIMAL_PLACES)),
         unit: "rem",
       };
     }
@@ -71,7 +73,7 @@ export function useUnitConversion() {
 
   function displayStep(pxStep: number, unit: CssUnit): number {
     if (unit === "rem") {
-      return parseFloat((pxStep / SLIDER_REFERENCE_PX).toFixed(4));
+      return parseFloat((pxStep / SLIDER_REFERENCE_PX).toFixed(REM_DECIMAL_PLACES));
     }
     return pxStep;
   }

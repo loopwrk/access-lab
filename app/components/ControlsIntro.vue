@@ -28,7 +28,7 @@ const { focusPanel } = useInspectorTab()
     }">
     <template #description>
       <UButton :label="t('controls.intro.expandLabel')" trailing-icon="i-lucide-arrow-right" variant="link" color="info"
-        size="xs" class="px-0 items-start" :ui="{ label: 'whitespace-normal text-left' }"
+        size="md" class="px-0 items-start" :ui="{ label: 'whitespace-normal text-left' }"
         @click="focusPanel('learn')" />
     </template>
   </UAlert>

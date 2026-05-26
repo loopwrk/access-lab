@@ -28,6 +28,7 @@
   --font-size-nav: var(--al-font-size-nav);
   --font-size-heading: var(--al-font-size-heading);
   --font-size-brand: var(--al-font-size-brand);
+  --font-size-alert: var(--al-font-size-alert);
   --font-size-display: var(--al-font-size-display);
 
   /* AccessLab brand — full 50–950 shade scale for Nuxt UI */

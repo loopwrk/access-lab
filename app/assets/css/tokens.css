@@ -25,6 +25,7 @@
   --al-font-size-heading: 0.875rem; /* 14px — preview title */
   --al-font-size-brand: 0.9375rem; /* 15px — brand mark */
   --al-font-size-display: 1.125rem; /* 18px — large icons / display text */
+  --al-font-size-alert: 0.875rem /* 14px — toast / alert body */;
 }
 
 /* ── Light theme (default) ──────────────────────────────────────── */

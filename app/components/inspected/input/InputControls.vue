@@ -102,10 +102,6 @@ const typeOptions = [
   { value: 'search', label: 'search' }
 ]
 
-function displayLength(length: CssLength | undefined, fallbackPx: number): string {
-  return length ? String(length.value) : String(fallbackPx)
-}
-
 function pxOrFallback(length: CssLength | undefined, fallbackPx: number): number {
   return length ? unitConv.lengthToPx(length) : fallbackPx
 }
@@ -114,11 +110,8 @@ function unitFor(length: CssLength | undefined): CssUnit {
   return length?.unit ?? 'px'
 }
 
-function changeUnit<K extends keyof InputProps>(key: K, newUnit: CssUnit) {
-  const current = props.modelValue[key]
-  if (!unitConv.isCssLength(current)) return
-  if (current.unit === newUnit) return
-  update(key, unitConv.convertLength(current, newUnit) as InputProps[K])
+function lengthOrFallback(length: CssLength | undefined, fallbackPx: number): CssLength {
+  return length ?? { value: fallbackPx, unit: 'px' }
 }
 
 const showLabel = computed({
@@ -214,14 +207,8 @@ const required = computed({
           <USlider :model-value="pxOrFallback(modelValue.fontSize, DEFAULTS.fontSize)" :min="8" :max="128" :step="2"
             color="primary" size="sm" :disabled="!fontSizeEnabled" class="flex-1"
             @update:model-value="update('fontSize', unitConv.fromSliderPx(Number($event), unitFor(modelValue.fontSize)))" />
-          <div v-if="fontSizeEnabled" class="flex items-center gap-1">
-            <UInput :model-value="displayLength(modelValue.fontSize, DEFAULTS.fontSize)" size="xs" type="number"
-              class="w-11 [&>input]:text-right [&>input]:-moz-appearance-textfield [&>input::-webkit-outer-spin-button]:appearance-none [&>input::-webkit-inner-spin-button]:appearance-none"
-              :disabled="!fontSizeEnabled"
-              @update:model-value="update('fontSize', { value: Number($event), unit: unitFor(modelValue.fontSize) })" />
-            <USelect :model-value="unitFor(modelValue.fontSize)" :items="unitConv.unitOptions" size="xs" class="w-16"
-              :disabled="!fontSizeEnabled" @update:model-value="changeUnit('fontSize', $event as CssUnit)" />
-          </div>
+          <LengthValueInput v-if="fontSizeEnabled" :model-value="lengthOrFallback(modelValue.fontSize, DEFAULTS.fontSize)"
+            :px-step="2" :disabled="!fontSizeEnabled" @update:model-value="update('fontSize', $event)" />
         </div>
       </div>
     </fieldset>
