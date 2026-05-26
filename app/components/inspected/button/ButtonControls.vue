@@ -152,6 +152,9 @@ function rgbToHex(rgbStr: string): string {
 const isPaddingSplit = ref(false)
 const isBorderSplit = ref(false)
 
+const effectivePaddingSplit = computed(() => paddingEnabled.value && isPaddingSplit.value)
+const effectiveBorderSplit = computed(() => borderEnabled.value && isBorderSplit.value)
+
 // Every visual control defaults off so the previewed element renders with
 // raw UA styles on first paint — matching AccessLab's "see the component as
 // a browser renders it on a virgin HTML document" promise. Toggling any
@@ -423,28 +426,6 @@ function unitFor(length: CssLength | undefined): CssUnit {
 
     <USeparator />
 
-    <!--
-      Simulated browser root font-size. Drives both the iframe's <html>
-      font-size (so rem in rendered CSS resolves against this base) and
-      the controls panel's px <-> rem conversion.
-    -->
-    <fieldset class="flex flex-col gap-3 border-0 p-0 m-0">
-      <legend class="flex items-center justify-between w-full mb-1.5">
-        <a href="#topic-rem-units" class="control-group-title control-label-link"" @click.prevent="
-          focusLearnTopic('rem-units')">
-          {{ t('controls.simulatedRoot.label') }}
-          <UIcon name="i-lucide-arrow-up-right" class="control-link-title-icon" aria-hidden="true" />
-        </a>
-        <span class="text-(length:--al-font-size-detail) text-(--text-muted) font-mono">
-          {{ unitConv.simulatedRootPx.value }}px
-        </span>
-      </legend>
-      <USlider :model-value="unitConv.simulatedRootPx.value" :min="12" :max="32" :step="1" color="primary" size="sm"
-        @update:model-value="unitConv.simulatedRootPx.value = Number($event)" />
-    </fieldset>
-
-    <USeparator />
-
     <!-- TEXT -->
     <fieldset class="flex flex-col gap-3 border-0 p-0 m-0">
       <!-- <legend class="control-group-title mb-1.5">
@@ -485,7 +466,7 @@ function unitFor(length: CssLength | undefined): CssUnit {
         <div class="mb-1">
           <div class="flex items-center justify-between mb-2">
             <span class="control-group-title font-medium text-(--text-secondary)">{{ t('controls.width')
-            }}</span>
+              }}</span>
             <USwitch :model-value="widthEnabled" size="xs" color="primary" @update:model-value="toggleWidth" />
           </div>
           <div :class="[widthEnabled ? '' : 'opacity-50']" class="flex items-center gap-3">
@@ -508,7 +489,7 @@ function unitFor(length: CssLength | undefined): CssUnit {
           <div class="flex items-center justify-between mb-2">
             <span class="control-group-title font-medium text-(--text-secondary)">{{
               t('controls.height')
-            }}</span>
+              }}</span>
             <USwitch :model-value="heightEnabled" size="xs" color="primary" @update:model-value="toggleHeight" />
           </div>
           <div :class="[heightEnabled ? '' : 'opacity-50']" class="flex items-center gap-3">
@@ -544,14 +525,14 @@ function unitFor(length: CssLength | undefined): CssUnit {
             <span class="flex items-center justify-between w-full">
               <span />
               <UButton size="xs" variant="ghost" color="primary" class="pr-0" :disabled="!paddingEnabled"
-                :icon="isPaddingSplit ? 'i-lucide-square' : 'i-lucide-grid-3x3'" trailing
+                :icon="effectivePaddingSplit ? 'i-lucide-square' : 'i-lucide-grid-3x3'" trailing
                 @click="isPaddingSplit = !isPaddingSplit">
-                {{ isPaddingSplit ? 'Merge' : 'Split' }}
+                {{ effectivePaddingSplit ? 'Merge' : 'Split' }}
               </UButton>
             </span>
           </template>
 
-          <div v-if="!isPaddingSplit" class="flex items-center gap-3">
+          <div v-if="!effectivePaddingSplit" class="flex items-center gap-3">
             <USlider :model-value="pxOrFallback(modelValue.padding, DEFAULTS.padding)" :min="0" :max="120" :step="2"
               color="primary" size="sm" :disabled="!paddingEnabled" class="flex-1"
               @update:model-value="updatePadding(unitConv.fromSliderPx(Number($event), unitFor(modelValue.padding)))" />
@@ -565,7 +546,7 @@ function unitFor(length: CssLength | undefined): CssUnit {
             </div>
           </div>
 
-          <div v-else class="flex flex-col gap-2">
+          <div v-else-if="effectivePaddingSplit" class="flex flex-col gap-2">
             <div v-for="dir in paddingControls" :key="dir.id" class="flex items-center gap-2">
               <label :for="`padding-${dir.id}`" class="control-split-label">{{ dir.label }}</label>
               <USlider :id="`padding-${dir.id}`"
@@ -594,7 +575,7 @@ function unitFor(length: CssLength | undefined): CssUnit {
     <!-- BORDER -->
     <fieldset class="flex flex-col gap-3 border-0 p-0 m-0">
       <legend class="flex items-center justify-between w-full mb-1.5">
-        <!-- <span class="control-group-title">{{ t('controls.border') }}</span> -->
+        <span class="control-group-title">{{ t('controls.borderWidth') }}</span>
         <USwitch :model-value="borderEnabled" size="xs" color="primary" @update:model-value="toggleBorder" />
       </legend>
 
@@ -602,17 +583,16 @@ function unitFor(length: CssLength | undefined): CssUnit {
         <UFormField class="control-field [&>div]:w-full [&_label]:w-full">
           <template #label>
             <span class="flex items-center justify-between w-full">
-              <span class="control-group-title font-medium text-(--text-secondary)">{{ t('controls.borderWidth')
-              }}</span>
+              <span />
               <UButton size="xs" variant="ghost" color="primary" class="pr-0" :disabled="!borderEnabled"
-                :icon="isBorderSplit ? 'i-lucide-square' : 'i-lucide-grid-3x3'" trailing
+                :icon="effectiveBorderSplit ? 'i-lucide-square' : 'i-lucide-grid-3x3'" trailing
                 @click="isBorderSplit = !isBorderSplit">
-                {{ isBorderSplit ? 'Merge' : 'Split' }}
+                {{ effectiveBorderSplit ? 'Merge' : 'Split' }}
               </UButton>
             </span>
           </template>
 
-          <div v-if="!isBorderSplit" class="flex items-center gap-3">
+          <div v-if="!effectiveBorderSplit" class="flex items-center gap-3">
             <USlider :model-value="pxOrFallback(modelValue.borderWidth, DEFAULTS.borderWidth)" :min="0" :max="20"
               :step="1" color="primary" size="sm" :disabled="!borderEnabled" class="flex-1"
               @update:model-value="updateBorderWidth(unitConv.fromSliderPx(Number($event), unitFor(modelValue.borderWidth)))" />
@@ -627,7 +607,7 @@ function unitFor(length: CssLength | undefined): CssUnit {
             </div>
           </div>
 
-          <div v-else class="flex flex-col gap-2">
+          <div v-else-if="effectiveBorderSplit" class="flex flex-col gap-2">
             <div v-for="dir in borderControls" :key="dir.id" class="flex items-center gap-2">
               <label :for="`border-${dir.id}`" class="control-split-label">{{ dir.label }}</label>
               <USlider :id="`border-${dir.id}`"

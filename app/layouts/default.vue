@@ -270,6 +270,7 @@ async function skipToPanel(tabName: 'controls' | 'issues', elementId: string) {
 
         <div class="inspector-panels">
           <div v-show="activeTab === 'controls'" id="controls-panel" class="inspector-panel" tabindex="0">
+            <RootEmSlider />
           </div>
 
           <div v-show="activeTab === 'issues'" id="issues-panel" class="inspector-panel" tabindex="0">
@@ -480,7 +481,7 @@ async function skipToPanel(tabName: 'controls' | 'issues', elementId: string) {
 
 /* ── Right inspector ────────────────────────────────────────────── */
 .inspector {
-  width: 320px;
+  width: 380px;
   border-left: 1px solid var(--border);
   background: var(--bg);
   display: flex;
