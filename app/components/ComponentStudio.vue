@@ -2,13 +2,7 @@
 /**
  * Mounts the full studio for a real (non-placeholder) component definition.
  *
- * ControlsPanel and ManualReviewPanel are still hardcoded to Button's
- * imports (audit steps 5 and 6). Until the panel decoupling lands we
- * mount them only when the active definition is Button. Other real
- * definitions (Input, etc.) still get the agnostic panels (Issues,
- * Learn) plus a live preview, so axe findings and Learn content keep
- * working end-to-end. The hasButtonControls flag here is the only
- * site that needs to change when those panels become definition-driven.
+ * Controls panel is sourced from `definition.controlsComponent`
  */
 import type { ComponentDefinition } from '~/types/component'
 
@@ -17,8 +11,6 @@ const props = defineProps<{
 }>()
 
 const { previewRef, componentProps } = useInspectedComponent(props.definition)
-
-const hasButtonControls = computed(() => props.definition.id === 'button')
 
 const toast = useToast()
 
@@ -42,14 +34,14 @@ onBeforeUnmount(() => window.removeEventListener('message', onMessage))
       <PreviewIframe ref="previewRef" />
     </div>
   </div>
-  <Teleport v-if="hasButtonControls" to="#controls-panel">
-    <ControlsPanel v-model="componentProps" />
+  <Teleport v-if="props.definition.controlsComponent" to="#controls-panel">
+    <component :is="props.definition.controlsComponent" v-model="componentProps" />
   </Teleport>
   <Teleport to="#issues-panel">
     <IssuesPanel />
   </Teleport>
-  <Teleport v-if="hasButtonControls" to="#manual-panel">
-    <ManualReviewPanel />
+  <Teleport to="#manual-panel">
+    <ManualReviewPanel :checklist="props.definition.manualChecklist" />
   </Teleport>
   <Teleport to="#learn-panel">
     <LearnPanel />

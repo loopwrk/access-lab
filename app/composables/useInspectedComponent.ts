@@ -17,7 +17,8 @@ import { vagueLabel } from "~/rules/shared/vague-label";
  *     engine, so rule code stays unit-agnostic
  *
  * The caller wires `previewRef` to `<PreviewIframe ref="...">` and
- * v-binds `componentProps` to `<ControlsPanel v-model="...">`.
+ * v-binds `componentProps` to whichever controls panel the component
+ * declares (`definition.controlsComponent`), via ComponentStudio.
  *
  * @param definition  The component contract to drive.
  * @param options.debounceMs  Render debounce window. Defaults to 10ms.

@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import { buttonManualChecklist } from '~/rules/button/manual-checklist'
+import type { ManualChecklistItem } from '~/rules/types'
+
+const props = defineProps<{
+  checklist?: ManualChecklistItem[]
+}>()
 
 const ACRONYMS = new Set(['aa', 'aaa', 'wcag', 'aria', 'html', 'css', 'svg', 'url', 'id'])
 
@@ -10,7 +14,7 @@ function formatRuleId(id: string): string {
 }
 
 const { items, setChecked, checkAll, uncheckAll, checkedCount, totalCount, progressPercent } =
-  useManualReview(buttonManualChecklist)
+  useManualReview(props.checklist ?? [])
 
 const { t } = useI18n()
 

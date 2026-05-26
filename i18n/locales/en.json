@@ -93,7 +93,20 @@
     "ariaLabelPlaceholder": "e.g. Search products",
     "contentType": "Button content",
     "contentTypeText": "Text",
-    "contentTypeIcon": "Icon"
+    "contentTypeIcon": "Icon",
+    "input": {
+      "label": "Field label",
+      "labelPlaceholder": "e.g. Email address",
+      "showLabel": "Show label",
+      "ariaLabel": "aria-label",
+      "ariaLabelPlaceholder": "Accessible name when the visible label is hidden",
+      "placeholder": "Placeholder",
+      "placeholderHint": "Optional hint shown inside the empty field",
+      "type": "Type",
+      "required": "Required",
+      "helpText": "Help text",
+      "helpTextPlaceholder": "e.g. We'll never share this address"
+    }
   },
   "contrast": {
     "label": "Contrast",

@@ -485,7 +485,7 @@ function unitFor(length: CssLength | undefined): CssUnit {
         <div class="mb-1">
           <div class="flex items-center justify-between mb-2">
             <span class="control-group-title font-medium text-(--text-secondary)">{{ t('controls.width')
-              }}</span>
+            }}</span>
             <USwitch :model-value="widthEnabled" size="xs" color="primary" @update:model-value="toggleWidth" />
           </div>
           <div :class="[widthEnabled ? '' : 'opacity-50']" class="flex items-center gap-3">
@@ -508,7 +508,7 @@ function unitFor(length: CssLength | undefined): CssUnit {
           <div class="flex items-center justify-between mb-2">
             <span class="control-group-title font-medium text-(--text-secondary)">{{
               t('controls.height')
-              }}</span>
+            }}</span>
             <USwitch :model-value="heightEnabled" size="xs" color="primary" @update:model-value="toggleHeight" />
           </div>
           <div :class="[heightEnabled ? '' : 'opacity-50']" class="flex items-center gap-3">
@@ -593,17 +593,17 @@ function unitFor(length: CssLength | undefined): CssUnit {
 
     <!-- BORDER -->
     <fieldset class="flex flex-col gap-3 border-0 p-0 m-0">
-      <!-- <legend class="flex items-center justify-between w-full mb-1.5">
-        <span class="control-group-title">{{ t('controls.border') }}</span>
+      <legend class="flex items-center justify-between w-full mb-1.5">
+        <!-- <span class="control-group-title">{{ t('controls.border') }}</span> -->
         <USwitch :model-value="borderEnabled" size="xs" color="primary" @update:model-value="toggleBorder" />
-      </legend> -->
+      </legend>
 
       <div :class="[borderEnabled ? '' : 'opacity-50']">
         <UFormField class="control-field [&>div]:w-full [&_label]:w-full">
           <template #label>
             <span class="flex items-center justify-between w-full">
               <span class="control-group-title font-medium text-(--text-secondary)">{{ t('controls.borderWidth')
-                }}</span>
+              }}</span>
               <UButton size="xs" variant="ghost" color="primary" class="pr-0" :disabled="!borderEnabled"
                 :icon="isBorderSplit ? 'i-lucide-square' : 'i-lucide-grid-3x3'" trailing
                 @click="isBorderSplit = !isBorderSplit">

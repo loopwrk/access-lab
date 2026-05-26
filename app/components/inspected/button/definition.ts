@@ -138,4 +138,8 @@ export const buttonDefinition: ComponentDefinition<ButtonProps> = {
   rules: [targetSizeAA, targetSizeAAA],
   manualChecklist: buttonManualChecklist,
   render: renderButton,
+  // Lazy-loaded panel. Static import would cycle because ButtonControls
+  // imports the ButtonProps type from this file. defineAsyncComponent
+  // defers the panel module until ComponentStudio mounts it.
+  controlsComponent: defineAsyncComponent(() => import("./ButtonControls.vue")),
 };

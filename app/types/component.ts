@@ -1,3 +1,4 @@
+import type { Component } from "vue";
 import type { ManualChecklistItem, Rule } from "~/rules/types";
 
 /**
@@ -68,6 +69,18 @@ export interface ComponentDefinition<P = Record<string, unknown>> {
   manualChecklist: ManualChecklistItem[];
   /** Pure props → HTML render function. */
   render: (props: Partial<P>) => string;
+  /**
+   * The per-component controls panel that ComponentStudio mounts via
+   * `<component :is>` into the inspector's controls tab. Each component
+   * brings its own panel because the set of meaningful controls (and
+   * their UI shape) is genuinely component-specific.
+   *
+   * Wire this with `defineAsyncComponent(() => import('./XControls.vue'))`
+   * so the static import doesn't form a cycle with the panel's import
+   * of the definition. Optional because placeholder definitions don't
+   * have a panel.
+   */
+  controlsComponent?: Component;
   /**
    * Marks the entry as a "coming soon" placeholder.
    */
