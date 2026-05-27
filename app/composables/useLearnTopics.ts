@@ -60,6 +60,15 @@ export const learnTopics: LearnTopic[] = [
       () => import("~/components/LearnTopic/FormWrapping.vue"),
     ),
   },
+  {
+    id: "accessible-name",
+    titleKey: "learn.accessibleName.title",
+    summaryKey: "learn.accessibleName.summary",
+    category: "text-and-labels",
+    component: defineAsyncComponent(
+      () => import("~/components/LearnTopic/AccessibleName.vue"),
+    ),
+  },
 ];
 
 export function getLearnTopic(id: string): LearnTopic | undefined {

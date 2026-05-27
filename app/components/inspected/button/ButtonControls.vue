@@ -685,7 +685,14 @@ function onSplitBorderChange(key: typeof BORDER_KEYS[number], next: CssLength) {
         </UFieldGroup>
       </UFormField>
 
-      <UFormField :label="t('controls.ariaLabel')" class="flex flex-col mb-4">
+      <UFormField class="flex flex-col mb-4">
+        <template #label>
+          <a href="#topic-accessible-name" class="control-group-title control-label-link"
+            @click.prevent="focusLearnTopic('accessible-name')">
+            {{ t('controls.ariaLabel') }}
+            <UIcon name="i-lucide-arrow-up-right" class="control-label-link-icon" aria-hidden="true" />
+          </a>
+        </template>
         <UInput :model-value="modelValue.ariaLabel ?? ''" :placeholder="t('controls.ariaLabelPlaceholder')"
           class="w-full" @update:model-value="update('ariaLabel', $event)" />
       </UFormField>

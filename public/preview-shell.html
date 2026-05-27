@@ -115,6 +115,30 @@
         true,
       );
 
+      // Demo-click bridge: report when the user interacts with any
+      // trigger-shaped element in the rendered preview. The parent uses
+      // this to fire the "demo action triggered" toast. Delegated here
+      // so render functions can emit plain semantic markup without an
+      // inline onclick attribute leaking AccessLab plumbing.
+      var TRIGGER_SELECTOR =
+        'button, input[type="submit"], input[type="button"], input[type="reset"]';
+
+      mount.addEventListener("click", function (event) {
+        if (event.target.closest(TRIGGER_SELECTOR)) {
+          parent.postMessage(
+            { type: "demo:click" },
+            window.location.origin,
+          );
+        }
+      });
+
+      // Cancel form submissions inside the preview. Render functions
+      // can emit a bare <form> element; the shell stops the navigation
+      // so a submit-typed button click does not blank the iframe.
+      mount.addEventListener("submit", function (event) {
+        event.preventDefault();
+      });
+
       parent.postMessage({ type: "preview:ready" }, window.location.origin);
     </script>
   </body>

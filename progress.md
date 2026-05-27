@@ -77,6 +77,9 @@
 - [x] Nuxt UI-first — every piece of app UI uses the corresponding Nuxt UI component.
 - [x] `postMessage` targets use `window.location.origin`, not `'*'`.
 
+### Architectural decisions
+- [x] **Event delegation in the iframe shell, not inline handlers in rendered markup.** `public/preview-shell.html` attaches single delegated listeners on the mount node for `click` (trigger-shaped elements) and `submit` (any form). Render functions therefore emit pure semantic markup — no `onclick`, no `onsubmit`. Rationale: the code drawer's copied HTML matches what a developer would actually write in their own project, which keeps AccessLab honest as a teaching tool. The shell's click listener uses a named `TRIGGER_SELECTOR` covering `button` and the three input button types; extend the selector when new component categories need demo feedback. The submit listener calls `preventDefault` so clicking a submit-typed button inside the form context wrapper does not navigate the iframe to a blank page.
+
 ## In progress
 
 Nothing currently in progress.

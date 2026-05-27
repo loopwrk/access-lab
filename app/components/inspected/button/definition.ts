@@ -113,10 +113,7 @@ export const buttonDefinition: ComponentDefinition<ButtonProps> = {
       key: "form",
       label: "<form>",
       learnTopicId: "form-wrapping",
-      // onsubmit prevention keeps the iframe from navigating to a blank
-      // page when the user clicks a submit-typed button.
-      wrap: (renderedHtml: string) =>
-        `<form onsubmit="return false">${renderedHtml}</form>`,
+      wrap: (renderedHtml: string) => `<form>${renderedHtml}</form>`,
     },
   ],
 

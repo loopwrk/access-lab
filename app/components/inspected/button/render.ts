@@ -3,8 +3,6 @@ import type { CssLength } from "~/composables/useUnitConversion";
 
 const DEFAULT_LABEL = "Button Label";
 
-const CLICK_BRIDGE = `onclick="parent.postMessage({type:'demo:click'},window.location.origin)"`;
-
 const BUTTON_TYPE_BY_RENDER_AS: Partial<Record<ButtonRenderAs, string>> = {
   "button-submit": "submit",
   "button-reset": "reset",
@@ -120,7 +118,6 @@ function renderNativeButton(
     attrs.push(`aria-label="${escapeAttribute(props.ariaLabel)}"`);
   }
   if (style) attrs.push(`style="${style}"`);
-  attrs.push(CLICK_BRIDGE);
 
   return `<button ${attrs.join(" ")}>${content}</button>`;
 }
@@ -138,7 +135,6 @@ function renderInputButton(
     attrs.push(`aria-label="${escapeAttribute(props.ariaLabel)}"`);
   }
   if (style) attrs.push(`style="${style}"`);
-  attrs.push(CLICK_BRIDGE);
 
   return `<input ${attrs.join(" ")}>`;
 }
