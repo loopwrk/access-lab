@@ -1,0 +1,41 @@
+{
+  "components": {
+    "button": {
+      "variants": {
+        "button-button": {
+          "description": "No implicit form behaviour.",
+          "statusNote": "Recommended for standalone actions."
+        },
+        "button": {
+          "description": "No type. Defaults to submit when inside a form.",
+          "statusNote": "Avoid. Omitting the type can cause unwanted behaviour."
+        },
+        "button-submit": {
+          "description": "Submits the parent form.",
+          "statusNote": "Use inside a form for the primary action."
+        },
+        "button-reset": {
+          "description": "Resets the parent form.",
+          "statusNote": "Rare. Confusing for users; consider omitting."
+        },
+        "input-submit": {
+          "description": "Submits the parent form. Label comes from value.",
+          "statusNote": "Restricted: no inner markup."
+        },
+        "input-button": {
+          "description": "No implicit form behaviour.",
+          "statusNote": "Avoid. Prefer a button element with type=\"button\"."
+        },
+        "input-reset": {
+          "description": "Resets the parent form. Label comes from value.",
+          "statusNote": "Rare. Confusing for users; consider omitting."
+        }
+      },
+      "contextWrappers": {
+        "form": {
+          "description": "Wraps the button in a form element to demonstrate submit/reset behaviour and highlight the accidental implicit-submit risk of an unconfigured button."
+        }
+      }
+    }
+  }
+}

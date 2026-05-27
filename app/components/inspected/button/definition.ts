@@ -49,61 +49,64 @@ export const buttonDefinition: ComponentDefinition<ButtonProps> = {
     contentType: "text",
   },
 
+  // Variant descriptions and statusNotes reference i18n keys under
+  // `components.button.variants.<key>.*` in i18n/locales/en/components.json.
+  // Markup labels stay as literal strings since they are code, not prose.
   variants: [
     {
       key: "button-button",
       label: '<button type="button">',
-      description: "No implicit form behaviour.",
+      description: "components.button.variants.button-button.description",
       status: "recommended",
-      statusNote: "Recommended for standalone actions.",
+      statusNote: "components.button.variants.button-button.statusNote",
       section: "<button> Element",
     },
     {
       key: "button",
       label: "<button>",
-      description: "No type. Defaults to submit when inside a form.",
+      description: "components.button.variants.button.description",
       status: "avoid",
-      statusNote: "Avoid — ommitting the type can cause unwanted behavior.",
+      statusNote: "components.button.variants.button.statusNote",
       section: "<button> Element",
     },
     {
       key: "button-submit",
       label: '<button type="submit">',
-      description: "Submits the parent form.",
+      description: "components.button.variants.button-submit.description",
       status: "info",
-      statusNote: "Use inside <form> for the primary action.",
+      statusNote: "components.button.variants.button-submit.statusNote",
       section: "<button> Element",
     },
     {
       key: "button-reset",
       label: '<button type="reset">',
-      description: "Resets the parent form.",
+      description: "components.button.variants.button-reset.description",
       status: "rare",
-      statusNote: "Rare. Confusing for users; consider omitting.",
+      statusNote: "components.button.variants.button-reset.statusNote",
       section: "<button> Element",
     },
     {
       key: "input-submit",
       label: '<input type="submit">',
-      description: "Submits the parent form. Label comes from value.",
+      description: "components.button.variants.input-submit.description",
       status: "neutral",
-      statusNote: "Restricted: no inner markup.",
+      statusNote: "components.button.variants.input-submit.statusNote",
       section: "<input> Alternative",
     },
     {
       key: "input-button",
       label: '<input type="button">',
-      description: "No implicit form behaviour.",
+      description: "components.button.variants.input-button.description",
       status: "avoid",
-      statusNote: 'Avoid — prefer <button type="button">.',
+      statusNote: "components.button.variants.input-button.statusNote",
       section: "<input> Alternative",
     },
     {
       key: "input-reset",
       label: '<input type="reset">',
-      description: "Resets the parent form. Label comes from value.",
+      description: "components.button.variants.input-reset.description",
       status: "rare",
-      statusNote: "Rare. Confusing for users; consider omitting.",
+      statusNote: "components.button.variants.input-reset.statusNote",
       section: "<input> Alternative",
     },
   ],
@@ -112,8 +115,7 @@ export const buttonDefinition: ComponentDefinition<ButtonProps> = {
     {
       key: "form",
       label: "<form>",
-      description:
-        "Wraps the button in a <form> element to demonstrate submit/reset behaviors and highlight the accidental implicit-submit risks of an unconfigured <button>.",
+      description: "components.button.contextWrappers.form.description",
       // onsubmit prevention keeps the iframe from navigating to a blank
       // page when the user clicks a submit-typed button.
       wrap: (renderedHtml: string) =>

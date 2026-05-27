@@ -10,6 +10,7 @@ const props = defineProps<{
   definition: ComponentDefinition<Record<string, unknown>>
 }>()
 
+const { t } = useI18n()
 const { previewRef, componentProps } = useInspectedComponent(props.definition)
 const { activeComponentName } = useStudioToolbar()
 
@@ -20,7 +21,9 @@ const renderAs = computed({
   }
 })
 
-const variantPlaceholder = computed(() => `${props.definition.name} type`)
+const variantPlaceholder = computed(() =>
+  t('variantPicker.placeholderForElement', { name: props.definition.name })
+)
 
 const enabledWrappers = computed({
   get: () => (componentProps.value.wrappers as string[] | undefined) ?? [],
@@ -34,7 +37,7 @@ const toast = useToast()
 function onMessage(event: MessageEvent) {
   if (event.data?.type === 'demo:click') {
     toast.add({
-      title: 'Demo action successfully triggered',
+      title: t('studio.demoToast.title'),
       icon: 'i-lucide-circle-check',
       color: 'success'
     })

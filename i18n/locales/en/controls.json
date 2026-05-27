@@ -1,0 +1,44 @@
+{
+  "controls": {
+    "intro": {
+      "short": "Why does switching on some custom styles change the {element}'s appearance?",
+      "expandLabel": "Learn about native rendering"
+    },
+    "simulatedRoot": {
+      "label": "Root Em (rem) value"
+    },
+    "label": "Button label",
+    "labelPlaceholder": "Trigger Demo Action",
+    "dimensions": "Dimensions",
+    "width": "Width",
+    "height": "Height",
+    "padding": "Padding",
+    "border": "Border",
+    "borderWidth": "Border width",
+    "text": "Text",
+    "fontSize": "Font size",
+    "colours": "Colours",
+    "background": "Background",
+    "textColor": "Text colour",
+    "borderColor": "Border colour",
+    "aria": "ARIA",
+    "ariaLabel": "aria-label",
+    "ariaLabelPlaceholder": "e.g. Search products",
+    "contentType": "Button content",
+    "contentTypeText": "Text",
+    "contentTypeIcon": "Icon",
+    "input": {
+      "label": "Field label",
+      "labelPlaceholder": "e.g. Email address",
+      "showLabel": "Show label",
+      "ariaLabel": "aria-label",
+      "ariaLabelPlaceholder": "Accessible name when the visible label is hidden",
+      "placeholder": "Placeholder",
+      "placeholderHint": "Optional hint shown inside the empty field",
+      "type": "Type",
+      "required": "Required",
+      "helpText": "Help text",
+      "helpTextPlaceholder": "e.g. We'll never share this address"
+    }
+  }
+}

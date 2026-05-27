@@ -1,178 +1,4 @@
 {
-  "app": {
-    "title": "AccessLab",
-    "description": "A browser-based accessibility laboratory for developers. Tune UI components in real time and surface WCAG 2.2 violations instantly."
-  },
-  "skipLinks": {
-    "main": "Skip to main content",
-    "controls": "Skip to controls",
-    "issues": "Skip to issues"
-  },
-  "appBar": {
-    "brand": "AccessLab",
-    "ariaLabel": "Application bar"
-  },
-  "comingSoon": {
-    "ariaLabel": "Coming soon notice",
-    "title": "{name} is coming soon",
-    "body": "We're still building support for this component. In the meantime, pick another component from the sidebar to start auditing — Button is ready to go."
-  },
-  "errorPage": {
-    "ariaLabel": "Error notice",
-    "title404": "404: page not found",
-    "titleGeneric": "Something went wrong",
-    "componentMissing": "Component \"{slug}\" is not in the registry.",
-    "body1": "You have arrived at a destination that doesn't exist. We would explain how you got here, but the link you clicked lacked any meaningful semantic context.",
-    "body2": "We are blaming the developer. It is the safest option.",
-    "actionLabel": "Take me somewhere useful"
-  },
-  "mobileBlocker": {
-    "ariaLabel": "Screen size notice",
-    "title": "AccessLab requires a larger screen",
-    "p1": "AccessLab displays your code, a live preview, and accessibility feedback side-by-side so you can see the immediate impact of your changes. A larger screen is required to display this.",
-    "footer": "Please reopen AccessLab on a laptop or desktop display (1024 pixels wide or more)."
-  },
-  "theme": {
-    "light": "Light",
-    "dark": "Dark",
-    "highContrast": "High contrast",
-    "switchToLight": "Switch to light mode",
-    "switchToDark": "Switch to dark mode",
-    "toggleHighContrast": "Toggle high contrast"
-  },
-  "sidebar": {
-    "toggleOpen": "Open sidebar",
-    "toggleClose": "Close sidebar",
-    "ariaLabel": "Component navigation"
-  },
-  "nav": {
-    "components": "Components",
-    "forms": "Forms",
-    "frameworkStyle": "Framework style",
-    "button": "Button",
-    "accordion": "Accordion",
-    "carousel": "Carousel",
-    "modal": "Modal / Dialog",
-    "menu": "Menu / Dropdown",
-    "tooltip": "Tooltip",
-    "tabs": "Tabs",
-    "input": "Input",
-    "none": "None (bare HTML)"
-  },
-  "preview": {
-    "title": "Button",
-    "noFramework": "No framework",
-    "toolbar": {
-      "ariaLabel": "Preview toolbar"
-    }
-  },
-  "controls": {
-    "intro": {
-      "short": "Why does switching on some custom styles change the {element}'s appearance?",
-      "expandLabel": "Learn about native rendering"
-    },
-    "simulatedRoot": {
-      "label": "Root Em (rem) value"
-    },
-    "label": "Button label",
-    "labelPlaceholder": "Trigger Demo Action",
-    "dimensions": "Dimensions",
-    "width": "Width",
-    "height": "Height",
-    "padding": "Padding",
-    "border": "Border",
-    "borderWidth": "Border width",
-    "text": "Text",
-    "fontSize": "Font size",
-    "colours": "Colours",
-    "background": "Background",
-    "textColor": "Text colour",
-    "borderColor": "Border colour",
-    "aria": "ARIA",
-    "ariaLabel": "aria-label",
-    "ariaLabelPlaceholder": "e.g. Search products",
-    "contentType": "Button content",
-    "contentTypeText": "Text",
-    "contentTypeIcon": "Icon",
-    "input": {
-      "label": "Field label",
-      "labelPlaceholder": "e.g. Email address",
-      "showLabel": "Show label",
-      "ariaLabel": "aria-label",
-      "ariaLabelPlaceholder": "Accessible name when the visible label is hidden",
-      "placeholder": "Placeholder",
-      "placeholderHint": "Optional hint shown inside the empty field",
-      "type": "Type",
-      "required": "Required",
-      "helpText": "Help text",
-      "helpTextPlaceholder": "e.g. We'll never share this address"
-    }
-  },
-  "contrast": {
-    "label": "Contrast",
-    "ratio": "{ratio}:1",
-    "verdictAAA": "AAA",
-    "verdictAA": "AA",
-    "verdictAALarge": "AA (large text only)",
-    "verdictFail": "Fails"
-  },
-
-  "inspector": {
-    "ariaLabel": "Inspection panel",
-    "controls": "Controls",
-    "issues": "Issues",
-    "manual": "Manual",
-    "learn": "Learn"
-  },
-  "panel": {
-    "controlsPlaceholder": "Controls panel placeholder",
-    "issuesPlaceholder": "Issues panel placeholder",
-    "manualPlaceholder": "Manual review panel placeholder",
-    "learnPlaceholder": "Learn panel placeholder"
-  },
-  "issues": {
-    "empty": "No accessibility violations detected.",
-    "passSummary": "{count} checks passed",
-    "whyItMatters": "Why it matters & how to fix",
-    "whyItMattersOnly": "Why it matters",
-    "whySection": "Why it matters",
-    "howToFixSection": "How to fix",
-    "nextSteps": "Review the WCAG criterion for this rule. Check the affected element in your HTML and apply the recommended fix. Re-run the audit to verify the issue is resolved.",
-    "learnMore": "Learn more about this rule",
-    "learnMoreInApp": "Read more in the Learn tab",
-    "criticalSection": "Critical ({count})",
-    "warningsSection": "Warnings ({count})",
-    "passingSection": "Passing ({count})",
-    "noCritical": "No critical issues detected",
-    "noWarnings": "No warnings detected",
-    "noPassing": "No passing checks"
-  },
-  "counter": {
-    "critical": "{count} critical",
-    "warnings": "{count} warning | {count} warnings",
-    "passing": "{count} passing"
-  },
-  "home": {
-    "welcome": "Welcome to AccessLab",
-    "instruction": "Select a component from the sidebar to begin auditing."
-  },
-  "codeDrawer": {
-    "label": "Generated HTML",
-    "copyInline": "Copy in-line",
-    "copyClasses": "Copy with classes",
-    "copyLabel": "Copy to clipboard",
-    "copied": "Copied",
-    "empty": "No HTML generated yet."
-  },
-  "manual": {
-    "title": "Manual Review",
-    "preface": "Automated tools like this one can't catch all accessibility barriers. This manual checklist guides you through the remaining, context-dependent checks that require human judgment.",
-    "progress": "{checked} of {total} reviewed",
-    "empty": "No manual review items. Axe may flag items as needing human review when it cannot fully determine compliance automatically.",
-    "checkAll": "Check all",
-    "uncheckAll": "Clear all",
-    "learnMore": "Learn more about this rule"
-  },
   "learn": {
     "index": {
       "title": "Topics"
@@ -193,8 +19,8 @@
       "focusRingsBody": "You must ensure clear keyboard focus indicators exist, maintaining at least a 3:1 contrast ratio so keyboard users don't lose their place.",
       "hitAreasTitle": "Hit Areas",
       "hitAreasBody": "The button must maintain a sufficient physical size (at least 44x44 pixels) for touch screens and users with limited motor control.",
-      "contrastTitle": "Color Contrast",
-      "contrastBody": "Text-to-background contrast must remain high enough to prevent the button from becoming unreadable for users with low vision or color blindness."
+      "contrastTitle": "Colour Contrast",
+      "contrastBody": "Text-to-background contrast must remain high enough to prevent the button from becoming unreadable for users with low vision or colour blindness."
     },
     "remUnits": {
       "summary": "rem is a CSS length unit that scales with the user's browser font-size preference. Using it for layout values respects accessibility settings that px values ignore.",
@@ -249,7 +75,7 @@
     "invisibleText": {
       "summary": "When text colour matches its background exactly, automated contrast checks are skipped. But the text disappears.",
       "title": "\"Invisible\" Text Slips Past Automated Tests",
-      "intro": "When text color matches its background color exactly, the text completely disappears from view. However, the code is still there. A screen reader will still read the words out loud, search engines will still index them, and the browser still builds space for them. But a sighted user will never see them.",
+      "intro": "When text colour matches its background colour exactly, the text completely disappears from view. However, the code is still there. A screen reader will still read the words out loud, search engines will still index them, and the browser still builds space for them. But a sighted user will never see them.",
       "skipTitle": "Why Automated Checkers Deliberately Skip This",
       "skipP1": "Most automated accessibility tools skip contrast tests when the text colour and background colour are an exact match. They do this to avoid giving \"false alarm\" errors.",
       "skipP2": "Using matching colours is a common, though outdated, trick developers use to intentionally hide content from sighted users while keeping it available for screen readers (like hidden form labels or extra context for links). Because an automated tool cannot tell the difference between a mistake and an intentional design choice, it simply skips the test.",

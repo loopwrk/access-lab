@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { onClickOutside } from '@vueuse/core'
 import type {
   ComponentVariant,
   ComponentVariantStatus,
@@ -11,16 +12,32 @@ interface Props {
   title?: string
 }
 
+const { t } = useI18n()
+
 const props = withDefaults(defineProps<Props>(), {
-  placeholder: 'Variant',
-  title: 'Render as…',
+  placeholder: () => '',
+  title: () => '',
 })
+
+const resolvedPlaceholder = computed(
+  () => props.placeholder || t('variantPicker.placeholder'),
+)
+const resolvedTitle = computed(() => props.title || t('variantPicker.title'))
 
 const emit = defineEmits<{
   'update:modelValue': [value: string]
 }>()
 
 const isOpen = ref(false)
+const triggerRef = ref<HTMLElement | null>(null)
+
+onClickOutside(
+  triggerRef,
+  () => {
+    if (isOpen.value) isOpen.value = false
+  },
+  { ignore: ['[data-slot="content"]'] },
+)
 
 const selectedVariant = computed(() =>
   props.variants.find(variant => variant.key === props.modelValue),
@@ -81,23 +98,29 @@ function select(key: string) {
   emit('update:modelValue', key)
   isOpen.value = false
 }
+
+const { te } = useI18n()
+function maybeTranslate(value?: string): string {
+  if (!value) return ''
+  return te(value) ? t(value) : value
+}
 </script>
 
 <template>
   <div class="inline-flex items-stretch border border-(--border) bg-(--surface-2)">
     <span
       class="flex items-center px-3 text-(length:--al-font-size-caption) font-semibold uppercase tracking-wider text-(--text-muted)">
-      Markup
+      {{ t('variantPicker.markup') }}
     </span>
     <USeparator orientation="vertical" :ui="{ border: 'border-(--border)' }" />
     <div class="flex items-center gap-2 px-3 py-1.5">
       <UPopover v-model:open="isOpen" :modal="false" :dismissible="true" :ui="{
         content: 'min-w-[480px] rounded-none bg-(--surface) border border-(--border-strong) shadow-lg'
       }">
-        <button type="button"
+        <button ref="triggerRef" type="button"
           class="inline-flex items-center gap-2 px-2.5 py-1 bg-(--brand-soft) text-(--brand) font-mono text-(length:--al-font-size-body) cursor-pointer hover:bg-(--brand-soft-2) transition-colors"
           :aria-haspopup="true" :aria-expanded="isOpen">
-          <span>{{ triggerLabel }}</span>
+          <span>{{ selectedVariant?.label ?? resolvedPlaceholder }}</span>
           <UIcon name="i-lucide-chevron-down" class="size-3.5" aria-hidden="true" />
         </button>
 
@@ -106,7 +129,7 @@ function select(key: string) {
             <div class="px-4 py-3 bg-(--brand-soft) border-b border-(--border)">
               <p
                 class="m-0 text-(length:--al-font-size-caption) font-semibold uppercase tracking-wider text-(--text-muted)">
-                {{ title }}
+                {{ resolvedTitle }}
               </p>
             </div>
 
@@ -128,23 +151,22 @@ function select(key: string) {
                 </code>
                     <UBadge v-if="variant.status === 'recommended'" color="success" variant="soft" size="sm"
                       :ui="{ base: 'rounded-none uppercase tracking-wider' }">
-                      Recommended
+                      {{ t('variantPicker.recommended') }}
                     </UBadge>
                   </span>
 
                   <span v-if="variant.description" class="text-(length:--al-font-size-body) text-(--text-secondary)">
-                    {{ variant.description }}
+                    {{ maybeTranslate(variant.description) }}
                   </span>
 
                   <UBadge v-if="variant.statusNote && visualFor(variant.status)"
                     :color="visualFor(variant.status)!.color" :icon="visualFor(variant.status)!.icon" variant="soft"
-                    size="md"
-                    :ui="{
+                    size="md" :ui="{
                       base: variant.status === 'neutral'
                         ? 'rounded-none self-start bg-(--surface-2) text-(--text-secondary)'
                         : 'rounded-none self-start'
                     }">
-                    {{ variant.statusNote }}
+                    {{ maybeTranslate(variant.statusNote) }}
                   </UBadge>
                 </button>
               </div>
