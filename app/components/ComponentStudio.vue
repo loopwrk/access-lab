@@ -11,6 +11,23 @@ const props = defineProps<{
 }>()
 
 const { previewRef, componentProps } = useInspectedComponent(props.definition)
+const { activeComponentName } = useStudioToolbar()
+
+const renderAs = computed({
+  get: () => (componentProps.value.renderAs as string | undefined) ?? '',
+  set: (next: string) => {
+    componentProps.value = { ...componentProps.value, renderAs: next }
+  }
+})
+
+const variantPlaceholder = computed(() => `${props.definition.name} type`)
+
+const enabledWrappers = computed({
+  get: () => (componentProps.value.wrappers as string[] | undefined) ?? [],
+  set: (next: string[]) => {
+    componentProps.value = { ...componentProps.value, wrappers: next }
+  }
+})
 
 const toast = useToast()
 
@@ -24,8 +41,15 @@ function onMessage(event: MessageEvent) {
   }
 }
 
-onMounted(() => window.addEventListener('message', onMessage))
-onBeforeUnmount(() => window.removeEventListener('message', onMessage))
+onMounted(() => {
+  window.addEventListener('message', onMessage)
+  activeComponentName.value = props.definition.name
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('message', onMessage)
+  activeComponentName.value = null
+})
 </script>
 
 <template>
@@ -34,6 +58,12 @@ onBeforeUnmount(() => window.removeEventListener('message', onMessage))
       <PreviewIframe ref="previewRef" />
     </div>
   </div>
+  <Teleport v-if="props.definition.variants?.length" to="#preview-toolbar-variant">
+    <VariantPicker v-model="renderAs" :variants="props.definition.variants" :placeholder="variantPlaceholder" />
+  </Teleport>
+  <Teleport v-if="props.definition.contextWrappers?.length" to="#preview-toolbar-wrappers">
+    <WrapperToggles v-model="enabledWrappers" :options="props.definition.contextWrappers" />
+  </Teleport>
   <Teleport v-if="props.definition.controlsComponent" to="#controls-panel">
     <component :is="props.definition.controlsComponent" v-model="componentProps" />
   </Teleport>

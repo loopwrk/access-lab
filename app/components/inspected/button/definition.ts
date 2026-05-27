@@ -4,7 +4,18 @@ import { buttonManualChecklist } from "~/rules/button/manual-checklist";
 import type { ComponentDefinition } from "~/types/component";
 import type { CssLength } from "~/composables/useUnitConversion";
 
+export type ButtonRenderAs =
+  | "button"
+  | "button-submit"
+  | "button-reset"
+  | "button-button"
+  | "input-submit"
+  | "input-button"
+  | "input-reset";
+
 export interface ButtonProps {
+  renderAs: ButtonRenderAs;
+  wrappers: string[];
   label: string;
   width: CssLength;
   height: CssLength;
@@ -32,9 +43,83 @@ export const buttonDefinition: ComponentDefinition<ButtonProps> = {
   tagName: "button",
 
   defaultProps: {
+    renderAs: "button-button",
+    wrappers: [],
     label: "Trigger Demo Action",
     contentType: "text",
   },
+
+  variants: [
+    {
+      key: "button-button",
+      label: '<button type="button">',
+      description: "No implicit form behaviour.",
+      status: "recommended",
+      statusNote: "Recommended for standalone actions.",
+      section: "<button> Element",
+    },
+    {
+      key: "button",
+      label: "<button>",
+      description: "No type. Defaults to submit when inside a form.",
+      status: "avoid",
+      statusNote: "Avoid — ommitting the type can cause unwanted behavior.",
+      section: "<button> Element",
+    },
+    {
+      key: "button-submit",
+      label: '<button type="submit">',
+      description: "Submits the parent form.",
+      status: "info",
+      statusNote: "Use inside <form> for the primary action.",
+      section: "<button> Element",
+    },
+    {
+      key: "button-reset",
+      label: '<button type="reset">',
+      description: "Resets the parent form.",
+      status: "rare",
+      statusNote: "Rare. Confusing for users; consider omitting.",
+      section: "<button> Element",
+    },
+    {
+      key: "input-submit",
+      label: '<input type="submit">',
+      description: "Submits the parent form. Label comes from value.",
+      status: "neutral",
+      statusNote: "Restricted: no inner markup.",
+      section: "<input> Alternative",
+    },
+    {
+      key: "input-button",
+      label: '<input type="button">',
+      description: "No implicit form behaviour.",
+      status: "avoid",
+      statusNote: 'Avoid — prefer <button type="button">.',
+      section: "<input> Alternative",
+    },
+    {
+      key: "input-reset",
+      label: '<input type="reset">',
+      description: "Resets the parent form. Label comes from value.",
+      status: "rare",
+      statusNote: "Rare. Confusing for users; consider omitting.",
+      section: "<input> Alternative",
+    },
+  ],
+
+  contextWrappers: [
+    {
+      key: "form",
+      label: "<form>",
+      description:
+        "Wraps the button in a <form> element to demonstrate submit/reset behaviors and highlight the accidental implicit-submit risks of an unconfigured <button>.",
+      // onsubmit prevention keeps the iframe from navigating to a blank
+      // page when the user clicks a submit-typed button.
+      wrap: (renderedHtml: string) =>
+        `<form onsubmit="return false">${renderedHtml}</form>`,
+    },
+  ],
 
   controls: [
     { kind: "text", key: "label", label: "Button Label" },

@@ -12,7 +12,10 @@ const { t } = useI18n()
 const theme = useTheme()
 const font = useFont()
 const { criticalCount, warningCount, passingCount } = useAxeCounts()
+const { activeComponentName } = useStudioToolbar()
 const { renderedHtml } = useRenderedHtml()
+
+const previewTitle = computed(() => activeComponentName.value ?? t('preview.title'))
 const { convert: toClassHtml } = useInlineToClass()
 
 const copied = ref<'inline' | 'class' | 'error' | null>(null)
@@ -201,8 +204,10 @@ async function skipToPanel(tabName: 'controls' | 'issues', elementId: string) {
           class="flex flex-wrap items-center justify-between gap-4 py-2.5 px-5 border-b border-(--border) bg-(--surface)">
           <div class="flex items-center gap-3">
             <h1 class="m-0 font-medium text-(length:--al-font-size-heading) text-(--text-primary)">
-              {{ t('preview.title') }}
+              {{ previewTitle }}
             </h1>
+            <div id="preview-toolbar-variant" class="flex items-center" />
+            <div id="preview-toolbar-wrappers" class="flex items-center" />
           </div>
 
           <div class="flex gap-2">
@@ -223,8 +228,7 @@ async function skipToPanel(tabName: 'controls' | 'issues', elementId: string) {
           <slot />
         </div>
 
-        <!-- Code panel (collapsed by default) -->
-        <UCollapsible class="code-drawer">
+        <UCollapsible default-open class="code-drawer">
           <UButton :label="t('codeDrawer.label')" color="neutral" variant="ghost" block
             trailing-icon="i-lucide-chevron-down" class="group"
             :ui="{ trailingIcon: 'group-data-[state=open]:rotate-180 transition-transform duration-200' }" />

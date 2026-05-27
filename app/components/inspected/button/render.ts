@@ -1,31 +1,54 @@
-import type { ButtonProps } from "./definition";
+import type { ButtonProps, ButtonRenderAs } from "./definition";
 import type { CssLength } from "~/composables/useUnitConversion";
 
-function escape(str: string): string {
-  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+const DEFAULT_LABEL = "Button Label";
+
+const CLICK_BRIDGE = `onclick="parent.postMessage({type:'demo:click'},window.location.origin)"`;
+
+const BUTTON_TYPE_BY_RENDER_AS: Partial<Record<ButtonRenderAs, string>> = {
+  "button-submit": "submit",
+  "button-reset": "reset",
+  "button-button": "button",
+};
+
+const INPUT_TYPE_BY_RENDER_AS: Partial<Record<ButtonRenderAs, string>> = {
+  "input-submit": "submit",
+  "input-button": "button",
+  "input-reset": "reset",
+};
+
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
 }
 
-function fmt(length: CssLength): string {
+function escapeAttribute(value: string): string {
+  return escapeHtml(value).replace(/"/g, "&quot;");
+}
+
+function formatLength(length: CssLength): string {
   return `${length.value}${length.unit}`;
 }
 
-function side(
+function resolveSide(
   explicit: CssLength | undefined,
   shorthand: CssLength | undefined,
 ): CssLength {
   return explicit ?? shorthand ?? { value: 0, unit: "px" };
 }
 
-export function renderButton(props?: Partial<ButtonProps>): string {
-  if (!props) return "<button>Button Label</button>";
+function buildInlineStyle(props: Partial<ButtonProps>): string {
+  const declarations: string[] = [];
 
-  const style: string[] = [];
-
-  if (props.bg) style.push(`background:${props.bg}`);
-  if (props.fgText) style.push(`color:${props.fgText}`);
-  if (props.width) style.push(`width:${fmt(props.width)}`);
-  if (props.height) style.push(`height:${fmt(props.height)}`);
-  if (props.fontSize) style.push(`font-size:${fmt(props.fontSize)}`);
+  if (props.bg) declarations.push(`background:${props.bg}`);
+  if (props.fgText) declarations.push(`color:${props.fgText}`);
+  if (props.width) declarations.push(`width:${formatLength(props.width)}`);
+  if (props.height) declarations.push(`height:${formatLength(props.height)}`);
+  if (props.fontSize) {
+    declarations.push(`font-size:${formatLength(props.fontSize)}`);
+  }
 
   const hasIndividualPadding =
     props.paddingTop != null ||
@@ -34,13 +57,15 @@ export function renderButton(props?: Partial<ButtonProps>): string {
     props.paddingLeft != null;
 
   if (hasIndividualPadding) {
-    const pt = side(props.paddingTop, props.padding);
-    const pr = side(props.paddingRight, props.padding);
-    const pb = side(props.paddingBottom, props.padding);
-    const pl = side(props.paddingLeft, props.padding);
-    style.push(`padding:${fmt(pt)} ${fmt(pr)} ${fmt(pb)} ${fmt(pl)}`);
+    const top = resolveSide(props.paddingTop, props.padding);
+    const right = resolveSide(props.paddingRight, props.padding);
+    const bottom = resolveSide(props.paddingBottom, props.padding);
+    const left = resolveSide(props.paddingLeft, props.padding);
+    declarations.push(
+      `padding:${formatLength(top)} ${formatLength(right)} ${formatLength(bottom)} ${formatLength(left)}`,
+    );
   } else if (props.padding != null) {
-    style.push(`padding:${fmt(props.padding)}`);
+    declarations.push(`padding:${formatLength(props.padding)}`);
   }
 
   const hasIndividualBorder =
@@ -50,41 +75,85 @@ export function renderButton(props?: Partial<ButtonProps>): string {
     props.borderLeftWidth != null;
 
   if (hasIndividualBorder) {
-    const bt = side(props.borderTopWidth, props.borderWidth);
-    const br = side(props.borderRightWidth, props.borderWidth);
-    const bb = side(props.borderBottomWidth, props.borderWidth);
-    const bl = side(props.borderLeftWidth, props.borderWidth);
-    style.push(
-      `border-top-width:${fmt(bt)}`,
-      `border-right-width:${fmt(br)}`,
-      `border-bottom-width:${fmt(bb)}`,
-      `border-left-width:${fmt(bl)}`,
+    const top = resolveSide(props.borderTopWidth, props.borderWidth);
+    const right = resolveSide(props.borderRightWidth, props.borderWidth);
+    const bottom = resolveSide(props.borderBottomWidth, props.borderWidth);
+    const left = resolveSide(props.borderLeftWidth, props.borderWidth);
+    declarations.push(
+      `border-top-width:${formatLength(top)}`,
+      `border-right-width:${formatLength(right)}`,
+      `border-bottom-width:${formatLength(bottom)}`,
+      `border-left-width:${formatLength(left)}`,
       `border-style:solid`,
     );
   } else if (props.borderWidth != null && props.borderWidth.value > 0) {
-    style.push(`border-width:${fmt(props.borderWidth)}`, "border-style:solid");
+    declarations.push(
+      `border-width:${formatLength(props.borderWidth)}`,
+      "border-style:solid",
+    );
   }
 
-  const hasBorder =
+  const hasAnyBorder =
     hasIndividualBorder ||
     (props.borderWidth != null && props.borderWidth.value > 0);
-  if (props.borderColor && hasBorder) {
-    style.push(`border-color:${props.borderColor}`);
+  if (props.borderColor && hasAnyBorder) {
+    declarations.push(`border-color:${props.borderColor}`);
   }
 
-  const styleStr = style.join(";");
+  return declarations.join(";");
+}
 
-  const label = escape(props.label ?? "Button Label");
-
-  const attrs: string[] = [];
-  if (props.ariaLabel) attrs.push(`aria-label="${escape(props.ariaLabel)}"`);
-
+function renderNativeButton(
+  props: Partial<ButtonProps>,
+  style: string,
+  explicitType: string | undefined,
+): string {
+  const label = escapeHtml(props.label ?? DEFAULT_LABEL);
   const content =
     props.contentType === "icon"
       ? '<span aria-hidden="true">&#128269;</span>'
       : label;
 
-  const html = `<button${attrs.length ? " " + attrs.join(" ") : ""}${styleStr ? ` style="${styleStr}"` : ""} onclick="parent.postMessage({type:'demo:click'},window.location.origin)">${content}</button>`;
+  const attrs: string[] = [];
+  if (explicitType) attrs.push(`type="${explicitType}"`);
+  if (props.ariaLabel) {
+    attrs.push(`aria-label="${escapeAttribute(props.ariaLabel)}"`);
+  }
+  if (style) attrs.push(`style="${style}"`);
+  attrs.push(CLICK_BRIDGE);
 
-  return html;
+  return `<button ${attrs.join(" ")}>${content}</button>`;
+}
+
+function renderInputButton(
+  type: string,
+  props: Partial<ButtonProps>,
+  style: string,
+): string {
+  const value = props.label ?? "";
+
+  const attrs: string[] = [`type="${type}"`];
+  if (value) attrs.push(`value="${escapeAttribute(value)}"`);
+  if (props.ariaLabel) {
+    attrs.push(`aria-label="${escapeAttribute(props.ariaLabel)}"`);
+  }
+  if (style) attrs.push(`style="${style}"`);
+  attrs.push(CLICK_BRIDGE);
+
+  return `<input ${attrs.join(" ")}>`;
+}
+
+export function renderButton(props?: Partial<ButtonProps>): string {
+  if (!props) return `<button>${DEFAULT_LABEL}</button>`;
+
+  const style = buildInlineStyle(props);
+  const renderAs = props.renderAs ?? "button";
+
+  const inputType = INPUT_TYPE_BY_RENDER_AS[renderAs];
+  if (inputType) {
+    return renderInputButton(inputType, props, style);
+  }
+
+  const explicitButtonType = BUTTON_TYPE_BY_RENDER_AS[renderAs];
+  return renderNativeButton(props, style, explicitButtonType);
 }

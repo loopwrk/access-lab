@@ -50,6 +50,20 @@ export function useInspectedComponent(
 
   let renderTimer: ReturnType<typeof setTimeout> | null = null;
 
+  function applyContextWrappers(renderedHtml: string): string {
+    const enabledKeys = componentProps.value.wrappers as string[] | undefined;
+    if (!enabledKeys?.length || !definition.contextWrappers?.length) {
+      return renderedHtml;
+    }
+    let wrapped = renderedHtml;
+    for (const wrapper of definition.contextWrappers) {
+      if (enabledKeys.includes(wrapper.key)) {
+        wrapped = wrapper.wrap(wrapped);
+      }
+    }
+    return wrapped;
+  }
+
   watch(
     // Both deps: re-render on prop changes AND on simulated-root changes
     // (the slider in the controls panel sets the root; the iframe needs
@@ -58,7 +72,9 @@ export function useInspectedComponent(
     () => {
       if (renderTimer) clearTimeout(renderTimer);
       renderTimer = setTimeout(() => {
-        const html = definition.render(componentProps.value);
+        const html = applyContextWrappers(
+          definition.render(componentProps.value),
+        );
         previewRef.value?.render(
           html,
           undefined,

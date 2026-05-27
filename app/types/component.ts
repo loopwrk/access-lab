@@ -81,8 +81,41 @@ export interface ComponentDefinition<P = Record<string, unknown>> {
    * have a panel.
    */
   controlsComponent?: Component;
+  variants?: ComponentVariant[];
+  contextWrappers?: ContextWrapper[];
   /**
    * Marks the entry as a "coming soon" placeholder.
    */
   placeholder?: boolean;
+}
+
+export type ComponentVariantStatus =
+  | "recommended"
+  | "info"
+  | "avoid"
+  | "rare"
+  | "neutral";
+
+export interface ComponentVariant {
+  /** Value written into `props.renderAs`. */
+  key: string;
+  /** Typically the literal markup. */
+  label: string;
+  /** Optional longer description for the picker option. */
+  description?: string;
+  /** Pedagogical status. Drives badge colour and icon in the picker. */
+  status?: ComponentVariantStatus;
+  /** One-line guidance shown as a badge under the description. */
+  statusNote?: string;
+  /** Optional section heading. Adjacent variants sharing the same
+   *  section are grouped under one header in the picker. */
+  section?: string;
+}
+
+export interface ContextWrapper {
+  key: string;
+  label: string;
+  description?: string;
+  /** Wraps the rendered HTML and returns the surrounding markup. */
+  wrap: (renderedHtml: string) => string;
 }

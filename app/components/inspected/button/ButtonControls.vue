@@ -142,6 +142,20 @@ const isBorderSplit = ref(false)
 const effectivePaddingSplit = computed(() => paddingEnabled.value && isPaddingSplit.value)
 const effectiveBorderSplit = computed(() => borderEnabled.value && isBorderSplit.value)
 
+const isButtonTag = computed(() =>
+  !(props.modelValue.renderAs ?? 'button').startsWith('input-'),
+)
+
+// Input variants are void elements and can't host inner markup, so the
+// icon contentType is meaningless for them. Reset it to text whenever
+// the user moves away from any <button> variant so the iframe doesn't
+// show stale state.
+watch(isButtonTag, buttonTag => {
+  if (!buttonTag && props.modelValue.contentType === 'icon') {
+    update('contentType', 'text')
+  }
+})
+
 // Every visual control defaults off so the previewed element renders with
 // raw UA styles on first paint — matching AccessLab's "see the component as
 // a browser renders it on a virgin HTML document" promise. Toggling any
@@ -653,7 +667,7 @@ function onSplitBorderChange(key: typeof BORDER_KEYS[number], next: CssLength) {
         {{ t('controls.aria') }}
       </legend>
 
-      <UFormField class="flex flex-col">
+      <UFormField v-if="isButtonTag" class="flex flex-col">
         <template #label>
           <span>{{ t('controls.contentType') }}</span>
         </template>
