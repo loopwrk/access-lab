@@ -69,6 +69,24 @@ export const learnTopics: LearnTopic[] = [
       () => import("~/components/LearnTopic/AccessibleName.vue"),
     ),
   },
+  {
+    id: "button-value-attribute",
+    titleKey: "learn.buttonValueAttribute.title",
+    summaryKey: "learn.buttonValueAttribute.summary",
+    category: "interaction",
+    component: defineAsyncComponent(
+      () => import("~/components/LearnTopic/ButtonValueAttribute.vue"),
+    ),
+  },
+  {
+    id: "button-types",
+    titleKey: "learn.buttonTypes.title",
+    summaryKey: "learn.buttonTypes.summary",
+    category: "interaction",
+    component: defineAsyncComponent(
+      () => import("~/components/LearnTopic/ButtonTypes.vue"),
+    ),
+  },
 ];
 
 export function getLearnTopic(id: string): LearnTopic | undefined {

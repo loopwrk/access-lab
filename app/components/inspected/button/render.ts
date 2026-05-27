@@ -114,6 +114,8 @@ function renderNativeButton(
 
   const attrs: string[] = [];
   if (explicitType) attrs.push(`type="${explicitType}"`);
+  if (props.name) attrs.push(`name="${escapeAttribute(props.name)}"`);
+  if (props.value) attrs.push(`value="${escapeAttribute(props.value)}"`);
   if (props.ariaLabel) {
     attrs.push(`aria-label="${escapeAttribute(props.ariaLabel)}"`);
   }
@@ -130,6 +132,7 @@ function renderInputButton(
   const value = props.label ?? "";
 
   const attrs: string[] = [`type="${type}"`];
+  if (props.name) attrs.push(`name="${escapeAttribute(props.name)}"`);
   if (value) attrs.push(`value="${escapeAttribute(value)}"`);
   if (props.ariaLabel) {
     attrs.push(`aria-label="${escapeAttribute(props.ariaLabel)}"`);

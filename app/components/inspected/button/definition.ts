@@ -17,6 +17,8 @@ export interface ButtonProps {
   renderAs: ButtonRenderAs;
   wrappers: string[];
   label: string;
+  value: string;
+  name: string;
   width: CssLength;
   height: CssLength;
   padding: CssLength;
@@ -46,6 +48,8 @@ export const buttonDefinition: ComponentDefinition<ButtonProps> = {
     renderAs: "button-button",
     wrappers: [],
     label: "Trigger Demo Action",
+    value: "",
+    name: "",
     contentType: "text",
   },
 
@@ -57,6 +61,7 @@ export const buttonDefinition: ComponentDefinition<ButtonProps> = {
       status: "recommended",
       statusNote: "components.button.variants.button-button.statusNote",
       section: "<button> Element",
+      seeAlsoTopicId: "button-types",
     },
     {
       key: "button",
@@ -65,6 +70,7 @@ export const buttonDefinition: ComponentDefinition<ButtonProps> = {
       status: "avoid",
       statusNote: "components.button.variants.button.statusNote",
       section: "<button> Element",
+      seeAlsoTopicId: "button-types",
     },
     {
       key: "button-submit",
@@ -73,6 +79,7 @@ export const buttonDefinition: ComponentDefinition<ButtonProps> = {
       status: "info",
       statusNote: "components.button.variants.button-submit.statusNote",
       section: "<button> Element",
+      seeAlsoTopicId: "button-types",
     },
     {
       key: "button-reset",
@@ -81,6 +88,7 @@ export const buttonDefinition: ComponentDefinition<ButtonProps> = {
       status: "rare",
       statusNote: "components.button.variants.button-reset.statusNote",
       section: "<button> Element",
+      seeAlsoTopicId: "button-types",
     },
     {
       key: "input-submit",
@@ -97,6 +105,7 @@ export const buttonDefinition: ComponentDefinition<ButtonProps> = {
       status: "avoid",
       statusNote: "components.button.variants.input-button.statusNote",
       section: "<input> Alternative",
+      seeAlsoTopicId: "button-types",
     },
     {
       key: "input-reset",

@@ -156,6 +156,92 @@ watch(isButtonTag, buttonTag => {
   }
 })
 
+const GENERIC_DEFAULT_LABEL = buttonDefinition.defaultProps.label ?? ''
+
+// Submit and reset variants get specific defaults that demonstrate the
+// "verb + noun describing the result" pattern from the Vague Label Learn
+// topic. These are paste-ready examples of good labelling practice.
+// Applied uniformly across button-tag and input-tag variants so the
+// default behaviour is consistent regardless of element type. Users who
+// clear the field still see the UA fallback ("Submit Query" / "Reset")
+// on input variants, which is a small discovery lesson.
+const VARIANT_DEFAULT_LABELS: Record<string, string> = {
+  'button-submit': 'Save changes',
+  'button-reset': 'Discard changes',
+  'input-submit': 'Save changes',
+  'input-reset': 'Discard changes',
+}
+
+function defaultLabelFor(variant: string): string {
+  return VARIANT_DEFAULT_LABELS[variant] ?? GENERIC_DEFAULT_LABEL
+}
+
+// Used by the variant-switch watcher to decide whether the user has
+// customised the label. If the current value matches any known default,
+// the user has not typed anything bespoke and the watcher is free to
+// swap to the new variant's default. Empty string is included so the
+// switch from a UA-default variant (where label is "") into a button
+// variant correctly restores a default.
+const ALL_KNOWN_DEFAULTS = new Set<string>([
+  ...Object.values(VARIANT_DEFAULT_LABELS),
+  GENERIC_DEFAULT_LABEL,
+  '',
+])
+
+const VARIANT_LABEL_PLACEHOLDER_KEYS: Record<string, string> = {
+  'button-submit': 'controls.labelPlaceholderSubmit',
+  'button-reset': 'controls.labelPlaceholderReset',
+  'input-submit': 'controls.labelPlaceholderSubmit',
+  'input-reset': 'controls.labelPlaceholderReset',
+}
+
+const labelFieldPlaceholderKey = computed(
+  () =>
+    VARIANT_LABEL_PLACEHOLDER_KEYS[props.modelValue.renderAs ?? '']
+    ?? 'controls.labelPlaceholder',
+)
+
+// Variants whose default behaviour is to participate in form submission
+// or reset. Wrapping these in a form by default reveals the behaviour
+// immediately, so the demo toast can show the submit/reset event firing.
+// Button variants without form behaviour (type=button, the bare <button>
+// that we frame as the implicit-submit pitfall) stay unwrapped so the
+// user explicitly opts in.
+const VARIANTS_WRAPPED_IN_FORM_BY_DEFAULT = [
+  'button-submit',
+  'button-reset',
+  'input-submit',
+  'input-reset',
+] as const
+const FORM_WRAPPER_KEY = 'form'
+
+// Batch label + wrapper changes into a single emit. Calling update()
+// twice in the same tick would spread a stale props.modelValue on the
+// second call and clobber the first change, because the parent has
+// not propagated the update back to props yet.
+watch(() => props.modelValue.renderAs, newRenderAs => {
+  const next: Partial<ButtonProps> = { ...props.modelValue }
+
+  // Swap the label to the new variant's default only when the user has
+  // not customised it (current label is at any known default value).
+  if (ALL_KNOWN_DEFAULTS.has(props.modelValue.label ?? '')) {
+    next.label = defaultLabelFor(newRenderAs ?? '')
+  }
+
+  const shouldWrap = VARIANTS_WRAPPED_IN_FORM_BY_DEFAULT.includes(
+    newRenderAs as typeof VARIANTS_WRAPPED_IN_FORM_BY_DEFAULT[number],
+  )
+  const currentWrappers = (props.modelValue.wrappers as string[] | undefined) ?? []
+  const isWrapped = currentWrappers.includes(FORM_WRAPPER_KEY)
+  if (shouldWrap && !isWrapped) {
+    next.wrappers = [...currentWrappers, FORM_WRAPPER_KEY]
+  } else if (!shouldWrap && isWrapped) {
+    next.wrappers = currentWrappers.filter(k => k !== FORM_WRAPPER_KEY)
+  }
+
+  emit('update:modelValue', next)
+})
+
 // Every visual control defaults off so the previewed element renders with
 // raw UA styles on first paint — matching AccessLab's "see the component as
 // a browser renders it on a virgin HTML document" promise. Toggling any
@@ -388,6 +474,18 @@ const { ratio: contrastRatio, verdict: contrastVerdict } = useContrast(
 
 const { focusLearnTopic } = useInspectorTab()
 
+// The first text field's identity depends on the variant. On a <button>,
+// it sets the inner text (the "Button Label"). On an <input> button, it
+// sets the value attribute, which serves as both the visible label and
+// the form data. The underlying prop is `label` either way; render.ts
+// places it correctly per variant.
+const labelFieldKey = computed(() =>
+  isButtonTag.value ? 'controls.label' : 'controls.valueAttribute',
+)
+const labelFieldTopicId = computed(() =>
+  isButtonTag.value ? 'vague-label' : 'button-value-attribute',
+)
+
 function pxOrFallback(length: CssLength | undefined, fallbackPx: number): number {
   return length ? unitConv.lengthToSliderPx(length) : fallbackPx
 }
@@ -425,14 +523,38 @@ function onSplitBorderChange(key: typeof BORDER_KEYS[number], next: CssLength) {
 
     <UFormField class="flex flex-col">
       <template #label>
-        <a href="#topic-vague-label" class="control-group-title control-label-link"
-          @click.prevent="focusLearnTopic('vague-label')">
-          {{ t('controls.label') }}
+        <a :href="`#topic-${labelFieldTopicId}`" class="control-group-title control-label-link"
+          @click.prevent="focusLearnTopic(labelFieldTopicId)">
+          {{ t(labelFieldKey) }}
           <UIcon name="i-lucide-arrow-up-right" class="control-label-link-icon" aria-hidden="true" />
         </a>
       </template>
-      <UInput :model-value="modelValue.label ?? 'Button Label'" class="w-full"
+      <UInput :model-value="modelValue.label ?? ''" :placeholder="t(labelFieldPlaceholderKey)" class="w-full"
         @update:model-value="update('label', $event)" />
+    </UFormField>
+
+    <UFormField v-if="isButtonTag" class="flex flex-col">
+      <template #label>
+        <a href="#topic-button-value-attribute" class="control-group-title control-label-link"
+          @click.prevent="focusLearnTopic('button-value-attribute')">
+          {{ t('controls.valueAttribute') }}
+          <UIcon name="i-lucide-arrow-up-right" class="control-label-link-icon" aria-hidden="true" />
+        </a>
+      </template>
+      <UInput :model-value="modelValue.value ?? ''" :placeholder="t('controls.valueAttributePlaceholder')"
+        class="w-full" @update:model-value="update('value', $event)" />
+    </UFormField>
+
+    <UFormField class="flex flex-col">
+      <template #label>
+        <a href="#topic-button-value-attribute" class="control-group-title control-label-link"
+          @click.prevent="focusLearnTopic('button-value-attribute')">
+          {{ t('controls.nameAttribute') }}
+          <UIcon name="i-lucide-arrow-up-right" class="control-label-link-icon" aria-hidden="true" />
+        </a>
+      </template>
+      <UInput :model-value="modelValue.name ?? ''" :placeholder="t('controls.nameAttributePlaceholder')"
+        class="w-full" @update:model-value="update('name', $event)" />
     </UFormField>
 
     <USeparator />

@@ -110,6 +110,8 @@ export interface ComponentVariant {
   /** Optional section heading. Adjacent variants sharing the same
    *  section are grouped under one header in the picker. */
   section?: string;
+
+  seeAlsoTopicId?: string;
 }
 
 export interface ContextWrapper {

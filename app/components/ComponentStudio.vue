@@ -34,12 +34,56 @@ const enabledWrappers = computed({
 
 const toast = useToast()
 
+interface FormSubmittedMessage {
+  type: 'form:submitted'
+  name: string
+  value: string
+}
+
+function buildSubmittedTitle(data: FormSubmittedMessage): string {
+  if (data.name && data.value) {
+    return t('studio.toasts.formSubmittedWithNameValue', { name: data.name, value: data.value })
+  }
+  if (data.value) {
+    return t('studio.toasts.formSubmittedWithValue', { value: data.value })
+  }
+  if (data.name) {
+    return t('studio.toasts.formSubmittedWithNameValue', { name: data.name, value: '' })
+  }
+  return t('studio.toasts.formSubmitted')
+}
+
 function onMessage(event: MessageEvent) {
-  if (event.data?.type === 'demo:click') {
+  const data = event.data
+  if (data?.type === 'demo:click') {
     toast.add({
-      title: t('studio.demoToast.title'),
+      title: t('studio.toasts.demoAction'),
       icon: 'i-lucide-circle-check',
       color: 'success'
+    })
+  } else if (data?.type === 'form:submitted') {
+    toast.add({
+      title: buildSubmittedTitle(data as FormSubmittedMessage),
+      icon: 'i-lucide-send',
+      color: 'info'
+    })
+  } else if (data?.type === 'form:reset') {
+    toast.add({
+      title: t('studio.toasts.formReset'),
+      icon: 'i-lucide-rotate-ccw',
+      color: 'warning'
+    })
+  } else if (data?.type === 'form:submitMissingForm') {
+    toast.add({
+      title: t('studio.toasts.submitNoForm'),
+      icon: 'i-lucide-circle-alert',
+      color: 'error'
+    })
+  } else if (data?.type === 'form:resetMissingForm') {
+    toast.add({
+      title: t('studio.toasts.resetNoForm'),
+      icon: 'i-lucide-circle-alert',
+      color: 'error'
     })
   }
 }

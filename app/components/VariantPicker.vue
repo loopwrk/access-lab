@@ -13,6 +13,7 @@ interface Props {
 }
 
 const { t } = useI18n()
+const { focusLearnTopic } = useInspectorTab()
 
 const props = withDefaults(defineProps<Props>(), {
   placeholder: () => '',
@@ -101,6 +102,11 @@ function select(key: string) {
   isOpen.value = false
 }
 
+function openSeeAlso(topicId: string) {
+  isOpen.value = false
+  focusLearnTopic(topicId)
+}
+
 const { te } = useI18n()
 function maybeTranslate(value?: string): string {
   if (!value) return ''
@@ -139,38 +145,50 @@ function maybeTranslate(value?: string): string {
               <USeparator v-if="sectionIndex > 0" />
 
               <div class="py-2">
-                <button v-for="variant in section.items" :key="variant.key" type="button"
-                  :aria-current="isSelected(variant.key) ? 'true' : undefined"
-                  class="w-full text-left px-4 py-3 flex flex-col gap-2 border-l-4 transition-colors cursor-pointer"
+                <div v-for="variant in section.items" :key="variant.key"
+                  class="border-l-4 transition-colors"
                   :class="isSelected(variant.key)
                     ? 'bg-(--brand-soft) border-(--brand)'
-                    : 'border-transparent hover:bg-(--surface-2) focus-visible:bg-(--surface-2)'"
-                  @click="select(variant.key)">
-                  <span class="flex items-center gap-2 flex-wrap">
-                    <code
-                      class="font-mono text-(length:--al-font-size-body) bg-(--surface-2) text-(--text-primary) px-2 py-0.5">
-                  {{ variant.label }}
-                </code>
-                    <UBadge v-if="variant.status === 'recommended'" color="success" variant="soft" size="sm"
-                      :ui="{ base: 'rounded-none uppercase tracking-wider' }">
-                      {{ t('variantPicker.recommended') }}
+                    : 'border-transparent hover:bg-(--surface-2)'">
+                  <button type="button"
+                    :aria-current="isSelected(variant.key) ? 'true' : undefined"
+                    class="w-full text-left px-4 py-3 flex flex-col gap-2 cursor-pointer focus-visible:bg-(--surface-2)"
+                    @click="select(variant.key)">
+                    <span class="flex items-center gap-2 flex-wrap">
+                      <code
+                        class="font-mono text-(length:--al-font-size-body) bg-(--surface-2) text-(--text-primary) px-2 py-0.5">
+                        {{ variant.label }}
+                      </code>
+                      <UBadge v-if="variant.status === 'recommended'" color="success" variant="soft" size="sm"
+                        :ui="{ base: 'rounded-none uppercase tracking-wider' }">
+                        {{ t('variantPicker.recommended') }}
+                      </UBadge>
+                    </span>
+
+                    <span v-if="variant.description" class="text-(length:--al-font-size-body) text-(--text-secondary)">
+                      {{ maybeTranslate(variant.description) }}
+                    </span>
+
+                    <UBadge v-if="variant.statusNote && visualFor(variant.status)"
+                      :color="visualFor(variant.status)!.color" :icon="visualFor(variant.status)!.icon" variant="soft"
+                      size="md" :ui="{
+                        base: variant.status === 'neutral'
+                          ? 'rounded-none self-start bg-(--surface-2) text-(--text-secondary)'
+                          : 'rounded-none self-start'
+                      }">
+                      {{ maybeTranslate(variant.statusNote) }}
                     </UBadge>
-                  </span>
+                  </button>
 
-                  <span v-if="variant.description" class="text-(length:--al-font-size-body) text-(--text-secondary)">
-                    {{ maybeTranslate(variant.description) }}
-                  </span>
-
-                  <UBadge v-if="variant.statusNote && visualFor(variant.status)"
-                    :color="visualFor(variant.status)!.color" :icon="visualFor(variant.status)!.icon" variant="soft"
-                    size="md" :ui="{
-                      base: variant.status === 'neutral'
-                        ? 'rounded-none self-start bg-(--surface-2) text-(--text-secondary)'
-                        : 'rounded-none self-start'
-                    }">
-                    {{ maybeTranslate(variant.statusNote) }}
-                  </UBadge>
-                </button>
+                  <div v-if="variant.seeAlsoTopicId" class="px-4 pb-3 -mt-1">
+                    <a :href="`#topic-${variant.seeAlsoTopicId}`"
+                      class="see-also-link inline-flex items-center gap-1 text-(length:--al-font-size-detail) text-(--text-secondary)"
+                      @click.prevent="openSeeAlso(variant.seeAlsoTopicId)">
+                      {{ t('variantPicker.seeAlso') }}
+                      <UIcon name="i-lucide-arrow-up-right" class="size-3 opacity-70" aria-hidden="true" />
+                    </a>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -179,3 +197,22 @@ function maybeTranslate(value?: string): string {
     </div>
   </div>
 </template>
+
+<style scoped>
+.see-also-link {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.see-also-link:hover,
+.see-also-link:focus-visible {
+  color: var(--brand);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.see-also-link:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+</style>

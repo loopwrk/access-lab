@@ -11,7 +11,7 @@ const currentTopic = computed(() =>
 
 <template>
   <!-- Detail: single topic article -->
-  <div v-if="currentTopic" class="flex flex-col gap-4">
+  <div v-if="currentTopic" class="flex flex-col gap-4 pb-4">
     <UButton variant="ghost" color="neutral" size="sm" icon="i-lucide-chevron-left" class="self-start -ml-2"
       @click="clearLearnTopic">
       {{ t('learn.backToTopics') }}
@@ -20,7 +20,7 @@ const currentTopic = computed(() =>
   </div>
 
   <!-- Index: list of topic cards -->
-  <div v-else class="flex flex-col gap-4">
+  <div v-else class="flex flex-col gap-4 pb-4">
     <header class="flex flex-col gap-2">
       <h2 class="learn-index-title m-0">{{ t('learn.index.title') }}</h2>
     </header>

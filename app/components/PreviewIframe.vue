@@ -53,8 +53,8 @@ const { t } = useI18n()
 
 <template>
   <div class="preview-iframe-wrap">
-    <iframe ref="iframe" src="/preview-shell.html" title="Component preview" sandbox="allow-scripts allow-same-origin"
-      class="preview-iframe" />
+    <iframe ref="iframe" src="/preview-shell.html" title="Component preview"
+      sandbox="allow-scripts allow-same-origin allow-forms" class="preview-iframe" />
     <div v-if="!isReady" class="preview-placeholder">
       <p class="text-muted">
         Loading preview…

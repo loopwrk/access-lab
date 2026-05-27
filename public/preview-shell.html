@@ -116,27 +116,82 @@
       );
 
       // Demo-click bridge: report when the user interacts with any
-      // trigger-shaped element in the rendered preview. The parent uses
-      // this to fire the "demo action triggered" toast. Delegated here
-      // so render functions can emit plain semantic markup without an
-      // inline onclick attribute leaking AccessLab plumbing.
+      // trigger-shaped element in the rendered preview. The parent picks
+      // an appropriate toast based on the resulting behaviour:
+      //   - submit-typed button inside form → form:submitted handler fires
+      //   - reset-typed button inside form  → form:reset handler fires
+      //   - everything else                 → demo:click (generic toast)
+      // We suppress demo:click for clicks that will produce a submit or
+      // reset event so the user does not see two toasts for one click.
       var TRIGGER_SELECTOR =
         'button, input[type="submit"], input[type="button"], input[type="reset"]';
 
       mount.addEventListener("click", function (event) {
-        if (event.target.closest(TRIGGER_SELECTOR)) {
+        var trigger = event.target.closest(TRIGGER_SELECTOR);
+        if (!trigger) return;
+
+        var form = trigger.closest("form");
+        var triggerType = trigger.type || "submit";
+        var isSubmit = triggerType === "submit";
+        var isReset = triggerType === "reset";
+
+        // Submit / reset inside a form: the form event handlers below
+        // will fire and post their own payload-aware message. Suppress
+        // the generic click toast so the user does not see two.
+        if (form && (isSubmit || isReset)) return;
+
+        // Submit / reset outside a form: the click does nothing — there
+        // is no form to act on. Surface the misuse via an error toast so
+        // the user understands why nothing visible happened.
+        if (!form && isSubmit) {
           parent.postMessage(
-            { type: "demo:click" },
+            { type: "form:submitMissingForm" },
             window.location.origin,
           );
+          return;
         }
+        if (!form && isReset) {
+          parent.postMessage(
+            { type: "form:resetMissingForm" },
+            window.location.origin,
+          );
+          return;
+        }
+
+        parent.postMessage(
+          { type: "demo:click" },
+          window.location.origin,
+        );
       });
 
-      // Cancel form submissions inside the preview. Render functions
-      // can emit a bare <form> element; the shell stops the navigation
-      // so a submit-typed button click does not blank the iframe.
+      // Cancel form submissions inside the preview so the iframe does
+      // not navigate away. Report what would have been submitted, with
+      // the name and value pair from the submitter button, so the parent
+      // can show a payload-aware toast.
       mount.addEventListener("submit", function (event) {
         event.preventDefault();
+        var submitter = event.submitter;
+        parent.postMessage(
+          {
+            type: "form:submitted",
+            name: submitter
+              ? submitter.getAttribute("name") || ""
+              : "",
+            value: submitter
+              ? submitter.getAttribute("value") || ""
+              : "",
+          },
+          window.location.origin,
+        );
+      });
+
+      // Reset events do not navigate, so we let the browser do its work
+      // (clearing form inputs) and just notify the parent for the toast.
+      mount.addEventListener("reset", function () {
+        parent.postMessage(
+          { type: "form:reset" },
+          window.location.origin,
+        );
       });
 
       parent.postMessage({ type: "preview:ready" }, window.location.origin);

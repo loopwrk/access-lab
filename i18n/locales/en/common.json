@@ -135,7 +135,8 @@
     "title": "Render as",
     "placeholder": "Variant",
     "placeholderForElement": "{name} type",
-    "recommended": "Recommended"
+    "recommended": "Recommended",
+    "seeAlso": "Learn more about this"
   },
   "wrapperToggles": {
     "panelLabel": "Context",
@@ -143,8 +144,14 @@
     "toggleAria": "Toggle {label} wrapper"
   },
   "studio": {
-    "demoToast": {
-      "title": "Demo action successfully triggered"
+    "toasts": {
+      "demoAction": "Demo action successfully triggered",
+      "formSubmitted": "Form submitted (no payload set)",
+      "formSubmittedWithValue": "Form submitted with payload: {value}",
+      "formSubmittedWithNameValue": "Form submitted with payload: {name}={value}",
+      "formReset": "Form reset (no inputs to clear)",
+      "submitNoForm": "Nothing submitted. A submit button only works when it is inside a form element.",
+      "resetNoForm": "Nothing reset. A reset button only works when it is inside a form element."
     }
   }
 }
