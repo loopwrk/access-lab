@@ -176,3 +176,12 @@
   --ui-text-muted: var(--text-muted);
   --ui-text-inverted: var(--on-brand);
 }
+
+@layer base {
+  p {
+    font-size: var(--al-font-size-body);
+  }
+  li {
+    font-size: var(--al-font-size-body);
+  }
+}

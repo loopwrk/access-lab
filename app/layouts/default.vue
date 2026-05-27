@@ -187,7 +187,7 @@ async function skipToPanel(tabName: 'controls' | 'issues', elementId: string) {
       <aside v-show="sidebarOpen" class="sidebar" :aria-label="t('sidebar.ariaLabel')">
         <UNavigationMenu :model-value="activeComponent" :items="navItems" orientation="vertical" highlight
           highlight-color="primary"
-          :ui="{ link: 'text-sm py-2.5 pl-3', linkLabel: 'truncate', label: 'text-md pl-3 pt-3' }" />
+          :ui="{ link: 'text-md py-2.5 pl-3', linkLabel: 'truncate', label: 'text-lg pl-3 pt-3' }" />
       </aside>
 
       <!-- Collapsed sidebar rail -->

@@ -115,7 +115,7 @@ export interface ComponentVariant {
 export interface ContextWrapper {
   key: string;
   label: string;
-  description?: string;
+  learnTopicId?: string;
   /** Wraps the rendered HTML and returns the surrounding markup. */
   wrap: (renderedHtml: string) => string;
 }

@@ -51,6 +51,15 @@ export const learnTopics: LearnTopic[] = [
       () => import("~/components/LearnTopic/RemUnits.vue"),
     ),
   },
+  {
+    id: "form-wrapping",
+    titleKey: "learn.formWrapping.title",
+    summaryKey: "learn.formWrapping.summary",
+    category: "interaction",
+    component: defineAsyncComponent(
+      () => import("~/components/LearnTopic/FormWrapping.vue"),
+    ),
+  },
 ];
 
 export function getLearnTopic(id: string): LearnTopic | undefined {

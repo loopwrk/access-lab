@@ -30,11 +30,6 @@
           "description": "Resets the parent form. Label comes from value.",
           "statusNote": "Rare. Confusing for users; consider omitting."
         }
-      },
-      "contextWrappers": {
-        "form": {
-          "description": "Wraps the button in a form element to demonstrate submit/reset behaviour and highlight the accidental implicit-submit risk of an unconfigured button."
-        }
       }
     }
   }

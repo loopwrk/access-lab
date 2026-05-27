@@ -49,9 +49,6 @@ export const buttonDefinition: ComponentDefinition<ButtonProps> = {
     contentType: "text",
   },
 
-  // Variant descriptions and statusNotes reference i18n keys under
-  // `components.button.variants.<key>.*` in i18n/locales/en/components.json.
-  // Markup labels stay as literal strings since they are code, not prose.
   variants: [
     {
       key: "button-button",
@@ -115,7 +112,7 @@ export const buttonDefinition: ComponentDefinition<ButtonProps> = {
     {
       key: "form",
       label: "<form>",
-      description: "components.button.contextWrappers.form.description",
+      learnTopicId: "form-wrapping",
       // onsubmit prevention keeps the iframe from navigating to a blank
       // page when the user clicks a submit-typed button.
       wrap: (renderedHtml: string) =>

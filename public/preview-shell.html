@@ -99,6 +99,22 @@
         }
       });
 
+      // Outside-click bridge: clicks inside an iframe never reach the
+      // parent document, which breaks @vueuse onClickOutside for any
+      // dropdown / popover in the studio. We forward pointerdown events
+      // as a message so the parent can dismiss those overlays. Capture
+      // phase so we fire before any rendered content can stop the event.
+      document.addEventListener(
+        "pointerdown",
+        function () {
+          parent.postMessage(
+            { type: "preview:pointerdown" },
+            window.location.origin,
+          );
+        },
+        true,
+      );
+
       parent.postMessage({ type: "preview:ready" }, window.location.origin);
     </script>
   </body>

@@ -31,13 +31,15 @@ const emit = defineEmits<{
 const isOpen = ref(false)
 const triggerRef = ref<HTMLElement | null>(null)
 
-onClickOutside(
-  triggerRef,
-  () => {
-    if (isOpen.value) isOpen.value = false
-  },
-  { ignore: ['[data-slot="content"]'] },
-)
+function closeIfOpen() {
+  if (isOpen.value) isOpen.value = false
+}
+
+onClickOutside(triggerRef, closeIfOpen, {
+  ignore: ['[data-slot="content"]'],
+})
+
+usePreviewIframeOutsideClick(closeIfOpen)
 
 const selectedVariant = computed(() =>
   props.variants.find(variant => variant.key === props.modelValue),
@@ -109,7 +111,7 @@ function maybeTranslate(value?: string): string {
 <template>
   <div class="inline-flex items-stretch border border-(--border) bg-(--surface-2)">
     <span
-      class="flex items-center px-3 text-(length:--al-font-size-caption) font-semibold uppercase tracking-wider text-(--text-muted)">
+      class="flex items-center pl-3 text-(length:--al-font-size-caption) font-semibold uppercase tracking-wider text-(--text-muted)">
       {{ t('variantPicker.markup') }}
     </span>
     <USeparator orientation="vertical" :ui="{ border: 'border-(--border)' }" />

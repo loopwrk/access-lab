@@ -140,8 +140,7 @@
   "wrapperToggles": {
     "panelLabel": "Context",
     "wrapIn": "Wrap in",
-    "toggleAria": "Toggle {label} wrapper",
-    "helpAria": "What does the {label} wrapper do?"
+    "toggleAria": "Toggle {label} wrapper"
   },
   "studio": {
     "demoToast": {
