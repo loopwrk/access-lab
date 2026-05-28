@@ -20,6 +20,13 @@ export default defineNuxtConfig({
     },
   },
 
+  // @nuxtjs/i18n auto-imports its own helpers but not `useI18n`, which
+  // lives in vue-i18n. Without this entry, the TS plugin flags every
+  // call site even though unimport resolves it at runtime.
+  imports: {
+    presets: [{ from: "vue-i18n", imports: ["useI18n"] }],
+  },
+
   i18n: {
     locales: [
       {
