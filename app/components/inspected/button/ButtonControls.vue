@@ -487,6 +487,35 @@ const borderColorComputed = computed({
   set: (value: string) => update('borderColor', value)
 })
 
+const FOCUS_DEFAULTS = {
+  width: { value: 2, unit: 'px' as CssUnit },
+  offset: { value: 2, unit: 'px' as CssUnit },
+  color: '#1d4ed8'
+}
+
+const focusRingEnabled = computed(() => props.modelValue.focusRingEnabled === true)
+
+function toggleFocusRing(value: boolean | 'indeterminate') {
+  const enabled = value === true
+  if (!enabled) {
+    update('focusRingEnabled', false)
+    return
+  }
+
+  emit('update:modelValue', {
+    ...props.modelValue,
+    focusRingEnabled: true,
+    focusRingWidth: props.modelValue.focusRingWidth ?? FOCUS_DEFAULTS.width,
+    focusRingOffset: props.modelValue.focusRingOffset ?? FOCUS_DEFAULTS.offset,
+    focusRingColor: props.modelValue.focusRingColor ?? FOCUS_DEFAULTS.color
+  })
+}
+
+const focusRingColor = computed({
+  get: () => props.modelValue.focusRingColor ?? FOCUS_DEFAULTS.color,
+  set: (value: string) => update('focusRingColor', value)
+})
+
 // Live WCAG contrast — uses the computed bg/fg (which already fall back
 // through user value → UA default → hardcoded) so the badge always
 // reflects what the iframe is actually rendering. The page backdrop
@@ -651,7 +680,7 @@ function onSplitBorderChange(key: typeof BORDER_KEYS[number], next: CssLength) {
         <div class="mb-1">
           <div class="flex items-center justify-between mb-2">
             <span class="control-group-title font-medium text-(--text-secondary)">{{ t('controls.width')
-              }}</span>
+            }}</span>
             <USwitch :model-value="widthEnabled" size="xs" color="primary" @update:model-value="toggleWidth" />
           </div>
           <div :class="[widthEnabled ? '' : 'opacity-50']" class="flex items-center gap-3">
@@ -668,7 +697,7 @@ function onSplitBorderChange(key: typeof BORDER_KEYS[number], next: CssLength) {
           <div class="flex items-center justify-between mb-2">
             <span class="control-group-title font-medium text-(--text-secondary)">{{
               t('controls.height')
-              }}</span>
+            }}</span>
             <USwitch :model-value="heightEnabled" size="xs" color="primary" @update:model-value="toggleHeight" />
           </div>
           <div :class="[heightEnabled ? '' : 'opacity-50']" class="flex items-center gap-3">
@@ -838,6 +867,65 @@ function onSplitBorderChange(key: typeof BORDER_KEYS[number], next: CssLength) {
             </div>
             <UInput :model-value="borderColorComputed" size="sm" :disabled="!colorsEnabled" class="w-24 shrink-0"
               @update:model-value="update('borderColor', $event)" />
+          </div>
+        </ColorPicker>
+      </div>
+    </fieldset>
+
+    <USeparator />
+
+    <!-- FOCUS INDICATOR -->
+    <fieldset class="flex flex-col gap-3 border-0 p-0 m-0">
+      <legend class="flex items-center justify-between w-full mb-1.5">
+        <span class="control-group-title">{{ t('controls.focus') }}</span>
+        <USwitch :model-value="focusRingEnabled" size="xs" color="primary" @update:model-value="toggleFocusRing" />
+      </legend>
+
+      <div :class="[focusRingEnabled ? '' : 'opacity-50']" class="flex flex-col gap-3">
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="control-group-title font-medium text-(--text-secondary)">
+              {{ t('controls.focusWidth') }}
+            </span>
+          </div>
+          <div class="flex items-center gap-3">
+            <USlider :model-value="pxOrFallback(modelValue.focusRingWidth, FOCUS_DEFAULTS.width.value)" :min="0"
+              :max="8" :step="1" color="primary" size="sm" :disabled="!focusRingEnabled" class="flex-1"
+              @update:model-value="update('focusRingWidth', unitConv.fromSliderPx(Number($event), unitFor(modelValue.focusRingWidth)))" />
+            <LengthValueInput v-if="focusRingEnabled"
+              :model-value="lengthOrFallback(modelValue.focusRingWidth, FOCUS_DEFAULTS.width.value)" :px-step="1"
+              :disabled="!focusRingEnabled" @update:model-value="update('focusRingWidth', $event)" />
+          </div>
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="control-group-title font-medium text-(--text-secondary)">
+              {{ t('controls.focusOffset') }}
+            </span>
+          </div>
+          <div class="flex items-center gap-3">
+            <USlider :model-value="pxOrFallback(modelValue.focusRingOffset, FOCUS_DEFAULTS.offset.value)" :min="0"
+              :max="12" :step="1" color="primary" size="sm" :disabled="!focusRingEnabled" class="flex-1"
+              @update:model-value="update('focusRingOffset', unitConv.fromSliderPx(Number($event), unitFor(modelValue.focusRingOffset)))" />
+            <LengthValueInput v-if="focusRingEnabled"
+              :model-value="lengthOrFallback(modelValue.focusRingOffset, FOCUS_DEFAULTS.offset.value)" :px-step="1"
+              :disabled="!focusRingEnabled" @update:model-value="update('focusRingOffset', $event)" />
+          </div>
+        </div>
+
+        <ColorPicker v-slot="{ show }" v-model="focusRingColor" with-alpha with-initial-color with-eye-dropper
+          with-hex-input with-rgb-input>
+          <div class="flex items-center justify-between gap-3">
+            <button type="button" class="color-swatch" :disabled="!focusRingEnabled" @click="show">
+              <div class="color-swatch-inner" :style="{ backgroundColor: focusRingColor }" />
+            </button>
+            <div class="flex flex-col flex-1 min-w-0">
+              <span class="color-label-title">{{ t('controls.focusColor') }}</span>
+              <span class="color-label-hex">{{ focusRingColor }}</span>
+            </div>
+            <UInput :model-value="focusRingColor" size="sm" :disabled="!focusRingEnabled" class="w-24 shrink-0"
+              @update:model-value="update('focusRingColor', $event)" />
           </div>
         </ColorPicker>
       </div>

@@ -49,10 +49,18 @@ watch(isReady, (ready) => {
 defineExpose({ render, violations, passes, incomplete, criticalCount, warningCount, passingCount })
 
 const { t } = useI18n()
+
+function focusContent() {
+  focusPreviewContent(iframeRef.value)
+}
 </script>
 
 <template>
   <div class="preview-iframe-wrap">
+    <UButton class="focus-content-btn" color="neutral" variant="soft" size="sm" icon="i-lucide-focus"
+      :aria-label="t('preview.focusContentAria')" @click="focusContent">
+      {{ t('preview.focusContent') }}
+    </UButton>
     <iframe ref="iframe" src="/preview-shell.html" title="Component preview"
       sandbox="allow-scripts allow-same-origin allow-forms" class="preview-iframe" />
     <div v-if="!isReady" class="preview-placeholder">
@@ -78,6 +86,13 @@ const { t } = useI18n()
   height: 100%;
   border: none;
   background-color: #FFFFFF;
+}
+
+.focus-content-btn {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 1;
 }
 
 .preview-placeholder {

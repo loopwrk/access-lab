@@ -120,13 +120,17 @@ async function skipToPanel(tabName: 'controls' | 'issues', elementId: string) {
     target.focus()
   }
 }
+function skipToMain() {
+  const iframe = document.querySelector<HTMLIFrameElement>('iframe[title="Component preview"]')
+  focusPreviewContent(iframe)
+}
 </script>
 
 <template>
   <div class="app-shell" :inert="isBelowDesktop">
     <!-- Skip links -->
     <div class="skip-links">
-      <a href="#main-content" class="skip-link">{{ t('skipLinks.main') }}</a>
+      <a href="#main-content" class="skip-link" @click.prevent="skipToMain">{{ t('skipLinks.main') }}</a>
       <a href="#controls-panel" class="skip-link" @click="skipToPanel('controls', 'controls-panel')">
         {{ t('skipLinks.controls') }}
       </a>

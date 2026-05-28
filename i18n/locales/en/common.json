@@ -62,6 +62,8 @@
   "preview": {
     "title": "Preview",
     "noFramework": "No framework",
+    "focusContent": "Focus content",
+    "focusContentAria": "Focus the inspected element inside the preview",
     "toolbar": {
       "ariaLabel": "Preview toolbar"
     }

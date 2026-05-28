@@ -1,6 +1,10 @@
 import { renderButton } from "./render";
 import { targetSizeAA, targetSizeAAA } from "~/rules/button/target-size";
 import { focusableInAnchor } from "~/rules/button/focusable-in-anchor";
+import {
+  focusNotVisible,
+  focusLowContrast,
+} from "~/rules/button/focus-visible";
 import { buttonManualChecklist } from "~/rules/button/manual-checklist";
 import type { ComponentDefinition } from "~/types/component";
 import type { CssLength } from "~/composables/useUnitConversion";
@@ -42,6 +46,10 @@ export interface ButtonProps {
   borderColor: string;
   ariaLabel: string;
   contentType: "text" | "icon";
+  focusRingEnabled: boolean;
+  focusRingWidth: CssLength;
+  focusRingColor: string;
+  focusRingOffset: CssLength;
 }
 
 export const buttonDefinition: ComponentDefinition<ButtonProps> = {
@@ -59,6 +67,7 @@ export const buttonDefinition: ComponentDefinition<ButtonProps> = {
     alt: "",
     disabled: false,
     contentType: "text",
+    focusRingEnabled: false,
   },
 
   variants: [
@@ -150,7 +159,7 @@ export const buttonDefinition: ComponentDefinition<ButtonProps> = {
       // link, not an inert anchor that students would dismiss as a teaching
       // artefact.
       key: "link",
-      label: '<a href>',
+      label: "<a href>",
       wrap: (renderedHtml: string) => `<a href="#">${renderedHtml}</a>`,
     },
     {
@@ -166,7 +175,8 @@ export const buttonDefinition: ComponentDefinition<ButtonProps> = {
       key: "button",
       label: "<button>",
       availableFor: (renderAs) => renderAs?.startsWith("input-") ?? false,
-      wrap: (renderedHtml: string) => `<button type="button">${renderedHtml}</button>`,
+      wrap: (renderedHtml: string) =>
+        `<button type="button">${renderedHtml}</button>`,
     },
   ],
 
@@ -269,7 +279,13 @@ export const buttonDefinition: ComponentDefinition<ButtonProps> = {
     },
   ],
 
-  rules: [targetSizeAA, targetSizeAAA, focusableInAnchor],
+  rules: [
+    targetSizeAA,
+    targetSizeAAA,
+    focusableInAnchor,
+    focusNotVisible,
+    focusLowContrast,
+  ],
   manualChecklist: buttonManualChecklist,
   render: renderButton,
   // Lazy-loaded panel. Static import would cycle because ButtonControls

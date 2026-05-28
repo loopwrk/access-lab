@@ -26,6 +26,32 @@ function escapeAttribute(value: string): string {
   return escapeHtml(value).replace(/"/g, "&quot;");
 }
 
+// Selector hook for the injected :focus-visible block. Only applied
+// when the override is on.
+const INSPECTED_CLASS = "al-inspected-element";
+
+function buildFocusStyleBlock(props: Partial<ButtonProps>): string {
+  if (!props.focusRingEnabled) return "";
+
+  const width = props.focusRingWidth
+    ? formatLength(props.focusRingWidth)
+    : "2px";
+  const color = props.focusRingColor ?? "#1d4ed8";
+  const offset = props.focusRingOffset
+    ? formatLength(props.focusRingOffset)
+    : "2px";
+
+  return `<style>.${INSPECTED_CLASS}:focus-visible{outline:${width} solid ${color};outline-offset:${offset};}</style>`;
+}
+
+function withInspectedClass(
+  extraAttrs: string[],
+  focusRingEnabled: boolean,
+): string[] {
+  if (!focusRingEnabled) return extraAttrs;
+  return [`class="${INSPECTED_CLASS}"`, ...extraAttrs];
+}
+
 function formatLength(length: CssLength): string {
   return `${length.value}${length.unit}`;
 }
@@ -122,7 +148,7 @@ function renderNativeButton(
   if (props.disabled) attrs.push("disabled");
   if (style) attrs.push(`style="${style}"`);
 
-  return `<button ${attrs.join(" ")}>${content}</button>`;
+  return `<button ${withInspectedClass(attrs, props.focusRingEnabled === true).join(" ")}>${content}</button>`;
 }
 
 function renderInputButton(
@@ -141,7 +167,7 @@ function renderInputButton(
   if (props.disabled) attrs.push("disabled");
   if (style) attrs.push(`style="${style}"`);
 
-  return `<input ${attrs.join(" ")}>`;
+  return `<input ${withInspectedClass(attrs, props.focusRingEnabled === true).join(" ")}>`;
 }
 
 function renderInputImage(props: Partial<ButtonProps>, style: string): string {
@@ -156,24 +182,31 @@ function renderInputImage(props: Partial<ButtonProps>, style: string): string {
   if (props.disabled) attrs.push("disabled");
   if (style) attrs.push(`style="${style}"`);
 
-  return `<input ${attrs.join(" ")}>`;
+  return `<input ${withInspectedClass(attrs, props.focusRingEnabled === true).join(" ")}>`;
 }
 
 export function renderButton(props?: Partial<ButtonProps>): string {
   if (!props) return `<button>${DEFAULT_LABEL}</button>`;
 
   const style = buildInlineStyle(props);
+  const focusBlock = buildFocusStyleBlock(props);
   const renderAs = props.renderAs ?? "button";
 
+  let element: string;
   if (renderAs === "input-image") {
-    return renderInputImage(props, style);
+    element = renderInputImage(props, style);
+  } else {
+    const inputType = INPUT_TYPE_BY_RENDER_AS[renderAs];
+    if (inputType) {
+      element = renderInputButton(inputType, props, style);
+    } else {
+      const explicitButtonType = BUTTON_TYPE_BY_RENDER_AS[renderAs];
+      element = renderNativeButton(props, style, explicitButtonType);
+    }
   }
 
-  const inputType = INPUT_TYPE_BY_RENDER_AS[renderAs];
-  if (inputType) {
-    return renderInputButton(inputType, props, style);
-  }
-
-  const explicitButtonType = BUTTON_TYPE_BY_RENDER_AS[renderAs];
-  return renderNativeButton(props, style, explicitButtonType);
+  // Style block first so it's parsed before the element it targets.
+  // The block is empty when focusRingEnabled is false, in which case
+  // the browser's own :focus-visible style is what the user sees.
+  return `${focusBlock}${element}`;
 }
