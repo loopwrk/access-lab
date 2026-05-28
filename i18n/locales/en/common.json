@@ -99,7 +99,10 @@
   "counter": {
     "critical": "{count} critical",
     "warnings": "{count} warning | {count} warnings",
-    "passing": "{count} passing"
+    "passing": "{count} passing",
+    "criticalNoun": "critical",
+    "warningsNoun": "warning | warnings",
+    "passingNoun": "passing"
   },
   "home": {
     "welcome": "Welcome to AccessLab",

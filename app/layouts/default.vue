@@ -2,7 +2,7 @@
 import { useMediaQuery } from '@vueuse/core'
 import { useTheme } from '~/composables/useTheme'
 import { useFont } from '~/composables/useFont'
-import { useAxeCounts } from '~/composables/useAxeResults'
+import { useAxeCounts, useAllViolations } from '~/composables/useAxeResults'
 import type { FontSize } from "~/types/typography"
 import type { TabsItem, NavigationMenuItem } from '@nuxt/ui'
 
@@ -12,6 +12,17 @@ const { t } = useI18n()
 const theme = useTheme()
 const font = useFont()
 const { criticalCount, warningCount, passingCount } = useAxeCounts()
+const { allViolations } = useAllViolations()
+const criticalViolationIds = computed(() =>
+  allViolations.value
+    .filter(v => v.impact === 'critical' || v.impact === 'serious')
+    .map(v => v.id)
+)
+const warningViolationIds = computed(() =>
+  allViolations.value
+    .filter(v => v.impact === 'moderate' || v.impact === 'minor')
+    .map(v => v.id)
+)
 const { activeComponentName } = useStudioToolbar()
 const { renderedHtml } = useRenderedHtml()
 
@@ -213,15 +224,11 @@ async function skipToPanel(tabName: 'controls' | 'issues', elementId: string) {
           </div>
 
           <div class="flex gap-2">
-            <UBadge color="error" variant="soft" size="lg">
-              {{ t('counter.critical', { count: criticalCount }) }}
-            </UBadge>
-            <UBadge color="warning" variant="soft" size="lg">
-              {{ t('counter.warnings', { count: warningCount }) }}
-            </UBadge>
-            <UBadge color="success" variant="soft" size="lg">
-              {{ t('counter.passing', { count: passingCount }) }}
-            </UBadge>
+            <AnimatedCountBadge color="error" :count="criticalCount" :noun="t('counter.criticalNoun')"
+              :violation-ids="criticalViolationIds" />
+            <AnimatedCountBadge color="warning" :count="warningCount" :noun="t('counter.warningsNoun', warningCount)"
+              :violation-ids="warningViolationIds" />
+            <AnimatedCountBadge color="success" :count="passingCount" :noun="t('counter.passingNoun')" />
           </div>
         </div>
 
