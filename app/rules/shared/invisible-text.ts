@@ -21,6 +21,7 @@ export const invisibleText: Rule = {
   id: "invisible-text",
   title: "Text colour matches background",
   wcag: "SC 1.4.3 Contrast (Minimum) — Level AA",
+  tags: ["wcag2aa", "wcag143"],
   description:
     "The foreground (text) colour is exactly the same as the background. The text is invisible to sighted users while remaining in the DOM, so screen readers will still announce it and automated audits that skip identical-colour pairs (including axe-core) will not flag it.",
   help: "Choose distinct foreground and background colours — at least 4.5:1 contrast for AA, 7:1 for AAA",

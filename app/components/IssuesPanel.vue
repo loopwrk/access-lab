@@ -55,12 +55,47 @@ function impactColor(impact: ImpactValue | undefined): 'error' | 'warning' | 'in
   }
 }
 
-const ACRONYMS = new Set(['aa', 'aaa', 'wcag', 'aria', 'html', 'css', 'svg', 'url', 'id'])
+const ACRONYMS = new Set(['wcag', 'aria', 'html', 'css', 'svg', 'url', 'id'])
 
 function formatRuleId(id: string): string {
-  return id.split('-').map(word =>
+  const withoutLevel = id.replace(/-aaa?$/, '')
+  return withoutLevel.split('-').map(word =>
     ACRONYMS.has(word) ? word.toUpperCase() : word.charAt(0).toUpperCase() + word.slice(1)
   ).join(' ')
+}
+
+type RuleClassification = 'A' | 'AA' | 'AAA' | 'Best Practice'
+
+const TAG_TO_LEVEL: Array<[string, 'A' | 'AA' | 'AAA']> = [
+  ['wcag2aaa', 'AAA'],
+  ['wcag22aaa', 'AAA'],
+  ['wcag2aa', 'AA'],
+  ['wcag21aa', 'AA'],
+  ['wcag22aa', 'AA'],
+  ['wcag2a', 'A'],
+  ['wcag21a', 'A'],
+  ['wcag22a', 'A']
+]
+
+function classificationFromTags(
+  tags: string[] | undefined
+): RuleClassification | null {
+  if (!tags) return null
+  for (const [tag, level] of TAG_TO_LEVEL) {
+    if (tags.includes(tag)) return level
+  }
+  if (tags.includes('best-practice')) return 'Best Practice'
+  return null
+}
+
+function ruleDisplayName(id: string): string {
+  return formatRuleId(id)
+}
+
+function classificationColor(
+  classification: RuleClassification
+): 'info' | 'neutral' {
+  return classification === 'Best Practice' ? 'neutral' : 'info'
 }
 
 interface FailureSection {
@@ -155,8 +190,13 @@ const { focusLearnTopic } = useInspectorTab()
           <UCard v-for="violation in criticalViolations" :key="violation.id" variant="outline" class="issue-card">
             <template #header>
               <div class="flex flex-col gap-1 max-h-min p-0">
-                <UBadge :label="formatRuleId(violation.id)" class="mb-1" :color="impactColor(violation.impact)"
-                  variant="soft" size="md" />
+                <div class="flex flex-wrap items-center gap-1.5 mb-1">
+                  <UBadge :label="ruleDisplayName(violation.id)" :color="impactColor(violation.impact)" variant="soft"
+                    size="md" />
+                  <UBadge v-if="classificationFromTags(violation.tags)"
+                    :label="classificationFromTags(violation.tags) ?? ''"
+                    :color="classificationColor(classificationFromTags(violation.tags)!)" variant="outline" size="md" />
+                </div>
                 <h3 class="text-(length:--al-font-size-body) text-(--text-primary) leading-[1.3] font-semibold m-0">{{
                   violation.help }}
                 </h3>
@@ -245,8 +285,13 @@ const { focusLearnTopic } = useInspectorTab()
           <UCard v-for="violation in warningViolations" :key="violation.id" variant="outline" class="issue-card">
             <template #header>
               <div class="flex flex-col gap-1 max-h-min">
-                <UBadge :label="formatRuleId(violation.id)" class="mb-1" :color="impactColor(violation.impact)"
-                  variant="soft" size="md" />
+                <div class="flex flex-wrap items-center gap-1.5 mb-1">
+                  <UBadge :label="ruleDisplayName(violation.id)" :color="impactColor(violation.impact)" variant="soft"
+                    size="md" />
+                  <UBadge v-if="classificationFromTags(violation.tags)"
+                    :label="classificationFromTags(violation.tags) ?? ''"
+                    :color="classificationColor(classificationFromTags(violation.tags)!)" variant="outline" size="sm" />
+                </div>
                 <h3 class="text-(length:--al-font-size-body) text-(--text-primary) leading-[1.3] font-semibold m-0">{{
                   violation.help }}
                 </h3>
@@ -333,7 +378,11 @@ const { focusLearnTopic } = useInspectorTab()
           <UCard v-for="pass in passes" :key="pass.id" variant="outline" class="issue-card">
             <template #header>
               <div class="flex flex-col gap-1 max-h-min">
-                <UBadge :label="formatRuleId(pass.id)" class="mb-1" color="success" variant="soft" size="md" />
+                <div class="flex flex-wrap items-center gap-1.5 mb-1">
+                  <UBadge :label="ruleDisplayName(pass.id)" color="success" variant="soft" size="md" />
+                  <UBadge v-if="classificationFromTags(pass.tags)" :label="classificationFromTags(pass.tags) ?? ''"
+                    :color="classificationColor(classificationFromTags(pass.tags)!)" variant="outline" size="sm" />
+                </div>
                 <h3 class="text-(length:--al-font-size-body) text-(--text-primary) leading-[1.3] font-semibold m-0">{{
                   pass.help }}</h3>
               </div>

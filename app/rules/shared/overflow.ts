@@ -11,6 +11,7 @@ export const contentOverflow: DomRule = {
   id: "content-overflow",
   title: "Content overflows its container",
   wcag: "SC 1.4.4 Resize Text — Level AA",
+  tags: ["best-practice"],
   description:
     "The element's rendered content extends beyond the bounds of its box. Sighted users will see the content clipped or spilling outside the layout; users who zoom in, increase their browser's text size, or apply custom user styles can lose access to the affected content entirely. This typically happens when a fixed width or height is combined with a font size, padding, or label length that the container can no longer accommodate.",
   help: "Allow the element to size to its content (drop fixed width/height), or shrink the content (font size, label, padding) to fit",

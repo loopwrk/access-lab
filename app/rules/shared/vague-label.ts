@@ -33,6 +33,7 @@ export const vagueLabel: Rule = {
   id: "vague-label",
   title: "Label is too vague to be meaningful",
   wcag: "SC 2.4.6 Headings and Labels — Level AA",
+  tags: ["best-practice"],
   description:
     'The button\'s accessible name conveys no information about its purpose out of context. Screen reader users navigating by element list will hear a bare "OK" or "Submit" with no indication of what action it performs. Labels read most clearly as a verb + noun ("Save changes") rather than a verb alone ("Save") or a generic placeholder ("OK", "Click here").',
   help: "Rewrite the label so it makes sense when read out of context. Aim for verb + noun where possible.",

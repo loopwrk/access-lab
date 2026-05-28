@@ -9,7 +9,7 @@ function violationToAxeResult(rule: Rule, result: ViolationResult): AxeResult {
     helpUrl: rule.helpUrl ?? '',
     learnTopicId: rule.learnTopicId,
     impact: result.severity,
-    tags: [],
+    tags: rule.tags ?? [],
     nodes: [
       {
         html: '<button>',

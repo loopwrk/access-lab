@@ -789,8 +789,8 @@ function onSplitBorderChange(key: typeof BORDER_KEYS[number], next: CssLength) {
              The image is its own visible content; bg paints only the
              rectangle behind it and "text colour" has nothing to colour. -->
         <template v-if="!isImageInput">
-          <ColorPicker v-slot="{ show }" v-model="bgColor" with-alpha with-initial-color with-eye-dropper
-            with-hex-input with-rgb-input>
+          <ColorPicker v-slot="{ show }" v-model="bgColor" with-alpha with-initial-color with-eye-dropper with-hex-input
+            with-rgb-input>
             <div class="flex items-center justify-between gap-3">
               <button type="button" class="color-swatch" :disabled="!colorsEnabled" @click="show">
                 <div class="color-swatch-inner" :style="{ backgroundColor: bgColor }" />

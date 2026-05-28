@@ -68,10 +68,12 @@
                   values: [
                     "wcag2a",
                     "wcag2aa",
+                    "wcag2aaa",
                     "wcag21a",
                     "wcag21aa",
                     "wcag22aa",
                     "best-practice",
+                    "experimental",
                   ],
                 },
               })
@@ -159,10 +161,7 @@
           return;
         }
 
-        parent.postMessage(
-          { type: "demo:click" },
-          window.location.origin,
-        );
+        parent.postMessage({ type: "demo:click" }, window.location.origin);
       });
 
       // Cancel form submissions inside the preview so the iframe does
@@ -175,12 +174,8 @@
         parent.postMessage(
           {
             type: "form:submitted",
-            name: submitter
-              ? submitter.getAttribute("name") || ""
-              : "",
-            value: submitter
-              ? submitter.getAttribute("value") || ""
-              : "",
+            name: submitter ? submitter.getAttribute("name") || "" : "",
+            value: submitter ? submitter.getAttribute("value") || "" : "",
           },
           window.location.origin,
         );
@@ -189,10 +184,7 @@
       // Reset events do not navigate, so we let the browser do its work
       // (clearing form inputs) and just notify the parent for the toast.
       mount.addEventListener("reset", function () {
-        parent.postMessage(
-          { type: "form:reset" },
-          window.location.origin,
-        );
+        parent.postMessage({ type: "form:reset" }, window.location.origin);
       });
 
       parent.postMessage({ type: "preview:ready" }, window.location.origin);

@@ -11,6 +11,7 @@ export interface Rule {
   description: string;
   help: string;
   helpUrl?: string;
+  tags?: string[];
   /**
    * Optional anchor into the Learn tab. When set, the Issues panel renders
    * an internal "Read more in the Learn tab" link alongside the external
@@ -49,6 +50,7 @@ export interface DomRule {
   description: string;
   help: string;
   helpUrl?: string;
+  tags?: string[];
   /** See Rule.learnTopicId. */
   learnTopicId?: string;
   evaluate: (measurement: DomMeasurement) => ViolationResult | null;

@@ -26,7 +26,7 @@ function domRuleToAxeResult(
     helpUrl: rule.helpUrl ?? "",
     learnTopicId: rule.learnTopicId,
     impact: result.severity,
-    tags: [],
+    tags: rule.tags ?? [],
     nodes: [
       {
         html: `<${tagName}>`,
