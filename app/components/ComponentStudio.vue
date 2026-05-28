@@ -11,6 +11,7 @@ const props = defineProps<{
 }>()
 
 const { t } = useI18n()
+const { focusLearnTopic } = useInspectorTab()
 const { previewRef, componentProps } = useInspectedComponent(props.definition)
 const { activeComponentName } = useStudioToolbar()
 
@@ -53,6 +54,20 @@ function buildSubmittedTitle(data: FormSubmittedMessage): string {
   return t('studio.toasts.formSubmitted')
 }
 
+const formSubmittedAction = computed(() => [{
+  label: t('studio.toasts.formSubmittedLink'),
+  onClick: () => focusLearnTopic('form-wrapping'),
+  color: 'neutral' as const,
+  variant: 'link' as const
+}])
+
+const submitNoFormAction = computed(() => [{
+  label: t('studio.toasts.submitNoFormLink'),
+  onClick: () => focusLearnTopic('button-types'),
+  color: 'neutral' as const,
+  variant: 'link' as const
+}])
+
 function onMessage(event: MessageEvent) {
   const data = event.data
   if (data?.type === 'demo:click') {
@@ -65,7 +80,8 @@ function onMessage(event: MessageEvent) {
     toast.add({
       title: buildSubmittedTitle(data as FormSubmittedMessage),
       icon: 'i-lucide-send',
-      color: 'info'
+      color: 'info',
+      actions: formSubmittedAction.value
     })
   } else if (data?.type === 'form:reset') {
     toast.add({
@@ -77,7 +93,8 @@ function onMessage(event: MessageEvent) {
     toast.add({
       title: t('studio.toasts.submitNoForm'),
       icon: 'i-lucide-circle-alert',
-      color: 'error'
+      color: 'error',
+      actions: submitNoFormAction.value
     })
   } else if (data?.type === 'form:resetMissingForm') {
     toast.add({

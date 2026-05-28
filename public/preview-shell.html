@@ -124,7 +124,7 @@
       // We suppress demo:click for clicks that will produce a submit or
       // reset event so the user does not see two toasts for one click.
       var TRIGGER_SELECTOR =
-        'button, input[type="submit"], input[type="button"], input[type="reset"]';
+        'button, input[type="submit"], input[type="button"], input[type="reset"], input[type="image"]';
 
       mount.addEventListener("click", function (event) {
         var trigger = event.target.closest(TRIGGER_SELECTOR);
@@ -132,7 +132,8 @@
 
         var form = trigger.closest("form");
         var triggerType = trigger.type || "submit";
-        var isSubmit = triggerType === "submit";
+        // <input type="image"> is a submit button per HTML spec.
+        var isSubmit = triggerType === "submit" || triggerType === "image";
         var isReset = triggerType === "reset";
 
         // Submit / reset inside a form: the form event handlers below

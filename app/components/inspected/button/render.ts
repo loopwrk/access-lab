@@ -119,6 +119,7 @@ function renderNativeButton(
   if (props.ariaLabel) {
     attrs.push(`aria-label="${escapeAttribute(props.ariaLabel)}"`);
   }
+  if (props.disabled) attrs.push("disabled");
   if (style) attrs.push(`style="${style}"`);
 
   return `<button ${attrs.join(" ")}>${content}</button>`;
@@ -137,6 +138,22 @@ function renderInputButton(
   if (props.ariaLabel) {
     attrs.push(`aria-label="${escapeAttribute(props.ariaLabel)}"`);
   }
+  if (props.disabled) attrs.push("disabled");
+  if (style) attrs.push(`style="${style}"`);
+
+  return `<input ${attrs.join(" ")}>`;
+}
+
+function renderInputImage(props: Partial<ButtonProps>, style: string): string {
+  const attrs: string[] = [`type="image"`];
+  if (props.src) attrs.push(`src="${escapeAttribute(props.src)}"`);
+  if (props.alt) attrs.push(`alt="${escapeAttribute(props.alt)}"`);
+  if (props.name) attrs.push(`name="${escapeAttribute(props.name)}"`);
+  if (props.value) attrs.push(`value="${escapeAttribute(props.value)}"`);
+  if (props.ariaLabel) {
+    attrs.push(`aria-label="${escapeAttribute(props.ariaLabel)}"`);
+  }
+  if (props.disabled) attrs.push("disabled");
   if (style) attrs.push(`style="${style}"`);
 
   return `<input ${attrs.join(" ")}>`;
@@ -147,6 +164,10 @@ export function renderButton(props?: Partial<ButtonProps>): string {
 
   const style = buildInlineStyle(props);
   const renderAs = props.renderAs ?? "button";
+
+  if (renderAs === "input-image") {
+    return renderInputImage(props, style);
+  }
 
   const inputType = INPUT_TYPE_BY_RENDER_AS[renderAs];
   if (inputType) {

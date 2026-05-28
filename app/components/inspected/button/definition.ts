@@ -11,7 +11,8 @@ export type ButtonRenderAs =
   | "button-button"
   | "input-submit"
   | "input-button"
-  | "input-reset";
+  | "input-reset"
+  | "input-image";
 
 export interface ButtonProps {
   renderAs: ButtonRenderAs;
@@ -19,6 +20,9 @@ export interface ButtonProps {
   label: string;
   value: string;
   name: string;
+  src: string;
+  alt: string;
+  disabled: boolean;
   width: CssLength;
   height: CssLength;
   padding: CssLength;
@@ -47,9 +51,12 @@ export const buttonDefinition: ComponentDefinition<ButtonProps> = {
   defaultProps: {
     renderAs: "button-button",
     wrappers: [],
-    label: "Trigger Demo Action",
+    label: "Trigger click event",
     value: "",
     name: "",
+    src: "/images/click-event-button.svg",
+    alt: "",
+    disabled: false,
     contentType: "text",
   },
 
@@ -114,6 +121,16 @@ export const buttonDefinition: ComponentDefinition<ButtonProps> = {
       status: "rare",
       statusNote: "components.button.variants.input-reset.statusNote",
       section: "<input> Alternative",
+      seeAlsoTopicId: "button-types",
+    },
+    {
+      key: "input-image",
+      label: '<input type="image">',
+      description: "components.button.variants.input-image.description",
+      status: "neutral",
+      statusNote: "components.button.variants.input-image.statusNote",
+      section: "<input> Alternative",
+      seeAlsoTopicId: "button-types",
     },
   ],
 

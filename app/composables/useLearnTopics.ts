@@ -87,6 +87,15 @@ export const learnTopics: LearnTopic[] = [
       () => import("~/components/LearnTopic/ButtonTypes.vue"),
     ),
   },
+  {
+    id: "button-disabled-states",
+    titleKey: "learn.buttonDisabledStates.title",
+    summaryKey: "learn.buttonDisabledStates.summary",
+    category: "interaction",
+    component: defineAsyncComponent(
+      () => import("~/components/LearnTopic/ButtonDisabledStates.vue"),
+    ),
+  },
 ];
 
 export function getLearnTopic(id: string): LearnTopic | undefined {

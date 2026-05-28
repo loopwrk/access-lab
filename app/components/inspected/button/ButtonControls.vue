@@ -160,11 +160,7 @@ const GENERIC_DEFAULT_LABEL = buttonDefinition.defaultProps.label ?? ''
 
 // Submit and reset variants get specific defaults that demonstrate the
 // "verb + noun describing the result" pattern from the Vague Label Learn
-// topic. These are paste-ready examples of good labelling practice.
-// Applied uniformly across button-tag and input-tag variants so the
-// default behaviour is consistent regardless of element type. Users who
-// clear the field still see the UA fallback ("Submit Query" / "Reset")
-// on input variants, which is a small discovery lesson.
+// topic.
 const VARIANT_DEFAULT_LABELS: Record<string, string> = {
   'button-submit': 'Save changes',
   'button-reset': 'Discard changes',
@@ -473,12 +469,6 @@ const { ratio: contrastRatio, verdict: contrastVerdict } = useContrast(
 )
 
 const { focusLearnTopic } = useInspectorTab()
-
-// The first text field's identity depends on the variant. On a <button>,
-// it sets the inner text (the "Button Label"). On an <input> button, it
-// sets the value attribute, which serves as both the visible label and
-// the form data. The underlying prop is `label` either way; render.ts
-// places it correctly per variant.
 const labelFieldKey = computed(() =>
   isButtonTag.value ? 'controls.label' : 'controls.valueAttribute',
 )
@@ -553,8 +543,8 @@ function onSplitBorderChange(key: typeof BORDER_KEYS[number], next: CssLength) {
           <UIcon name="i-lucide-arrow-up-right" class="control-label-link-icon" aria-hidden="true" />
         </a>
       </template>
-      <UInput :model-value="modelValue.name ?? ''" :placeholder="t('controls.nameAttributePlaceholder')"
-        class="w-full" @update:model-value="update('name', $event)" />
+      <UInput :model-value="modelValue.name ?? ''" :placeholder="t('controls.nameAttributePlaceholder')" class="w-full"
+        @update:model-value="update('name', $event)" />
     </UFormField>
 
     <USeparator />

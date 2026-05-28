@@ -19,7 +19,7 @@
 
   /* Typographic scale — relative to the baseline (16px) */
   --al-font-size-caption: 0.6875rem; /* 11px — section titles, counter pills */
-  --al-font-size-detail: 0.75rem; /* 12px — tabs, code drawer summary */
+  --al-font-size-detail: 0.84375rem; /* 13.5px — tabs, code drawer summary */
   --al-font-size-body: 0.875rem; /* 14px — muted text, code */
   --al-font-size-nav: 0.84375rem; /* 13.5px — sidebar items */
   --al-font-size-heading: 0.9375rem; /* 15px — preview title */

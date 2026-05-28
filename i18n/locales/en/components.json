@@ -29,6 +29,10 @@
         "input-reset": {
           "description": "Resets the parent form. Label comes from value.",
           "statusNote": "Rare. Confusing for users; consider omitting."
+        },
+        "input-image": {
+          "description": "An image used as a submit button. The image is the visible label and the alt attribute provides the accessible name.",
+          "statusNote": "Submits the form and includes click coordinates in the payload."
         }
       }
     }

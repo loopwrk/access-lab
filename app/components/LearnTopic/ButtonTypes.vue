@@ -31,6 +31,14 @@ const { focusLearnTopic } = useInspectorTab()
     </section>
 
     <section class="flex flex-col gap-3">
+      <h3 class="learn-subhead m-0">{{ t('learn.buttonTypes.keyboardTitle') }}</h3>
+      <p class="learn-paragraph">{{ t('learn.buttonTypes.keyboardP1') }}</p>
+      <p class="learn-paragraph">{{ t('learn.buttonTypes.keyboardP2') }}</p>
+      <p class="learn-paragraph">{{ t('learn.buttonTypes.keyboardP3') }}</p>
+      <p class="learn-paragraph">{{ t('learn.buttonTypes.keyboardP4') }}</p>
+    </section>
+
+    <section class="flex flex-col gap-3">
       <h3 class="learn-subhead m-0">{{ t('learn.buttonTypes.guidanceTitle') }}</h3>
       <p class="learn-paragraph">{{ t('learn.buttonTypes.guidanceLead') }}</p>
       <ul class="learn-list">
