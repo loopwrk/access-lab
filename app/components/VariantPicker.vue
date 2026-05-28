@@ -115,12 +115,13 @@ function maybeTranslate(value?: string): string {
 </script>
 
 <template>
-  <div class="inline-flex items-stretch border border-(--border) bg-(--surface-2)">
+
+  <div class="inline-flex items-stretch">
     <span
-      class="flex items-center pl-3 text-(length:--al-font-size-caption) font-semibold uppercase tracking-wider text-(--text-muted)">
+      class="flex items-center pl-3 pr-3 text-(length:--al-font-size-caption) font-semibold uppercase tracking-wider text-(--text-muted)">
       {{ t('variantPicker.markup') }}
     </span>
-    <USeparator orientation="vertical" :ui="{ border: 'border-(--border)' }" />
+    <span class="self-stretch w-px bg-(--border)" aria-hidden="true" />
     <div class="flex items-center gap-2 px-3 py-1.5">
       <UPopover v-model:open="isOpen" :modal="false" :dismissible="true" :ui="{
         content: 'min-w-[480px] rounded-none bg-(--surface) border border-(--border-strong) shadow-lg'
@@ -145,13 +146,10 @@ function maybeTranslate(value?: string): string {
               <USeparator v-if="sectionIndex > 0" />
 
               <div class="py-2">
-                <div v-for="variant in section.items" :key="variant.key"
-                  class="border-l-4 transition-colors"
-                  :class="isSelected(variant.key)
-                    ? 'bg-(--brand-soft) border-(--brand)'
-                    : 'border-transparent hover:bg-(--surface-2)'">
-                  <button type="button"
-                    :aria-current="isSelected(variant.key) ? 'true' : undefined"
+                <div v-for="variant in section.items" :key="variant.key" class="border-l-4 transition-colors" :class="isSelected(variant.key)
+                  ? 'bg-(--brand-soft) border-(--brand)'
+                  : 'border-transparent hover:bg-(--surface-2)'">
+                  <button type="button" :aria-current="isSelected(variant.key) ? 'true' : undefined"
                     class="w-full text-left px-4 py-3 flex flex-col gap-2 cursor-pointer focus-visible:bg-(--surface-2)"
                     @click="select(variant.key)">
                     <span class="flex items-center gap-2 flex-wrap">

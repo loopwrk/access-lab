@@ -206,8 +206,10 @@ async function skipToPanel(tabName: 'controls' | 'issues', elementId: string) {
             <h1 class="m-0 font-medium text-(length:--al-font-size-heading) text-(--text-primary)">
               {{ previewTitle }}
             </h1>
-            <div id="preview-toolbar-variant" class="flex items-center" />
-            <div id="preview-toolbar-wrappers" class="flex items-center" />
+            <div class="toolbar-chip inline-flex items-stretch border border-(--border) bg-(--surface-2)">
+              <div id="preview-toolbar-variant" class="flex items-stretch" />
+              <div id="preview-toolbar-wrappers" class="flex items-stretch" />
+            </div>
           </div>
 
           <div class="flex gap-2">
@@ -295,6 +297,10 @@ async function skipToPanel(tabName: 'controls' | 'issues', elementId: string) {
 </template>
 
 <style scoped>
+.toolbar-chip>div:empty {
+  display: none;
+}
+
 /* ── Shell grid ────────────────────────────────────────────────── */
 .app-shell {
   display: grid;

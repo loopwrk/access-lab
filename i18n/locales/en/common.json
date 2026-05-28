@@ -141,7 +141,12 @@
   "wrapperToggles": {
     "panelLabel": "Context",
     "wrapIn": "Wrap in",
-    "toggleAria": "Toggle {label} wrapper"
+    "toggleAria": "Toggle {label} wrapper",
+    "containerLabel": "wrapped inside",
+    "containerNone": "None",
+    "containerPlaceholder": "None",
+    "containerAria": "Wrap this {name} inside another element",
+    "containerLearnPrefix": "About"
   },
   "studio": {
     "toasts": {

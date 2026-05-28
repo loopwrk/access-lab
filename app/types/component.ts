@@ -120,4 +120,5 @@ export interface ContextWrapper {
   learnTopicId?: string;
   /** Wraps the rendered HTML and returns the surrounding markup. */
   wrap: (renderedHtml: string) => string;
+  availableFor?: (renderAs: string | undefined) => boolean;
 }

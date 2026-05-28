@@ -33,6 +33,26 @@ const enabledWrappers = computed({
   }
 })
 
+/**
+ * Context-wrappers actually available for the current variant. A wrapper
+ * may declare `availableFor(renderAs)` to opt out of certain variants —
+ * for example, `<button>` wrapping another `<button>` can't exist at
+ * runtime because the HTML parser auto-closes the outer button.
+ */
+const availableContextWrappers = computed(() => {
+  const all = props.definition.contextWrappers ?? []
+  const renderAs = componentProps.value.renderAs as string | undefined
+  return all.filter(w => w.availableFor?.(renderAs) ?? true)
+})
+
+watch(availableContextWrappers, (next) => {
+  const current = (componentProps.value.wrappers as string[] | undefined)?.[0]
+  if (!current) return
+  if (!next.some(w => w.key === current)) {
+    componentProps.value = { ...componentProps.value, wrappers: [] }
+  }
+})
+
 const toast = useToast()
 
 interface FormSubmittedMessage {
@@ -125,8 +145,9 @@ onBeforeUnmount(() => {
   <Teleport v-if="props.definition.variants?.length" to="#preview-toolbar-variant">
     <VariantPicker v-model="renderAs" :variants="props.definition.variants" :placeholder="variantPlaceholder" />
   </Teleport>
-  <Teleport v-if="props.definition.contextWrappers?.length" to="#preview-toolbar-wrappers">
-    <WrapperToggles v-model="enabledWrappers" :options="props.definition.contextWrappers" />
+  <Teleport v-if="availableContextWrappers.length" to="#preview-toolbar-wrappers">
+    <WrapperToggles v-model="enabledWrappers" :options="availableContextWrappers"
+      :element-name="props.definition.tagName" />
   </Teleport>
   <Teleport v-if="props.definition.controlsComponent" to="#controls-panel">
     <component :is="props.definition.controlsComponent" v-model="componentProps" />

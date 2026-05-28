@@ -1,5 +1,6 @@
 import { renderButton } from "./render";
 import { targetSizeAA, targetSizeAAA } from "~/rules/button/target-size";
+import { focusableInAnchor } from "~/rules/button/focusable-in-anchor";
 import { buttonManualChecklist } from "~/rules/button/manual-checklist";
 import type { ComponentDefinition } from "~/types/component";
 import type { CssLength } from "~/composables/useUnitConversion";
@@ -141,6 +142,32 @@ export const buttonDefinition: ComponentDefinition<ButtonProps> = {
       learnTopicId: "form-wrapping",
       wrap: (renderedHtml: string) => `<form>${renderedHtml}</form>`,
     },
+    {
+      // Nesting the inspected button inside an interactive parent is the
+      // canonical real-world cause of axe's `nested-interactive` failure
+      // (card patterns where the whole card is a link and a button sits
+      // inside). The href is concrete so the wrapper is a *real* focusable
+      // link, not an inert anchor that students would dismiss as a teaching
+      // artefact.
+      key: "link",
+      label: '<a href>',
+      wrap: (renderedHtml: string) => `<a href="#">${renderedHtml}</a>`,
+    },
+    {
+      // Same intent as the link wrapper, with a button parent instead.
+      //
+      // Only offered when the inner element is one of the `<input>`
+      // variants. `<button>` wrapping another `<button>` is forbidden by
+      // the HTML content model — the parser closes the outer button
+      // before opening the inner one, so the DOM ends up with two
+      // siblings instead of a nesting. Wrapping a void `<input>` works
+      // because the parser is happy to treat it as phrasing content
+      // inside `<button>`, which then trips nested-interactive properly.
+      key: "button",
+      label: "<button>",
+      availableFor: (renderAs) => renderAs?.startsWith("input-") ?? false,
+      wrap: (renderedHtml: string) => `<button type="button">${renderedHtml}</button>`,
+    },
   ],
 
   controls: [
@@ -242,7 +269,7 @@ export const buttonDefinition: ComponentDefinition<ButtonProps> = {
     },
   ],
 
-  rules: [targetSizeAA, targetSizeAAA],
+  rules: [targetSizeAA, targetSizeAAA, focusableInAnchor],
   manualChecklist: buttonManualChecklist,
   render: renderButton,
   // Lazy-loaded panel. Static import would cycle because ButtonControls

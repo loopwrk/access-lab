@@ -258,16 +258,18 @@ watch(() => props.modelValue.renderAs, newRenderAs => {
   if (ALL_KNOWN_DEFAULTS.has(props.modelValue.label ?? '')) {
     next.label = defaultLabelFor(newRenderAs ?? '')
   }
-
+  //     a no-op variant change.
   const shouldWrap = VARIANTS_WRAPPED_IN_FORM_BY_DEFAULT.includes(
     newRenderAs as typeof VARIANTS_WRAPPED_IN_FORM_BY_DEFAULT[number],
   )
   const currentWrappers = (props.modelValue.wrappers as string[] | undefined) ?? []
-  const isWrapped = currentWrappers.includes(FORM_WRAPPER_KEY)
-  if (shouldWrap && !isWrapped) {
-    next.wrappers = [...currentWrappers, FORM_WRAPPER_KEY]
-  } else if (!shouldWrap && isWrapped) {
-    next.wrappers = currentWrappers.filter(k => k !== FORM_WRAPPER_KEY)
+  const currentKey = currentWrappers[0]
+  if (shouldWrap) {
+    if (currentKey !== FORM_WRAPPER_KEY) {
+      next.wrappers = [FORM_WRAPPER_KEY]
+    }
+  } else if (currentKey === FORM_WRAPPER_KEY) {
+    next.wrappers = []
   }
 
   emit('update:modelValue', next)
@@ -649,7 +651,7 @@ function onSplitBorderChange(key: typeof BORDER_KEYS[number], next: CssLength) {
         <div class="mb-1">
           <div class="flex items-center justify-between mb-2">
             <span class="control-group-title font-medium text-(--text-secondary)">{{ t('controls.width')
-            }}</span>
+              }}</span>
             <USwitch :model-value="widthEnabled" size="xs" color="primary" @update:model-value="toggleWidth" />
           </div>
           <div :class="[widthEnabled ? '' : 'opacity-50']" class="flex items-center gap-3">
@@ -666,7 +668,7 @@ function onSplitBorderChange(key: typeof BORDER_KEYS[number], next: CssLength) {
           <div class="flex items-center justify-between mb-2">
             <span class="control-group-title font-medium text-(--text-secondary)">{{
               t('controls.height')
-            }}</span>
+              }}</span>
             <USwitch :model-value="heightEnabled" size="xs" color="primary" @update:model-value="toggleHeight" />
           </div>
           <div :class="[heightEnabled ? '' : 'opacity-50']" class="flex items-center gap-3">
