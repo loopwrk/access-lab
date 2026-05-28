@@ -197,6 +197,40 @@ const labelFieldPlaceholderKey = computed(
     ?? 'controls.labelPlaceholder',
 )
 
+// type=button variants do not participate in form submission, so the
+// name attribute has no effect there. Hiding the field on those variants
+// removes a control that would confuse a user who set it expecting
+// something to happen.
+const VARIANTS_WITHOUT_NAME_EFFECT = ['button-button', 'input-button'] as const
+const showsNameField = computed(
+  () =>
+    !VARIANTS_WITHOUT_NAME_EFFECT.includes(
+      props.modelValue.renderAs as typeof VARIANTS_WITHOUT_NAME_EFFECT[number],
+    ),
+)
+
+// <input type="image"> is the only variant where the visible label is
+// the image itself, not a string attribute. It has its own dedicated
+// fields (src for the image, alt for the accessible name) instead of
+// the label / value-as-label field used by every other variant.
+const isImageInput = computed(
+  () => props.modelValue.renderAs === 'input-image',
+)
+const showsLabelField = computed(() => !isImageInput.value)
+const hasSeparateValueAttribute = computed(
+  () => isButtonTag.value || isImageInput.value,
+)
+
+// Pre-bundled sample images for the input-image variant. The user
+// toggles between the two so they can see the format difference (vector
+// vs raster) without typing a URL; arbitrary image paths are out of
+// scope for the studio.
+const SAMPLE_IMAGE_PATH_SVG = '/images/click-event-button.svg'
+const SAMPLE_IMAGE_PATH_PNG = '/images/click-event-button.png'
+const isSvgImage = computed(
+  () => (props.modelValue.src ?? SAMPLE_IMAGE_PATH_SVG) === SAMPLE_IMAGE_PATH_SVG,
+)
+
 // Variants whose default behaviour is to participate in form submission
 // or reset. Wrapping these in a form by default reveals the behaviour
 // immediately, so the demo toast can show the submit/reset event firing.
@@ -208,6 +242,7 @@ const VARIANTS_WRAPPED_IN_FORM_BY_DEFAULT = [
   'button-reset',
   'input-submit',
   'input-reset',
+  'input-image',
 ] as const
 const FORM_WRAPPER_KEY = 'form'
 
@@ -511,7 +546,7 @@ function onSplitBorderChange(key: typeof BORDER_KEYS[number], next: CssLength) {
   <div class="flex flex-col gap-4">
     <ControlsIntro :element-name="buttonDefinition.name.toLowerCase()" />
 
-    <UFormField class="flex flex-col">
+    <UFormField v-if="showsLabelField" class="flex flex-col">
       <template #label>
         <a :href="`#topic-${labelFieldTopicId}`" class="control-group-title control-label-link"
           @click.prevent="focusLearnTopic(labelFieldTopicId)">
@@ -523,7 +558,35 @@ function onSplitBorderChange(key: typeof BORDER_KEYS[number], next: CssLength) {
         @update:model-value="update('label', $event)" />
     </UFormField>
 
-    <UFormField v-if="isButtonTag" class="flex flex-col">
+    <UFormField v-if="isImageInput" class="flex flex-col">
+      <template #label>
+        <span class="control-group-title">{{ t('controls.imageFormat') }}</span>
+      </template>
+      <UFieldGroup size="sm">
+        <UButton :color="isSvgImage ? 'primary' : 'neutral'" :variant="isSvgImage ? 'solid' : 'ghost'"
+          @click="update('src', SAMPLE_IMAGE_PATH_SVG)">
+          SVG
+        </UButton>
+        <UButton :color="!isSvgImage ? 'primary' : 'neutral'" :variant="!isSvgImage ? 'solid' : 'ghost'"
+          @click="update('src', SAMPLE_IMAGE_PATH_PNG)">
+          PNG
+        </UButton>
+      </UFieldGroup>
+    </UFormField>
+
+    <UFormField v-if="isImageInput" class="flex flex-col">
+      <template #label>
+        <a href="#topic-accessible-name" class="control-group-title control-label-link"
+          @click.prevent="focusLearnTopic('accessible-name')">
+          {{ t('controls.alt') }}
+          <UIcon name="i-lucide-arrow-up-right" class="control-label-link-icon" aria-hidden="true" />
+        </a>
+      </template>
+      <UInput :model-value="modelValue.alt ?? ''" :placeholder="t('controls.altPlaceholder')" class="w-full"
+        @update:model-value="update('alt', $event)" />
+    </UFormField>
+
+    <UFormField v-if="hasSeparateValueAttribute" class="flex flex-col">
       <template #label>
         <a href="#topic-button-value-attribute" class="control-group-title control-label-link"
           @click.prevent="focusLearnTopic('button-value-attribute')">
@@ -535,7 +598,7 @@ function onSplitBorderChange(key: typeof BORDER_KEYS[number], next: CssLength) {
         class="w-full" @update:model-value="update('value', $event)" />
     </UFormField>
 
-    <UFormField class="flex flex-col">
+    <UFormField v-if="showsNameField" class="flex flex-col">
       <template #label>
         <a href="#topic-button-value-attribute" class="control-group-title control-label-link"
           @click.prevent="focusLearnTopic('button-value-attribute')">
@@ -547,30 +610,32 @@ function onSplitBorderChange(key: typeof BORDER_KEYS[number], next: CssLength) {
         @update:model-value="update('name', $event)" />
     </UFormField>
 
-    <USeparator />
+    <template v-if="!isImageInput">
+      <USeparator />
 
-    <!-- TEXT -->
-    <fieldset class="flex flex-col gap-3 border-0 p-0 m-0">
-      <!-- <legend class="control-group-title mb-1.5">
-        {{ t('controls.text') }}
-      </legend> -->
+      <!-- TEXT -->
+      <fieldset class="flex flex-col gap-3 border-0 p-0 m-0">
+        <!-- <legend class="control-group-title mb-1.5">
+          {{ t('controls.text') }}
+        </legend> -->
 
-      <div>
-        <div class="flex items-center justify-between mb-1.5">
-          <span class="control-group-title font-medium text-(--text-secondary)">{{
-            t('controls.fontSize') }}</span>
-          <USwitch :model-value="fontSizeEnabled" size="xs" color="primary" @update:model-value="toggleFontSize" />
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="control-group-title font-medium text-(--text-secondary)">{{
+              t('controls.fontSize') }}</span>
+            <USwitch :model-value="fontSizeEnabled" size="xs" color="primary" @update:model-value="toggleFontSize" />
+          </div>
+          <div :class="[fontSizeEnabled ? '' : 'opacity-50']" class="flex items-center gap-3">
+            <USlider :model-value="pxOrFallback(modelValue.fontSize, DEFAULTS.fontSize)" :min="8" :max="128" :step="2"
+              color="primary" size="sm" :disabled="!fontSizeEnabled" class="flex-1"
+              @update:model-value="update('fontSize', unitConv.fromSliderPx(Number($event), unitFor(modelValue.fontSize)))" />
+            <LengthValueInput v-if="fontSizeEnabled"
+              :model-value="lengthOrFallback(modelValue.fontSize, DEFAULTS.fontSize)" :px-step="2"
+              :disabled="!fontSizeEnabled" @update:model-value="update('fontSize', $event)" />
+          </div>
         </div>
-        <div :class="[fontSizeEnabled ? '' : 'opacity-50']" class="flex items-center gap-3">
-          <USlider :model-value="pxOrFallback(modelValue.fontSize, DEFAULTS.fontSize)" :min="8" :max="128" :step="2"
-            color="primary" size="sm" :disabled="!fontSizeEnabled" class="flex-1"
-            @update:model-value="update('fontSize', unitConv.fromSliderPx(Number($event), unitFor(modelValue.fontSize)))" />
-          <LengthValueInput v-if="fontSizeEnabled"
-            :model-value="lengthOrFallback(modelValue.fontSize, DEFAULTS.fontSize)" :px-step="2"
-            :disabled="!fontSizeEnabled" @update:model-value="update('fontSize', $event)" />
-        </div>
-      </div>
-    </fieldset>
+      </fieldset>
+    </template>
 
     <USeparator />
 
@@ -720,39 +785,44 @@ function onSplitBorderChange(key: typeof BORDER_KEYS[number], next: CssLength) {
       </legend>
 
       <div :class="[colorsEnabled ? '' : 'opacity-50 pointer-events-none']" class="flex flex-col gap-3">
-        <ColorPicker v-slot="{ show }" v-model="bgColor" with-alpha with-initial-color with-eye-dropper with-hex-input
-          with-rgb-input>
-          <div class="flex items-center justify-between gap-3">
-            <button type="button" class="color-swatch" :disabled="!colorsEnabled" @click="show">
-              <div class="color-swatch-inner" :style="{ backgroundColor: bgColor }" />
-            </button>
-            <div class="flex flex-col flex-1 min-w-0">
-              <span class="color-label-title">{{ t('controls.background') }}</span>
-              <span class="color-label-hex">{{ bgColor }}</span>
+        <!-- Background and text colour are hidden for <input type="image">.
+             The image is its own visible content; bg paints only the
+             rectangle behind it and "text colour" has nothing to colour. -->
+        <template v-if="!isImageInput">
+          <ColorPicker v-slot="{ show }" v-model="bgColor" with-alpha with-initial-color with-eye-dropper
+            with-hex-input with-rgb-input>
+            <div class="flex items-center justify-between gap-3">
+              <button type="button" class="color-swatch" :disabled="!colorsEnabled" @click="show">
+                <div class="color-swatch-inner" :style="{ backgroundColor: bgColor }" />
+              </button>
+              <div class="flex flex-col flex-1 min-w-0">
+                <span class="color-label-title">{{ t('controls.background') }}</span>
+                <span class="color-label-hex">{{ bgColor }}</span>
+              </div>
+              <UInput :model-value="bgColor" size="sm" :disabled="!colorsEnabled" class="w-24 shrink-0"
+                @update:model-value="update('bg', $event)" />
             </div>
-            <UInput :model-value="bgColor" size="sm" :disabled="!colorsEnabled" class="w-24 shrink-0"
-              @update:model-value="update('bg', $event)" />
-          </div>
-        </ColorPicker>
+          </ColorPicker>
 
-        <ColorPicker v-slot="{ show }" v-model="fgTextColor" with-alpha with-initial-color with-eye-dropper
-          with-hex-input with-rgb-input>
-          <div class="flex items-center justify-between gap-3">
-            <button type="button" class="color-swatch" :disabled="!colorsEnabled" @click="show">
-              <div class="color-swatch-inner" :style="{ backgroundColor: fgTextColor }" />
-            </button>
-            <div class="flex flex-col flex-1 min-w-0">
-              <span class="color-label-title">{{ t('controls.textColor') }}</span>
-              <span class="color-label-hex">{{ fgTextColor }}</span>
+          <ColorPicker v-slot="{ show }" v-model="fgTextColor" with-alpha with-initial-color with-eye-dropper
+            with-hex-input with-rgb-input>
+            <div class="flex items-center justify-between gap-3">
+              <button type="button" class="color-swatch" :disabled="!colorsEnabled" @click="show">
+                <div class="color-swatch-inner" :style="{ backgroundColor: fgTextColor }" />
+              </button>
+              <div class="flex flex-col flex-1 min-w-0">
+                <span class="color-label-title">{{ t('controls.textColor') }}</span>
+                <span class="color-label-hex">{{ fgTextColor }}</span>
+              </div>
+              <UInput :model-value="fgTextColor" size="sm" :disabled="!colorsEnabled" class="w-24 shrink-0"
+                @update:model-value="update('fgText', $event)" />
             </div>
-            <UInput :model-value="fgTextColor" size="sm" :disabled="!colorsEnabled" class="w-24 shrink-0"
-              @update:model-value="update('fgText', $event)" />
-          </div>
-        </ColorPicker>
+          </ColorPicker>
 
-        <!-- Sits after bg + text because those are the pair the badge compares.
-             Border colour follows separately below. -->
-        <ContrastBadge :ratio="contrastRatio" :verdict="contrastVerdict" />
+          <!-- Sits after bg + text because those are the pair the badge compares.
+               Border colour follows separately below. -->
+          <ContrastBadge :ratio="contrastRatio" :verdict="contrastVerdict" />
+        </template>
 
         <ColorPicker v-slot="{ show }" v-model="borderColorComputed" with-alpha with-initial-color with-eye-dropper
           with-hex-input with-rgb-input>
@@ -807,6 +877,18 @@ function onSplitBorderChange(key: typeof BORDER_KEYS[number], next: CssLength) {
         </template>
         <UInput :model-value="modelValue.ariaLabel ?? ''" :placeholder="t('controls.ariaLabelPlaceholder')"
           class="w-full" @update:model-value="update('ariaLabel', $event)" />
+      </UFormField>
+
+      <UFormField class="flex flex-col mb-4">
+        <template #label>
+          <a href="#topic-button-disabled-states" class="control-group-title control-label-link"
+            @click.prevent="focusLearnTopic('button-disabled-states')">
+            {{ t('controls.disabled') }}
+            <UIcon name="i-lucide-arrow-up-right" class="control-label-link-icon" aria-hidden="true" />
+          </a>
+        </template>
+        <USwitch :model-value="modelValue.disabled === true" size="sm" color="primary"
+          @update:model-value="update('disabled', $event === true)" />
       </UFormField>
     </fieldset>
   </div>
