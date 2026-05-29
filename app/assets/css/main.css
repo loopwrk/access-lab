@@ -185,3 +185,90 @@
     font-size: var(--al-font-size-body);
   }
 }
+
+/* Studio control classes — shared by every section component under
+   ButtonStudio/ and the atoms in components/controls/. */
+@layer components {
+  .control-group-title {
+    font-size: var(--al-font-size-caption);
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 0;
+  }
+
+  .control-split-label {
+    font-size: var(--al-font-size-detail);
+    font-weight: 500;
+    color: var(--text-muted);
+    width: 16px;
+    text-align: center;
+  }
+
+  .control-label-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--text-primary);
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .control-label-link:hover,
+  .control-label-link:focus-visible {
+    color: var(--brand);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .control-label-link:focus-visible {
+    outline: 3px solid var(--focus-ring);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  .control-label-link-icon {
+    font-size: var(--al-font-size-detail);
+    opacity: 0.7;
+  }
+
+  .color-swatch {
+    width: 40px;
+    height: 40px;
+    padding: 4px;
+    border-radius: 6px;
+    border: 2px solid var(--border-strong);
+    background: transparent;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .color-swatch:focus-visible {
+    outline: 3px solid var(--focus-ring);
+    outline-offset: 0;
+  }
+
+  .color-swatch:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  .color-swatch-inner {
+    width: 100%;
+    height: 100%;
+    border-radius: 3px;
+  }
+
+  .color-label-title {
+    font-size: var(--al-font-size-heading);
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+
+  .color-label-hex {
+    font-size: var(--al-font-size-detail);
+    color: var(--text-muted);
+    font-family: var(--al-font-mono);
+  }
+}
