@@ -99,6 +99,11 @@ const navItems = computed<NavigationMenuItem[][]>(() => [
           label: t('nav.buttonsFormButtons'),
           value: 'buttons-form-buttons',
           to: '/components/buttons/form-buttons'
+        },
+        {
+          label: t('nav.buttonsToggleButtons'),
+          value: 'buttons-toggle-buttons',
+          to: '/components/buttons/toggle-buttons'
         }
       ]
     },

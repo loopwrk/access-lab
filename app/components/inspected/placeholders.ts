@@ -34,7 +34,7 @@ function createPlaceholder(
 export const placeholderDefinitions: Record<
   Exclude<
     ComponentId,
-    'buttons-action-triggers' | 'buttons-form-buttons' | 'input'
+    'buttons-action-triggers' | 'buttons-form-buttons' | 'buttons-toggle-buttons' | 'input'
   >,
   ComponentDefinition
 > = {

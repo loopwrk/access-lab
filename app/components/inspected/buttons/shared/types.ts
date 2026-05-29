@@ -41,4 +41,8 @@ export interface ButtonProps {
   focusRingWidth: CssLength
   focusRingColor: string
   focusRingOffset: CssLength
+  toggleBehaviour?: ToggleBehaviour
+  togglePressed?: boolean
 }
+
+export type ToggleBehaviour = 'none' | 'aria-pressed' | 'aria-checked' | 'visual-only'

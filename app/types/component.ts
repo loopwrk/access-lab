@@ -1,5 +1,5 @@
-import type { Component } from "vue";
-import type { ManualChecklistItem, Rule } from "~/rules/types";
+import type { Component } from 'vue'
+import type { ManualChecklistItem, Rule } from '~/rules/types'
 
 /**
  * Stable identifiers for every inspected component in the studio.
@@ -9,41 +9,42 @@ import type { ManualChecklistItem, Rule } from "~/rules/types";
  * component starts here: add the id to this union, then add the matching
  * definition to the registry.
  */
-export type ComponentId =
-  | "buttons-action-triggers"
-  | "buttons-form-buttons"
-  | "accordion"
-  | "carousel"
-  | "modal"
-  | "menu"
-  | "tooltip"
-  | "tabs"
-  | "input";
+export type ComponentId
+  = | 'buttons-action-triggers'
+    | 'buttons-form-buttons'
+    | 'buttons-toggle-buttons'
+    | 'accordion'
+    | 'carousel'
+    | 'modal'
+    | 'menu'
+    | 'tooltip'
+    | 'tabs'
+    | 'input'
 
 /**
  * Schema entries for the auto-rendered controls panel. Discriminated by
  * `kind`. `group` is recursive — groups contain other controls.
  */
-export type ControlSchema =
-  | { kind: "text"; key: string; label: string; placeholder?: string }
-  | {
-      kind: "slider";
-      key: string;
-      label: string;
-      min: number;
-      max: number;
-      step?: number;
-      unit?: string;
-      splittable?: boolean;
+export type ControlSchema
+  = | { kind: 'text', key: string, label: string, placeholder?: string }
+    | {
+      kind: 'slider'
+      key: string
+      label: string
+      min: number
+      max: number
+      step?: number
+      unit?: string
+      splittable?: boolean
     }
-  | { kind: "colour"; key: string; label: string }
-  | {
-      kind: "segmented";
-      key: string;
-      label: string;
-      options: { value: string; label: string }[];
+    | { kind: 'colour', key: string, label: string }
+    | {
+      kind: 'segmented'
+      key: string
+      label: string
+      options: { value: string, label: string }[]
     }
-  | { kind: "group"; label: string; controls: ControlSchema[] };
+    | { kind: 'group', label: string, controls: ControlSchema[] }
 
 /**
  * Contract every inspected component conforms to (plan.md §7).
@@ -55,21 +56,21 @@ export type ControlSchema =
  */
 export interface ComponentDefinition<P = Record<string, unknown>> {
   /** Stable identifier — route slug + registry key. */
-  id: ComponentId;
+  id: ComponentId
   /** Display name used in copy and headings. */
-  name: string;
+  name: string
   /** HTML tag rendered into the iframe (e.g. 'button', 'dialog'). */
-  tagName: string;
+  tagName: string
   /** Initial values seeded into the controls panel on first mount. */
-  defaultProps: Partial<P>;
+  defaultProps: Partial<P>
   /** Schema for the auto-generated controls panel. */
-  controls: ControlSchema[];
+  controls: ControlSchema[]
   /** Component-specific prop-based rules. */
-  rules: Rule[];
+  rules: Rule[]
   /** Manual review items shown in the Manual tab. */
-  manualChecklist: ManualChecklistItem[];
+  manualChecklist: ManualChecklistItem[]
   /** Pure props → HTML render function. */
-  render: (props: Partial<P>) => string;
+  render: (props: Partial<P>) => string
   /**
    * The per-component controls panel that ComponentStudio mounts via
    * `<component :is>` into the inspector's controls tab. Each component
@@ -81,45 +82,45 @@ export interface ComponentDefinition<P = Record<string, unknown>> {
    * of the definition. Optional because placeholder definitions don't
    * have a panel.
    */
-  controlsComponent?: Component;
-  variants?: ComponentVariant[];
-  contextWrappers?: ContextWrapper[];
+  controlsComponent?: Component
+  variants?: ComponentVariant[]
+  contextWrappers?: ContextWrapper[]
   /**
    * Marks the entry as a "coming soon" placeholder.
    */
-  placeholder?: boolean;
+  placeholder?: boolean
 }
 
-export type ComponentVariantStatus =
-  | "recommended"
-  | "info"
-  | "avoid"
-  | "rare"
-  | "neutral";
+export type ComponentVariantStatus
+  = | 'recommended'
+    | 'info'
+    | 'avoid'
+    | 'rare'
+    | 'neutral'
 
 export interface ComponentVariant {
   /** Value written into `props.renderAs`. */
-  key: string;
+  key: string
   /** Typically the literal markup. */
-  label: string;
+  label: string
   /** Optional longer description for the picker option. */
-  description?: string;
+  description?: string
   /** Pedagogical status. Drives badge colour and icon in the picker. */
-  status?: ComponentVariantStatus;
+  status?: ComponentVariantStatus
   /** One-line guidance shown as a badge under the description. */
-  statusNote?: string;
+  statusNote?: string
   /** Optional section heading. Adjacent variants sharing the same
    *  section are grouped under one header in the picker. */
-  section?: string;
+  section?: string
 
-  seeAlsoTopicId?: string;
+  seeAlsoTopicId?: string
 }
 
 export interface ContextWrapper {
-  key: string;
-  label: string;
-  learnTopicId?: string;
+  key: string
+  label: string
+  learnTopicId?: string
   /** Wraps the rendered HTML and returns the surrounding markup. */
-  wrap: (renderedHtml: string) => string;
-  availableFor?: (renderAs: string | undefined) => boolean;
+  wrap: (renderedHtml: string) => string
+  availableFor?: (renderAs: string | undefined) => boolean
 }

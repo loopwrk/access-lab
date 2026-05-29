@@ -1,6 +1,7 @@
 import type { ComponentDefinition, ComponentId } from '~/types/component'
 import { actionTriggerDefinition } from './buttons/action-triggers/definition'
 import { formButtonDefinition } from './buttons/form-buttons/definition'
+import { toggleButtonDefinition } from './buttons/toggle-buttons/definition'
 import { inputDefinition } from './input/definition'
 import { placeholderDefinitions } from './placeholders'
 
@@ -17,6 +18,9 @@ export const inspectedComponents: Record<
     Record<string, unknown>
   >,
   'buttons-form-buttons': formButtonDefinition as unknown as ComponentDefinition<
+    Record<string, unknown>
+  >,
+  'buttons-toggle-buttons': toggleButtonDefinition as unknown as ComponentDefinition<
     Record<string, unknown>
   >,
   'input': inputDefinition as unknown as ComponentDefinition<

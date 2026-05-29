@@ -26,30 +26,75 @@ function escapeAttribute(value: string): string {
   return escapeHtml(value).replace(/"/g, '&quot;')
 }
 
-// Selector hook for the injected :focus-visible block. Only applied
-// when the override is on.
+// Selector hooks for the injected :focus-visible block (focus override)
+// and pressed-state styling (toggle behaviour). Only applied when the
+// relevant behaviour is on.
 const INSPECTED_CLASS = 'al-inspected-element'
+const PRESSED_CLASS = 'al-pressed'
 
-function buildFocusStyleBlock(props: Partial<ButtonProps>): string {
-  if (!props.focusRingEnabled) return ''
+function buildStyleBlock(props: Partial<ButtonProps>): string {
+  const rules: string[] = []
 
-  const width = props.focusRingWidth
-    ? formatLength(props.focusRingWidth)
-    : '2px'
-  const color = props.focusRingColor ?? '#1d4ed8'
-  const offset = props.focusRingOffset
-    ? formatLength(props.focusRingOffset)
-    : '2px'
+  if (props.focusRingEnabled) {
+    const width = props.focusRingWidth
+      ? formatLength(props.focusRingWidth)
+      : '2px'
+    const color = props.focusRingColor ?? '#1d4ed8'
+    const offset = props.focusRingOffset
+      ? formatLength(props.focusRingOffset)
+      : '2px'
+    rules.push(
+      `.${INSPECTED_CLASS}:focus-visible{outline:${width} solid ${color};outline-offset:${offset};}`
+    )
+  }
 
-  return `<style>.${INSPECTED_CLASS}:focus-visible{outline:${width} solid ${color};outline-offset:${offset};}</style>`
+  // Pressed-state tint — a translucent inset overlay reads as "pressed"
+  // regardless of what bg/fg colours the student has chosen.
+  if (isToggleable(props)) {
+    rules.push(
+      `.${INSPECTED_CLASS}.${PRESSED_CLASS}{box-shadow:inset 0 0 0 999px rgb(0 0 0 / 0.18);}`
+    )
+  }
+
+  return rules.length ? `<style>${rules.join('')}</style>` : ''
+}
+
+function isToggleable(props: Partial<ButtonProps>): boolean {
+  return props.toggleBehaviour != null && props.toggleBehaviour !== 'none'
+}
+
+function buildElementClass(props: Partial<ButtonProps>): string | null {
+  const tokens: string[] = []
+  if (props.focusRingEnabled) tokens.push(INSPECTED_CLASS)
+  if (isToggleable(props) && props.togglePressed) {
+    if (!tokens.includes(INSPECTED_CLASS)) tokens.push(INSPECTED_CLASS)
+    tokens.push(PRESSED_CLASS)
+  }
+  return tokens.length ? tokens.join(' ') : null
 }
 
 function withInspectedClass(
   extraAttrs: string[],
-  focusRingEnabled: boolean
+  props: Partial<ButtonProps>
 ): string[] {
-  if (!focusRingEnabled) return extraAttrs
-  return [`class="${INSPECTED_CLASS}"`, ...extraAttrs]
+  const cls = buildElementClass(props)
+  if (!cls) return extraAttrs
+  return [`class="${cls}"`, ...extraAttrs]
+}
+
+function toggleAttrs(props: Partial<ButtonProps>): string[] {
+  if (!isToggleable(props)) return []
+  const pressed = props.togglePressed === true
+  switch (props.toggleBehaviour) {
+    case 'aria-pressed':
+      return [`aria-pressed="${pressed}"`]
+    case 'aria-checked':
+      return [`aria-checked="${pressed}"`]
+    case 'visual-only':
+      return []
+    default:
+      return []
+  }
 }
 
 function formatLength(length: CssLength): string {
@@ -145,10 +190,11 @@ function renderNativeButton(
   if (props.ariaLabel) {
     attrs.push(`aria-label="${escapeAttribute(props.ariaLabel)}"`)
   }
+  attrs.push(...toggleAttrs(props))
   if (props.disabled) attrs.push('disabled')
   if (style) attrs.push(`style="${style}"`)
 
-  return `<button ${withInspectedClass(attrs, props.focusRingEnabled === true).join(' ')}>${content}</button>`
+  return `<button ${withInspectedClass(attrs, props).join(' ')}>${content}</button>`
 }
 
 function renderInputButton(
@@ -167,7 +213,7 @@ function renderInputButton(
   if (props.disabled) attrs.push('disabled')
   if (style) attrs.push(`style="${style}"`)
 
-  return `<input ${withInspectedClass(attrs, props.focusRingEnabled === true).join(' ')}>`
+  return `<input ${withInspectedClass(attrs, props).join(' ')}>`
 }
 
 function renderInputImage(props: Partial<ButtonProps>, style: string): string {
@@ -182,14 +228,14 @@ function renderInputImage(props: Partial<ButtonProps>, style: string): string {
   if (props.disabled) attrs.push('disabled')
   if (style) attrs.push(`style="${style}"`)
 
-  return `<input ${withInspectedClass(attrs, props.focusRingEnabled === true).join(' ')}>`
+  return `<input ${withInspectedClass(attrs, props).join(' ')}>`
 }
 
 export function renderButton(props?: Partial<ButtonProps>): string {
   if (!props) return `<button>${DEFAULT_LABEL}</button>`
 
   const style = buildInlineStyle(props)
-  const focusBlock = buildFocusStyleBlock(props)
+  const styleBlock = buildStyleBlock(props)
   const renderAs = props.renderAs ?? 'button'
 
   let element: string
@@ -205,8 +251,5 @@ export function renderButton(props?: Partial<ButtonProps>): string {
     }
   }
 
-  // Style block first so it's parsed before the element it targets.
-  // The block is empty when focusRingEnabled is false, in which case
-  // the browser's own :focus-visible style is what the user sees.
-  return `${focusBlock}${element}`
+  return `${styleBlock}${element}`
 }
