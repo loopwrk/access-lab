@@ -1,30 +1,30 @@
 <script setup lang="ts">
 import type { BaseButtonProps } from '~/types/button'
-import { buttonDefinition } from '~/components/inspected/button/definition'
-import ContentSection from './sections/ContentSection.vue'
-import AriaSection from './sections/AriaSection.vue'
-import TextSection from './sections/TextSection.vue'
-import DimensionsSection from './sections/DimensionsSection.vue'
-import BorderSection from './sections/BorderSection.vue'
-import ColoursSection from './sections/ColoursSection.vue'
-import FocusSection from './sections/FocusSection.vue'
+import { formButtonDefinition } from './definition'
+import ContentSection from '~/components/ButtonStudio/sections/ContentSection.vue'
+import AriaSection from '~/components/ButtonStudio/sections/AriaSection.vue'
+import TextSection from '~/components/ButtonStudio/sections/TextSection.vue'
+import DimensionsSection from '~/components/ButtonStudio/sections/DimensionsSection.vue'
+import BorderSection from '~/components/ButtonStudio/sections/BorderSection.vue'
+import ColoursSection from '~/components/ButtonStudio/sections/ColoursSection.vue'
+import FocusSection from '~/components/ButtonStudio/sections/FocusSection.vue'
 
 const model = defineModel<Partial<BaseButtonProps> & { wrappers?: string[] }>({ required: true })
 
-const tagName = buttonDefinition.tagName
+const tagName = formButtonDefinition.tagName
 const { naturalSize } = useNaturalSize(model, tagName)
 const defaults = useButtonStudioDefaults(tagName)
 
 const isImageInput = computed(() => model.value.renderAs === 'input-image')
 const isButtonTag = computed(() => !(model.value.renderAs ?? 'button').startsWith('input-'))
 
+// Switching to an `<input>` variant clears any icon contentType because
+// inputs are void elements and can't host inner markup.
 watch(isButtonTag, (buttonTag) => {
   if (!buttonTag && model.value.contentType === 'icon') {
     model.value.contentType = 'text'
   }
 })
-
-const GENERIC_DEFAULT_LABEL = buttonDefinition.defaultProps.label ?? ''
 
 const VARIANT_DEFAULT_LABELS: Record<string, string> = {
   'button-submit': 'Save changes',
@@ -35,30 +35,30 @@ const VARIANT_DEFAULT_LABELS: Record<string, string> = {
 
 const ALL_KNOWN_DEFAULTS = new Set<string>([
   ...Object.values(VARIANT_DEFAULT_LABELS),
-  GENERIC_DEFAULT_LABEL,
   ''
 ])
 
-const VARIANTS_WRAPPED_IN_FORM_BY_DEFAULT = [
+const VARIANTS_WRAPPED_IN_FORM_BY_DEFAULT = new Set([
   'button-submit',
   'button-reset',
   'input-submit',
   'input-reset',
   'input-image'
-]
+])
+
 const FORM_WRAPPER_KEY = 'form'
 
 watch(() => model.value.renderAs, (newRenderAs) => {
-  // Label: swap to variant default only when the user hasn't typed
+  // Swap to variant default label only when the user hasn't typed
   // something bespoke (current value matches any known default).
   if (ALL_KNOWN_DEFAULTS.has(model.value.label ?? '')) {
-    model.value.label = VARIANT_DEFAULT_LABELS[newRenderAs ?? ''] ?? GENERIC_DEFAULT_LABEL
+    model.value.label = VARIANT_DEFAULT_LABELS[newRenderAs ?? ''] ?? ''
   }
 
-  // Container: variant choice wins. Submit-like variants force Form;
-  // non-submit-variants only clear Form (a deliberately picked Link or
-  // Button container survives the variant switch).
-  const shouldWrap = VARIANTS_WRAPPED_IN_FORM_BY_DEFAULT.includes(newRenderAs ?? '')
+  // Variant choice wins for the container: submit-like variants force
+  // Form; non-submit variants only clear Form (Link or Button container
+  // survives).
+  const shouldWrap = VARIANTS_WRAPPED_IN_FORM_BY_DEFAULT.has(newRenderAs ?? '')
   const currentKey = (model.value.wrappers ?? [])[0]
   if (shouldWrap) {
     if (currentKey !== FORM_WRAPPER_KEY) model.value.wrappers = [FORM_WRAPPER_KEY]
@@ -70,7 +70,7 @@ watch(() => model.value.renderAs, (newRenderAs) => {
 
 <template>
   <div class="flex flex-col gap-4">
-    <ControlsIntro :element-name="buttonDefinition.name.toLowerCase()" />
+    <ControlsIntro :element-name="formButtonDefinition.name.toLowerCase()" />
 
     <ContentSection v-model="model" />
     <USeparator />

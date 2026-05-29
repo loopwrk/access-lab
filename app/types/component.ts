@@ -10,7 +10,8 @@ import type { ManualChecklistItem, Rule } from "~/rules/types";
  * definition to the registry.
  */
 export type ComponentId =
-  | "button"
+  | "buttons-action-triggers"
+  | "buttons-form-buttons"
   | "accordion"
   | "carousel"
   | "modal"

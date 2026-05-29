@@ -3,7 +3,7 @@ import { useMediaQuery } from '@vueuse/core'
 import { useTheme } from '~/composables/useTheme'
 import { useFont } from '~/composables/useFont'
 import { useAxeCounts, useAllViolations } from '~/composables/useAxeResults'
-import type { FontSize } from "~/types/typography"
+import type { FontSize } from '~/types/typography'
 import type { TabsItem, NavigationMenuItem } from '@nuxt/ui'
 
 const isBelowDesktop = useMediaQuery('(max-width: 1023px)')
@@ -40,7 +40,7 @@ async function copyHtml(mode: 'inline' | 'class') {
     copied.value = mode
     setTimeout(() => { copied.value = null }, 800)
   } catch (err) {
-    copied.value = mode;
+    copied.value = mode
     console.error('Failed to copy to clipboard:', err)
     copied.value = 'error'
     setTimeout(() => { copied.value = null }, 800)
@@ -56,8 +56,8 @@ const fonts = [
 ]
 
 interface SizeOption {
-  label: string;
-  value: FontSize;
+  label: string
+  value: FontSize
 }
 
 const sizes: SizeOption[] = [
@@ -81,18 +81,27 @@ const tabItems = computed<TabsItem[]>(() => [
   { label: t('inspector.learn'), value: 'learn' }
 ])
 
-const route = useRoute()
-
-const activeComponent = computed<string>(() => {
-  const param = route.params.component
-  if (Array.isArray(param)) return param[0] ?? 'button'
-  return (param as string | undefined) ?? 'button'
-})
-
 const navItems = computed<NavigationMenuItem[][]>(() => [
   [
     { label: t('nav.components'), type: 'label' },
-    { label: t('nav.button'), value: 'button', to: '/components/button', icon: 'i-lucide-square-mouse-pointer' },
+    {
+      label: t('nav.buttons'),
+      icon: 'i-lucide-square-mouse-pointer',
+      type: 'trigger',
+      defaultOpen: true,
+      children: [
+        {
+          label: t('nav.buttonsActionTriggers'),
+          value: 'buttons-action-triggers',
+          to: '/components/buttons/action-triggers'
+        },
+        {
+          label: t('nav.buttonsFormButtons'),
+          value: 'buttons-form-buttons',
+          to: '/components/buttons/form-buttons'
+        }
+      ]
+    },
     { label: t('nav.accordion'), value: 'accordion', to: '/components/accordion', icon: 'i-lucide-chevrons-down-up' },
     { label: t('nav.carousel'), value: 'carousel', to: '/components/carousel', icon: 'i-lucide-images' },
     { label: t('nav.modal'), value: 'modal', to: '/components/modal', icon: 'i-lucide-rectangle-ellipsis' },
@@ -103,13 +112,8 @@ const navItems = computed<NavigationMenuItem[][]>(() => [
   [
     { label: t('nav.forms'), type: 'label' },
     { label: t('nav.input'), value: 'input', to: '/components/input', icon: 'i-lucide-text-cursor-input' }
-
   ]
   // TODO: Introduce framework styles after vanilla components are in place
-  // [
-  //   { label: t('nav.frameworkStyle'), type: 'label' },
-  //   { label: t('nav.none'), value: 'none', icon: 'i-lucide-code' }
-  // ]
 ])
 
 async function skipToPanel(tabName: 'controls' | 'issues', elementId: string) {
@@ -127,24 +131,49 @@ function skipToMain() {
 </script>
 
 <template>
-  <div class="app-shell" :inert="isBelowDesktop">
+  <div
+    class="app-shell"
+    :inert="isBelowDesktop"
+  >
     <!-- Skip links -->
     <div class="skip-links">
-      <a href="#main-content" class="skip-link" @click.prevent="skipToMain">{{ t('skipLinks.main') }}</a>
-      <a href="#controls-panel" class="skip-link" @click="skipToPanel('controls', 'controls-panel')">
+      <a
+        href="#main-content"
+        class="skip-link"
+        @click.prevent="skipToMain"
+      >{{ t('skipLinks.main') }}</a>
+      <a
+        href="#controls-panel"
+        class="skip-link"
+        @click="skipToPanel('controls', 'controls-panel')"
+      >
         {{ t('skipLinks.controls') }}
       </a>
-      <a href="#issues-panel" class="skip-link" @click="skipToPanel('issues', 'issues-panel')">
+      <a
+        href="#issues-panel"
+        class="skip-link"
+        @click="skipToPanel('issues', 'issues-panel')"
+      >
         {{ t('skipLinks.issues') }}
       </a>
     </div>
 
     <!-- App bar -->
-    <header class="appbar" role="banner" :aria-label="t('appBar.ariaLabel')">
+    <header
+      class="appbar"
+      role="banner"
+      :aria-label="t('appBar.ariaLabel')"
+    >
       <div class="appbar-left">
         <!-- Brand -->
-        <NuxtLink to="/" class="brand">
-          <span class="brand-mark" aria-hidden="true" />
+        <NuxtLink
+          to="/"
+          class="brand"
+        >
+          <span
+            class="brand-mark"
+            aria-hidden="true"
+          />
           <span class="brand-text">{{ t('appBar.brand') }}</span>
         </NuxtLink>
       </div>
@@ -152,87 +181,158 @@ function skipToMain() {
       <div class="appbar-right">
         <!-- Font picker -->
         <UFieldGroup size="sm">
-          <UButton v-for="fontFamily in fonts" :key="fontFamily.value"
+          <UButton
+            v-for="fontFamily in fonts"
+            :key="fontFamily.value"
             :color="font.family === fontFamily.value ? 'primary' : 'neutral'"
             :variant="font.family === fontFamily.value ? 'solid' : 'ghost'"
-            :style="{ fontFamily: `${fontFamily.family}` }" @click="
-              font.setFont(fontFamily.value)">
+            :style="{ fontFamily: `${fontFamily.family}` }"
+            @click="
+              font.setFont(fontFamily.value)"
+          >
             {{ fontFamily.label }}
           </UButton>
         </UFieldGroup>
 
         <!-- Size picker -->
         <UFieldGroup size="sm">
-          <UButton v-for="s in sizes" :key="s.value" :color="font.size === s.value ? 'primary' : 'neutral'"
-            :variant="font.size === s.value ? 'solid' : 'ghost'" @click="font.setSize(s.value)">
+          <UButton
+            v-for="s in sizes"
+            :key="s.value"
+            :color="font.size === s.value ? 'primary' : 'neutral'"
+            :variant="font.size === s.value ? 'solid' : 'ghost'"
+            @click="font.setSize(s.value)"
+          >
             {{ s.label }}
           </UButton>
         </UFieldGroup>
 
         <!-- High contrast toggle -->
         <UFieldGroup size="sm">
-          <UButton :color="theme.isHighContrast ? 'primary' : 'neutral'"
-            :variant="theme.isHighContrast ? 'solid' : 'ghost'" icon="i-lucide-contrast"
-            :aria-pressed="theme.isHighContrast" @click="theme.toggleContrast()">
+          <UButton
+            :color="theme.isHighContrast ? 'primary' : 'neutral'"
+            :variant="theme.isHighContrast ? 'solid' : 'ghost'"
+            icon="i-lucide-contrast"
+            :aria-pressed="theme.isHighContrast"
+            @click="theme.toggleContrast()"
+          >
             {{ t('theme.highContrast') }}
           </UButton>
         </UFieldGroup>
 
         <!-- Theme toggle -->
         <UFieldGroup size="sm">
-          <UButton :color="!theme.isDark ? 'primary' : 'neutral'" :variant="!theme.isDark ? 'solid' : 'ghost'"
-            icon="i-lucide-sun" :aria-pressed="!theme.isDark" @click="theme.isDark && theme.toggleMode()">
+          <UButton
+            :color="!theme.isDark ? 'primary' : 'neutral'"
+            :variant="!theme.isDark ? 'solid' : 'ghost'"
+            icon="i-lucide-sun"
+            :aria-pressed="!theme.isDark"
+            @click="theme.isDark && theme.toggleMode()"
+          >
             {{ t('theme.light') }}
           </UButton>
-          <UButton :color="theme.isDark ? 'primary' : 'neutral'" :variant="theme.isDark ? 'solid' : 'ghost'"
-            icon="i-lucide-moon" :aria-pressed="theme.isDark" @click="!theme.isDark && theme.toggleMode()">
+          <UButton
+            :color="theme.isDark ? 'primary' : 'neutral'"
+            :variant="theme.isDark ? 'solid' : 'ghost'"
+            icon="i-lucide-moon"
+            :aria-pressed="theme.isDark"
+            @click="!theme.isDark && theme.toggleMode()"
+          >
             {{ t('theme.dark') }}
           </UButton>
         </UFieldGroup>
 
         <!-- Sidebar toggle -->
-        <UButton color="neutral" variant="ghost" size="sm" icon="i-lucide-panel-left"
+        <UButton
+          color="neutral"
+          variant="ghost"
+          size="sm"
+          icon="i-lucide-panel-left"
           :aria-label="sidebarOpen ? t('sidebar.toggleClose') : t('sidebar.toggleOpen')"
-          @click="sidebarOpen = !sidebarOpen" />
+          @click="sidebarOpen = !sidebarOpen"
+        />
       </div>
     </header>
 
     <div class="app-body">
       <!-- Left sidebar -->
-      <aside v-show="sidebarOpen" class="sidebar" :aria-label="t('sidebar.ariaLabel')">
-        <UNavigationMenu :model-value="activeComponent" :items="navItems" orientation="vertical" highlight
+      <aside
+        v-show="sidebarOpen"
+        class="sidebar"
+        :aria-label="t('sidebar.ariaLabel')"
+      >
+        <UNavigationMenu
+          :items="navItems"
+          orientation="vertical"
+          highlight
           highlight-color="primary"
-          :ui="{ link: 'text-md py-2.5 pl-3', linkLabel: 'truncate', label: 'text-lg pl-3 pt-3' }" />
+          collapsible
+          :ui="{ link: 'text-md py-2.5 pl-3', linkLabel: 'truncate', label: 'text-lg pl-3 pt-3' }"
+        />
       </aside>
 
       <!-- Collapsed sidebar rail -->
-      <div v-show="!sidebarOpen" class="sidebar-rail" :aria-label="t('sidebar.ariaLabel')">
-        <button class="sidebar-rail-btn" :aria-label="t('sidebar.toggleOpen')" @click="sidebarOpen = true">
-          <span aria-hidden="true" class="i-lucide-panel-left text-lg" />
+      <div
+        v-show="!sidebarOpen"
+        class="sidebar-rail"
+        :aria-label="t('sidebar.ariaLabel')"
+      >
+        <button
+          class="sidebar-rail-btn"
+          :aria-label="t('sidebar.toggleOpen')"
+          @click="sidebarOpen = true"
+        >
+          <span
+            aria-hidden="true"
+            class="i-lucide-panel-left text-lg"
+          />
         </button>
       </div>
 
       <!-- Main content -->
-      <main id="main-content" class="main" tabindex="-1">
+      <main
+        id="main-content"
+        class="main"
+        tabindex="-1"
+      >
         <!-- Preview toolbar -->
         <div
-          class="flex flex-wrap items-center justify-between gap-4 py-2.5 px-5 border-b border-(--border) bg-(--surface)">
+          class="flex flex-wrap items-center justify-between gap-4 py-2.5 px-5 border-b border-(--border) bg-(--surface)"
+        >
           <div class="flex items-center gap-3">
             <h1 class="m-0 font-medium text-(length:--al-font-size-heading) text-(--text-primary)">
               {{ previewTitle }}
             </h1>
             <div class="toolbar-chip inline-flex items-stretch border border-(--border) bg-(--surface-2)">
-              <div id="preview-toolbar-variant" class="flex items-stretch" />
-              <div id="preview-toolbar-wrappers" class="flex items-stretch" />
+              <div
+                id="preview-toolbar-variant"
+                class="flex items-stretch"
+              />
+              <div
+                id="preview-toolbar-wrappers"
+                class="flex items-stretch"
+              />
             </div>
           </div>
 
           <div class="flex gap-2">
-            <AnimatedCountBadge color="error" :count="criticalCount" :noun="t('counter.criticalNoun')"
-              :violation-ids="criticalViolationIds" />
-            <AnimatedCountBadge color="warning" :count="warningCount" :noun="t('counter.warningsNoun', warningCount)"
-              :violation-ids="warningViolationIds" />
-            <AnimatedCountBadge color="success" :count="passingCount" :noun="t('counter.passingNoun')" />
+            <AnimatedCountBadge
+              color="error"
+              :count="criticalCount"
+              :noun="t('counter.criticalNoun')"
+              :violation-ids="criticalViolationIds"
+            />
+            <AnimatedCountBadge
+              color="warning"
+              :count="warningCount"
+              :noun="t('counter.warningsNoun', warningCount)"
+              :violation-ids="warningViolationIds"
+            />
+            <AnimatedCountBadge
+              color="success"
+              :count="passingCount"
+              :noun="t('counter.passingNoun')"
+            />
           </div>
         </div>
 
@@ -241,30 +341,61 @@ function skipToMain() {
           <slot />
         </div>
 
-        <UCollapsible default-open class="code-drawer">
-          <UButton :label="t('codeDrawer.label')" color="neutral" variant="ghost" block
-            trailing-icon="i-lucide-chevron-down" class="group"
-            :ui="{ trailingIcon: 'group-data-[state=open]:rotate-180 transition-transform duration-200' }" />
+        <UCollapsible
+          default-open
+          class="code-drawer"
+        >
+          <UButton
+            :label="t('codeDrawer.label')"
+            color="neutral"
+            variant="ghost"
+            block
+            trailing-icon="i-lucide-chevron-down"
+            class="group"
+            :ui="{ trailingIcon: 'group-data-[state=open]:rotate-180 transition-transform duration-200' }"
+          />
           <template #content>
             <div class="flex flex-col gap-2 px-5 pb-4">
-              <ProsePre v-if="renderedHtml" language="html" :code="renderedHtml">{{ renderedHtml }}</ProsePre>
-              <p v-else class="text-(length:--al-font-size-body) text-(--text-muted) m-0 py-2">
+              <ProsePre
+                v-if="renderedHtml"
+                language="html"
+                :code="renderedHtml"
+              >
+                {{ renderedHtml }}
+              </ProsePre>
+              <p
+                v-else
+                class="text-(length:--al-font-size-body) text-(--text-muted) m-0 py-2"
+              >
                 {{ t('codeDrawer.empty') }}
               </p>
               <p
-                class="text-(length:--al-font-size-caption) font-semibold text-(--text-muted) uppercase tracking-[0.06em] m-0">
+                class="text-(length:--al-font-size-caption) font-semibold text-(--text-muted) uppercase tracking-[0.06em] m-0"
+              >
                 {{ t('codeDrawer.copyLabel') }}
               </p>
               <div class="flex gap-2 justify-start">
                 <UFieldGroup>
-                  <UButton class="min-w-[110px] flex justify-center" size="md" variant="ghost" color="neutral"
-                    :disabled="!renderedHtml" @click="copyHtml('inline')">
+                  <UButton
+                    class="min-w-[110px] flex justify-center"
+                    size="md"
+                    variant="ghost"
+                    color="neutral"
+                    :disabled="!renderedHtml"
+                    @click="copyHtml('inline')"
+                  >
                     {{ copied === 'inline' ? t('codeDrawer.copied') : t('codeDrawer.copyInline') }}
                   </UButton>
                 </UFieldGroup>
                 <UFieldGroup>
-                  <UButton class="min-w-[150px] flex justify-center" size="md" variant="ghost" color="neutral"
-                    :disabled="!renderedHtml" @click="copyHtml('class')">
+                  <UButton
+                    class="min-w-[150px] flex justify-center"
+                    size="md"
+                    variant="ghost"
+                    color="neutral"
+                    :disabled="!renderedHtml"
+                    @click="copyHtml('class')"
+                  >
                     {{ copied === 'class' ? t('codeDrawer.copied') : t('codeDrawer.copyClasses') }}
                   </UButton>
                 </UFieldGroup>
@@ -275,30 +406,57 @@ function skipToMain() {
       </main>
 
       <!-- Right inspector -->
-      <aside class="inspector" aria-label="Inspection panel">
-        <UTabs v-model="activeTab" :items="tabItems" variant="link" color="primary" size="lg" :content="false"
-          :ui="{ list: 'justify-around', label: 'overflow-visible whitespace-nowrap' }" />
+      <aside
+        class="inspector"
+        aria-label="Inspection panel"
+      >
+        <UTabs
+          v-model="activeTab"
+          :items="tabItems"
+          variant="link"
+          color="primary"
+          size="lg"
+          :content="false"
+          :ui="{ list: 'justify-around', label: 'overflow-visible whitespace-nowrap' }"
+        />
 
-        <!-- Tab panels 
+        <!-- Tab panels
           Content currently created in index.vue and
           teleported here during development and testing.
-          Refactoring will take place once the content and 
+          Refactoring will take place once the content and
           structure of each panel is finalized.
         -->
 
         <div class="inspector-panels">
-          <div v-show="activeTab === 'controls'" id="controls-panel" class="inspector-panel" tabindex="0">
+          <div
+            v-show="activeTab === 'controls'"
+            id="controls-panel"
+            class="inspector-panel"
+            tabindex="0"
+          >
             <RootEmSlider />
           </div>
 
-          <div v-show="activeTab === 'issues'" id="issues-panel" class="inspector-panel" tabindex="0">
-          </div>
+          <div
+            v-show="activeTab === 'issues'"
+            id="issues-panel"
+            class="inspector-panel"
+            tabindex="0"
+          />
 
-          <div v-show="activeTab === 'manual'" id="manual-panel" class="inspector-panel" tabindex="0">
-          </div>
+          <div
+            v-show="activeTab === 'manual'"
+            id="manual-panel"
+            class="inspector-panel"
+            tabindex="0"
+          />
 
-          <div v-show="activeTab === 'learn'" id="learn-panel" class="inspector-panel" tabindex="0">
-          </div>
+          <div
+            v-show="activeTab === 'learn'"
+            id="learn-panel"
+            class="inspector-panel"
+            tabindex="0"
+          />
         </div>
       </aside>
     </div>
