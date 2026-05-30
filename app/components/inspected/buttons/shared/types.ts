@@ -43,6 +43,11 @@ export interface ButtonProps {
   focusRingOffset: CssLength
   toggleBehaviour?: ToggleBehaviour
   togglePressed?: boolean
+  switchBehaviour?: SwitchBehaviour
+  switchChecked?: boolean
+  switchPillStyling?: boolean
 }
 
 export type ToggleBehaviour = 'none' | 'aria-pressed' | 'aria-checked' | 'visual-only'
+
+export type SwitchBehaviour = 'none' | 'role-switch' | 'aria-pressed'

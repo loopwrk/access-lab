@@ -1,9 +1,16 @@
 export function useRenderedHtml() {
   const renderedHtml = useState<string>('rendered-html', () => '')
+  const renderedCss = useState<string>('rendered-css', () => '')
 
-  function setHtml(html: string) {
+  function setOutput(html: string, css: string = '') {
     renderedHtml.value = html
+    renderedCss.value = css
   }
 
-  return { renderedHtml, setHtml }
+  // Back-compat shim — callers that still pass a single string keep working.
+  function setHtml(html: string) {
+    setOutput(html, '')
+  }
+
+  return { renderedHtml, renderedCss, setHtml, setOutput }
 }

@@ -13,6 +13,7 @@ export type ComponentId
   = | 'buttons-action-triggers'
     | 'buttons-form-buttons'
     | 'buttons-toggle-buttons'
+    | 'buttons-switches'
     | 'accordion'
     | 'carousel'
     | 'modal'
@@ -69,8 +70,12 @@ export interface ComponentDefinition<P = Record<string, unknown>> {
   rules: Rule[]
   /** Manual review items shown in the Manual tab. */
   manualChecklist: ManualChecklistItem[]
-  /** Pure props → HTML render function. */
-  render: (props: Partial<P>) => string
+  /**
+   * Pure props → rendered output. Returning a plain string is shorthand
+   * for `{ html }`. Returning a fragment separates studio-injected CSS
+   * from the markup so the code drawer can show them in different panes.
+   */
+  render: (props: Partial<P>) => string | RenderedFragment
   /**
    * The per-component controls panel that ComponentStudio mounts via
    * `<component :is>` into the inspector's controls tab. Each component
@@ -89,6 +94,19 @@ export interface ComponentDefinition<P = Record<string, unknown>> {
    * Marks the entry as a "coming soon" placeholder.
    */
   placeholder?: boolean
+  /**
+   * Suppress the generic "Click event fired" toast from ComponentStudio
+   * for this definition. Use on pages whose controls component drives
+   * its own state-specific toast (e.g. the switches page surfaces a
+   * notification toast that mirrors the switch state, so the generic
+   * click toast would be redundant).
+   */
+  suppressDemoClickToast?: boolean
+}
+
+export interface RenderedFragment {
+  html: string
+  css?: string
 }
 
 export type ComponentVariantStatus

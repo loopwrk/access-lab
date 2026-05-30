@@ -91,6 +91,7 @@ const submitNoFormAction = computed(() => [{
 function onMessage(event: MessageEvent) {
   const data = event.data
   if (data?.type === 'demo:click') {
+    if (props.definition.suppressDemoClickToast) return
     toast.add({
       title: t('studio.toasts.demoAction'),
       icon: 'i-lucide-circle-check',

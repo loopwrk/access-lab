@@ -24,28 +24,8 @@ const warningViolationIds = computed(() =>
     .map(v => v.id)
 )
 const { activeComponentName } = useStudioToolbar()
-const { renderedHtml } = useRenderedHtml()
 
 const previewTitle = computed(() => activeComponentName.value ?? t('preview.title'))
-const { convert: toClassHtml } = useInlineToClass()
-
-const copied = ref<'inline' | 'class' | 'error' | null>(null)
-
-async function copyHtml(mode: 'inline' | 'class') {
-  const text = mode === 'inline'
-    ? renderedHtml.value
-    : (toClassHtml(renderedHtml.value) ?? renderedHtml.value)
-  try {
-    await navigator.clipboard.writeText(text)
-    copied.value = mode
-    setTimeout(() => { copied.value = null }, 800)
-  } catch (err) {
-    copied.value = mode
-    console.error('Failed to copy to clipboard:', err)
-    copied.value = 'error'
-    setTimeout(() => { copied.value = null }, 800)
-  }
-}
 
 // Font options
 const fonts = [
@@ -104,6 +84,11 @@ const navItems = computed<NavigationMenuItem[][]>(() => [
           label: t('nav.buttonsToggleButtons'),
           value: 'buttons-toggle-buttons',
           to: '/components/buttons/toggle-buttons'
+        },
+        {
+          label: t('nav.buttonsSwitches'),
+          value: 'buttons-switches',
+          to: '/components/buttons/switches'
         }
       ]
     },
@@ -346,68 +331,7 @@ function skipToMain() {
           <slot />
         </div>
 
-        <UCollapsible
-          default-open
-          class="code-drawer"
-        >
-          <UButton
-            :label="t('codeDrawer.label')"
-            color="neutral"
-            variant="ghost"
-            block
-            trailing-icon="i-lucide-chevron-down"
-            class="group"
-            :ui="{ trailingIcon: 'group-data-[state=open]:rotate-180 transition-transform duration-200' }"
-          />
-          <template #content>
-            <div class="flex flex-col gap-2 px-5 pb-4">
-              <ProsePre
-                v-if="renderedHtml"
-                language="html"
-                :code="renderedHtml"
-              >
-                {{ renderedHtml }}
-              </ProsePre>
-              <p
-                v-else
-                class="text-(length:--al-font-size-body) text-(--text-muted) m-0 py-2"
-              >
-                {{ t('codeDrawer.empty') }}
-              </p>
-              <p
-                class="text-(length:--al-font-size-caption) font-semibold text-(--text-muted) uppercase tracking-[0.06em] m-0"
-              >
-                {{ t('codeDrawer.copyLabel') }}
-              </p>
-              <div class="flex gap-2 justify-start">
-                <UFieldGroup>
-                  <UButton
-                    class="min-w-[110px] flex justify-center"
-                    size="md"
-                    variant="ghost"
-                    color="neutral"
-                    :disabled="!renderedHtml"
-                    @click="copyHtml('inline')"
-                  >
-                    {{ copied === 'inline' ? t('codeDrawer.copied') : t('codeDrawer.copyInline') }}
-                  </UButton>
-                </UFieldGroup>
-                <UFieldGroup>
-                  <UButton
-                    class="min-w-[150px] flex justify-center"
-                    size="md"
-                    variant="ghost"
-                    color="neutral"
-                    :disabled="!renderedHtml"
-                    @click="copyHtml('class')"
-                  >
-                    {{ copied === 'class' ? t('codeDrawer.copied') : t('codeDrawer.copyClasses') }}
-                  </UButton>
-                </UFieldGroup>
-              </div>
-            </div>
-          </template>
-        </UCollapsible>
+        <CodeDrawer />
       </main>
 
       <!-- Right inspector -->
@@ -629,10 +553,6 @@ function skipToMain() {
 }
 
 /* Code drawer */
-.code-drawer {
-  border-top: 1px solid var(--border);
-  background: var(--surface);
-}
 
 /* ── Right inspector ────────────────────────────────────────────── */
 .inspector {

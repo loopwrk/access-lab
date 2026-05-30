@@ -1,7 +1,7 @@
-import type { ComponentDefinition } from "~/types/component";
-import { contentOverflow } from "~/rules/shared/overflow";
-import { invisibleText } from "~/rules/shared/invisible-text";
-import { vagueLabel } from "~/rules/shared/vague-label";
+import type { ComponentDefinition } from '~/types/component'
+import { contentOverflow } from '~/rules/shared/overflow'
+import { invisibleText } from '~/rules/shared/invisible-text'
+import { vagueLabel } from '~/rules/shared/vague-label'
 
 /**
  * Drives the component studio for a given definition.
@@ -25,43 +25,43 @@ import { vagueLabel } from "~/rules/shared/vague-label";
  */
 export function useInspectedComponent(
   definition: ComponentDefinition<Record<string, unknown>>,
-  options: { debounceMs?: number } = {},
+  options: { debounceMs?: number } = {}
 ) {
-  const debounceMs = options.debounceMs ?? 10;
+  const debounceMs = options.debounceMs ?? 10
 
   const previewRef = ref<{
-    render: (html: string, css?: string, rootFontSize?: number) => void;
-  } | null>(null);
+    render: (html: string, css?: string, rootFontSize?: number) => void
+  } | null>(null)
 
   const componentProps = ref<Partial<Record<string, unknown>>>({
-    ...definition.defaultProps,
-  });
+    ...definition.defaultProps
+  })
 
   const customRules = useCustomRules([
     ...definition.rules,
     invisibleText,
-    vagueLabel,
-  ]);
+    vagueLabel
+  ])
 
-  useDomRules([contentOverflow]);
+  useDomRules([contentOverflow])
 
-  const { setHtml } = useRenderedHtml();
-  const unitConv = useUnitConversion();
+  const { setOutput } = useRenderedHtml()
+  const unitConv = useUnitConversion()
 
-  let renderTimer: ReturnType<typeof setTimeout> | null = null;
+  let renderTimer: ReturnType<typeof setTimeout> | null = null
 
   function applyContextWrappers(renderedHtml: string): string {
-    const enabledKeys = componentProps.value.wrappers as string[] | undefined;
+    const enabledKeys = componentProps.value.wrappers as string[] | undefined
     if (!enabledKeys?.length || !definition.contextWrappers?.length) {
-      return renderedHtml;
+      return renderedHtml
     }
-    let wrapped = renderedHtml;
+    let wrapped = renderedHtml
     for (const wrapper of definition.contextWrappers) {
       if (enabledKeys.includes(wrapper.key)) {
-        wrapped = wrapper.wrap(wrapped);
+        wrapped = wrapper.wrap(wrapped)
       }
     }
-    return wrapped;
+    return wrapped
   }
 
   watch(
@@ -70,32 +70,39 @@ export function useInspectedComponent(
     // to repaint to honour the new base for rem values).
     [componentProps, unitConv.simulatedRootPx],
     () => {
-      if (renderTimer) clearTimeout(renderTimer);
+      if (renderTimer) clearTimeout(renderTimer)
       renderTimer = setTimeout(() => {
-        const html = applyContextWrappers(
-          definition.render(componentProps.value),
-        );
+        // Normalise: definition.render may return a plain string or a
+        // RenderedFragment. Both reduce to { html, css } here.
+        const raw = definition.render(componentProps.value)
+        const fragment = typeof raw === 'string' ? { html: raw } : raw
+        const html = applyContextWrappers(fragment.html)
+        const css = fragment.css ?? ''
+        // Iframe still receives one concatenated payload — the <style>
+        // block needs to live in the same document as the element it
+        // targets.
+        const payload = css ? `<style>${css}</style>${html}` : html
         previewRef.value?.render(
-          html,
+          payload,
           undefined,
-          unitConv.simulatedRootPx.value,
-        );
-        setHtml(html);
+          unitConv.simulatedRootPx.value
+        )
+        setOutput(html, css)
         // Resolve any CssLength values to flat px so rule evaluators
         // (target-size, contrast-via-fontSize, etc.) can keep reading
         // props.<key> as numbers without caring about units.
         const resolved = unitConv.resolveProps(
-          componentProps.value as Record<string, unknown>,
-        );
-        customRules.evaluate(resolved);
-      }, debounceMs);
+          componentProps.value as Record<string, unknown>
+        )
+        customRules.evaluate(resolved)
+      }, debounceMs)
     },
-    { deep: true, immediate: true },
-  );
+    { deep: true, immediate: true }
+  )
 
   onBeforeUnmount(() => {
-    if (renderTimer) clearTimeout(renderTimer);
-  });
+    if (renderTimer) clearTimeout(renderTimer)
+  })
 
-  return { previewRef, componentProps };
+  return { previewRef, componentProps }
 }
