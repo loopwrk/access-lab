@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useMediaQuery } from '@vueuse/core'
-import type { TabsItem } from '@nuxt/ui'
 
 const isBelowDesktop = useMediaQuery('(max-width: 1023px)')
 
@@ -9,16 +8,9 @@ const { t } = useI18n()
 // Sidebar collapse state
 const sidebarOpen = ref(true)
 
-// Inspector tab state — shared composable so components teleported into the
-// inspector panels (e.g. ControlsIntro) can switch tabs themselves.
+// Shared with the inspector — skip links flip the active tab on the
+// way to focusing the panel container.
 const { activeTab } = useInspectorTab()
-
-const tabItems = computed<TabsItem[]>(() => [
-  { label: t('inspector.controls'), value: 'controls' },
-  { label: t('inspector.issues'), value: 'issues' },
-  { label: t('inspector.manual'), value: 'manual' },
-  { label: t('inspector.learn'), value: 'learn' }
-])
 
 async function skipToPanel(tabName: 'controls' | 'issues', elementId: string) {
   activeTab.value = tabName
@@ -64,30 +56,7 @@ function skipToMain() {
         <CodeDrawer />
       </main>
 
-      <!-- Right inspector -->
-      <aside class="inspector" aria-label="Inspection panel">
-        <UTabs v-model="activeTab" :items="tabItems" variant="link" color="primary" size="lg" :content="false"
-          :ui="{ list: 'justify-around', label: 'overflow-visible whitespace-nowrap' }" />
-
-        <!-- Tab panels
-          Content currently created in index.vue and
-          teleported here during development and testing.
-          Refactoring will take place once the content and
-          structure of each panel is finalized.
-        -->
-
-        <div class="inspector-panels">
-          <div v-show="activeTab === 'controls'" id="controls-panel" class="inspector-panel" tabindex="0">
-            <RootEmSlider />
-          </div>
-
-          <div v-show="activeTab === 'issues'" id="issues-panel" class="inspector-panel" tabindex="0" />
-
-          <div v-show="activeTab === 'manual'" id="manual-panel" class="inspector-panel" tabindex="0" />
-
-          <div v-show="activeTab === 'learn'" id="learn-panel" class="inspector-panel" tabindex="0" />
-        </div>
-      </aside>
+      <AppInspector />
     </div>
   </div>
 
@@ -153,30 +122,6 @@ function skipToMain() {
   background: var(--surface-2);
   padding: 24px;
   overflow: auto;
-}
-
-/* Code drawer */
-
-/* ── Right inspector ────────────────────────────────────────────── */
-.inspector {
-  width: 380px;
-  border-left: 1px solid var(--border);
-  background: var(--bg);
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-  flex-shrink: 0;
-}
-
-/* Inspector panels */
-.inspector-panels {
-  flex: 1;
-  overflow-y: auto;
-}
-
-.inspector-panel {
-  height: 1vh;
-  padding: 16px;
 }
 
 /* ── Utility ────────────────────────────────────────────────────── */
