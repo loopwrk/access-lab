@@ -106,6 +106,15 @@ export const learnTopics: LearnTopic[] = [
     ),
   },
   {
+    id: "disclosure-triggers",
+    titleKey: "learn.disclosureTriggers.title",
+    summaryKey: "learn.disclosureTriggers.summary",
+    category: "interaction",
+    component: defineAsyncComponent(
+      () => import("~/components/LearnTopic/DisclosureTriggers.vue"),
+    ),
+  },
+  {
     id: "switches",
     titleKey: "learn.switches.title",
     summaryKey: "learn.switches.summary",

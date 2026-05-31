@@ -33,6 +33,10 @@ const SWITCH_CLASS = "al-switch";
 const SWITCH_WRAP_CLASS = "al-switch-wrap";
 const SWITCH_LABEL_ID = "al-switch-label";
 const SWITCH_INPUT_ID = "al-switch-input";
+const DISCLOSURE_WRAP_CLASS = "al-disclosure-wrap";
+const DISCLOSURE_PANEL_CLASS = "al-disclosure-panel";
+const DISCLOSURE_PANEL_ID = "al-disclosure-panel";
+const DEFAULT_DISCLOSURE_PANEL_TEXT = "Revealed content.";
 
 function buildCss(props: Partial<ButtonProps>): string {
   const rules: string[] = [];
@@ -58,6 +62,15 @@ function buildCss(props: Partial<ButtonProps>): string {
     const alpha = isPilledSwitch(props) ? "0.25" : "0.18";
     rules.push(
       `.${INSPECTED_CLASS}.${PRESSED_CLASS}{box-shadow:inset 0 0 0 999px rgb(0 0 0 / ${alpha});}`,
+    );
+  }
+
+  if (isDisclosure(props)) {
+    rules.push(
+      `.${DISCLOSURE_WRAP_CLASS}{display:inline-flex;flex-direction:column;align-items:flex-start;gap:0.6em;}`,
+      `.${DISCLOSURE_PANEL_CLASS}{border:1px solid #888;padding:0.6em 0.8em;border-radius:4px;font-family:inherit;}`,
+      `.${DISCLOSURE_PANEL_CLASS} p{margin:0;}`,
+      `.${DISCLOSURE_PANEL_CLASS}[hidden]{display:none;}`,
     );
   }
 
@@ -115,6 +128,10 @@ function isSwitchable(props: Partial<ButtonProps>): boolean {
   return props.switchBehaviour != null && props.switchBehaviour !== "none";
 }
 
+function isDisclosure(props: Partial<ButtonProps>): boolean {
+  return props.disclosureBehaviour != null;
+}
+
 function isPilledSwitch(props: Partial<ButtonProps>): boolean {
   // Pill+thumb visual relies on ::before, which void elements like
   // <input> can't host. Restrict to <button>-tag variants.
@@ -160,6 +177,27 @@ function toggleAttrs(props: Partial<ButtonProps>): string[] {
     default:
       return [];
   }
+}
+
+function disclosureAttrs(props: Partial<ButtonProps>): string[] {
+  if (!isDisclosure(props)) return [];
+  const attrs: string[] = [];
+  const expanded = props.disclosureExpanded === true;
+  switch (props.disclosureBehaviour) {
+    case "aria-expanded":
+      attrs.push(`aria-expanded="${expanded}"`);
+      break;
+    case "out-of-sync":
+      attrs.push(`aria-expanded="false"`);
+      break;
+    case "none":
+    default:
+      break;
+  }
+  if (props.disclosureShowControls) {
+    attrs.push(`aria-controls="${DISCLOSURE_PANEL_ID}"`);
+  }
+  return attrs;
 }
 
 function switchAttrs(props: Partial<ButtonProps>): string[] {
@@ -277,6 +315,7 @@ function renderNativeButton(
   }
   attrs.push(...toggleAttrs(props));
   attrs.push(...switchAttrs(props));
+  attrs.push(...disclosureAttrs(props));
   if (props.disabled) attrs.push("disabled");
   if (style) attrs.push(`style="${style}"`);
 
@@ -375,6 +414,36 @@ export function renderButton(props?: Partial<ButtonProps>): RenderedFragment {
       `<div class="${SWITCH_WRAP_CLASS}">` +
       `<span id="${SWITCH_LABEL_ID}">${labelText}</span>` +
       element +
+      `</div>`;
+  }
+
+  // Disclosure pattern: the trigger sits above a reveal panel that
+  // appears/disappears with the disclosureExpanded prop. The browser-
+  // native `hidden` attribute handles visibility — assistive tech treats
+  // the panel as absent when hidden, matching axe's accordion test.
+  if (isDisclosure(props)) {
+    // 1. Get and escape the text as normal
+    const rawText = escapeHtml(
+      props.disclosurePanelText ?? DEFAULT_DISCLOSURE_PANEL_TEXT,
+    );
+
+    // 2. Split the text, wrap each sentence in <p> tags, and join it into a single HTML string
+    const paragraphsHtml = rawText
+      .split(/(?<=\.)\s+/) // Split on any spaces that come directly after a period
+      .filter((sentence) => sentence.trim().length > 0) // Filter out any empty strings
+      .map((sentence) => `<p>${sentence.trim()}</p>`) // Wrap each sentence
+      .join(""); // Join the array back into one continuous string
+
+    const expanded = props.disclosureExpanded === true;
+    const hiddenAttr = expanded ? "" : " hidden";
+
+    // 3. Inject paragraphsHtml instead of `<p>${panelText}</p>`
+    element =
+      `<div class="${DISCLOSURE_WRAP_CLASS}">` +
+      element +
+      `<div id="${DISCLOSURE_PANEL_ID}" class="${DISCLOSURE_PANEL_CLASS}"${hiddenAttr}>` +
+      paragraphsHtml +
+      `</div>` +
       `</div>`;
   }
 

@@ -14,6 +14,7 @@ export type ComponentId
     | 'buttons-form-buttons'
     | 'buttons-toggle-buttons'
     | 'buttons-switches'
+    | 'buttons-disclosure-triggers'
     | 'accordion'
     | 'carousel'
     | 'modal'

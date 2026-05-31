@@ -89,6 +89,11 @@ const navItems = computed<NavigationMenuItem[][]>(() => [
           label: t('nav.buttonsSwitches'),
           value: 'buttons-switches',
           to: '/components/buttons/switches'
+        },
+        {
+          label: t('nav.buttonsDisclosureTriggers'),
+          value: 'buttons-disclosure-triggers',
+          to: '/components/buttons/disclosure-triggers'
         }
       ]
     },

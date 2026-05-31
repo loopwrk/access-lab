@@ -47,8 +47,14 @@ export interface ButtonProps {
   switchBehaviour?: SwitchBehaviour
   switchChecked?: boolean
   switchPillStyling?: boolean
+  disclosureBehaviour?: DisclosureBehaviour
+  disclosureExpanded?: boolean
+  disclosureShowControls?: boolean
+  disclosurePanelText?: string
 }
 
 export type ToggleBehaviour = 'none' | 'aria-pressed' | 'aria-checked' | 'visual-only'
 
 export type SwitchBehaviour = 'none' | 'role-switch' | 'aria-pressed'
+
+export type DisclosureBehaviour = 'none' | 'aria-expanded' | 'out-of-sync'

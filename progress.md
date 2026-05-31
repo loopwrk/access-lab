@@ -158,13 +158,16 @@
 - [x] `SwitchStateSection.vue` — pill-styling `UFormField` is hidden when `renderAs` is input-prefixed; the studio CSS check matches.
 - [x] `switches/definition.ts` — `'input-checkbox-switch'` added to the variants array.
 
-## Remaining (next steps)
+### Stage 5 — Disclosure triggers
+- [x] `shared/types.ts` — `'none' | 'aria-expanded' | 'out-of-sync'` `DisclosureBehaviour` + `disclosureExpanded` / `disclosureShowControls` / `disclosurePanelText` props.
+- [x] `shared/render.ts` — `disclosureAttrs` emits `aria-expanded` (correct or stuck-at-false) and optional `aria-controls="al-disclosure-panel"`. When `disclosureBehaviour` is set, the renderer wraps the trigger in `<div class="al-disclosure-wrap">...<div id="al-disclosure-panel" hidden?>...</div></div>`. Panel visibility uses the browser-native `hidden` attribute so collapsed panels stay out of the accessibility tree.
+- [x] `rules/buttons/disclosure-triggers/{disclosure-no-state,disclosure-state-out-of-sync}.ts` — both SC 4.1.2 Level A.
+- [x] `components/ButtonStudio/sections/DisclosureStateSection.vue` — 3-option segmented control + `aria-controls` switch + Learn-link.
+- [x] `components/inspected/buttons/disclosure-triggers/{definition,DisclosureControls}.{ts,vue}` — variants `['button-button', 'button']`; iframe click-bridge flips `disclosureExpanded`; default panel copy demonstrates a typical reveal-on-demand block.
+- [x] `types/component.ts` + `inspected/index.ts` + `inspected/placeholders.ts` + `layouts/default.vue` — registry + nav entry (fifth child under Buttons).
+- [x] `components/LearnTopic/DisclosureTriggers.vue` + `useLearnTopics.ts` — category `interaction`. i18n strings under `learn.disclosureTriggers.*`, controls strings under `controls.disclosureBehaviour*`, nav string `nav.buttonsDisclosureTriggers`.
 
-### Stage 5 — Disclosure triggers (planned)
-- [ ] `disclosureBehaviour?: 'none' | 'aria-expanded' | 'expanded-always-visible' | 'visual-only'` + `disclosureExpanded?: boolean` + `disclosureShowControls?: boolean` props.
-- [ ] Renderer emits `aria-expanded` (+ optionally `aria-controls`) on the button and a sibling `<div id="al-disclosure-panel" hidden|''>...</div>` panel.
-- [ ] `rules/buttons/disclosure/{disclosure-no-state,disclosure-state-out-of-sync}.ts`.
-- [ ] `DisclosureStateSection`, `DisclosureControls.vue`, `definition.ts`, nav entry, Learn topic.
+## Remaining (next steps)
 
 ### Stage 6 — Menu triggers (planned)
 - [ ] `aria-haspopup` + `aria-expanded` + `aria-controls`, focus management into the popup, Escape-to-close.
