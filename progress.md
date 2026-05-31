@@ -180,8 +180,8 @@
 
 ## Remaining (next steps)
 
-### Stage 7 — File picker (planned)
-- [ ] `<label>` over hidden `<input type="file">` pattern vs. visible-button + hidden-input + JS `.click()` anti-pattern.
+### Stage 7 — File picker (deferred)
+- Parked. Full notes in `plan.md` §18 "Button-element scope". Diverges from the rest of the button family because the trigger is a `<label>`, not a `<button>`.
 
 ### Other components (plan §7)
 - [ ] 7 remaining components: accordion, carousel, modal, menu, tooltip, tabs, form-field (each needs definition + render + controls + rules + manual checklist).

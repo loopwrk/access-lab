@@ -1,16 +1,11 @@
 <script setup lang="ts">
 import { useMediaQuery } from '@vueuse/core'
-import { useTheme } from '~/composables/useTheme'
-import { useFont } from '~/composables/useFont'
 import { useAxeCounts, useAllViolations } from '~/composables/useAxeResults'
-import type { FontSize } from '~/types/typography'
 import type { TabsItem, NavigationMenuItem } from '@nuxt/ui'
 
 const isBelowDesktop = useMediaQuery('(max-width: 1023px)')
 
 const { t } = useI18n()
-const theme = useTheme()
-const font = useFont()
 const { criticalCount, warningCount, passingCount } = useAxeCounts()
 const { allViolations } = useAllViolations()
 const criticalViolationIds = computed(() =>
@@ -27,26 +22,6 @@ const { activeComponentName, activeLearnTopicId } = useStudioToolbar()
 const { focusLearnTopic } = useInspectorTab()
 
 const previewTitle = computed(() => activeComponentName.value ?? t('preview.title'))
-
-// Font options
-const fonts = [
-  { label: 'Figtree', value: 'Figtree Variable', family: 'Figtree Variable' },
-  { label: 'Dyslexic', value: 'OpenDyslexicRegular', family: 'OpenDyslexicRegular' },
-  { label: 'Atkinson', value: 'Atkinson Hyperlegible', family: 'Atkinson Hyperlegible' },
-  { label: 'Comic Sans', value: '"Comic Sans MS", "Comic Sans", cursive', family: '"Comic Sans MS", "Comic Sans", cursive' }
-]
-
-interface SizeOption {
-  label: string
-  value: FontSize
-}
-
-const sizes: SizeOption[] = [
-  { label: 'S', value: '87.5%' },
-  { label: 'M', value: '100%' },
-  { label: 'L', value: '112.5%' },
-  { label: 'XL', value: '131.25%' }
-]
 
 // Sidebar collapse state
 const sidebarOpen = ref(true)
@@ -144,63 +119,7 @@ function skipToMain() {
       </a>
     </div>
 
-    <!-- App bar -->
-    <header class="appbar" role="banner" :aria-label="t('appBar.ariaLabel')">
-      <div class="appbar-left">
-        <!-- Brand -->
-        <NuxtLink to="/" class="brand">
-          <span class="brand-mark" aria-hidden="true" />
-          <span class="brand-text">{{ t('appBar.brand') }}</span>
-        </NuxtLink>
-      </div>
-
-      <div class="appbar-right">
-        <!-- Font picker -->
-        <UFieldGroup size="sm">
-          <UButton v-for="fontFamily in fonts" :key="fontFamily.value"
-            :color="font.family === fontFamily.value ? 'primary' : 'neutral'"
-            :variant="font.family === fontFamily.value ? 'solid' : 'ghost'"
-            :style="{ fontFamily: `${fontFamily.family}` }" @click="
-              font.setFont(fontFamily.value)">
-            {{ fontFamily.label }}
-          </UButton>
-        </UFieldGroup>
-
-        <!-- Size picker -->
-        <UFieldGroup size="sm">
-          <UButton v-for="s in sizes" :key="s.value" :color="font.size === s.value ? 'primary' : 'neutral'"
-            :variant="font.size === s.value ? 'solid' : 'ghost'" @click="font.setSize(s.value)">
-            {{ s.label }}
-          </UButton>
-        </UFieldGroup>
-
-        <!-- High contrast toggle -->
-        <UFieldGroup size="sm">
-          <UButton :color="theme.isHighContrast ? 'primary' : 'neutral'"
-            :variant="theme.isHighContrast ? 'solid' : 'ghost'" icon="i-lucide-contrast"
-            :aria-pressed="theme.isHighContrast" @click="theme.toggleContrast()">
-            {{ t('theme.highContrast') }}
-          </UButton>
-        </UFieldGroup>
-
-        <!-- Theme toggle -->
-        <UFieldGroup size="sm">
-          <UButton :color="!theme.isDark ? 'primary' : 'neutral'" :variant="!theme.isDark ? 'solid' : 'ghost'"
-            icon="i-lucide-sun" :aria-pressed="!theme.isDark" @click="theme.isDark && theme.toggleMode()">
-            {{ t('theme.light') }}
-          </UButton>
-          <UButton :color="theme.isDark ? 'primary' : 'neutral'" :variant="theme.isDark ? 'solid' : 'ghost'"
-            icon="i-lucide-moon" :aria-pressed="theme.isDark" @click="!theme.isDark && theme.toggleMode()">
-            {{ t('theme.dark') }}
-          </UButton>
-        </UFieldGroup>
-
-        <!-- Sidebar toggle -->
-        <UButton color="neutral" variant="ghost" size="sm" icon="i-lucide-panel-left"
-          :aria-label="sidebarOpen ? t('sidebar.toggleClose') : t('sidebar.toggleOpen')"
-          @click="sidebarOpen = !sidebarOpen" />
-      </div>
-    </header>
+    <AppBar v-model:sidebar-open="sidebarOpen" />
 
     <div class="app-body">
       <!-- Left sidebar -->
@@ -346,55 +265,6 @@ function skipToMain() {
 
 .skip-link:focus {
   left: 0;
-}
-
-/* ── App bar ────────────────────────────────────────────────────── */
-.appbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 20px;
-  border-bottom: 1px solid var(--border);
-  background: var(--bg);
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-.appbar-left,
-.appbar-right {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-/* Brand mark */
-.brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  font-weight: 500;
-  color: var(--text-primary);
-  font-size: var(--al-font-size-brand);
-  letter-spacing: -0.01em;
-  text-decoration: none;
-}
-
-.brand-mark {
-  width: 22px;
-  height: 22px;
-  background: var(--brand);
-  border-radius: 5px;
-  position: relative;
-  flex-shrink: 0;
-}
-
-.brand-mark::after {
-  content: '';
-  position: absolute;
-  inset: 4px;
-  background: var(--on-brand);
-  border-radius: 2px;
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 100%, 50% 50%, 0 50%);
 }
 
 /* ── Left sidebar ───────────────────────────────────────────────── */
