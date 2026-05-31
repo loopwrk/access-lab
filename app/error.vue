@@ -12,7 +12,7 @@ const missingComponentSlug = computed<string | null>(() => {
 })
 
 async function goSomewhereUseful() {
-  await clearError({ redirect: '/components/button' })
+  await clearError({ redirect: '/components/buttons/action-triggers' })
 }
 </script>
 

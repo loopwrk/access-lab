@@ -10,13 +10,15 @@ const slug = Array.isArray(route.params.component)
   ? route.params.component[0]
   : route.params.component
 
-// Legacy `/components/button` URLs land on the action-triggers page.
-if (slug === 'button') {
+const isLegacyButton = slug === 'button'
+
+if (isLegacyButton) {
   await navigateTo('/components/buttons/action-triggers', { replace: true })
 }
 
-const definition = getDefinition(slug ?? '')
-if (!definition) {
+const definition = isLegacyButton ? null : getDefinition(slug ?? '')
+
+if (!definition && !isLegacyButton) {
   throw createError({
     statusCode: 404,
     statusMessage: `Component "${slug}" not found`,
@@ -26,12 +28,8 @@ if (!definition) {
 </script>
 
 <template>
-  <ComingSoon
-    v-if="definition.placeholder"
-    :name="definition.name"
-  />
-  <ComponentStudio
-    v-else
-    :definition="definition"
-  />
+  <template v-if="definition">
+    <ComingSoon v-if="definition.placeholder" :name="definition.name" />
+    <ComponentStudio v-else :definition="definition" />
+  </template>
 </template>
