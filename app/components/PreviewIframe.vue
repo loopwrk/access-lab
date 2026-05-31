@@ -61,7 +61,7 @@ function focusContent() {
       :aria-label="t('preview.focusContentAria')" @click="focusContent">
       {{ t('preview.focusContent') }}
     </UButton>
-    <iframe ref="iframe" src="/preview-shell.html" title="Component preview"
+    <iframe :id="PREVIEW_IFRAME_ID" ref="iframe" src="/preview-shell.html" title="Component preview"
       sandbox="allow-scripts allow-same-origin allow-forms" class="preview-iframe" />
     <div v-if="!isReady" class="preview-placeholder">
       <p class="text-muted">

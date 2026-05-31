@@ -1,5 +1,3 @@
-import { useLocalStorage, usePreferredDark } from '@vueuse/core'
-
 type Mode = 'light' | 'dark'
 type Contrast = 'normal' | 'high'
 

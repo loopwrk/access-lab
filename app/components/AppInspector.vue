@@ -49,7 +49,7 @@ const tabItems = computed<TabsItem[]>(() => [
     <div class="flex-1 overflow-y-auto">
       <div
         v-show="activeTab === 'controls'"
-        id="controls-panel"
+        :id="INSPECTOR_PANEL_IDS.controls"
         role="tabpanel"
         tabindex="-1"
         :aria-label="t('inspector.controls')"
@@ -60,7 +60,7 @@ const tabItems = computed<TabsItem[]>(() => [
 
       <div
         v-show="activeTab === 'issues'"
-        id="issues-panel"
+        :id="INSPECTOR_PANEL_IDS.issues"
         role="tabpanel"
         tabindex="-1"
         :aria-label="t('inspector.issues')"
@@ -69,7 +69,7 @@ const tabItems = computed<TabsItem[]>(() => [
 
       <div
         v-show="activeTab === 'manual'"
-        id="manual-panel"
+        :id="INSPECTOR_PANEL_IDS.manual"
         role="tabpanel"
         tabindex="-1"
         :aria-label="t('inspector.manual')"
@@ -78,7 +78,7 @@ const tabItems = computed<TabsItem[]>(() => [
 
       <div
         v-show="activeTab === 'learn'"
-        id="learn-panel"
+        :id="INSPECTOR_PANEL_IDS.learn"
         role="tabpanel"
         tabindex="-1"
         :aria-label="t('inspector.learn')"

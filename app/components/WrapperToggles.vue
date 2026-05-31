@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { onClickOutside } from '@vueuse/core'
 import type { ContextWrapper } from '~/types/component'
 
 interface Props {

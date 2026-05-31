@@ -1,4 +1,3 @@
-import { useLocalStorage } from "@vueuse/core";
 import type { FontSize } from "~/types/typography";
 
 const defaultFont = "Figtree Variable";

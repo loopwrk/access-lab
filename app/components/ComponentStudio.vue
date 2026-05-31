@@ -152,16 +152,16 @@ onBeforeUnmount(() => {
     <WrapperToggles v-model="enabledWrappers" :options="availableContextWrappers"
       :element-name="props.definition.tagName" />
   </Teleport>
-  <Teleport v-if="props.definition.controlsComponent" to="#controls-panel">
+  <Teleport v-if="props.definition.controlsComponent" :to="`#${INSPECTOR_PANEL_IDS.controls}`">
     <component :is="props.definition.controlsComponent" v-model="componentProps" />
   </Teleport>
-  <Teleport to="#issues-panel">
+  <Teleport :to="`#${INSPECTOR_PANEL_IDS.issues}`">
     <IssuesPanel />
   </Teleport>
-  <Teleport to="#manual-panel">
+  <Teleport :to="`#${INSPECTOR_PANEL_IDS.manual}`">
     <ManualReviewPanel :checklist="props.definition.manualChecklist" />
   </Teleport>
-  <Teleport to="#learn-panel">
+  <Teleport :to="`#${INSPECTOR_PANEL_IDS.learn}`">
     <LearnPanel />
   </Teleport>
 </template>

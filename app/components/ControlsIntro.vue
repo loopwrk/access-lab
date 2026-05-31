@@ -2,11 +2,6 @@
 /**
  * Persistent informational banner at the top of the Controls panel.
  *
- * Short teaser-question copy with a "Learn more" link that switches the
- * inspector to the Learn tab (and moves focus into that panel for keyboard
- * + screen-reader users). The longer explanation lives in LearnPanel so it
- * can be re-read and indexed alongside other educational content.
- *
  * Not dismissible by design — the panel is educational and the banner
  * should remain reachable.
  */

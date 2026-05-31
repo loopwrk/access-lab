@@ -20,9 +20,7 @@ export function useInspectorTab() {
   async function focusPanel(tab: InspectorTab, focusId?: string) {
     setActive(tab);
     await nextTick();
-    const target = focusId
-      ? document.getElementById(focusId)
-      : document.getElementById(`${tab}-panel`);
+    const target = document.getElementById(focusId ?? INSPECTOR_PANEL_IDS[tab]);
     if (!target) return;
     target.focus({ preventScroll: true });
     target.scrollIntoView({ behavior: "smooth", block: "start" });
