@@ -80,16 +80,102 @@
 ### Architectural decisions
 - [x] **Event delegation in the iframe shell, not inline handlers in rendered markup.** `public/preview-shell.html` attaches single delegated listeners on the mount node for `click` (trigger-shaped elements) and `submit` (any form). Render functions therefore emit pure semantic markup — no `onclick`, no `onsubmit`. Rationale: the code drawer's copied HTML matches what a developer would actually write in their own project, which keeps AccessLab honest as a teaching tool. The shell's click listener uses a named `TRIGGER_SELECTOR` covering `button` and the three input button types; extend the selector when new component categories need demo feedback. The submit listener calls `preventDefault` so clicking a submit-typed button inside the form context wrapper does not navigate the iframe to a blank page.
 
-## In progress
+### Button studio refactor — Stages 1 & 2 (IA split)
 
-Nothing currently in progress.
+**Stage 1 — Scaffolding extraction (no behaviour change).**
+- [x] `types/button.ts` — split into `ButtonContentProps` / `ButtonStyleProps` / `ButtonAriaProps` / `ButtonFocusProps`, composed via `BaseButtonProps`.
+- [x] `composables/useButtonControlsModel.ts` — typed `update<K>(key, value)` helper over a `defineModel` ref.
+- [x] `composables/useToggleableSection.ts` — generic enable/restore/clear pattern for sections with a USwitch (font-size, padding, border, colours, focus).
+- [x] `composables/useNaturalSize.ts` — intrinsic-size probe lifted out of ButtonControls. Watches model, returns `naturalSize` ref + `browserDefaults`.
+- [x] `composables/useButtonStudioDefaults.ts` — combines `useBrowserDefaults` + hardcoded fallbacks; returns `ButtonStudioDefaults` (numeric).
+- [x] `components/controls/LengthControl.vue` — app-level reusable atom (slider + `LengthValueInput`).
+- [x] `components/controls/SplitSpacingControl.vue` — app-level reusable atom (merge/split 4-sided control).
+- [x] `components/ButtonStudio/sections/{Content,Aria,Text,Dimensions,Border,Colours,Focus}Section.vue` — each owns its UI + section-local state; reads `model` via `defineModel<Partial<BaseButtonProps>>`, writes through `useButtonControlsModel.update`.
+- [x] All studio-control classes (`.control-group-title`, `.color-swatch`, `.control-label-link`, etc.) moved to `assets/css/main.css` under `@layer components`.
+
+**Stage 2 — IA split into Action triggers + Form buttons.**
+- [x] `components/inspected/buttons/shared/{types,render,variants,wrappers}.ts` — `ButtonRenderAs` union, `ButtonProps` interface, shared renderer, `variants(keys)` selector, `formWrapper` / `linkWrapper` / `buttonWrapper` (button wrapper gated by `availableFor: renderAs.startsWith('input-')`).
+- [x] `components/inspected/buttons/action-triggers/{definition,ActionTriggerControls}.{ts,vue}` — `<button>` and `<button type="button">` variants only; no variant-switch effects; rules: target-size AA/AAA, focusable-in-anchor, focus-not-visible, focus-low-contrast.
+- [x] `components/inspected/buttons/form-buttons/{definition,FormButtonControls}.{ts,vue}` — six form-related variants (submit/reset across `<button>` and `<input>` plus `input-image`); form-wrap-by-default + variant label restore + contentType clear-on-input watchers.
+- [x] `rules/buttons/shared/{target-size,focus-visible,focusable-in-anchor,manual-checklist}.ts` — rules folder reorganised under `rules/buttons/`.
+- [x] `pages/components/buttons/[pattern].vue` — dynamic nested route. Looks up `buttons-${pattern}` in the registry.
+- [x] `pages/components/[component].vue` — redirects `/components/button` → `/components/buttons/action-triggers` so old bookmarks survive.
+- [x] `types/component.ts` — removed `"button"` from `ComponentId`, added `"buttons-action-triggers"` and `"buttons-form-buttons"`.
+- [x] `layouts/default.vue` — sidebar navigation switched to grouped accordion (parent "Buttons" with `type: 'trigger'`, three children, `collapsible` enabled on root `UNavigationMenu`). Old `inspected/button/` directory deleted.
+
+### Container picker UX (chip extraction + nested-interactive rule)
+- [x] `components/WrapperToggles.vue` — converted from per-wrapper toggles to a single-select dropdown styled to match `VariantPicker` (UPopover + brand-soft mono trigger button + simple list content, no descriptions/badges). Sentinel `"None"` option for empty wrappers array.
+- [x] `layouts/default.vue` — merged `#preview-toolbar-variant` + `#preview-toolbar-wrappers` teleport targets into a single shared `.toolbar-chip` container so the row reads as one sentence (`MARKUP | <button type="button"> ▾ wrapped inside <form> ▾ | About <form> ↗`). Internal segment dividers drawn as `w-px bg-(--border)` spans inside `VariantPicker` / `WrapperToggles`. Stripped per-component borders from both pickers.
+- [x] `components/ComponentStudio.vue` — `availableContextWrappers` computed filters wrappers by their `availableFor(renderAs)` predicate; clears `wrappers` when the selected wrapper is no longer available.
+- [x] `types/component.ts` — `ContextWrapper` gained `availableFor?: (renderAs) => boolean`.
+- [x] `rules/buttons/shared/focusable-in-anchor.ts` — new custom rule. Fires when `wrappers` includes `'link'` (the button is wrapped in `<a href>`). Closes the gap that axe-core's `nested-interactive` rule leaves open for the `link` role (axe only fires for roles with `childrenPresentational: true`).
+
+### Stage 3 — Toggle buttons
+- [x] `shared/types.ts` — added `toggleBehaviour?: 'none' | 'aria-pressed' | 'aria-checked' | 'visual-only'` + `togglePressed?: boolean` + `ToggleBehaviour` type.
+- [x] `shared/render.ts` — emits `aria-pressed` / `aria-checked` attribute and the `al-pressed` class for visual feedback; injects an inset-shadow tint when pressed.
+- [x] `components/ButtonStudio/sections/ToggleStateSection.vue` — segmented control (4 options) + initial-pressed switch + link to the toggle-buttons Learn topic.
+- [x] `rules/buttons/toggle-buttons/{toggle-state-missing,toggle-wrong-attribute}.ts` — fires on visual-only (state-missing) and aria-checked (wrong-attribute). Both SC 4.1.2 Level A.
+- [x] `components/inspected/buttons/toggle-buttons/{definition,ToggleButtonControls}.{ts,vue}` — variants `['button-button', 'button']`; iframe click-bridge listens for `demo:click` and flips `togglePressed`.
+- [x] Registered in `inspected/index.ts`, third nav child under Buttons.
+
+### Stage 4 — Switches
+- [x] `shared/types.ts` — added `switchBehaviour?: 'none' | 'role-switch' | 'aria-pressed'` + `switchChecked?: boolean` + `switchPillStyling?: boolean` + `SwitchBehaviour` type.
+- [x] `shared/render.ts` — emits `role="switch"` + `aria-checked` (or `aria-pressed` when behaviour is the wrong-attribute case). When `switchPillStyling: true`, the renderer:
+  - wraps the button in `<div class="al-switch-wrap"><span id="al-switch-label">Label</span><button aria-labelledby="al-switch-label"></button></div>` (canonical APG external-label pattern);
+  - injects pill+thumb CSS conditional on user not having set competing inline styles (no `!important`);
+  - emits `font-family: Arial, Helvetica, sans-serif` on the wrapper;
+  - applies an extra-strong inset tint when checked (≈25% black overlay = "gray-on-darker-gray" on press, matching Nuxt UI USwitch's feel without using a brand colour).
+- [x] `components/ButtonStudio/sections/SwitchStateSection.vue` — segmented control (3 options) + pill-styling switch + link to the switches Learn topic. The "Initially on" control was removed — clicking the live switch is now the only way to set state.
+- [x] `rules/buttons/switches/{switch-no-role,switch-wrong-attribute}.ts` — fires on `none` (no role) and `aria-pressed` (wrong attribute for a switch). Both SC 4.1.2 Level A.
+- [x] `components/inspected/buttons/switches/{definition,SwitchControls}.{ts,vue}` — variants `['button-button', 'button']`; iframe click-bridge flips `switchChecked`; **state-driven notification toast** appears when on, removed when off, no other dismiss path (`close: false`, `duration: 0`); cleanup in `onBeforeUnmount`.
+- [x] `types/component.ts` — `ComponentDefinition.suppressDemoClickToast?: boolean` flag added. Switches definition opts in so the generic "Click event fired" toast does not fire alongside the notification toast.
+- [x] Registered in `inspected/index.ts`, fourth nav child under Buttons.
+
+### Code drawer split — HTML / CSS panes
+- [x] `types/component.ts` — `ComponentDefinition.render` now returns `string | RenderedFragment`. New `RenderedFragment` interface with `{ html: string, css?: string }`.
+- [x] `components/inspected/buttons/shared/render.ts` — `renderButton` returns `RenderedFragment`. Studio CSS rules (focus ring, pressed tint, switch pill) are conditionally injected and the rule list collapses when nothing is needed. User inline styles override studio class declarations through normal cascade order (no `!important` battles); per-property gating on `props.padding` / `props.width` etc. drops studio rules from the CSS pane whenever the user has set a competing value.
+- [x] `composables/useRenderedHtml.ts` — `useState('rendered-html')` + `useState('rendered-css')`. `setOutput(html, css)` writes both; `setHtml(html)` shim still works for callers that don't emit CSS.
+- [x] `composables/useInspectedComponent.ts` — normalises the renderer's return shape, sends `<style>${css}</style>${html}` to the iframe (single document), passes `html` + `css` to `setOutput`.
+- [x] `utils/prettifyCss.ts` — small pretty-printer (split on `}`, indent declarations, blank line between rules). Display-only; iframe gets the minified version.
+- [x] `components/CodeDrawer.vue` — extracted from `default.vue`. Owns `codeView` state, `hasCss` + `prettifiedCss` computeds, and the `copyHtml` flow. Toggles between HTML and CSS panes via a small `UFieldGroup`; CSS button only renders when `hasCss` is true. Scoped CSS dropped — pure Tailwind classes (`border-t border-(--border) bg-(--surface)`, `max-h-[220px] overflow-auto`).
+- [x] `layouts/default.vue` — drawer block replaced with `<CodeDrawer />`. State + CSS removed.
+
+### Learn topics (Phase 5.1 — dead-anchor fix)
+- [x] `components/LearnTopic/ToggleButtons.vue` — `aria-pressed` pattern, label stability, anti-patterns (visual-only, `aria-checked` on button, label-flip), switch vs. toggle decision rule. Related links to Switches and Accessible Name.
+- [x] `components/LearnTopic/Switches.vue` — `role="switch"` + `aria-checked`, native `<input type="checkbox" role="switch">` alternative, label-click forwarding (WCAG 2.5.5 / 2.5.8 link), switch vs. checkbox decision rule, anti-patterns (no role, `aria-pressed`, label-flip). Related links to Toggle Buttons and Accessible Name.
+- [x] `composables/useLearnTopics.ts` — registered both under `category: 'interaction'`. The dead `focusLearnTopic('toggle-buttons')` and `focusLearnTopic('switches')` anchors in the section components now resolve.
+- [x] `i18n/locales/en/learn.json` — `learn.toggleButtons.*` and `learn.switches.*` blocks added.
+
+### Switch label-click activation (Phase 5.2)
+- [x] `public/preview-shell.html` — click delegate on the mount node. When a click hits anything inside `#al-switch-label`, forwards a synthetic click to the sibling `.al-inspected-element.al-switch` button. Matches the universal production affordance (iOS, Material, Bootstrap, GitHub) and helps SC 2.5.5 Target Size / 2.5.8 Target Size Minimum by extending the effective target area.
+
+### checkbox-role-switch variant (Phase 5.3)
+- [x] `shared/types.ts` — `'input-checkbox-switch'` added to `ButtonRenderAs`.
+- [x] `shared/variants.ts` — variant entry added with `status: 'recommended'`, `seeAlsoTopicId: 'switches'`.
+- [x] `i18n/locales/en/components.json` — `components.button.variants.input-checkbox-switch.{description,statusNote}` strings added.
+- [x] `shared/render.ts` — `renderInputCheckboxSwitch` helper emits `<label for="al-switch-input"><span>Label</span><input id="al-switch-input" type="checkbox" role="switch" checked? /></label>`. The `<label for>` association gives free label-click activation via the browser. `isPilledSwitch` now requires a `<button>`-tag renderAs so the pill+thumb CSS (which uses `::before`) only runs for variants that can host pseudo-elements.
+- [x] `public/preview-shell.html` — added a `change` listener on the mount node that posts `demo:click` whenever a `.al-inspected-element` checkbox toggles. `TRIGGER_SELECTOR` deliberately omits checkboxes, so the click and change paths don't double-fire.
+- [x] `SwitchStateSection.vue` — pill-styling `UFormField` is hidden when `renderAs` is input-prefixed; the studio CSS check matches.
+- [x] `switches/definition.ts` — `'input-checkbox-switch'` added to the variants array.
 
 ## Remaining (next steps)
 
-### Phase 1 components
-- [ ] 7 remaining components: accordion, carousel, modal, menu, tooltip, tabs, form-field (each needs definition + render + controls + rules + manual checklist)
+### Stage 5 — Disclosure triggers (planned)
+- [ ] `disclosureBehaviour?: 'none' | 'aria-expanded' | 'expanded-always-visible' | 'visual-only'` + `disclosureExpanded?: boolean` + `disclosureShowControls?: boolean` props.
+- [ ] Renderer emits `aria-expanded` (+ optionally `aria-controls`) on the button and a sibling `<div id="al-disclosure-panel" hidden|''>...</div>` panel.
+- [ ] `rules/buttons/disclosure/{disclosure-no-state,disclosure-state-out-of-sync}.ts`.
+- [ ] `DisclosureStateSection`, `DisclosureControls.vue`, `definition.ts`, nav entry, Learn topic.
+
+### Stage 6 — Menu triggers (planned)
+- [ ] `aria-haspopup` + `aria-expanded` + `aria-controls`, focus management into the popup, Escape-to-close.
+
+### Stage 7 — File picker (planned)
+- [ ] `<label>` over hidden `<input type="file">` pattern vs. visible-button + hidden-input + JS `.click()` anti-pattern.
+
+### Other components (plan §7)
+- [ ] 7 remaining components: accordion, carousel, modal, menu, tooltip, tabs, form-field (each needs definition + render + controls + rules + manual checklist).
 
 ### Tests (plan §13)
-- [ ] Unit tests for contrast composable, rule evaluators, prop validators
-- [ ] Component tests for AppShell, sidebar, theme switch, iframe handler
-- [ ] a11y tests via axe-playwright
+- [ ] Unit tests for contrast composable, rule evaluators, prop validators.
+- [ ] Component tests for AppShell, sidebar, theme switch, iframe handler.
+- [ ] a11y tests via axe-playwright.

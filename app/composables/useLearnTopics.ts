@@ -96,6 +96,24 @@ export const learnTopics: LearnTopic[] = [
       () => import("~/components/LearnTopic/ButtonDisabledStates.vue"),
     ),
   },
+  {
+    id: "toggle-buttons",
+    titleKey: "learn.toggleButtons.title",
+    summaryKey: "learn.toggleButtons.summary",
+    category: "interaction",
+    component: defineAsyncComponent(
+      () => import("~/components/LearnTopic/ToggleButtons.vue"),
+    ),
+  },
+  {
+    id: "switches",
+    titleKey: "learn.switches.title",
+    summaryKey: "learn.switches.summary",
+    category: "interaction",
+    component: defineAsyncComponent(
+      () => import("~/components/LearnTopic/Switches.vue"),
+    ),
+  },
 ];
 
 export function getLearnTopic(id: string): LearnTopic | undefined {

@@ -32,6 +32,7 @@ const PRESSED_CLASS = "al-pressed";
 const SWITCH_CLASS = "al-switch";
 const SWITCH_WRAP_CLASS = "al-switch-wrap";
 const SWITCH_LABEL_ID = "al-switch-label";
+const SWITCH_INPUT_ID = "al-switch-input";
 
 function buildCss(props: Partial<ButtonProps>): string {
   const rules: string[] = [];
@@ -115,7 +116,13 @@ function isSwitchable(props: Partial<ButtonProps>): boolean {
 }
 
 function isPilledSwitch(props: Partial<ButtonProps>): boolean {
-  return isSwitchable(props) && props.switchPillStyling !== false;
+  // Pill+thumb visual relies on ::before, which void elements like
+  // <input> can't host. Restrict to <button>-tag variants.
+  const renderAs = props.renderAs ?? "button";
+  const isButtonTag = !renderAs.startsWith("input-");
+  return (
+    isSwitchable(props) && props.switchPillStyling !== false && isButtonTag
+  );
 }
 
 function buildElementClass(props: Partial<ButtonProps>): string | null {
@@ -295,6 +302,26 @@ function renderInputButton(
   return `<input ${withInspectedClass(attrs, props).join(" ")}>`;
 }
 
+function renderInputCheckboxSwitch(
+  props: Partial<ButtonProps>,
+  style: string,
+): string {
+  const label = escapeHtml(props.label ?? DEFAULT_LABEL);
+  const attrs: string[] = [
+    `id="${SWITCH_INPUT_ID}"`,
+    `type="checkbox"`,
+    `role="switch"`,
+  ];
+  if (props.name) attrs.push(`name="${escapeAttribute(props.name)}"`);
+  if (props.value) attrs.push(`value="${escapeAttribute(props.value)}"`);
+  if (props.switchChecked) attrs.push("checked");
+  if (props.disabled) attrs.push("disabled");
+  if (style) attrs.push(`style="${style}"`);
+
+  const input = `<input ${withInspectedClass(attrs, props).join(" ")}>`;
+  return `<label for="${SWITCH_INPUT_ID}"><span>${label}</span>${input}</label>`;
+}
+
 function renderInputImage(props: Partial<ButtonProps>, style: string): string {
   const attrs: string[] = [`type="image"`];
   if (props.src) attrs.push(`src="${escapeAttribute(props.src)}"`);
@@ -321,6 +348,8 @@ export function renderButton(props?: Partial<ButtonProps>): RenderedFragment {
   let element: string;
   if (renderAs === "input-image") {
     element = renderInputImage(props, style);
+  } else if (renderAs === "input-checkbox-switch") {
+    element = renderInputCheckboxSwitch(props, style);
   } else {
     const inputType = INPUT_TYPE_BY_RENDER_AS[renderAs];
     if (inputType) {

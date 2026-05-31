@@ -9,6 +9,7 @@ export type ButtonRenderAs
     | 'input-button'
     | 'input-reset'
     | 'input-image'
+    | 'input-checkbox-switch'
 
 export interface ButtonProps {
   renderAs: ButtonRenderAs

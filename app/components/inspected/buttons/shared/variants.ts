@@ -74,6 +74,15 @@ const ALL_VARIANTS: Record<ButtonRenderAs, ButtonVariant> = {
     statusNote: 'components.button.variants.input-image.statusNote',
     section: '<input> Alternative',
     seeAlsoTopicId: 'button-types'
+  },
+  'input-checkbox-switch': {
+    key: 'input-checkbox-switch',
+    label: '<input type="checkbox" role="switch">',
+    description: 'components.button.variants.input-checkbox-switch.description',
+    status: 'recommended',
+    statusNote: 'components.button.variants.input-checkbox-switch.statusNote',
+    section: '<input> Alternative',
+    seeAlsoTopicId: 'switches'
   }
 }
 

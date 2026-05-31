@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { BaseButtonProps } from '~/types/button'
-import type { SwitchBehaviour } from '../shared/types'
+import type { ButtonRenderAs, SwitchBehaviour } from '../shared/types'
 import { switchDefinition } from './definition'
 import ContentSection from '~/components/ButtonStudio/sections/ContentSection.vue'
 import AriaSection from '~/components/ButtonStudio/sections/AriaSection.vue'
@@ -12,6 +12,7 @@ import ColoursSection from '~/components/ButtonStudio/sections/ColoursSection.vu
 import FocusSection from '~/components/ButtonStudio/sections/FocusSection.vue'
 
 type SwitchModel = Partial<BaseButtonProps> & {
+  renderAs?: ButtonRenderAs
   wrappers?: string[]
   switchBehaviour?: SwitchBehaviour
   switchChecked?: boolean

@@ -33,6 +33,10 @@
         "input-image": {
           "description": "An image used as a submit button. The image is the visible label and the alt attribute provides the accessible name.",
           "statusNote": "Submits the form and includes click coordinates in the payload."
+        },
+        "input-checkbox-switch": {
+          "description": "A native checkbox with role=\"switch\". The browser handles label-click forwarding, keyboard activation, and focus for free when linked to a sibling label element.",
+          "statusNote": "Easiest accessible switch when the value is submitted as form data."
         }
       }
     }

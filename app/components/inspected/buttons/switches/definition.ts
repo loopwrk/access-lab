@@ -37,7 +37,7 @@ export const switchDefinition: ComponentDefinition<ButtonProps> = {
     switchPillStyling: true,
   },
 
-  variants: variants(["button-button", "button"]),
+  variants: variants(["button-button", "button", "input-checkbox-switch"]),
 
   contextWrappers: [formWrapper, linkWrapper],
 

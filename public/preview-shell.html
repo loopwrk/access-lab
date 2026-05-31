@@ -129,6 +129,16 @@
         'button, input[type="submit"], input[type="button"], input[type="reset"], input[type="image"]';
 
       mount.addEventListener("click", function (event) {
+        if (!(event.target instanceof Element)) return;
+        var label = event.target.closest("#al-switch-label");
+        if (!label) return;
+        var btn = mount.querySelector(".al-inspected-element.al-switch");
+        if (btn instanceof HTMLElement && !btn.contains(event.target)) {
+          btn.click();
+        }
+      });
+
+      mount.addEventListener("click", function (event) {
         var trigger = event.target.closest(TRIGGER_SELECTOR);
         if (!trigger) return;
 
@@ -162,6 +172,22 @@
         }
 
         parent.postMessage({ type: "demo:click" }, window.location.origin);
+      });
+
+      // Native checkboxes (including the input-checkbox-switch variant)
+      // change state via the browser. The click delegate above fires
+      // before the checked state flips, and pattern listeners read the
+      // post-toggle state from the next render — so we forward `change`
+      // as demo:click so the same flip-state listener picks it up.
+      mount.addEventListener("change", function (event) {
+        var el = event.target;
+        if (
+          el instanceof HTMLInputElement &&
+          el.type === "checkbox" &&
+          el.classList.contains("al-inspected-element")
+        ) {
+          parent.postMessage({ type: "demo:click" }, window.location.origin);
+        }
       });
 
       // Cancel form submissions inside the preview so the iframe does
