@@ -4,6 +4,7 @@ import { formButtonDefinition } from './buttons/form-buttons/definition'
 import { toggleButtonDefinition } from './buttons/toggle-buttons/definition'
 import { switchDefinition } from './buttons/switches/definition'
 import { disclosureTriggerDefinition } from './buttons/disclosure-triggers/definition'
+import { menuTriggerDefinition } from './buttons/menu-triggers/definition'
 import { inputDefinition } from './input/definition'
 import { placeholderDefinitions } from './placeholders'
 
@@ -29,6 +30,9 @@ export const inspectedComponents: Record<
     Record<string, unknown>
   >,
   'buttons-disclosure-triggers': disclosureTriggerDefinition as unknown as ComponentDefinition<
+    Record<string, unknown>
+  >,
+  'buttons-menu-triggers': menuTriggerDefinition as unknown as ComponentDefinition<
     Record<string, unknown>
   >,
   'input': inputDefinition as unknown as ComponentDefinition<

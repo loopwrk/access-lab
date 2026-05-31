@@ -167,10 +167,18 @@
 - [x] `types/component.ts` + `inspected/index.ts` + `inspected/placeholders.ts` + `layouts/default.vue` — registry + nav entry (fifth child under Buttons).
 - [x] `components/LearnTopic/DisclosureTriggers.vue` + `useLearnTopics.ts` — category `interaction`. i18n strings under `learn.disclosureTriggers.*`, controls strings under `controls.disclosureBehaviour*`, nav string `nav.buttonsDisclosureTriggers`.
 
-## Remaining (next steps)
+### Stage 6 — Menu triggers
+- [x] `shared/types.ts` — `MenuBehaviour = 'none' | 'aria-expanded-haspopup' | 'haspopup-only' | 'expanded-only'` + `menuOpen` / `menuShowControls` / `menuItems` props.
+- [x] `shared/render.ts` — `menuAttrs` emits `aria-haspopup="menu"` and/or `aria-expanded` per behaviour, plus optional `aria-controls="al-menu-popup"`. Wrap branch produces `<div class="al-menu-wrap">` containing the trigger and a sibling `<ul id="al-menu-popup" role="menu" hidden?>` populated from `menuItems` (default `['Profile', 'Settings', 'Sign out']`). Popup visibility uses the browser-native `hidden` attribute, with the `[hidden]{display:none}` CSS rule surfaced in the CSS pane for the same teaching reason as the disclosure pattern.
+- [x] **Keyboard contract deliberately unwired.** The studio renders bare markup with no arrow-key, Home/End, Escape, outside-click, or roving-tabindex handlers — the iframe shows exactly what the browser does for free given the markup and prop state. The Learn topic and a new `rules/buttons/menu-triggers/manual-checklist.ts` (composed on top of `buttonManualChecklist`) cover the production keyboard contract.
+- [x] `rules/buttons/menu-triggers/{menu-no-haspopup,menu-no-expanded}.ts` — both SC 4.1.2 Level A.
+- [x] `components/ButtonStudio/sections/MenuStateSection.vue` — 4-option segmented control + `aria-controls` switch + Learn-link.
+- [x] `components/inspected/buttons/menu-triggers/{definition,MenuTriggerControls}.{ts,vue}` — variants `['button-button', 'button']`; iframe click-bridge flips `menuOpen`; `contextWrappers: [linkWrapper]` only (form wrapper omitted to avoid the implicit-submit demo).
+- [x] `types/component.ts` + `inspected/index.ts` + `inspected/placeholders.ts` + `layouts/default.vue` — registry + nav entry (sixth child under Buttons).
+- [x] `components/LearnTopic/MenuTriggers.vue` + `useLearnTopics.ts` — category `interaction`. Sections: pattern, why both attributes are needed, full keyboard contract, anti-patterns (no ARIA / half-wired / click-only), menu vs. select decision rule.
+- [x] i18n: `nav.buttonsMenuTriggers`, `controls.menuBehaviour*`, `controls.menuShowControls`, `learn.menuTriggers.*`.
 
-### Stage 6 — Menu triggers (planned)
-- [ ] `aria-haspopup` + `aria-expanded` + `aria-controls`, focus management into the popup, Escape-to-close.
+## Remaining (next steps)
 
 ### Stage 7 — File picker (planned)
 - [ ] `<label>` over hidden `<input type="file">` pattern vs. visible-button + hidden-input + JS `.click()` anti-pattern.

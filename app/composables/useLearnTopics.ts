@@ -106,6 +106,15 @@ export const learnTopics: LearnTopic[] = [
     ),
   },
   {
+    id: "menu-triggers",
+    titleKey: "learn.menuTriggers.title",
+    summaryKey: "learn.menuTriggers.summary",
+    category: "interaction",
+    component: defineAsyncComponent(
+      () => import("~/components/LearnTopic/MenuTriggers.vue"),
+    ),
+  },
+  {
     id: "disclosure-triggers",
     titleKey: "learn.disclosureTriggers.title",
     summaryKey: "learn.disclosureTriggers.summary",

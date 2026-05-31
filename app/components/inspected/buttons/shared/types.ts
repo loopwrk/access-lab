@@ -51,6 +51,10 @@ export interface ButtonProps {
   disclosureExpanded?: boolean
   disclosureShowControls?: boolean
   disclosurePanelText?: string
+  menuBehaviour?: MenuBehaviour
+  menuOpen?: boolean
+  menuShowControls?: boolean
+  menuItems?: string[]
 }
 
 export type ToggleBehaviour = 'none' | 'aria-pressed' | 'aria-checked' | 'visual-only'
@@ -58,3 +62,9 @@ export type ToggleBehaviour = 'none' | 'aria-pressed' | 'aria-checked' | 'visual
 export type SwitchBehaviour = 'none' | 'role-switch' | 'aria-pressed'
 
 export type DisclosureBehaviour = 'none' | 'aria-expanded' | 'out-of-sync'
+
+export type MenuBehaviour
+  = | 'none'
+    | 'aria-expanded-haspopup'
+    | 'haspopup-only'
+    | 'expanded-only'

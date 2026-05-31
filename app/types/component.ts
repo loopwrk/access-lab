@@ -15,6 +15,7 @@ export type ComponentId =
   | "buttons-toggle-buttons"
   | "buttons-switches"
   | "buttons-disclosure-triggers"
+  | "buttons-menu-triggers"
   | "accordion"
   | "carousel"
   | "modal"

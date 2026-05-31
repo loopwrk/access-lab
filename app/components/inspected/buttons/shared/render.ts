@@ -37,6 +37,10 @@ const DISCLOSURE_WRAP_CLASS = "al-disclosure-wrap";
 const DISCLOSURE_PANEL_CLASS = "al-disclosure-panel";
 const DISCLOSURE_PANEL_ID = "al-disclosure-panel";
 const DEFAULT_DISCLOSURE_PANEL_TEXT = "Revealed content.";
+const MENU_WRAP_CLASS = "al-menu-wrap";
+const MENU_POPUP_CLASS = "al-menu-popup";
+const MENU_POPUP_ID = "al-menu-popup";
+const DEFAULT_MENU_ITEMS = ["Profile", "Settings", "Sign out"];
 
 function buildCss(props: Partial<ButtonProps>): string {
   const rules: string[] = [];
@@ -71,6 +75,16 @@ function buildCss(props: Partial<ButtonProps>): string {
       `.${DISCLOSURE_PANEL_CLASS}{border:1px solid #888;padding:0.6em 0.8em;border-radius:4px;font-family:inherit;}`,
       `.${DISCLOSURE_PANEL_CLASS} p{margin:0;}`,
       `.${DISCLOSURE_PANEL_CLASS}[hidden]{display:none;}`,
+    );
+  }
+
+  if (isMenu(props)) {
+    rules.push(
+      `.${MENU_WRAP_CLASS}{display:inline-flex;flex-direction:column;align-items:flex-start;gap:0.4em;}`,
+      `.${MENU_POPUP_CLASS}{list-style:none;margin:0;padding:0.3em 0;border:1px solid #888;border-radius:4px;background:#fff;color:#000;min-width:10em;box-shadow:0 4px 12px rgb(0 0 0 / 0.15);}`,
+      `.${MENU_POPUP_CLASS} li{padding:0.4em 0.8em;cursor:default;}`,
+      `.${MENU_POPUP_CLASS} li:hover,.${MENU_POPUP_CLASS} li:focus{background:#eef;outline:none;}`,
+      `.${MENU_POPUP_CLASS}[hidden]{display:none;}`,
     );
   }
 
@@ -130,6 +144,10 @@ function isSwitchable(props: Partial<ButtonProps>): boolean {
 
 function isDisclosure(props: Partial<ButtonProps>): boolean {
   return props.disclosureBehaviour != null;
+}
+
+function isMenu(props: Partial<ButtonProps>): boolean {
+  return props.menuBehaviour != null;
 }
 
 function isPilledSwitch(props: Partial<ButtonProps>): boolean {
@@ -196,6 +214,30 @@ function disclosureAttrs(props: Partial<ButtonProps>): string[] {
   }
   if (props.disclosureShowControls) {
     attrs.push(`aria-controls="${DISCLOSURE_PANEL_ID}"`);
+  }
+  return attrs;
+}
+
+function menuAttrs(props: Partial<ButtonProps>): string[] {
+  if (!isMenu(props)) return [];
+  const attrs: string[] = [];
+  const open = props.menuOpen === true;
+  switch (props.menuBehaviour) {
+    case "aria-expanded-haspopup":
+      attrs.push(`aria-haspopup="menu"`, `aria-expanded="${open}"`);
+      break;
+    case "haspopup-only":
+      attrs.push(`aria-haspopup="menu"`);
+      break;
+    case "expanded-only":
+      attrs.push(`aria-expanded="${open}"`);
+      break;
+    case "none":
+    default:
+      break;
+  }
+  if (props.menuShowControls) {
+    attrs.push(`aria-controls="${MENU_POPUP_ID}"`);
   }
   return attrs;
 }
@@ -316,6 +358,7 @@ function renderNativeButton(
   attrs.push(...toggleAttrs(props));
   attrs.push(...switchAttrs(props));
   attrs.push(...disclosureAttrs(props));
+  attrs.push(...menuAttrs(props));
   if (props.disabled) attrs.push("disabled");
   if (style) attrs.push(`style="${style}"`);
 
@@ -444,6 +487,27 @@ export function renderButton(props?: Partial<ButtonProps>): RenderedFragment {
       `<div id="${DISCLOSURE_PANEL_ID}" class="${DISCLOSURE_PANEL_CLASS}"${hiddenAttr}>` +
       paragraphsHtml +
       `</div>` +
+      `</div>`;
+  }
+
+  if (isMenu(props)) {
+    const itemLabels = props.menuItems?.length
+      ? props.menuItems
+      : DEFAULT_MENU_ITEMS;
+    const itemsHtml = itemLabels
+      .map(
+        (label) =>
+          `<li role="menuitem" tabindex="-1">${escapeHtml(label)}</li>`,
+      )
+      .join("");
+    const open = props.menuOpen === true;
+    const hiddenAttr = open ? "" : " hidden";
+    element =
+      `<div class="${MENU_WRAP_CLASS}">` +
+      element +
+      `<ul id="${MENU_POPUP_ID}" class="${MENU_POPUP_CLASS}" role="menu"${hiddenAttr}>` +
+      itemsHtml +
+      `</ul>` +
       `</div>`;
   }
 
