@@ -46,6 +46,7 @@ export const formButtonDefinition: ComponentDefinition<ButtonProps> = {
     focusNotVisible,
     focusLowContrast
   ],
+  primaryLearnTopicId: 'form-wrapping',
   manualChecklist: buttonManualChecklist,
   render: renderButton,
   controlsComponent: defineAsyncComponent(

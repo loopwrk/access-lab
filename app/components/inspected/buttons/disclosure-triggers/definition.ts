@@ -54,6 +54,7 @@ export const disclosureTriggerDefinition: ComponentDefinition<ButtonProps> = {
     disclosureNoState,
     disclosureStateOutOfSync,
   ],
+  primaryLearnTopicId: "disclosure-triggers",
   manualChecklist: buttonManualChecklist,
   render: renderButton,
   controlsComponent: defineAsyncComponent(

@@ -4,5 +4,10 @@ export function useStudioToolbar() {
     () => null,
   );
 
-  return { activeComponentName };
+  const activeLearnTopicId = useState<string | null>(
+    "al-studio-toolbar-learn-topic",
+    () => null,
+  );
+
+  return { activeComponentName, activeLearnTopicId };
 }

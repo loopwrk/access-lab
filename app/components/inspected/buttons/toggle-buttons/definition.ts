@@ -45,6 +45,7 @@ export const toggleButtonDefinition: ComponentDefinition<ButtonProps> = {
     toggleStateMissing,
     toggleWrongAttribute
   ],
+  primaryLearnTopicId: 'toggle-buttons',
   manualChecklist: buttonManualChecklist,
   render: renderButton,
   controlsComponent: defineAsyncComponent(

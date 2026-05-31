@@ -23,7 +23,8 @@ const warningViolationIds = computed(() =>
     .filter(v => v.impact === 'moderate' || v.impact === 'minor')
     .map(v => v.id)
 )
-const { activeComponentName } = useStudioToolbar()
+const { activeComponentName, activeLearnTopicId } = useStudioToolbar()
+const { focusLearnTopic } = useInspectorTab()
 
 const previewTitle = computed(() => activeComponentName.value ?? t('preview.title'))
 
@@ -126,49 +127,24 @@ function skipToMain() {
 </script>
 
 <template>
-  <div
-    class="app-shell"
-    :inert="isBelowDesktop"
-  >
+  <div class="app-shell" :inert="isBelowDesktop">
     <!-- Skip links -->
     <div class="skip-links">
-      <a
-        href="#main-content"
-        class="skip-link"
-        @click.prevent="skipToMain"
-      >{{ t('skipLinks.main') }}</a>
-      <a
-        href="#controls-panel"
-        class="skip-link"
-        @click="skipToPanel('controls', 'controls-panel')"
-      >
+      <a href="#main-content" class="skip-link" @click.prevent="skipToMain">{{ t('skipLinks.main') }}</a>
+      <a href="#controls-panel" class="skip-link" @click="skipToPanel('controls', 'controls-panel')">
         {{ t('skipLinks.controls') }}
       </a>
-      <a
-        href="#issues-panel"
-        class="skip-link"
-        @click="skipToPanel('issues', 'issues-panel')"
-      >
+      <a href="#issues-panel" class="skip-link" @click="skipToPanel('issues', 'issues-panel')">
         {{ t('skipLinks.issues') }}
       </a>
     </div>
 
     <!-- App bar -->
-    <header
-      class="appbar"
-      role="banner"
-      :aria-label="t('appBar.ariaLabel')"
-    >
+    <header class="appbar" role="banner" :aria-label="t('appBar.ariaLabel')">
       <div class="appbar-left">
         <!-- Brand -->
-        <NuxtLink
-          to="/"
-          class="brand"
-        >
-          <span
-            class="brand-mark"
-            aria-hidden="true"
-          />
+        <NuxtLink to="/" class="brand">
+          <span class="brand-mark" aria-hidden="true" />
           <span class="brand-text">{{ t('appBar.brand') }}</span>
         </NuxtLink>
       </div>
@@ -176,158 +152,95 @@ function skipToMain() {
       <div class="appbar-right">
         <!-- Font picker -->
         <UFieldGroup size="sm">
-          <UButton
-            v-for="fontFamily in fonts"
-            :key="fontFamily.value"
+          <UButton v-for="fontFamily in fonts" :key="fontFamily.value"
             :color="font.family === fontFamily.value ? 'primary' : 'neutral'"
             :variant="font.family === fontFamily.value ? 'solid' : 'ghost'"
-            :style="{ fontFamily: `${fontFamily.family}` }"
-            @click="
-              font.setFont(fontFamily.value)"
-          >
+            :style="{ fontFamily: `${fontFamily.family}` }" @click="
+              font.setFont(fontFamily.value)">
             {{ fontFamily.label }}
           </UButton>
         </UFieldGroup>
 
         <!-- Size picker -->
         <UFieldGroup size="sm">
-          <UButton
-            v-for="s in sizes"
-            :key="s.value"
-            :color="font.size === s.value ? 'primary' : 'neutral'"
-            :variant="font.size === s.value ? 'solid' : 'ghost'"
-            @click="font.setSize(s.value)"
-          >
+          <UButton v-for="s in sizes" :key="s.value" :color="font.size === s.value ? 'primary' : 'neutral'"
+            :variant="font.size === s.value ? 'solid' : 'ghost'" @click="font.setSize(s.value)">
             {{ s.label }}
           </UButton>
         </UFieldGroup>
 
         <!-- High contrast toggle -->
         <UFieldGroup size="sm">
-          <UButton
-            :color="theme.isHighContrast ? 'primary' : 'neutral'"
-            :variant="theme.isHighContrast ? 'solid' : 'ghost'"
-            icon="i-lucide-contrast"
-            :aria-pressed="theme.isHighContrast"
-            @click="theme.toggleContrast()"
-          >
+          <UButton :color="theme.isHighContrast ? 'primary' : 'neutral'"
+            :variant="theme.isHighContrast ? 'solid' : 'ghost'" icon="i-lucide-contrast"
+            :aria-pressed="theme.isHighContrast" @click="theme.toggleContrast()">
             {{ t('theme.highContrast') }}
           </UButton>
         </UFieldGroup>
 
         <!-- Theme toggle -->
         <UFieldGroup size="sm">
-          <UButton
-            :color="!theme.isDark ? 'primary' : 'neutral'"
-            :variant="!theme.isDark ? 'solid' : 'ghost'"
-            icon="i-lucide-sun"
-            :aria-pressed="!theme.isDark"
-            @click="theme.isDark && theme.toggleMode()"
-          >
+          <UButton :color="!theme.isDark ? 'primary' : 'neutral'" :variant="!theme.isDark ? 'solid' : 'ghost'"
+            icon="i-lucide-sun" :aria-pressed="!theme.isDark" @click="theme.isDark && theme.toggleMode()">
             {{ t('theme.light') }}
           </UButton>
-          <UButton
-            :color="theme.isDark ? 'primary' : 'neutral'"
-            :variant="theme.isDark ? 'solid' : 'ghost'"
-            icon="i-lucide-moon"
-            :aria-pressed="theme.isDark"
-            @click="!theme.isDark && theme.toggleMode()"
-          >
+          <UButton :color="theme.isDark ? 'primary' : 'neutral'" :variant="theme.isDark ? 'solid' : 'ghost'"
+            icon="i-lucide-moon" :aria-pressed="theme.isDark" @click="!theme.isDark && theme.toggleMode()">
             {{ t('theme.dark') }}
           </UButton>
         </UFieldGroup>
 
         <!-- Sidebar toggle -->
-        <UButton
-          color="neutral"
-          variant="ghost"
-          size="sm"
-          icon="i-lucide-panel-left"
+        <UButton color="neutral" variant="ghost" size="sm" icon="i-lucide-panel-left"
           :aria-label="sidebarOpen ? t('sidebar.toggleClose') : t('sidebar.toggleOpen')"
-          @click="sidebarOpen = !sidebarOpen"
-        />
+          @click="sidebarOpen = !sidebarOpen" />
       </div>
     </header>
 
     <div class="app-body">
       <!-- Left sidebar -->
-      <aside
-        v-show="sidebarOpen"
-        class="sidebar"
-        :aria-label="t('sidebar.ariaLabel')"
-      >
-        <UNavigationMenu
-          :items="navItems"
-          orientation="vertical"
-          highlight
-          highlight-color="primary"
-          collapsible
-          :ui="{ link: 'text-md py-2.5 pl-3', linkLabel: 'truncate', label: 'text-lg pl-3 pt-3' }"
-        />
+      <aside v-show="sidebarOpen" class="sidebar" :aria-label="t('sidebar.ariaLabel')">
+        <UNavigationMenu :items="navItems" orientation="vertical" highlight highlight-color="primary" collapsible
+          :ui="{ link: 'text-md py-2.5 pl-3', linkLabel: 'truncate', label: 'text-lg pl-3 pt-3' }" />
       </aside>
 
       <!-- Collapsed sidebar rail -->
-      <div
-        v-show="!sidebarOpen"
-        class="sidebar-rail"
-        :aria-label="t('sidebar.ariaLabel')"
-      >
-        <button
-          class="sidebar-rail-btn"
-          :aria-label="t('sidebar.toggleOpen')"
-          @click="sidebarOpen = true"
-        >
-          <span
-            aria-hidden="true"
-            class="i-lucide-panel-left text-lg"
-          />
+      <div v-show="!sidebarOpen" class="sidebar-rail" :aria-label="t('sidebar.ariaLabel')">
+        <button class="sidebar-rail-btn" :aria-label="t('sidebar.toggleOpen')" @click="sidebarOpen = true">
+          <span aria-hidden="true" class="i-lucide-panel-left text-lg" />
         </button>
       </div>
 
       <!-- Main content -->
-      <main
-        id="main-content"
-        class="main"
-        tabindex="-1"
-      >
+      <main id="main-content" class="main" tabindex="-1">
         <!-- Preview toolbar -->
         <div
-          class="flex flex-wrap items-center justify-between gap-4 py-2.5 px-5 border-b border-(--border) bg-(--surface)"
-        >
+          class="flex flex-wrap items-center justify-between gap-4 py-2.5 px-5 border-b border-(--border) bg-(--surface)">
           <div class="flex items-center gap-3">
             <h1 class="m-0 font-medium text-(length:--al-font-size-heading) text-(--text-primary)">
-              {{ previewTitle }}
+              <a v-if="activeLearnTopicId" :href="`#topic-${activeLearnTopicId}`" class="preview-title-link"
+                :title="t('preview.titleLearnLink', { name: previewTitle })"
+                @click.prevent="focusLearnTopic(activeLearnTopicId)">
+                {{ previewTitle }}
+                <UIcon name="i-lucide-arrow-up-right" class="size-4 inline-block ml-0.5 opacity-70 align-[-2px]"
+                  aria-hidden="true" />
+              </a>
+              <template v-else>
+                {{ previewTitle }}
+              </template>
             </h1>
             <div class="toolbar-chip inline-flex items-stretch border border-(--border) bg-(--surface-2)">
-              <div
-                id="preview-toolbar-variant"
-                class="flex items-stretch"
-              />
-              <div
-                id="preview-toolbar-wrappers"
-                class="flex items-stretch"
-              />
+              <div id="preview-toolbar-variant" class="flex items-stretch" />
+              <div id="preview-toolbar-wrappers" class="flex items-stretch" />
             </div>
           </div>
 
           <div class="flex gap-2">
-            <AnimatedCountBadge
-              color="error"
-              :count="criticalCount"
-              :noun="t('counter.criticalNoun')"
-              :violation-ids="criticalViolationIds"
-            />
-            <AnimatedCountBadge
-              color="warning"
-              :count="warningCount"
-              :noun="t('counter.warningsNoun', warningCount)"
-              :violation-ids="warningViolationIds"
-            />
-            <AnimatedCountBadge
-              color="success"
-              :count="passingCount"
-              :noun="t('counter.passingNoun')"
-            />
+            <AnimatedCountBadge color="error" :count="criticalCount" :noun="t('counter.criticalNoun')"
+              :violation-ids="criticalViolationIds" />
+            <AnimatedCountBadge color="warning" :count="warningCount" :noun="t('counter.warningsNoun', warningCount)"
+              :violation-ids="warningViolationIds" />
+            <AnimatedCountBadge color="success" :count="passingCount" :noun="t('counter.passingNoun')" />
           </div>
         </div>
 
@@ -340,19 +253,9 @@ function skipToMain() {
       </main>
 
       <!-- Right inspector -->
-      <aside
-        class="inspector"
-        aria-label="Inspection panel"
-      >
-        <UTabs
-          v-model="activeTab"
-          :items="tabItems"
-          variant="link"
-          color="primary"
-          size="lg"
-          :content="false"
-          :ui="{ list: 'justify-around', label: 'overflow-visible whitespace-nowrap' }"
-        />
+      <aside class="inspector" aria-label="Inspection panel">
+        <UTabs v-model="activeTab" :items="tabItems" variant="link" color="primary" size="lg" :content="false"
+          :ui="{ list: 'justify-around', label: 'overflow-visible whitespace-nowrap' }" />
 
         <!-- Tab panels
           Content currently created in index.vue and
@@ -362,35 +265,15 @@ function skipToMain() {
         -->
 
         <div class="inspector-panels">
-          <div
-            v-show="activeTab === 'controls'"
-            id="controls-panel"
-            class="inspector-panel"
-            tabindex="0"
-          >
+          <div v-show="activeTab === 'controls'" id="controls-panel" class="inspector-panel" tabindex="0">
             <RootEmSlider />
           </div>
 
-          <div
-            v-show="activeTab === 'issues'"
-            id="issues-panel"
-            class="inspector-panel"
-            tabindex="0"
-          />
+          <div v-show="activeTab === 'issues'" id="issues-panel" class="inspector-panel" tabindex="0" />
 
-          <div
-            v-show="activeTab === 'manual'"
-            id="manual-panel"
-            class="inspector-panel"
-            tabindex="0"
-          />
+          <div v-show="activeTab === 'manual'" id="manual-panel" class="inspector-panel" tabindex="0" />
 
-          <div
-            v-show="activeTab === 'learn'"
-            id="learn-panel"
-            class="inspector-panel"
-            tabindex="0"
-          />
+          <div v-show="activeTab === 'learn'" id="learn-panel" class="inspector-panel" tabindex="0" />
         </div>
       </aside>
     </div>
@@ -402,6 +285,25 @@ function skipToMain() {
 <style scoped>
 .toolbar-chip>div:empty {
   display: none;
+}
+
+.preview-title-link {
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.preview-title-link:hover,
+.preview-title-link:focus-visible {
+  color: var(--brand);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.preview-title-link:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 3px;
+  border-radius: 2px;
 }
 
 /* ── Shell grid ────────────────────────────────────────────────── */

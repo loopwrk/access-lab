@@ -52,6 +52,7 @@ export const switchDefinition: ComponentDefinition<ButtonProps> = {
     switchNoRole,
     switchWrongAttribute,
   ],
+  primaryLearnTopicId: "switches",
   manualChecklist: buttonManualChecklist,
   render: renderButton,
   controlsComponent: defineAsyncComponent(() => import("./SwitchControls.vue")),

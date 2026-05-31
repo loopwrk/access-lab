@@ -66,6 +66,7 @@
   },
   "preview": {
     "title": "Preview",
+    "titleLearnLink": "Open the Learn topic for {name}",
     "noFramework": "No framework",
     "focusContent": "Focus content",
     "focusContentAria": "Focus the inspected element inside the preview",
