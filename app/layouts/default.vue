@@ -1,27 +1,10 @@
 <script setup lang="ts">
 import { useMediaQuery } from '@vueuse/core'
-import { useAxeCounts, useAllViolations } from '~/composables/useAxeResults'
 import type { TabsItem } from '@nuxt/ui'
 
 const isBelowDesktop = useMediaQuery('(max-width: 1023px)')
 
 const { t } = useI18n()
-const { criticalCount, warningCount, passingCount } = useAxeCounts()
-const { allViolations } = useAllViolations()
-const criticalViolationIds = computed(() =>
-  allViolations.value
-    .filter(v => v.impact === 'critical' || v.impact === 'serious')
-    .map(v => v.id)
-)
-const warningViolationIds = computed(() =>
-  allViolations.value
-    .filter(v => v.impact === 'moderate' || v.impact === 'minor')
-    .map(v => v.id)
-)
-const { activeComponentName, activeLearnTopicId } = useStudioToolbar()
-const { focusLearnTopic } = useInspectorTab()
-
-const previewTitle = computed(() => activeComponentName.value ?? t('preview.title'))
 
 // Sidebar collapse state
 const sidebarOpen = ref(true)
@@ -71,36 +54,7 @@ function skipToMain() {
 
       <!-- Main content -->
       <main id="main-content" class="main" tabindex="-1">
-        <!-- Preview toolbar -->
-        <div
-          class="flex flex-wrap items-center justify-between gap-4 py-2.5 px-5 border-b border-(--border) bg-(--surface)">
-          <div class="flex items-center gap-3">
-            <h1 class="m-0 font-medium text-(length:--al-font-size-heading) text-(--text-primary)">
-              <a v-if="activeLearnTopicId" :href="`#topic-${activeLearnTopicId}`" class="preview-title-link"
-                :title="t('preview.titleLearnLink', { name: previewTitle })"
-                @click.prevent="focusLearnTopic(activeLearnTopicId)">
-                {{ previewTitle }}
-                <UIcon name="i-lucide-arrow-up-right" class="size-4 inline-block ml-0.5 opacity-70 align-[-2px]"
-                  aria-hidden="true" />
-              </a>
-              <template v-else>
-                {{ previewTitle }}
-              </template>
-            </h1>
-            <div class="toolbar-chip inline-flex items-stretch border border-(--border) bg-(--surface-2)">
-              <div id="preview-toolbar-variant" class="flex items-stretch" />
-              <div id="preview-toolbar-wrappers" class="flex items-stretch" />
-            </div>
-          </div>
-
-          <div class="flex gap-2">
-            <AnimatedCountBadge color="error" :count="criticalCount" :noun="t('counter.criticalNoun')"
-              :violation-ids="criticalViolationIds" />
-            <AnimatedCountBadge color="warning" :count="warningCount" :noun="t('counter.warningsNoun', warningCount)"
-              :violation-ids="warningViolationIds" />
-            <AnimatedCountBadge color="success" :count="passingCount" :noun="t('counter.passingNoun')" />
-          </div>
-        </div>
+        <PreviewToolbar />
 
         <!-- Preview area -->
         <div class="preview-area">
@@ -141,29 +95,6 @@ function skipToMain() {
 </template>
 
 <style scoped>
-.toolbar-chip>div:empty {
-  display: none;
-}
-
-.preview-title-link {
-  color: inherit;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.preview-title-link:hover,
-.preview-title-link:focus-visible {
-  color: var(--brand);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-.preview-title-link:focus-visible {
-  outline: 3px solid var(--focus-ring);
-  outline-offset: 3px;
-  border-radius: 2px;
-}
-
 /* ── Shell grid ────────────────────────────────────────────────── */
 .app-shell {
   display: grid;
