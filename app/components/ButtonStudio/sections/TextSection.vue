@@ -10,6 +10,7 @@ const unitConv = useUnitConversion()
 const { t } = useI18n()
 
 const { enabled, toggle } = useToggleableSection(model, {
+  keys: ['fontSize'],
   enable: () => ({ fontSize: unitConv.fromPx(props.defaults.fontSize, 'rem') }),
   disable: () => ({ fontSize: undefined })
 })

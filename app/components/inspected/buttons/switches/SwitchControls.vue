@@ -2,6 +2,7 @@
 import type { BaseButtonProps } from '~/types/button'
 import type { ButtonRenderAs, SwitchBehaviour } from '../shared/types'
 import { switchDefinition } from './definition'
+import ResetDefaultsSection from '~/components/ButtonStudio/sections/ResetDefaultsSection.vue'
 import ContentSection from '~/components/ButtonStudio/sections/ContentSection.vue'
 import AriaSection from '~/components/ButtonStudio/sections/AriaSection.vue'
 import SwitchStateSection from '~/components/ButtonStudio/sections/SwitchStateSection.vue'
@@ -82,7 +83,8 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="flex flex-col gap-4">
-    <ControlsIntro :element-name="switchDefinition.name.toLowerCase()" />
+    <ResetDefaultsSection v-model="model" />
+    <USeparator />
 
     <ContentSection v-model="model" />
     <USeparator />

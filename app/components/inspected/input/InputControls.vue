@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { InputProps } from './definition'
-import { inputDefinition } from './definition'
 import { useUnitConversion } from '~/composables/useUnitConversion'
 import type { CssUnit, CssLength } from '~/composables/useUnitConversion'
+import ResetDefaultsSection from '~/components/ButtonStudio/sections/ResetDefaultsSection.vue'
 
 const props = defineProps<{
   modelValue: Partial<InputProps>
@@ -20,8 +20,14 @@ const { t } = useI18n()
 const unitConv = useUnitConversion()
 const { focusLearnTopic } = useInspectorTab()
 
-const fontSizeEnabled = ref(false)
-const colorsEnabled = ref(false)
+// Derived so the switches flip off when the model is cleared from
+// elsewhere (e.g. the reset-to-defaults control).
+const fontSizeEnabled = computed(() => props.modelValue.fontSize != null)
+const colorsEnabled = computed(() =>
+  props.modelValue.bg != null
+  || props.modelValue.fgText != null
+  || props.modelValue.borderColor != null
+)
 
 const _HARDCODED = {
   fontSize: 14,
@@ -71,7 +77,6 @@ function toggleFontSize(value: boolean | 'indeterminate') {
   } else {
     update('fontSize', undefined as unknown as CssLength)
   }
-  fontSizeEnabled.value = value === true
 }
 
 function toggleColors(value: boolean | 'indeterminate') {
@@ -89,7 +94,6 @@ function toggleColors(value: boolean | 'indeterminate') {
     delete next.borderColor
     emit('update:modelValue', next)
   }
-  colorsEnabled.value = value === true
 }
 
 const typeOptions = [
@@ -127,7 +131,11 @@ const required = computed({
 
 <template>
   <div class="flex flex-col gap-4">
-    <ControlsIntro :element-name="inputDefinition.name.toLowerCase()" />
+    <ResetDefaultsSection
+      :model-value="modelValue"
+      @update:model-value="emit('update:modelValue', $event as Partial<InputProps>)"
+    />
+    <USeparator />
 
 
     <UFormField class="flex flex-col">

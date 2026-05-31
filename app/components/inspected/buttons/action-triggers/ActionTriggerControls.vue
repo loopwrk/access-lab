@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { BaseButtonProps } from '~/types/button'
 import { actionTriggerDefinition } from './definition'
+import ResetDefaultsSection from '~/components/ButtonStudio/sections/ResetDefaultsSection.vue'
 import ContentSection from '~/components/ButtonStudio/sections/ContentSection.vue'
 import AriaSection from '~/components/ButtonStudio/sections/AriaSection.vue'
 import TextSection from '~/components/ButtonStudio/sections/TextSection.vue'
@@ -18,7 +19,8 @@ const defaults = useButtonStudioDefaults(tagName)
 
 <template>
   <div class="flex flex-col gap-4">
-    <ControlsIntro :element-name="actionTriggerDefinition.name.toLowerCase()" />
+    <ResetDefaultsSection v-model="model" />
+    <USeparator />
 
     <ContentSection v-model="model" />
     <USeparator />

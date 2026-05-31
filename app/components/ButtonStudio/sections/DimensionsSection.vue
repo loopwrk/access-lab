@@ -15,24 +15,25 @@ const { update } = useButtonControlsModel(model)
 const unitConv = useUnitConversion()
 const { t } = useI18n()
 
-const widthEnabled = ref(false)
-const heightEnabled = ref(false)
+// Derived so the switches flip off when the model is cleared from
+// elsewhere (e.g. the reset-to-defaults control).
+const widthEnabled = computed(() => model.value.width != null)
+const heightEnabled = computed(() => model.value.height != null)
 
 function toggleWidth(value: boolean | 'indeterminate') {
-  widthEnabled.value = value === true
   update('width', value === true
     ? unitConv.fromPx(props.naturalSize.width || props.defaults.width, 'px')
     : undefined)
 }
 
 function toggleHeight(value: boolean | 'indeterminate') {
-  heightEnabled.value = value === true
   update('height', value === true
     ? unitConv.fromPx(props.naturalSize.height || props.defaults.height, 'px')
     : undefined)
 }
 
 const { enabled: paddingEnabled, toggle: togglePadding } = useToggleableSection(model, {
+  keys: ['padding', 'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft'],
   enable: () => {
     const length = unitConv.fromPx(props.defaults.padding, 'px')
     return {

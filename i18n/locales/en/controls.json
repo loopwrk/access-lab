@@ -1,8 +1,9 @@
 {
   "controls": {
-    "intro": {
-      "short": "Why does switching on some custom styles change the {element}'s appearance?",
-      "expandLabel": "Learn about native rendering"
+    "resetDefaults": {
+      "label": "Reset CSS styles to browser defaults ({learnMoreLink})",
+      "learnMore": "learn more",
+      "action": "Reset"
     },
     "simulatedRoot": {
       "label": "Root Em (rem) value"

@@ -16,6 +16,7 @@ const unitConv = useUnitConversion()
 const { t } = useI18n()
 
 const { enabled, toggle } = useToggleableSection(model, {
+  keys: ['bg', 'fgText', 'borderColor'],
   enable: () => ({
     bg: props.defaults.bg,
     fgText: props.defaults.fgText,

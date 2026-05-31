@@ -11,6 +11,14 @@ const unitConv = useUnitConversion()
 const { t } = useI18n()
 
 const { enabled, toggle } = useToggleableSection(model, {
+  keys: [
+    'borderWidth',
+    'borderTopWidth',
+    'borderRightWidth',
+    'borderBottomWidth',
+    'borderLeftWidth',
+    'borderColor'
+  ],
   enable: () => {
     const length = unitConv.fromPx(props.defaults.borderWidth, 'px')
     return {

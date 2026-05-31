@@ -2,6 +2,7 @@
 import type { BaseButtonProps } from '~/types/button'
 import type { MenuBehaviour } from '../shared/types'
 import { menuTriggerDefinition } from './definition'
+import ResetDefaultsSection from '~/components/ButtonStudio/sections/ResetDefaultsSection.vue'
 import ContentSection from '~/components/ButtonStudio/sections/ContentSection.vue'
 import AriaSection from '~/components/ButtonStudio/sections/AriaSection.vue'
 import MenuStateSection from '~/components/ButtonStudio/sections/MenuStateSection.vue'
@@ -40,7 +41,8 @@ onBeforeUnmount(() => window.removeEventListener('message', handleMessage))
 
 <template>
   <div class="flex flex-col gap-4">
-    <ControlsIntro :element-name="menuTriggerDefinition.name.toLowerCase()" />
+    <ResetDefaultsSection v-model="model" />
+    <USeparator />
 
     <ContentSection v-model="model" />
     <USeparator />

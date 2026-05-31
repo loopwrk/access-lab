@@ -2,6 +2,7 @@
 import type { BaseButtonProps } from '~/types/button'
 import type { DisclosureBehaviour } from '../shared/types'
 import { disclosureTriggerDefinition } from './definition'
+import ResetDefaultsSection from '~/components/ButtonStudio/sections/ResetDefaultsSection.vue'
 import ContentSection from '~/components/ButtonStudio/sections/ContentSection.vue'
 import AriaSection from '~/components/ButtonStudio/sections/AriaSection.vue'
 import DisclosureStateSection from '~/components/ButtonStudio/sections/DisclosureStateSection.vue'
@@ -39,7 +40,8 @@ onBeforeUnmount(() => window.removeEventListener('message', handleMessage))
 
 <template>
   <div class="flex flex-col gap-4">
-    <ControlsIntro :element-name="disclosureTriggerDefinition.name.toLowerCase()" />
+    <ResetDefaultsSection v-model="model" />
+    <USeparator />
 
     <ContentSection v-model="model" />
     <USeparator />

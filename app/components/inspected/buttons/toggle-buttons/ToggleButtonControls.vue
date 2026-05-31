@@ -2,6 +2,7 @@
 import type { BaseButtonProps } from '~/types/button'
 import type { ToggleBehaviour } from '../shared/types'
 import { toggleButtonDefinition } from './definition'
+import ResetDefaultsSection from '~/components/ButtonStudio/sections/ResetDefaultsSection.vue'
 import ContentSection from '~/components/ButtonStudio/sections/ContentSection.vue'
 import AriaSection from '~/components/ButtonStudio/sections/AriaSection.vue'
 import ToggleStateSection from '~/components/ButtonStudio/sections/ToggleStateSection.vue'
@@ -41,7 +42,8 @@ onBeforeUnmount(() => window.removeEventListener('message', handleMessage))
 
 <template>
   <div class="flex flex-col gap-4">
-    <ControlsIntro :element-name="toggleButtonDefinition.name.toLowerCase()" />
+    <ResetDefaultsSection v-model="model" />
+    <USeparator />
 
     <ContentSection v-model="model" />
     <USeparator />
