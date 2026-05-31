@@ -46,11 +46,11 @@
     "ariaLabel": "Component navigation"
   },
   "nav": {
-    "components": "Components",
-    "forms": "Forms",
+    "components": "Elements",
+    "forms": "Form Inputs",
     "frameworkStyle": "Framework style",
     "buttons": "Buttons",
-    "buttonsActionTriggers": "Action triggers",
+    "buttonsActionTriggers": "Action buttons",
     "buttonsFormButtons": "Form buttons",
     "buttonsToggleButtons": "Toggle buttons",
     "buttonsSwitches": "Switches",
