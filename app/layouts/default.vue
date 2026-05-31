@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useMediaQuery } from '@vueuse/core'
 import { useAxeCounts, useAllViolations } from '~/composables/useAxeResults'
-import type { TabsItem, NavigationMenuItem } from '@nuxt/ui'
+import type { TabsItem } from '@nuxt/ui'
 
 const isBelowDesktop = useMediaQuery('(max-width: 1023px)')
 
@@ -37,61 +37,6 @@ const tabItems = computed<TabsItem[]>(() => [
   { label: t('inspector.learn'), value: 'learn' }
 ])
 
-const navItems = computed<NavigationMenuItem[][]>(() => [
-  [
-    { label: t('nav.components'), type: 'label' },
-    {
-      label: t('nav.buttons'),
-      icon: 'i-lucide-square-mouse-pointer',
-      type: 'trigger',
-      defaultOpen: true,
-      children: [
-        {
-          label: t('nav.buttonsActionTriggers'),
-          value: 'buttons-action-triggers',
-          to: '/components/buttons/action-triggers'
-        },
-        {
-          label: t('nav.buttonsFormButtons'),
-          value: 'buttons-form-buttons',
-          to: '/components/buttons/form-buttons'
-        },
-        {
-          label: t('nav.buttonsToggleButtons'),
-          value: 'buttons-toggle-buttons',
-          to: '/components/buttons/toggle-buttons'
-        },
-        {
-          label: t('nav.buttonsSwitches'),
-          value: 'buttons-switches',
-          to: '/components/buttons/switches'
-        },
-        {
-          label: t('nav.buttonsDisclosureTriggers'),
-          value: 'buttons-disclosure-triggers',
-          to: '/components/buttons/disclosure-triggers'
-        },
-        {
-          label: t('nav.buttonsMenuTriggers'),
-          value: 'buttons-menu-triggers',
-          to: '/components/buttons/menu-triggers'
-        }
-      ]
-    },
-    { label: t('nav.accordion'), value: 'accordion', to: '/components/accordion', icon: 'i-lucide-chevrons-down-up' },
-    { label: t('nav.carousel'), value: 'carousel', to: '/components/carousel', icon: 'i-lucide-images' },
-    { label: t('nav.modal'), value: 'modal', to: '/components/modal', icon: 'i-lucide-rectangle-ellipsis' },
-    { label: t('nav.menu'), value: 'menu', to: '/components/menu', icon: 'i-lucide-menu' },
-    { label: t('nav.tooltip'), value: 'tooltip', to: '/components/tooltip', icon: 'i-lucide-message-circle' },
-    { label: t('nav.tabs'), value: 'tabs', to: '/components/tabs', icon: 'i-lucide-panels-top-left' }
-  ],
-  [
-    { label: t('nav.forms'), type: 'label' },
-    { label: t('nav.input'), value: 'input', to: '/components/input', icon: 'i-lucide-text-cursor-input' }
-  ]
-  // TODO: Introduce framework styles after vanilla components are in place
-])
-
 async function skipToPanel(tabName: 'controls' | 'issues', elementId: string) {
   activeTab.value = tabName
 
@@ -122,18 +67,7 @@ function skipToMain() {
     <AppBar v-model:sidebar-open="sidebarOpen" />
 
     <div class="app-body">
-      <!-- Left sidebar -->
-      <aside v-show="sidebarOpen" class="sidebar" :aria-label="t('sidebar.ariaLabel')">
-        <UNavigationMenu :items="navItems" orientation="vertical" highlight highlight-color="primary" collapsible
-          :ui="{ link: 'text-md py-2.5 pl-3', linkLabel: 'truncate', label: 'text-lg pl-3 pt-3' }" />
-      </aside>
-
-      <!-- Collapsed sidebar rail -->
-      <div v-show="!sidebarOpen" class="sidebar-rail" :aria-label="t('sidebar.ariaLabel')">
-        <button class="sidebar-rail-btn" :aria-label="t('sidebar.toggleOpen')" @click="sidebarOpen = true">
-          <span aria-hidden="true" class="i-lucide-panel-left text-lg" />
-        </button>
-      </div>
+      <AppSidebar v-model:open="sidebarOpen" />
 
       <!-- Main content -->
       <main id="main-content" class="main" tabindex="-1">
@@ -265,50 +199,6 @@ function skipToMain() {
 
 .skip-link:focus {
   left: 0;
-}
-
-/* ── Left sidebar ───────────────────────────────────────────────── */
-.sidebar {
-  width: 260px;
-  border-right: 1px solid var(--border);
-  background: var(--bg);
-  overflow-y: auto;
-  flex-shrink: 0;
-}
-
-/* Collapsed icon rail */
-.sidebar-rail {
-  width: 44px;
-  border-right: 1px solid var(--border);
-  background: var(--bg);
-  display: flex;
-  flex-direction: column;
-  padding-top: 12px;
-  align-items: center;
-  flex-shrink: 0;
-}
-
-.sidebar-rail-btn {
-  width: 36px;
-  height: 36px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
-  border: none;
-  color: var(--text-secondary);
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.sidebar-rail-btn:hover {
-  background: var(--brand-soft);
-  color: var(--text-primary);
-}
-
-.sidebar-rail-btn:focus-visible {
-  outline: 3px solid var(--focus-ring);
-  outline-offset: 0;
 }
 
 /* ── Main content ───────────────────────────────────────────────── */
