@@ -6,6 +6,7 @@ import { switchDefinition } from './buttons/switches/definition'
 import { disclosureTriggerDefinition } from './buttons/disclosure-triggers/definition'
 import { menuTriggerDefinition } from './buttons/menu-triggers/definition'
 import { inputDefinition } from './input/definition'
+import { checkboxDefinition } from './checkbox/definition'
 import { placeholderDefinitions } from './placeholders'
 
 /**
@@ -36,6 +37,9 @@ export const inspectedComponents: Record<
     Record<string, unknown>
   >,
   'input': inputDefinition as unknown as ComponentDefinition<
+    Record<string, unknown>
+  >,
+  'checkbox': checkboxDefinition as unknown as ComponentDefinition<
     Record<string, unknown>
   >
 }

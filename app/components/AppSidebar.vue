@@ -55,7 +55,8 @@ const navItems = computed<NavigationMenuItem[][]>(() => [
   ],
   [
     { label: t('nav.forms'), type: 'label' },
-    { label: t('nav.input'), value: 'input', to: '/components/input', icon: 'i-lucide-text-cursor-input' }
+    { label: t('nav.input'), value: 'input', to: '/components/input', icon: 'i-lucide-text-cursor-input' },
+    { label: t('nav.checkbox'), value: 'checkbox', to: '/components/checkbox', icon: 'i-lucide-square-check-big' }
   ]
   // TODO: Introduce framework styles after vanilla components are in place
 ])

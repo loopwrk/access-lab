@@ -63,6 +63,7 @@
     "tooltip": "Tooltip",
     "tabs": "Tabs",
     "input": "Input",
+    "checkbox": "Checkbox",
     "none": "None (bare HTML)"
   },
   "preview": {
@@ -163,9 +164,8 @@
   "studio": {
     "toasts": {
       "demoAction": "Click event fired",
-      "formSubmitted": "Form submission captured (no payload set)",
-      "formSubmittedWithValue": "Form submitted captured with payload: {value}",
-      "formSubmittedWithNameValue": "Form submitted captured with payload: {name}={value}",
+      "formSubmitted": "Form submission sent",
+      "formSubmittedNoPayload": "(no payload)",
       "formReset": "Form reset (no inputs to clear)",
       "submitNoForm": "This button has no form to submit to. Wrap it in a form element to see the submission captured.",
       "resetNoForm": "This button has no form to reset. Wrap it in a form element to see the reset captured.",

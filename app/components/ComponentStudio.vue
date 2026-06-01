@@ -55,23 +55,22 @@ watch(availableContextWrappers, (next) => {
 
 const toast = useToast()
 
+interface FormSubmittedEntry { name: string, value: string }
 interface FormSubmittedMessage {
   type: 'form:submitted'
-  name: string
-  value: string
+  entries: FormSubmittedEntry[]
+  wasImplicitSubmit: boolean
 }
 
-function buildSubmittedTitle(data: FormSubmittedMessage): string {
-  if (data.name && data.value) {
-    return t('studio.toasts.formSubmittedWithNameValue', { name: data.name, value: data.value })
-  }
-  if (data.value) {
-    return t('studio.toasts.formSubmittedWithValue', { value: data.value })
-  }
-  if (data.name) {
-    return t('studio.toasts.formSubmittedWithNameValue', { name: data.name, value: '' })
-  }
-  return t('studio.toasts.formSubmitted')
+/**
+ * Build the description text for the form-submitted toast. Each
+ * checked checkbox / filled input contributes a `name=value` pair;
+ * an empty form (e.g. all checkboxes unchecked) renders as the
+ * "(no payload)" label.
+ */
+function buildSubmittedDescription(entries: FormSubmittedEntry[]): string {
+  if (!entries.length) return t('studio.toasts.formSubmittedNoPayload')
+  return entries.map(e => `${e.name}=${e.value}`).join(', ')
 }
 
 const formSubmittedAction = computed(() => [{
@@ -98,11 +97,18 @@ function onMessage(event: MessageEvent) {
       color: 'success'
     })
   } else if (data?.type === 'form:submitted') {
+    const submitted = data as FormSubmittedMessage
     toast.add({
-      title: buildSubmittedTitle(data as FormSubmittedMessage),
+      title: t('studio.toasts.formSubmitted'),
+      description: buildSubmittedDescription(submitted.entries),
       icon: 'i-lucide-send',
       color: 'info',
-      actions: formSubmittedAction.value
+      // The "Why did the button send a form submission?" prompt only
+      // makes sense when the submitter was a <button> with no type
+      // attribute — that's the implicit-submit pitfall the link
+      // explains. An explicit type="submit" button is doing exactly
+      // what the developer wrote, so the question is misleading.
+      actions: submitted.wasImplicitSubmit ? formSubmittedAction.value : undefined
     })
   } else if (data?.type === 'form:reset') {
     toast.add({

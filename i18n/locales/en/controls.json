@@ -77,6 +77,28 @@
       "required": "Required",
       "helpText": "Help text",
       "helpTextPlaceholder": "e.g. We'll never share this address"
+    },
+    "checkbox": {
+      "label": "Label",
+      "labelPlaceholder": "e.g. Subscribe to the newsletter",
+      "labelAssociation": "Label association",
+      "labelForId": "label for/id (recommended)",
+      "labelWrapping": "Wrapping label",
+      "labelAriaLabel": "aria-label only (no visible label)",
+      "labelNone": "No label at all (anti-pattern)",
+      "groupMode": "Group rendering",
+      "groupSingle": "Single checkbox",
+      "groupWithFieldset": "Group with fieldset + legend (correct)",
+      "groupNoFieldset": "Group without fieldset (anti-pattern)",
+      "state": "State",
+      "checked": "Checked",
+      "indeterminate": "Indeterminate",
+      "required": "Required",
+      "disabled": "Disabled",
+      "name": "Name attribute",
+      "namePlaceholder": "e.g. newsletter",
+      "value": "Value attribute",
+      "valuePlaceholder": "e.g. subscribe"
     }
   }
 }

@@ -39,6 +39,18 @@
           frameworkCss.textContent = e.data.css || "";
           mount.innerHTML = e.data.html;
 
+          // `indeterminate` is a DOM property, not an HTML attribute —
+          // it can only be set from JavaScript. Renderers emit the
+          // `data-al-indeterminate` marker on any checkbox that should
+          // display as indeterminate; we apply the property here so
+          // the rendered preview matches what production code would do.
+          var indeterminateBoxes = mount.querySelectorAll(
+            'input[type="checkbox"][data-al-indeterminate]',
+          );
+          for (var i = 0; i < indeterminateBoxes.length; i++) {
+            indeterminateBoxes[i].indeterminate = true;
+          }
+
           document.fonts.ready.then(function () {
             // Measure overflow on the rendered element. Done after fonts
             // are ready so text metrics are stable; layout is then final.
@@ -191,17 +203,33 @@
       });
 
       // Cancel form submissions inside the preview so the iframe does
-      // not navigate away. Report what would have been submitted, with
-      // the name and value pair from the submitter button, so the parent
-      // can show a payload-aware toast.
+      // not navigate away. Report the full set of submitted name/value
+      // pairs by reading FormData against the form + submitter (the
+      // browser's own submission-data algorithm). Also report whether
+      // the trigger was a <button> with no `type` attribute — that's
+      // the implicit-submit pitfall and the only case where the
+      // "Why did the button send a form submission?" link is relevant.
       mount.addEventListener("submit", function (event) {
         event.preventDefault();
-        var submitter = event.submitter;
+        var form = event.target;
+        var submitter = event.submitter || null;
+        var entries = [];
+        if (form instanceof HTMLFormElement) {
+          var fd = new FormData(form, submitter);
+          fd.forEach(function (value, name) {
+            entries.push({ name: name, value: String(value) });
+          });
+        }
+        var wasImplicitSubmit = !!(
+          submitter
+          && submitter.tagName === "BUTTON"
+          && !submitter.hasAttribute("type")
+        );
         parent.postMessage(
           {
             type: "form:submitted",
-            name: submitter ? submitter.getAttribute("name") || "" : "",
-            value: submitter ? submitter.getAttribute("value") || "" : "",
+            entries: entries,
+            wasImplicitSubmit: wasImplicitSubmit,
           },
           window.location.origin,
         );

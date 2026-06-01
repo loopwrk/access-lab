@@ -48,6 +48,7 @@ const selectedVariant = computed(() =>
 const triggerLabel = computed(
   () => selectedVariant.value?.label ?? props.placeholder,
 )
+const isSingleVariant = computed(() => props.variants.length <= 1)
 
 interface StatusVisual {
   color: 'success' | 'info' | 'warning' | 'neutral'
@@ -122,7 +123,10 @@ function maybeTranslate(value?: string): string {
     </span>
     <span class="self-stretch w-px bg-(--border)" aria-hidden="true" />
     <div class="flex items-center gap-2 px-3 py-1.5">
-      <UPopover v-model:open="isOpen" :modal="false" :dismissible="true" :ui="{
+      <span v-if="isSingleVariant" class="font-mono text-(length:--al-font-size-body) text-(--text-secondary)">
+        {{ selectedVariant?.label ?? resolvedPlaceholder }}
+      </span>
+      <UPopover v-else v-model:open="isOpen" :modal="false" :dismissible="true" :ui="{
         content: 'min-w-[480px] rounded-none bg-(--surface) border border-(--border-strong) shadow-lg'
       }">
         <button ref="triggerRef" type="button"

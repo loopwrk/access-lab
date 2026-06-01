@@ -124,6 +124,15 @@ export const learnTopics: LearnTopic[] = [
     ),
   },
   {
+    id: "checkbox",
+    titleKey: "learn.checkbox.title",
+    summaryKey: "learn.checkbox.summary",
+    category: "interaction",
+    component: defineAsyncComponent(
+      () => import("~/components/LearnTopic/Checkbox.vue"),
+    ),
+  },
+  {
     id: "switches",
     titleKey: "learn.switches.title",
     summaryKey: "learn.switches.summary",

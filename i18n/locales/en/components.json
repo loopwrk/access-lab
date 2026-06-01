@@ -39,6 +39,13 @@
           "statusNote": "Easiest accessible switch when the value is submitted as form data."
         }
       }
+    },
+    "checkbox": {
+      "variants": {
+        "input-checkbox": {
+          "statusNote": "The native checkbox. Browsers handle keyboard activation, label-click forwarding, and accessible role for free."
+        }
+      }
     }
   }
 }
