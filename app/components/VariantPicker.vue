@@ -156,7 +156,7 @@ function maybeTranslate(value?: string): string {
                         class="font-mono text-(length:--al-font-size-body) bg-(--surface-2) text-(--text-primary) px-2 py-0.5">
                         {{ variant.label }}
                       </code>
-                      <UBadge v-if="variant.status === 'recommended'" color="success" variant="soft" size="sm"
+                      <UBadge v-if="variant.status === 'recommended'" color="success" variant="soft" size="md"
                         :ui="{ base: 'rounded-none uppercase tracking-wider' }">
                         {{ t('variantPicker.recommended') }}
                       </UBadge>

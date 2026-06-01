@@ -61,7 +61,7 @@ function select(key: string) {
 
 <template>
   <div class="inline-flex items-stretch">
-    <span class="flex items-center px-3 text-(length:--al-font-size-body) text-(--text-secondary)">
+    <span class="flex items-center px-0 text-(length:--al-font-size-body) text-(--text-secondary)">
       {{ t('wrapperToggles.containerLabel') }}
     </span>
     <div class="flex items-center gap-2 px-3 py-1.5">
@@ -103,36 +103,29 @@ function select(key: string) {
           </div>
         </template>
       </UPopover>
-    </div>
 
-    <template v-if="selectedWrapper?.learnTopicId">
-      <span class="self-stretch w-px bg-(--border)" aria-hidden="true" />
-      <a :href="`#topic-${selectedWrapper.learnTopicId}`"
-        class="learn-link inline-flex items-center gap-1 px-3 text-(length:--al-font-size-body) text-(--text-secondary)"
+      <!--
+        Learn-link rendered as two adjacent icons (info + opens-elsewhere)
+        sitting beside the popover. Hidden when "None" or any wrapper
+        without a Learn topic is selected. The accessible name is built
+        from "About" + the wrapper's tag so screen-reader announcements
+        stay informative even though there's no visible text.
+      -->
+      <a v-if="selectedWrapper?.learnTopicId" :href="`#topic-${selectedWrapper.learnTopicId}`"
+        class="
+          inline-flex items-center gap-1 cursor-pointer no-underline text-(--brand)
+          border-b-2 border-b-transparent
+          hover:border-b-(color:--brand)
+          focus-visible:border-b-(color:--brand)
+          focus-visible:outline-[3px] focus-visible:outline-(--focus-ring) focus-visible:outline-offset-[2px]
+        "
         @click.prevent="focusLearnTopic(selectedWrapper!.learnTopicId!)">
-        <span>{{ t('wrapperToggles.containerLearnPrefix') }}</span>
-        <code class="font-mono text-(--brand) bg-(--brand-soft) px-1 py-0.5">{{ selectedWrapper.label }}</code>
-        <UIcon name="i-lucide-arrow-up-right" class="size-3.5 opacity-70" aria-hidden="true" />
+        <span class="sr-only">
+          {{ t('wrapperToggles.containerLearnPrefix') }} {{ selectedWrapper.label }}
+        </span>
+        <UIcon name="i-lucide-circle-question-mark" class="size-3.5 opacity-70" aria-hidden="true" />
       </a>
-    </template>
+    </div>
   </div>
 </template>
 
-<style scoped>
-.learn-link {
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.learn-link:hover,
-.learn-link:focus-visible {
-  color: var(--brand);
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-
-.learn-link:focus-visible {
-  outline: 3px solid var(--focus-ring);
-  outline-offset: 2px;
-}
-</style>

@@ -8,7 +8,7 @@
         },
         "button": {
           "description": "No type. Defaults to submit when inside a form.",
-          "statusNote": "Avoid. Omitting the type can cause unwanted behaviour."
+          "statusNote": "Omitting the type defaults the button to type=\"submit\"."
         },
         "button-submit": {
           "description": "Submits the parent form.",
