@@ -119,12 +119,15 @@
     "instruction": "Select a component from the sidebar to begin auditing."
   },
   "codeDrawer": {
-    "label": "Generated HTML",
+    "toggleAria": "Toggle generated code drawer",
     "copyInline": "Copy in-line",
     "copyClasses": "Copy with classes",
-    "copyLabel": "Copy to clipboard",
+    "copyClassesTooltip": "Copies HTML that references the class names shown in the CSS tab.",
+    "copyCss": "Copy CSS",
     "copied": "Copied",
-    "empty": "No HTML generated yet."
+    "empty": "No code generated yet.",
+    "resizeLabel": "Resize code area. Use up and down arrows to adjust.",
+    "cssDisabledTooltip": "No CSS to display. Enable the focus ring, switch pill, or set inline styles to inject CSS here."
   },
   "manual": {
     "title": "Manual Review",

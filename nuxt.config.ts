@@ -15,17 +15,46 @@ export default defineNuxtConfig({
     "nuxt-color-picker",
   ],
 
-  vite: {
-    optimizeDeps: {
-      include: ["@vue/devtools-core", "@vue/devtools-kit"],
-    },
-  },
+  ssr: false,
 
   // @nuxtjs/i18n auto-imports its own helpers but not `useI18n`, which
   // lives in vue-i18n. Without this entry, the TS plugin flags every
   // call site even though unimport resolves it at runtime.
   imports: {
     presets: [{ from: "vue-i18n", imports: ["useI18n"] }],
+  },
+
+  devtools: {
+    enabled: true,
+  },
+
+  app: {
+    head: {
+      title: "AccessLab",
+    },
+  },
+
+  css: ["~/assets/css/main.css"],
+
+  routeRules: {
+    "/": { prerender: true },
+  },
+
+  compatibilityDate: "2025-01-15",
+
+  vite: {
+    optimizeDeps: {
+      include: ["@vue/devtools-core", "@vue/devtools-kit"],
+    },
+  },
+
+  eslint: {
+    config: {
+      stylistic: {
+        commaDangle: "never",
+        braceStyle: "1tbs",
+      },
+    },
   },
 
   i18n: {
@@ -44,31 +73,10 @@ export default defineNuxtConfig({
     defaultLocale: "en",
   },
 
-  app: {
-    head: {
-      title: "AccessLab",
-    },
-  },
-
-  ssr: false,
-
-  devtools: {
-    enabled: true,
-  },
-
-  css: ["~/assets/css/main.css"],
-
-  routeRules: {
-    "/": { prerender: true },
-  },
-
-  compatibilityDate: "2025-01-15",
-
-  eslint: {
-    config: {
-      stylistic: {
-        commaDangle: "never",
-        braceStyle: "1tbs",
+  content: {
+    renderer: {
+      anchorLinks: {
+        h3: false, // 👈 disables anchor links on h3
       },
     },
   },

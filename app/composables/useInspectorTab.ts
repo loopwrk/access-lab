@@ -36,7 +36,6 @@ export function useInspectorTab() {
     target.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
-  /** Return to the Learn index (master) view. */
   function clearLearnTopic() {
     activeLearnTopic.value = null;
   }

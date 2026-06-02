@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import type { FontSize } from '~/types/typography'
 
-const sidebarOpen = defineModel<boolean>('sidebarOpen', { required: true })
-
 const { t } = useI18n()
 const theme = useTheme()
 const font = useFont()
@@ -88,10 +86,6 @@ const sizes: SizeOption[] = [
         </UButton>
       </UFieldGroup>
 
-      <!-- Sidebar toggle -->
-      <UButton color="neutral" variant="ghost" size="sm" icon="i-lucide-panel-left"
-        :aria-label="sidebarOpen ? t('sidebar.toggleClose') : t('sidebar.toggleOpen')"
-        @click="sidebarOpen = !sidebarOpen" />
     </div>
   </header>
 </template>

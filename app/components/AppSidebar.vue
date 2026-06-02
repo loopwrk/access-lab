@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import type { NavigationMenuItem } from '@nuxt/ui'
 
-const open = defineModel<boolean>('open', { required: true })
+const { isOpen: open, open: expand, close: collapse } = useSidebar()
 
 const { t } = useI18n()
 
+// First group label ("Elements") is rendered manually in the sidebar
+// header so the collapse toggle can sit on the same row, equally
+// spaced. The label is therefore omitted from navItems[0] to avoid
+// duplication.
 const navItems = computed<NavigationMenuItem[][]>(() => [
   [
-    { label: t('nav.components'), type: 'label' },
     {
       label: t('nav.buttons'),
       icon: 'i-lucide-square-mouse-pointer',
@@ -65,6 +68,20 @@ const navItems = computed<NavigationMenuItem[][]>(() => [
 <template>
   <aside :aria-label="t('sidebar.ariaLabel')" class="border-r border-(--border) bg-(--bg) shrink-0">
     <div v-show="open" class="w-[260px] h-full overflow-y-auto">
+      <!--
+        Sidebar header: the first group's label sits on the same row
+        as the collapse toggle, justify-between for equal spacing.
+        Styling on the <span> mirrors the UNavigationMenu's label slot
+        (`text-lg pl-3 pt-3`) so the visual continuity with the
+        "Form Inputs" label further down is preserved.
+      -->
+      <div class="flex items-center justify-between pl-3 pr-2 pt-3">
+        <span class="text-lg font-medium text-(--text-primary)">
+          {{ t('nav.components') }}
+        </span>
+        <UButton color="neutral" variant="ghost" size="xs" icon="i-lucide-panel-left"
+          :aria-label="t('sidebar.toggleClose')" :aria-pressed="true" @click="collapse" />
+      </div>
       <UNavigationMenu :items="navItems" orientation="vertical" highlight highlight-color="primary" collapsible :ui="{
         link: 'text-md py-2.5 pl-3',
         linkLabel: 'truncate',
@@ -74,7 +91,7 @@ const navItems = computed<NavigationMenuItem[][]>(() => [
 
     <div v-show="!open" class="w-[44px] h-full flex flex-col items-center pt-3">
       <UButton color="neutral" variant="ghost" size="sm" icon="i-lucide-panel-left"
-        :aria-label="t('sidebar.toggleOpen')" @click="open = true" />
+        :aria-label="t('sidebar.toggleOpen')" @click="expand" />
     </div>
   </aside>
 </template>

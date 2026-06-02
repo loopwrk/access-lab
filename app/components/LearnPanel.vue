@@ -3,6 +3,7 @@ import { learnTopics, getLearnTopic } from '~/composables/useLearnTopics'
 
 const { t } = useI18n()
 const { activeLearnTopic, focusLearnTopic, clearLearnTopic } = useInspectorTab()
+const { open: openReadMode } = useReadMode()
 
 const currentTopic = computed(() =>
   activeLearnTopic.value ? getLearnTopic(activeLearnTopic.value) : undefined
@@ -12,10 +13,27 @@ const currentTopic = computed(() =>
 <template>
   <!-- Detail: single topic article -->
   <div v-if="currentTopic" class="flex flex-col gap-4 pb-4">
-    <UButton variant="ghost" color="neutral" size="sm" icon="i-lucide-chevron-left" class="self-start -ml-2"
-      @click="clearLearnTopic">
-      {{ t('learn.backToTopics') }}
-    </UButton>
+    <div class="flex items-center justify-between gap-2">
+      <UButton
+        variant="ghost"
+        color="neutral"
+        size="sm"
+        icon="i-lucide-chevron-left"
+        class="-ml-2"
+        @click="clearLearnTopic"
+      >
+        {{ t('learn.backToTopics') }}
+      </UButton>
+      <UButton
+        variant="soft"
+        color="primary"
+        size="sm"
+        icon="i-lucide-book-open"
+        @click="openReadMode(currentTopic.id)"
+      >
+        {{ t('learn.readMode.button') }}
+      </UButton>
+    </div>
     <component :is="currentTopic.component" />
   </div>
 

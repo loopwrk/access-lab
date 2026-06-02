@@ -3,8 +3,8 @@ const isBelowDesktop = useMediaQuery('(max-width: 1023px)')
 
 const { t } = useI18n()
 
-const sidebarOpen = ref(true)
 const { activeTab } = useInspectorTab()
+const { isOpen: readModeOpen, activeTopicId: readModeTopicId, close: closeReadMode } = useReadMode()
 
 function skipToPanel(tabName: 'controls' | 'issues') {
   activeTab.value = tabName
@@ -36,23 +36,30 @@ function skipToMain() {
       </a>
     </div>
 
-    <AppBar v-model:sidebar-open="sidebarOpen" />
+    <AppBar />
 
-    <div class="grid grid-cols-[auto_1fr_auto] overflow-hidden">
-      <AppSidebar v-model:open="sidebarOpen" />
 
-      <main id="main-content" tabindex="-1" class="flex flex-col min-w-0 overflow-hidden focus:outline-none">
-        <PreviewToolbar />
+    <div class="relative grid grid-cols-[auto_1fr_auto] overflow-hidden">
+      <div :inert="readModeOpen" class="contents">
+        <AppSidebar />
 
-        <div class="flex-1 flex items-center justify-center overflow-auto p-6 bg-(--surface-2)">
-          <slot />
-        </div>
+        <main id="main-content" tabindex="-1" class="flex flex-col min-w-0 overflow-hidden focus:outline-none">
+          <PreviewToolbar />
 
-        <CodeDrawer />
-      </main>
+          <div class="flex-1 flex items-center justify-center overflow-auto p-6 bg-(--surface-2)">
+            <slot />
+          </div>
 
-      <AppInspector />
+          <CodeDrawer />
+        </main>
+
+        <AppInspector />
+      </div>
+
+      <div id="read-mode-target" class="contents" />
     </div>
+
+    <LazyReadModeOverlay v-if="readModeOpen && readModeTopicId" :topic-id="readModeTopicId" @close="closeReadMode" />
   </div>
 
   <MobileBlocker />
