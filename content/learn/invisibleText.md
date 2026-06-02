@@ -1,8 +1,11 @@
 ---
 title: '"Invisible" Text Slips Past Automated Tests'
-topicId: "invisible-text"
-summary: >-
-  When text colour matches its background exactly, automated contrast checks are skipped. But the text disappears.
+topicId: invisible-text
+category: text-and-labels
+order: 2
+related: []
+summary: When text colour matches its background exactly, automated contrast
+  checks are skipped. But the text disappears.
 ---
 
 When text colour matches its background colour exactly, the text completely disappears from view. However, the code is still there. A screen reader will still read the words out loud, search engines will still index them, and the browser still builds space for them. But a sighted user will never see them.

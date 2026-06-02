@@ -1,8 +1,13 @@
 ---
-title: "Toggle buttons and aria-pressed"
-topicId: "toggle-buttons"
-summary: >-
-  A toggle button is an action whose effect sticks — mute, bold, pin, follow. Use a button with aria-pressed; never aria-checked, never visual-only.
+title: Toggle buttons and aria-pressed
+topicId: toggle-buttons
+category: interaction
+order: 10
+related:
+  - accessible-name
+  - switches
+summary: A toggle button is an action whose effect sticks — mute, bold, pin,
+  follow. Use a button with aria-pressed; never aria-checked, never visual-only.
 ---
 
 A toggle button is a button that performs an action and whose effect persists. Mute mutes audio and stays muted. Bold formats the selection and the next thing you type. Pin keeps a panel open until you unpin it. The button is still a button — you can activate it, repeatedly — but it also carries a state: pressed or not pressed.

@@ -1,12 +1,14 @@
 ---
-title: "What counts as an accessible name"
-topicId: "accessible-name"
-summary: >-
-  The accessible name is the label assistive technology announces for an element. Browsers compute it from several sources in a specific order, and some sources that look like labels do not count.
+title: What counts as an accessible name
+topicId: accessible-name
+category: text-and-labels
+order: 6
+related:
+  - button-value-attribute
+summary: An "accessible name" is the exact text a screen reader speaks to describe a web element. Browsers calculate this name by checking a specific list of sources (like text content, `aria-label`, or form labels) in a strict priority order.
 ---
 
-Every interactive element on a page needs an accessible name. It is the string that a screen reader announces, that voice control software listens for, and that automated tools check when verifying a button or input is labelled. Without one, the element is effectively anonymous to users who cannot see it.
-
+Every interactive element on a page needs an accessible name. It is the string that a screen reader announces and that voice control software listens for. Without one, the element is effectively anonymous to users who cannot see it.
 
 ## Why the accessible name matters
 
@@ -14,34 +16,118 @@ A screen reader user navigating by element list hears only the accessible name o
 
 Some voice-control users navigate by speaking the text they see on the screen. If the hidden 'accessible name' in your code doesn't match that visible text, the software won't recognise their voice command and nothing will happen.
 
-
 ## How the browser picks the name
 
+### Browsers compute the accessible name by checking sources in a defined order, taking the first one that yields a non-empty value.
 
-### Browsers compute the accessible name by checking sources in a defined order, taking the first one that yields a non-empty value:
+The browser checks the accessbile names in this order:
 
-- aria-labelledby. If set, the browser collects the text content of the referenced elements and uses that. This wins over everything else.
-- aria-label. If set and aria-labelledby is not used, the aria label attribute's value becomes the accessible name.
-- For form fields, an associated label element. Either a label with a for attribute pointing at the input's id, or a label that wraps the input directly.
-- For buttons and links, the text content inside the element. Whatever you put between the opening and closing tags.
-- The title attribute. A fallback that browsers and assistive tech treat inconsistently. Avoid relying on it.
+1. `aria-labelledby`
+2. `aria-label`
+3. Inner Text (Natural Labels)
+4. Native Form Labels (Standard Input Labels)
+5. The title attribute
 
-## Sources that count
+### 1. ARIA Attributes (Explicit Labels)
 
+These attributes give you direct control over what assistive technology announces. They override almost all other text sources.
 
-### These provide a reliable, well-supported accessible name across browsers and assistive technology:
+- **`aria-label`**
+  - **When to use:** When you need to provide a specific text string that isn't visible on the screen.
+  - **Example:** A button displaying an "X" icon can use `aria-label="Close modal"`.
 
-aria-label and aria-labelledby. The most explicit way to set the name. Use aria-label when the label is a fixed string, aria-labelledby when the label already exists as visible text elsewhere on the page.
+#### Example
 
-Visible text content inside a button or link. The most natural option for buttons that already have a text label.
+    ```html
+    <h2 id="dialog-title">View your profile</h2>
+    <button aria-labelledby="dialog-title">X</button>
+    ```
 
-An associated label element on a form field. The for/id association or a wrapping label element is the standard way to label inputs and is understood everywhere.
+- **`aria-labelledby`**
+  - **When to use:** When the text you want to use as a label **already exists** elsewhere on the page.
+  - **How it works:** You point this attribute to the `id` of the existing visible text element.
 
-The alt attribute on images and on input type=image. This is how the accessible name is provided for image-based controls.
+    ```html
+    <h2 id="dialog-title">View your profile</h2>
+    <button aria-labelledby="dialog-title">X</button>
+    ```
 
+### 2. Inner Text (Natural Labels)
+
+This is the most straightforward method for interactive elements that already contain visible wording.
+
+- **Visible Text Content**
+  - **When to use:** For standard links (`<a>`) and buttons (`<button>`).
+  - **How it works:** The browser naturally grabs whatever text is nested between the opening and closing HTML tags and uses it as the accessible name.
+
+### 3. Native Form Labels (Standard Input Labels)
+
+This is the universally supported, standard method for identifying form controls like checkboxes, text boxes, and dropdowns.
+
+- **The `<label>` Element**
+  - **How it works:** You can pair a `<label>` with an `<input>` using one of two standard methods:
+    1. **By Association:** Matching the label's `for="..."` attribute to the input's `id="..."`.
+    2. **By Nesting:** Physically wrapping the `<label>` tags around the `<input>` element.
+
+### 4. Alt Text (Visual Control Labels)
+
+When a control relies entirely on an image instead of text, the browser looks for alternative text attributes.
+
+- **The `alt` Attribute**
+  - **When to use:** On standard `<img>` tags used inside buttons/links, or on `<input type="image">` buttons.
+  - **How it works:** It translates the visual purpose of the image into a text name the browser can pass to a screen reader.
+
+#### Examples:
+
+```html
+<!-- 1. aria-labelledby -->
+<h2 id="dialog-title">View your profile</h2>
+<button aria-labelledby="dialog-title">X</button>
+
+<!-- 2. aria-label -->
+<button aria-label="Close dialog">X</button>
+
+<!-- 3. Associated <label> element -->
+
+<!-- Using for/id -->
+<label for="email">Email address</label>
+<input id="email" type="email" />
+
+<!-- Or wrapping the input -->
+<label>
+  Email address
+  <input type="email" />
+</label>
+
+<!-- 4. Text content inside buttons and links -->
+<button>Save changes to article</button>
+
+<a href="/profile">View your profile</a>
+
+<!-- 5. title attribute (fallback, not recommended) -->
+<button title="Close dialog">X</button>
+```
+
+#### Accessible names for images
+
+When a control relies entirely on an image instead of text, the browser looks for alternative text attributes.
+
+- **The `alt` Attribute**
+  - **When to use:** On standard `<img>` tags used inside buttons/links, or on `<input type="image">` buttons.
+  - **How it works:** It translates the visual purpose of the image into a text name the browser can pass to a screen reader.
+
+# Comprehensive List of Every Source the Browser Can Use for Accessible Names
+
+### 1. ARIA Attributes (Explicit Labels)
+
+These attributes give you direct control over what assistive technology announces. They override almost all other text sources.
+
+- **`aria-label`**
+- **`aria-labelledby`**
+  - **When to use:** When the text you want to use as a label **already exists** elsewhere on the page.
+  - **How it works:** You point this attribute to the `id` of the existing visible text element.
 
 ## Sources that do NOT count
-
 
 ### These look like labels to a sighted user but are not part of the accessible name computation:
 
@@ -55,7 +141,6 @@ Colour or shape. Using red text to mean "required" or a downward chevron to mean
 
 The value attribute on a button element. Screen readers announce only the text content of the button. The value is hidden form data sent to the server, not a label.
 
-
 ## The label-content-name-mismatch rule
 
 When a button has both a visible text label and an aria-label, the two should match, or the aria-label should at least contain the visible text. WCAG Success Criterion 2.5.3 (Label in Name, Level A) requires it. Axe has a rule called label-content-name-mismatch that flags violations.
@@ -64,9 +149,7 @@ The classic example: a button shows "Save changes" but has aria-label="Save". A 
 
 The fix is straightforward. Either remove the redundant aria-label and let the visible text speak for itself, or make sure the aria-label contains every word that appears visibly on the button. Adding extra context is fine: aria-label="Save changes to invoice" works because "Save changes" is still inside it.
 
-
 ## Practical guidance
-
 
 ### A few rules of thumb that prevent most accessible-name problems:
 

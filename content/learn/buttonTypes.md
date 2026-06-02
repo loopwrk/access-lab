@@ -1,8 +1,13 @@
 ---
-title: "Why button type matters"
-topicId: "button-types"
-summary: >-
-  The type attribute on a button element controls what the button does inside a form. Omitting it leads to one of the most common bugs in web forms.
+title: Why button type matters
+topicId: button-types
+category: interaction
+order: 8
+related:
+  - button-value-attribute
+  - form-wrapping
+summary: The type attribute on a button element controls what the button does
+  inside a form. Omitting it leads to one of the most common bugs in web forms.
 ---
 
 Every button element has a type attribute. It controls what the button does when activated inside a form. There are three valid values. The choice between them is small in code and large in consequence.

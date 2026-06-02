@@ -1,8 +1,14 @@
 ---
-title: "Disclosure triggers and aria-expanded"
-topicId: "disclosure-triggers"
-summary: >-
-  A disclosure trigger reveals a panel of related content. The trigger needs aria-expanded so assistive tech can announce whether the panel is open or shut.
+title: Disclosure triggers and aria-expanded
+topicId: disclosure-triggers
+category: interaction
+order: 12
+related:
+  - switches
+  - toggle-buttons
+summary: A disclosure trigger reveals a panel of related content. The trigger
+  needs aria-expanded so assistive tech can announce whether the panel is open
+  or shut.
 ---
 
 A disclosure trigger is a button whose only job is to reveal or hide a region of related content. Accordions, FAQ items, expandable cards, and "Show more" links are all disclosure patterns. The trigger is a plain button — the meaning is in the relationship between the button and the panel below it.

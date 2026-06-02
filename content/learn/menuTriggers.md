@@ -1,8 +1,14 @@
 ---
-title: "Menu triggers and the menu button pattern"
-topicId: "menu-triggers"
-summary: >-
-  A menu trigger opens a popup of choices. The button needs both aria-haspopup and aria-expanded, plus a real keyboard contract that browsers do not give you for free.
+title: Menu triggers and the menu button pattern
+topicId: menu-triggers
+category: interaction
+order: 11
+related:
+  - accessible-name
+  - disclosure-triggers
+summary: A menu trigger opens a popup of choices. The button needs both
+  aria-haspopup and aria-expanded, plus a real keyboard contract that browsers
+  do not give you for free.
 ---
 
 A menu trigger is a button that opens a popup of choices — a profile menu, an actions overflow, a context menu. It is the most ARIA-heavy of the disclosure family because the popup is a custom widget that the browser does not understand natively, so the relationship and the keyboard behaviour are both your responsibility.

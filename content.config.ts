@@ -4,10 +4,13 @@ import { defineCollection, defineContentConfig, z } from '@nuxt/content'
  * Nuxt Content collection registration.
  *
  * The Learn topics live as Markdown files under `content/learn/`. The
- * frontmatter carries the topic's title, the canonical `topicId` (which
- * matches the in-app Learn-topic registry id), and a short summary
- * shown in the Learn index. The body is plain Markdown rendered by
- * ContentRenderer with the `prose` prop.
+ * frontmatter carries:
+ *   - `title`     — the article heading
+ *   - `topicId`   — canonical id, also keys cross-links from the studio
+ *   - `summary`   — short copy shown on the Learn index card
+ *   - `category`  — grouping hint for the sidebar (optional)
+ *   - `order`     — sort key for the Learn index (smaller = earlier)
+ *   - `related`   — topicIds shown in the "Related topics" footer list
  */
 export default defineContentConfig({
   collections: {
@@ -17,7 +20,12 @@ export default defineContentConfig({
       schema: z.object({
         title: z.string(),
         topicId: z.string(),
-        summary: z.string()
+        summary: z.string(),
+        category: z
+          .enum(['foundations', 'text-and-labels', 'interaction', 'visual'])
+          .optional(),
+        order: z.number().optional(),
+        related: z.array(z.string()).optional()
       })
     })
   }

@@ -1,8 +1,14 @@
 ---
-title: "Checkbox and label association"
-topicId: "checkbox"
-summary: >-
-  A checkbox captures a yes-or-no value as part of a form. Labelling it correctly and grouping related checkboxes inside a fieldset/legend are the two lessons that get missed most often.
+title: Checkbox and label association
+topicId: checkbox
+category: interaction
+order: 13
+related:
+  - accessible-name
+  - switches
+summary: A checkbox captures a yes-or-no value as part of a form. Labelling it
+  correctly and grouping related checkboxes inside a fieldset/legend are the two
+  lessons that get missed most often.
 ---
 
 A checkbox is the simplest form control after a text input: it holds a boolean value that the form submits when checked. Getting one to work accessibly comes down to two things — a real label association so the browser can forward label clicks and announce a name, and a fieldset/legend when several checkboxes represent related choices.

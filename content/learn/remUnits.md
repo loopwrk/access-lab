@@ -1,8 +1,12 @@
 ---
-title: "How REM units work"
-topicId: "rem-units"
-summary: >-
-  rem is a CSS length unit that scales with the user's browser font-size preference. Using it for layout values respects accessibility settings that px values ignore.
+title: How REM units work
+topicId: rem-units
+category: foundations
+order: 4
+related: []
+summary: rem is a CSS length unit that scales with the user's browser font-size
+  preference. Using it for layout values respects accessibility settings that px
+  values ignore.
 ---
 
 rem stands for "root em". It's a CSS length unit whose value depends on the root font-size of the page, which is the font-size set on the [html element](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/html). By default, browsers set this to 16px, so 1rem typically equals 16px. The root font-size can change, and rem-based values change with it.

@@ -1,8 +1,13 @@
 ---
-title: "Why wrapping a button in a form matters"
-topicId: "form-wrapping"
-summary: >-
-  Wrapping a button in a form reveals submit and reset behaviour, and exposes the accidental implicit-submit risk of an unconfigured button.
+title: Why wrapping a button in a form matters
+topicId: form-wrapping
+category: interaction
+order: 5
+related:
+  - button-types
+  - button-value-attribute
+summary: Wrapping a button in a form reveals submit and reset behaviour, and
+  exposes the accidental implicit-submit risk of an unconfigured button.
 ---
 
 AccessLab lets you toggle a form wrapper around any button you are auditing. Several button variants only exhibit their real behaviour inside a form, and a plain `<button />` without an explicit type attribute can result in unintuitive results when inside a form.

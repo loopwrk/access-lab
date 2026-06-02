@@ -1,8 +1,11 @@
 ---
-title: "How Browsers Handle Native Elements"
-topicId: "native-rendering"
-summary: >-
-  Browsers paint form controls using the OS theme. Custom CSS overrides that, changing how the box is rendered.
+title: How Browsers Handle Native Elements
+topicId: native-rendering
+category: foundations
+order: 1
+related: []
+summary: Browsers paint form controls using the OS theme. Custom CSS overrides
+  that, changing how the box is rendered.
 ---
 
 Browsers draw certain initial elements, mostly form elements, using a native rendering mode driven by your operating system's UI engine rather than standard CSS layout rules. The OS paints the button onto the screen, which is why a native button without any custom styling looks slightly different on Windows, macOS, iOS, or Android.

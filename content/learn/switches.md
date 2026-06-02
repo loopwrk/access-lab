@@ -1,8 +1,14 @@
 ---
-title: "Switches and role=switch"
-topicId: "switches"
-summary: >-
-  A switch is a setting whose value is the point: on or off. Use a button with role=switch and aria-checked, or natively an input type=checkbox with role=switch.
+title: Switches and role=switch
+topicId: switches
+category: interaction
+order: 14
+related:
+  - accessible-name
+  - toggle-buttons
+summary: "A switch is a setting whose value is the point: on or off. Use a
+  button with role=switch and aria-checked, or natively an input type=checkbox
+  with role=switch."
 ---
 
 A switch represents an on/off setting. Dark mode is on. Notifications are off. The value the control holds is the meaningful thing — there is no action verb separate from the state. This makes a switch semantically different from a toggle button, even though both flip between two states on activation.

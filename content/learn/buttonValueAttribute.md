@@ -1,8 +1,14 @@
 ---
-title: "How the value attribute behaves on a button"
-topicId: "button-value-attribute"
-summary: >-
-  On a button element, the value attribute is hidden form data, not a label. Screen readers ignore it entirely. This is the opposite of how value works on an input button.
+title: How the value attribute behaves on a button
+topicId: button-value-attribute
+category: interaction
+order: 7
+related:
+  - button-types
+  - form-wrapping
+summary: On a button element, the value attribute is hidden form data, not a
+  label. Screen readers ignore it entirely. This is the opposite of how value
+  works on an input button.
 ---
 
 The value attribute is a frequent source of confusion because it does completely different things depending on which element it is set on. Understanding the split prevents a class of subtle accessibility bugs.

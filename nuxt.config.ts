@@ -76,7 +76,8 @@ export default defineNuxtConfig({
   content: {
     renderer: {
       anchorLinks: {
-        h3: false, // 👈 disables anchor links on h3
+        h3: false,
+        h4: false,
       },
     },
   },

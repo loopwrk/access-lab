@@ -26,8 +26,104 @@
   --al-font-size-brand: 0.9375rem; /* 15px — brand mark */
   --al-font-size-display: 1.125rem; /* 18px — large icons / display text */
   --al-font-size-alert: 0.875rem /* 14px — toast / alert body */;
-  --al-font-size-read-mode-heading: 1.5rem; /* 24px — headings in read mode */
-  --al-font-size-read-sub-heading: 1.25rem; /* 20px — sub-headings in read mode */
+
+  /* ──────────────────────────────────────────────────────────────
+     Learn prose tokens — markdown-element styling.
+
+     Keyed by markdown semantics.
+
+     Scope: ContentRenderer output inside LearnPanel only.
+     ────────────────────────────────────────────────────────────── */
+
+  /* Heading 1 — markdown `# Heading` */
+  --al-learn-h1-font-size: 3rem;
+  --al-learn-h1-font-weight: 600;
+  --al-learn-h1-color: var(--brand);
+  --al-learn-h1-line-height: 1.25;
+  --al-learn-h1-margin-top: 0;
+  --al-learn-h1-margin-bottom: 0.6rem;
+
+  /* Heading 2 — markdown `## Heading` */
+  --al-learn-h2-font-size: 2.25rem;
+  --al-learn-h2-font-weight: 600;
+  --al-learn-h2-color: var(--text-primary);
+  --al-learn-h2-line-height: 1.3;
+  --al-learn-h2-margin-top: 1rem;
+  --al-learn-h2-margin-bottom: 0.4rem;
+
+  /* Heading 3 — markdown `### Heading` */
+  --al-learn-h3-font-size: 1.875rem;
+  --al-learn-h3-font-weight: 600;
+  --al-learn-h3-color: var(--text-primary);
+  --al-learn-h3-line-height: 1.3;
+  --al-learn-h3-margin-top: 0.8rem;
+  --al-learn-h3-margin-bottom: 0.3rem;
+
+  /* Heading 4 — markdown `#### Heading` */
+  --al-learn-h4-font-size: 1.5rem;
+  --al-learn-h4-font-weight: 600;
+  --al-learn-h4-color: var(--brand);
+  --al-learn-h4-line-height: 1.3;
+  --al-learn-h4-margin-top: 0.7rem;
+  --al-learn-h4-margin-bottom: 0.2rem;
+
+  /* Paragraph — plain markdown text */
+  --al-learn-paragraph-font-size: 1.25rem;
+  --al-learn-paragraph-color: var(--text-secondary);
+  --al-learn-paragraph-line-height: 1.5;
+  --al-learn-paragraph-margin-bottom: 0.75rem;
+
+  /* Bold — markdown `**bold**` */
+  --al-learn-bold-font-weight: 700;
+  --al-learn-bold-color: var(--text-primary);
+
+  /* Italic — markdown `*italic*` */
+  --al-learn-italic-font-style: italic;
+  --al-learn-italic-color: var(--text-secondary);
+
+  /* Inline code — markdown `` `code` `` */
+  --al-learn-code-font-family: var(--al-font-mono);
+  --al-learn-code-font-size: 0.9em;
+  --al-learn-code-padding: 0.1em 0.35em;
+  --al-learn-code-background: var(--brand-soft);
+  --al-learn-code-color: var(--text-primary);
+  --al-learn-code-border-radius: 3px;
+
+  /* Code block — markdown fenced ``` blocks ``` */
+  --al-learn-code-block-background: var(--surface);
+  --al-learn-code-block-border: 1px solid var(--border);
+  --al-learn-code-block-border-radius: 6px;
+  --al-learn-code-block-padding: 0.75rem 1rem;
+  --al-learn-code-block-margin-bottom: 0.75rem;
+  --al-learn-code-block-font-size: 0.85em;
+  --al-learn-code-block-line-height: 1.5;
+  --al-learn-code-block-color: var(--text-primary);
+
+  /* Link — markdown `[text](url)` */
+  --al-learn-link-color: var(--brand);
+  --al-learn-link-text-decoration: underline;
+  --al-learn-link-text-underline-offset: 2px;
+  --al-learn-link-color-hover: var(--brand-hover);
+
+  /* Lists — markdown `- item` / `1. item` */
+  --al-learn-list-padding-left: 1.25rem;
+  --al-learn-list-margin-bottom: 0.75rem;
+
+  /* List item */
+  --al-learn-list-item-color: var(--text-secondary);
+  --al-learn-list-item-line-height: 1.45;
+  --al-learn-list-item-margin-bottom: 0.3rem;
+
+  /* Blockquote — markdown `> quoted text` */
+  --al-learn-blockquote-border-left: 3px solid var(--brand);
+  --al-learn-blockquote-padding-left: 1rem;
+  --al-learn-blockquote-color: var(--text-muted);
+  --al-learn-blockquote-font-style: italic;
+  --al-learn-blockquote-margin: 1rem 0;
+
+  /* Horizontal rule — markdown `---` */
+  --al-learn-hr-border-top: 1px solid var(--border);
+  --al-learn-hr-margin: 1.5rem 0;
 }
 
 /* ── Light theme (default) ──────────────────────────────────────── */

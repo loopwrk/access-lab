@@ -1,8 +1,11 @@
 ---
-title: "Why button labels matter"
-topicId: "vague-label"
-summary: >-
-  Automated tools verify a button has a name, but they can't tell whether the name is meaningful out of context.
+title: Why button labels matter
+topicId: vague-label
+category: text-and-labels
+order: 3
+related: []
+summary: Automated tools verify a button has a name, but they can't tell whether
+  the name is meaningful out of context.
 ---
 
 Screen reader users often navigate by element list, a feature that reads out every button, link, or heading on the page in sequence. Out of that context, a bare "OK" or "More" tells them nothing about what the button actually does. The user has to either guess or backtrack into the surrounding content to find out.

@@ -1,21 +1,4 @@
 <script setup lang="ts">
-/**
- * ReadModeOverlay — distraction-free reading view for a Learn topic.
- *
- * Renders the selected topic's markdown content via Nuxt Content's
- * ContentRenderer with Tailwind Typography (`prose`). The overlay
- * teleports into `#read-mode-target` inside the app body, sitting
- * above the studio chrome (which the layout marks `inert` while the
- * overlay is open).
- *
- * Accessibility model:
- *   - Non-modal: the AppBar stays focusable so the user can change
- *     theme / font / size while reading.
- *   - Labelled `<section>` (no `role="dialog"`) — semantic region.
- *   - Escape closes; the close button does too.
- *   - Initial focus moves to the article heading; on close, focus
- *     returns to whatever was focused before the overlay opened.
- */
 const props = defineProps<{
   topicId: string
 }>()
@@ -25,17 +8,6 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
-
-// Match by the frontmatter `topicId` field — the canonical id that
-// also keys the in-app Learn-topic registry. Filename isn't load-
-// bearing here, so renames don't break the link.
-// const { data: doc, status } = useAsyncData(
-//   () => `read-mode-${props.topicId}`,
-//   () =>
-//     queryCollection('content')
-//       .where('topicId', '=', props.topicId)
-//       .first()
-// )
 
 const { data: doc, status } = useAsyncData(
   `read-mode-${props.topicId}`,  // ✅ static string
@@ -156,29 +128,37 @@ function onKeydown(e: KeyboardEvent) {
 }
 
 .read-mode-prose :deep(h1) {
-  font-size: var(--al-font-size-read-mode-heading);
+  font-size: var(--al-learn-h1-font-size);
   font-weight: 600;
   line-height: 1.2;
-  color: var(--text-primary);
+  color: var(--al-learn-h1-color);
   margin: 0 0 0.75rem;
 }
 
 .read-mode-prose :deep(h2) {
-  font-size: var(--al-font-size-read-sub-heading);
+  font-size: var(--al-learn-h2-font-size);
   font-weight: 600;
   line-height: 1.25;
+  color: var(--al-learn-h2-color);
   margin: 2rem 0 0.5rem;
 }
 
 .read-mode-prose :deep(h3) {
-  font-size: calc(var(--al-font-size-body) + 0.125rem);
+  font-size: var(--al-learn-h3-font-size);
   font-weight: 600;
   line-height: 1.3;
-  color: var(--text-primary);
+  color: var(--al-learn-h3-color);
   margin: 1.5rem 0 0.5rem;
 }
 
+.read-mode-prose :deep(h4) {
+  font-size: var(--al-learn-h4-font-size);
+  line-height: 1.3;
+  color: var(--al-learn-h4-color);
+}
+
 .read-mode-prose :deep(p) {
+  font-size: var(--al-learn-paragraph-font-size);
   color: var(--text-secondary);
   margin: 0 0 1rem;
 }

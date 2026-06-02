@@ -1,8 +1,14 @@
 ---
-title: "Disabled states on buttons"
-topicId: "button-disabled-states"
-summary: >-
-  The disabled attribute makes a button inert: no clicks, no focus, no submit. The aria-disabled alternative keeps the button reachable while announcing its unavailable state.
+title: Disabled states on buttons
+topicId: button-disabled-states
+category: interaction
+order: 9
+related:
+  - accessible-name
+  - button-types
+summary: "The disabled attribute makes a button inert: no clicks, no focus, no
+  submit. The aria-disabled alternative keeps the button reachable while
+  announcing its unavailable state."
 ---
 
 Buttons can be marked as unavailable in two different ways, and the choice between them changes how the button behaves for every user. Knowing the difference prevents a common class of accessibility bugs where a button looks disabled but does not behave that way.

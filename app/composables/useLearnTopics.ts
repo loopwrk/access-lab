@@ -1,148 +1,77 @@
-import type { Component } from "vue";
+/**
+ * Learn-topic access layer.
+ *
+ * Wraps Nuxt Content's `queryCollection('content')` so the rest of the
+ * app can read topics without thinking about query syntax. Replaces
+ * the previous hardcoded array + per-topic Vue components — markdown
+ * + ContentRenderer now own the article rendering, and frontmatter
+ * owns the metadata.
+ */
 
-export type LearnTopicCategory =
-  | "foundations"
-  | "text-and-labels"
-  | "interaction"
-  | "visual";
+export type LearnTopicCategory
+  = | 'foundations'
+    | 'text-and-labels'
+    | 'interaction'
+    | 'visual'
 
+/** Shape of a topic as it surfaces from the Content collection. */
 export interface LearnTopic {
-  id: string;
-  titleKey: string;
-  summaryKey: string;
-  category?: LearnTopicCategory;
-  component: Component;
+  id: string
+  title: string
+  summary: string
+  category?: LearnTopicCategory
+  order?: number
+  related?: string[]
 }
 
-export const learnTopics: LearnTopic[] = [
-  {
-    id: "native-rendering",
-    titleKey: "learn.nativeRendering.title",
-    summaryKey: "learn.nativeRendering.summary",
-    category: "foundations",
-    component: defineAsyncComponent(
-      () => import("~/components/LearnTopic/NativeRendering.vue"),
-    ),
-  },
-  {
-    id: "invisible-text",
-    titleKey: "learn.invisibleText.title",
-    summaryKey: "learn.invisibleText.summary",
-    category: "text-and-labels",
-    component: defineAsyncComponent(
-      () => import("~/components/LearnTopic/InvisibleText.vue"),
-    ),
-  },
-  {
-    id: "vague-label",
-    titleKey: "learn.vagueLabel.title",
-    summaryKey: "learn.vagueLabel.summary",
-    category: "text-and-labels",
-    component: defineAsyncComponent(
-      () => import("~/components/LearnTopic/VagueLabel.vue"),
-    ),
-  },
-  {
-    id: "rem-units",
-    titleKey: "learn.remUnits.title",
-    summaryKey: "learn.remUnits.summary",
-    category: "foundations",
-    component: defineAsyncComponent(
-      () => import("~/components/LearnTopic/RemUnits.vue"),
-    ),
-  },
-  {
-    id: "form-wrapping",
-    titleKey: "learn.formWrapping.title",
-    summaryKey: "learn.formWrapping.summary",
-    category: "interaction",
-    component: defineAsyncComponent(
-      () => import("~/components/LearnTopic/FormWrapping.vue"),
-    ),
-  },
-  {
-    id: "accessible-name",
-    titleKey: "learn.accessibleName.title",
-    summaryKey: "learn.accessibleName.summary",
-    category: "text-and-labels",
-    component: defineAsyncComponent(
-      () => import("~/components/LearnTopic/AccessibleName.vue"),
-    ),
-  },
-  {
-    id: "button-value-attribute",
-    titleKey: "learn.buttonValueAttribute.title",
-    summaryKey: "learn.buttonValueAttribute.summary",
-    category: "interaction",
-    component: defineAsyncComponent(
-      () => import("~/components/LearnTopic/ButtonValueAttribute.vue"),
-    ),
-  },
-  {
-    id: "button-types",
-    titleKey: "learn.buttonTypes.title",
-    summaryKey: "learn.buttonTypes.summary",
-    category: "interaction",
-    component: defineAsyncComponent(
-      () => import("~/components/LearnTopic/ButtonTypes.vue"),
-    ),
-  },
-  {
-    id: "button-disabled-states",
-    titleKey: "learn.buttonDisabledStates.title",
-    summaryKey: "learn.buttonDisabledStates.summary",
-    category: "interaction",
-    component: defineAsyncComponent(
-      () => import("~/components/LearnTopic/ButtonDisabledStates.vue"),
-    ),
-  },
-  {
-    id: "toggle-buttons",
-    titleKey: "learn.toggleButtons.title",
-    summaryKey: "learn.toggleButtons.summary",
-    category: "interaction",
-    component: defineAsyncComponent(
-      () => import("~/components/LearnTopic/ToggleButtons.vue"),
-    ),
-  },
-  {
-    id: "menu-triggers",
-    titleKey: "learn.menuTriggers.title",
-    summaryKey: "learn.menuTriggers.summary",
-    category: "interaction",
-    component: defineAsyncComponent(
-      () => import("~/components/LearnTopic/MenuTriggers.vue"),
-    ),
-  },
-  {
-    id: "disclosure-triggers",
-    titleKey: "learn.disclosureTriggers.title",
-    summaryKey: "learn.disclosureTriggers.summary",
-    category: "interaction",
-    component: defineAsyncComponent(
-      () => import("~/components/LearnTopic/DisclosureTriggers.vue"),
-    ),
-  },
-  {
-    id: "checkbox",
-    titleKey: "learn.checkbox.title",
-    summaryKey: "learn.checkbox.summary",
-    category: "interaction",
-    component: defineAsyncComponent(
-      () => import("~/components/LearnTopic/Checkbox.vue"),
-    ),
-  },
-  {
-    id: "switches",
-    titleKey: "learn.switches.title",
-    summaryKey: "learn.switches.summary",
-    category: "interaction",
-    component: defineAsyncComponent(
-      () => import("~/components/LearnTopic/Switches.vue"),
-    ),
-  },
-];
+/**
+ * Reactive list of every learn topic, sorted by `order` ascending.
+ * Use this in the Learn index to render the topic cards.
+ */
+export function useLearnTopics() {
+  const { data } = useAsyncData(
+    'learn-topics-index',
+    () =>
+      queryCollection('content')
+        .select('topicId', 'title', 'summary', 'category', 'order', 'related')
+        .order('order', 'ASC')
+        .all()
+  )
 
-export function getLearnTopic(id: string): LearnTopic | undefined {
-  return learnTopics.find((t) => t.id === id);
+  const topics = computed<LearnTopic[]>(() =>
+    (data.value ?? []).map(d => ({
+      id: d.topicId,
+      title: d.title,
+      summary: d.summary,
+      category: d.category as LearnTopicCategory | undefined,
+      order: d.order ?? undefined,
+      related: d.related ?? []
+    }))
+  )
+
+  return { topics }
+}
+
+/**
+ * Fetch a single topic by id, body included. Used by both
+ * LearnPanel's detail view and ReadModeOverlay.
+ *
+ * Static `useAsyncData` key + `watch: [id]` so the handler refetches
+ * when the topic id changes (per-id caching would require a reactive
+ * key, which `useAsyncData` doesn't support — only a static string).
+ */
+export function useLearnTopic(topicId: MaybeRefOrGetter<string | null | undefined>) {
+  const id = computed(() => toValue(topicId))
+
+  const { data, status } = useAsyncData(
+    'learn-topic-detail',
+    () => {
+      const value = id.value
+      if (!value) return Promise.resolve(null)
+      return queryCollection('content').where('topicId', '=', value).first()
+    },
+    { watch: [id] }
+  )
+
+  return { doc: data, status }
 }
