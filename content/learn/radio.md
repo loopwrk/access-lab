@@ -1,14 +1,14 @@
 ---
 title: Radio buttons and mutually-exclusive groups
 topicId: radio
-category: interaction
-order: 15
+category: form-inputs
+order: 2
 related:
   - checkbox
   - accessible-name
-summary: A radio group lets users pick exactly one option from a small
-  set. The lessons cluster around three things — shared name, fieldset/legend
-  for the group, and the arrow-key keyboard contract.
+summary: A radio group lets users pick exactly one option from a small set. The
+  lessons cluster around three things — shared name, fieldset/legend for the
+  group, and the arrow-key keyboard contract.
 ---
 
 A radio button is the input you reach for when the user must pick exactly one option from a small, visible set. Country selectors, plan tiers, payment methods. Three things govern whether your radios work for everyone: every radio in the group shares one `name`, the group itself has a `<fieldset>` and `<legend>`, and the keyboard contract (arrow keys, not Tab) behaves the way assistive technology expects.

@@ -11,8 +11,17 @@
       "close": "Close reader view",
       "loading": "Loading content…",
       "notFound": "This topic is not available in reader view yet.",
-      "goBack": "Go back"
+      "goBack": "Go back",
+      "openTree": "Browse topics"
     },
-    "relatedTitle": "Related topics"
+    "relatedTitle": "Related topics",
+    "categories": {
+      "foundations": "Foundations",
+      "accessibleNames": "Accessible names",
+      "forms": "Forms",
+      "formInputs": "Form inputs",
+      "buttonsWithState": "Buttons that carry state",
+      "disclosureAndMenu": "Disclosure and menu buttons"
+    }
   }
 }

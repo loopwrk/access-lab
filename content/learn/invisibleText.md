@@ -1,8 +1,8 @@
 ---
 title: '"Invisible" Text Slips Past Automated Tests'
 topicId: invisible-text
-category: text-and-labels
-order: 2
+category: foundations
+order: 3
 related: []
 summary: When text colour matches its background exactly, automated contrast
   checks are skipped. But the text disappears.

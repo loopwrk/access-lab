@@ -1,8 +1,8 @@
 ---
 title: Checkbox and label association
 topicId: checkbox
-category: interaction
-order: 13
+category: form-inputs
+order: 1
 related:
   - accessible-name
   - switches

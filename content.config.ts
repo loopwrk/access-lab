@@ -22,7 +22,14 @@ export default defineContentConfig({
         topicId: z.string(),
         summary: z.string(),
         category: z
-          .enum(['foundations', 'text-and-labels', 'interaction', 'visual'])
+          .enum([
+            'foundations',
+            'accessible-names',
+            'forms',
+            'form-inputs',
+            'buttons-with-state',
+            'disclosure-and-menu'
+          ])
           .optional(),
         order: z.number().optional(),
         related: z.array(z.string()).optional()

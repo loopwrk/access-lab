@@ -33,9 +33,17 @@ export function useInspectedComponent(
     render: (html: string, css?: string, rootFontSize?: number) => void
   } | null>(null)
 
-  const componentProps = ref<Partial<Record<string, unknown>>>({
-    ...definition.defaultProps
-  })
+  // Lifted into useState (keyed per definition) so the user's tweaks
+  // survive a navigation away from the studio — e.g. opening a learn
+  // article on `/learn/<id>` and clicking "Close reader view" should
+  // land them back on the same component with their controls intact,
+  // not reset to defaults. A plain `ref` would die with the page
+  // unmount. Keyed by `definition.id` so distinct components don't
+  // share state (and so cross-component navigation is independent).
+  const componentProps = useState<Partial<Record<string, unknown>>>(
+    `inspected-component-props:${definition.id}`,
+    () => ({ ...definition.defaultProps })
+  )
 
   const customRules = useCustomRules([
     ...definition.rules,

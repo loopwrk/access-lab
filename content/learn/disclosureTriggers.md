@@ -1,8 +1,8 @@
 ---
 title: Disclosure triggers and aria-expanded
 topicId: disclosure-triggers
-category: interaction
-order: 12
+category: disclosure-and-menu
+order: 1
 related:
   - switches
   - toggle-buttons

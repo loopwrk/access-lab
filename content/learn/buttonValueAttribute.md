@@ -1,8 +1,8 @@
 ---
 title: How the value attribute behaves on a button
 topicId: button-value-attribute
-category: interaction
-order: 7
+category: forms
+order: 2
 related:
   - button-types
   - form-wrapping

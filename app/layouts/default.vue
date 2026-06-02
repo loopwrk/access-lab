@@ -1,10 +1,19 @@
 <script setup lang="ts">
-const isBelowDesktop = useMediaQuery('(max-width: 1023px)')
+/**
+ * Studio layout. Hosts the AppBar, sidebar, preview area, code
+ * drawer and inspector — everything needed for the component-auditing
+ * workflow on `/components/*` and the root redirect.
+ *
+ * The reader (`/learn/*`) lives in its own `learn` layout, which is
+ * why none of the read-mode plumbing (overlays, inert toggles,
+ * teleport targets) appears here any more — that whole flow is now
+ * a real route hop.
+ */
+const isBelowDesktop = useIsBelowDesktop()
 
 const { t } = useI18n()
 
 const { activeTab } = useInspectorTab()
-const { isOpen: readModeOpen, activeTopicId: readModeTopicId, close: closeReadMode } = useReadMode()
 
 function skipToPanel(tabName: 'controls' | 'issues') {
   activeTab.value = tabName
@@ -38,29 +47,27 @@ function skipToMain() {
 
     <AppBar />
 
-
     <div class="relative grid grid-cols-[auto_1fr_auto] overflow-hidden">
-      <div :inert="readModeOpen" class="contents">
-        <AppSidebar />
+      <AppSidebar />
 
-        <main id="main-content" tabindex="-1" class="flex flex-col min-w-0 overflow-hidden focus:outline-none">
-          <PreviewToolbar />
+      <main id="main-content" tabindex="-1" class="flex flex-col min-w-0 overflow-hidden focus:outline-none">
+        <PreviewToolbar />
 
-          <div class="flex-1 flex items-center justify-center overflow-auto p-6 bg-(--surface-2)">
-            <slot />
-          </div>
+        <div class="flex-1 flex items-center justify-center overflow-auto p-6 bg-(--surface-2)">
+          <slot />
+        </div>
 
-          <CodeDrawer />
-        </main>
+        <CodeDrawer />
+      </main>
 
-        <AppInspector />
-      </div>
-
-      <div id="read-mode-target" class="contents" />
+      <AppInspector />
     </div>
-
-    <LazyReadModeOverlay v-if="readModeOpen && readModeTopicId" :topic-id="readModeTopicId" @close="closeReadMode" />
   </div>
 
+  <!--
+    Mobile blocker covers the studio (not designed for narrow
+    viewports). The `learn` layout doesn't render it, so reading is
+    deliberately mobile-usable — see `layouts/learn.vue`.
+  -->
   <MobileBlocker />
 </template>

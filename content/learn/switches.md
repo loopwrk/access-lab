@@ -1,8 +1,8 @@
 ---
 title: Switches and role=switch
 topicId: switches
-category: interaction
-order: 14
+category: buttons-with-state
+order: 2
 related:
   - accessible-name
   - toggle-buttons

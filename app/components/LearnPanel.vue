@@ -1,6 +1,10 @@
 <script setup lang="ts">
 const { t } = useI18n()
 const { activeLearnTopic, focusLearnTopic, clearLearnTopic } = useInspectorTab()
+// `open()` stashes the current studio path before navigating to
+// `/learn/<id>`, so the layout's close button can put the user back
+// where they were. Same call shape as before — only the navigation
+// target changed (overlay → real route).
 const { open: openReadMode } = useReadMode()
 
 const { topics } = useLearnTopics()
@@ -45,7 +49,7 @@ const relatedTopics = computed(() =>
     <!--
       Article body. <h1> rendered from frontmatter so the markdown
       file's body can stay focused on section content (## and below).
-      Same approach used by ReadModeOverlay.
+      Same approach used by the standalone `/learn/<id>` page.
     -->
     <article v-else :id="`topic-${activeLearnTopic}`" tabindex="-1"
       class="learn-topic flex flex-col gap-4 focus:outline-none">

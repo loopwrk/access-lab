@@ -1,8 +1,8 @@
 ---
 title: Why button labels matter
 topicId: vague-label
-category: text-and-labels
-order: 3
+category: accessible-names
+order: 2
 related: []
 summary: Automated tools verify a button has a name, but they can't tell whether
   the name is meaningful out of context.

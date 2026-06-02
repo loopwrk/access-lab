@@ -1,8 +1,8 @@
 ---
 title: Why wrapping a button in a form matters
 topicId: form-wrapping
-category: interaction
-order: 5
+category: forms
+order: 3
 related:
   - button-types
   - button-value-attribute

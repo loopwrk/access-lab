@@ -1,11 +1,14 @@
 ---
 title: What counts as an accessible name
 topicId: accessible-name
-category: text-and-labels
-order: 6
+category: accessible-names
+order: 1
 related:
   - button-value-attribute
-summary: An "accessible name" is the exact text a screen reader speaks to describe a web element. Browsers calculate this name by checking a specific list of sources (like text content, `aria-label`, or form labels) in a strict priority order.
+summary: An "accessible name" is the exact text a screen reader speaks to
+  describe a web element. Browsers calculate this name by checking a specific
+  list of sources (like text content, `aria-label`, or form labels) in a strict
+  priority order.
 ---
 
 Every interactive element on a page needs an accessible name. It is the text that a screen reader announces and that voice control software listens for. Without one, the element is effectively anonymous to users who cannot see it.

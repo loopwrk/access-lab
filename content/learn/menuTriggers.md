@@ -1,8 +1,8 @@
 ---
 title: Menu triggers and the menu button pattern
 topicId: menu-triggers
-category: interaction
-order: 11
+category: disclosure-and-menu
+order: 2
 related:
   - accessible-name
   - disclosure-triggers

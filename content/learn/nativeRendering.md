@@ -4,7 +4,9 @@ topicId: native-rendering
 category: foundations
 order: 1
 related: []
-summary: Browsers use a mix of user-agent styles and platform-native rendering for form controls. CSS can partially or fully override this behaviour depending on properties such as appearance.
+summary: Browsers use a mix of user-agent styles and platform-native rendering
+  for form controls. CSS can partially or fully override this behaviour
+  depending on properties such as appearance.
 ---
 
 When a browser renders a default form control (like a button, dropdown, or text input), its visual appearance is determined by a mix of two factors:

@@ -1,8 +1,8 @@
 ---
 title: Disabled states on buttons
 topicId: button-disabled-states
-category: interaction
-order: 9
+category: forms
+order: 4
 related:
   - accessible-name
   - button-types

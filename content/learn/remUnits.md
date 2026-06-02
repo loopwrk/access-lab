@@ -2,7 +2,7 @@
 title: How REM units work
 topicId: rem-units
 category: foundations
-order: 4
+order: 2
 related: []
 summary: rem is a CSS length unit that scales with the user's browser font-size
   preference. Using it for layout values respects accessibility settings that px

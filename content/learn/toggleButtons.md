@@ -1,8 +1,8 @@
 ---
 title: Toggle buttons and aria-pressed
 topicId: toggle-buttons
-category: interaction
-order: 10
+category: buttons-with-state
+order: 1
 related:
   - accessible-name
   - switches
