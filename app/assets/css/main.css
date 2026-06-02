@@ -271,4 +271,8 @@
     color: var(--text-muted);
     font-family: var(--al-font-mono);
   }
+
+  .read-mode-shell-title {
+    font-size: var(--al-learn-h3-font-size);
+  }
 }

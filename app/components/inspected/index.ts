@@ -7,6 +7,7 @@ import { disclosureTriggerDefinition } from './buttons/disclosure-triggers/defin
 import { menuTriggerDefinition } from './buttons/menu-triggers/definition'
 import { inputDefinition } from './input/definition'
 import { checkboxDefinition } from './checkbox/definition'
+import { radioDefinition } from './radio/definition'
 import { placeholderDefinitions } from './placeholders'
 
 /**
@@ -40,6 +41,9 @@ export const inspectedComponents: Record<
     Record<string, unknown>
   >,
   'checkbox': checkboxDefinition as unknown as ComponentDefinition<
+    Record<string, unknown>
+  >,
+  'radio': radioDefinition as unknown as ComponentDefinition<
     Record<string, unknown>
   >
 }

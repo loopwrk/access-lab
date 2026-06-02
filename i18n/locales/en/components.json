@@ -46,6 +46,13 @@
           "statusNote": "The native checkbox. Browsers handle keyboard activation, label-click forwarding, and accessible role for free."
         }
       }
+    },
+    "radio": {
+      "variants": {
+        "input-radio": {
+          "statusNote": "The native radio. Browsers handle arrow-key navigation, mutual exclusion within a shared name, and accessible role for free."
+        }
+      }
     }
   }
 }

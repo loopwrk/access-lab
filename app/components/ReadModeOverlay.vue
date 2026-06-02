@@ -64,10 +64,10 @@ function onKeydown(e: KeyboardEvent) {
         readers navigating by heading.
       -->
       <div class="shrink-0 flex items-center justify-between gap-3 px-5 py-3 border-b border-(--border)">
-        <span class="font-semibold text-(length:--al-font-size-body) text-(--text-primary) truncate">
+        <span class="font-semibold text-(--text-primary) read-mode-shell-title truncate">
           {{ t('learn.readMode.title') }}
         </span>
-        <UButton color="neutral" variant="ghost" size="sm" icon="i-lucide-x" :aria-label="t('learn.readMode.close')"
+        <UButton color="neutral" variant="ghost" size="xl" icon="i-lucide-x" :aria-label="t('learn.readMode.close')"
           @click="close">
           {{ t('learn.readMode.close') }}
         </UButton>
@@ -157,6 +157,12 @@ function onKeydown(e: KeyboardEvent) {
   color: var(--al-learn-h4-color);
 }
 
+.read-mode-prose :deep(h5) {
+  font-size: var(--al-learn-h5-font-size);
+  line-height: 1.3;
+  color: var(--al-learn-h5-color);
+}
+
 .read-mode-prose :deep(p) {
   font-size: var(--al-learn-paragraph-font-size);
   color: var(--text-secondary);
@@ -165,18 +171,20 @@ function onKeydown(e: KeyboardEvent) {
 
 .read-mode-prose :deep(ul),
 .read-mode-prose :deep(ol) {
+  font-size: var(--al-learn-list-item-font-size);
   padding-left: 1.5rem;
   margin: 0 0 1rem;
 }
 
 .read-mode-prose :deep(li) {
+  font-size: var(--al-learn-list-item-font-size);
   color: var(--text-secondary);
   margin-bottom: 0.375rem;
 }
 
 .read-mode-prose :deep(code) {
   font-family: var(--al-font-mono);
-  font-size: 0.9em;
+  font-size: var(--al-learn-code-font-size);
   padding: 0.1em 0.35em;
   background: var(--brand-soft);
   color: var(--text-primary);
@@ -191,11 +199,12 @@ function onKeydown(e: KeyboardEvent) {
   padding: 1rem 1.25rem;
   overflow-x: auto;
   margin: 0 0 1rem;
-  font-size: 0.9em;
+  font-size: var(--al-learn-code-block-font-size);
   line-height: 1.5;
 }
 
 .read-mode-prose :deep(pre code) {
+  font-size: 0.9em;
   background: transparent;
   padding: 0;
   white-space: pre;

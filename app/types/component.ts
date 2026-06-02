@@ -23,7 +23,8 @@ export type ComponentId =
   | "tooltip"
   | "tabs"
   | "input"
-  | "checkbox";
+  | "checkbox"
+  | "radio";
 
 /**
  * Schema entries for the auto-rendered controls panel. Discriminated by

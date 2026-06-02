@@ -34,7 +34,7 @@ function createPlaceholder(
 export const placeholderDefinitions: Record<
   Exclude<
     ComponentId,
-    'buttons-action-triggers' | 'buttons-form-buttons' | 'buttons-toggle-buttons' | 'buttons-switches' | 'buttons-disclosure-triggers' | 'buttons-menu-triggers' | 'input' | 'checkbox'
+    'buttons-action-triggers' | 'buttons-form-buttons' | 'buttons-toggle-buttons' | 'buttons-switches' | 'buttons-disclosure-triggers' | 'buttons-menu-triggers' | 'input' | 'checkbox' | 'radio'
   >,
   ComponentDefinition
 > = {

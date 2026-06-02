@@ -99,6 +99,27 @@
       "namePlaceholder": "e.g. newsletter",
       "value": "Value attribute",
       "valuePlaceholder": "e.g. subscribe"
+    },
+    "radio": {
+      "label": "Group question (legend)",
+      "labelPlaceholder": "e.g. Which plan would you like?",
+      "labelAssociation": "Label association (per radio)",
+      "labelForId": "label for/id (recommended)",
+      "labelWrapping": "Wrapping label",
+      "labelAriaLabel": "aria-label only (no visible label)",
+      "labelNone": "No label at all (anti-pattern)",
+      "groupMode": "Group rendering",
+      "groupWithFieldset": "Group with fieldset + legend (correct)",
+      "groupNoFieldset": "Group without fieldset (anti-pattern)",
+      "groupItems": "Options (one per line)",
+      "groupItemsPlaceholder": "Free\nPro\nEnterprise",
+      "selectedItem": "Default selection",
+      "selectedNone": "(none — no radio checked on load)",
+      "state": "State",
+      "required": "Required (group must have a selection)",
+      "disabled": "Disabled",
+      "name": "Shared name attribute",
+      "namePlaceholder": "e.g. plan"
     }
   }
 }

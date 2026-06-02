@@ -64,6 +64,7 @@
     "tabs": "Tabs",
     "input": "Input",
     "checkbox": "Checkbox",
+    "radio": "Radio",
     "none": "None (bare HTML)"
   },
   "preview": {

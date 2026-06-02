@@ -4,39 +4,117 @@ topicId: native-rendering
 category: foundations
 order: 1
 related: []
-summary: Browsers paint form controls using the OS theme. Custom CSS overrides
-  that, changing how the box is rendered.
+summary: Browsers use a mix of user-agent styles and platform-native rendering for form controls. CSS can partially or fully override this behaviour depending on properties such as appearance.
 ---
 
-Browsers draw certain initial elements, mostly form elements, using a native rendering mode driven by your operating system's UI engine rather than standard CSS layout rules. The OS paints the button onto the screen, which is why a native button without any custom styling looks slightly different on Windows, macOS, iOS, or Android.
+When a browser renders a default form control (like a button, dropdown, or text input), its visual appearance is determined by a mix of two factors:
 
-At first paint, the default styles you see in the browser's stylesheet aren't traditional CSS rules; they are system rules. They essentially tell the browser to ask the operating system what its current theme looks like and copy it.
+- **User-agent stylesheets:** The browser's own built-in, default CSS rules.
+- **Operating system native styling:** The host operating system's internal design system and UI themes.
 
+Because of this dual dependency, default elements will look noticeably different depending on:
 
-## Shifting Control to CSS
+- **The browser:** Chrome, Firefox, Safari, and Edge all have unique internal rendering rules.
+- **The operating system:** Windows, macOS, iOS, and Android each enforce their own native design language.
 
-The moment you apply a custom border, padding, or background, this link to the operating system breaks. The browser terminates the native rendering mode and hands full layout control over to its own CSS painting engine.
+Ultimately, unless you explicitly override these styles with custom CSS, browsers will blend their own default rules with the host OS guidelines, leading to a highly inconsistent cross-platform experience.
 
-This switch is why a "2px" border you set manually might look thicker than the "2px" border the browser was just drawing: it is the exact same number, but rendered by a completely different paint engine.
+The browser decides which styles take precedence over others and in which order using the [cascade algorithm](https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Cascade/Introduction).
 
+## What “native-looking” actually means
 
-## The Accessibility Responsibility
+It does **not** mean the operating system is directly drawing the button onto the screen.
 
-This shift from native to custom rendering creates a critical accessibility responsibility. Overriding native styles often strips away the browser's default, highly optimised behaviours.
+Instead, the browser is in control of the rendering, and it may:
 
-When you style a button with CSS, you must manually code explicit design features that native buttons usually handle for you:
+- use built-in browser styles that mimic the OS
+- or rely on system-provided components for parts of the control
+- or combine both approaches depending on the element and browser engine
 
+So the look feels “native”, but it is still being managed by the browser.
 
-## Focus Rings
+## A useful mental model
 
-You must ensure clear keyboard focus indicators exist, maintaining at least a 3:1 contrast ratio so keyboard users don't lose their place.
+Think of it like this:
 
+The browser is the designer and builder of the page.  
+Sometimes it:
 
-## Hit Areas
+- follows its own default design rules
+- and sometimes borrows visual ideas from the operating system
 
-The button must maintain a sufficient physical size (at least 44x44 pixels) for touch screens and users with limited motor control.
+The final result is always produced by the browser, even if it resembles native system UI.
 
+## Native vs CSS Rendering
 
-## Colour Contrast
+Some form controls may use native rendering paths, while others are fully rendered using CSS and the browser’s layout engine.
 
-Text-to-background contrast must remain high enough to prevent the button from becoming unreadable for users with low vision or colour blindness.
+In practice:
+
+- Some properties preserve native appearance
+- Some trigger a more CSS-based rendering of the element
+- Behaviour varies between browser engines: Blink (Chrome, Edge), WebKit (Safari), Gecko (Firefox)
+
+#### Should You Replace Native Styling?
+
+It depends. In most cases, preserving native behaviour where possible is often the more accessible choice. However, sometimes replacing native styling can actually improve accessibility. For example, to meet [WCAG level AAA accessibility guidelines](https://www.w3.org/WAI/WCAG21/Understanding/target-size.html), the target size of buttons should be at least 44 x 44 pixels. Most browsers render buttons smaller than this by default.
+
+Developers can remove much of the native appearance using:
+
+```css
+button,
+input,
+select,
+textarea {
+  appearance: none;
+}
+```
+
+However, this should be done carefully.
+
+Removing native styling means you become responsible for recreating:
+
+- Focus indicators
+- Hover states
+- Disabled states
+- High contrast compatibility
+- Keyboard accessibility
+- Touch-friendly sizing
+- Dropdown arrows
+
+#### Component Libraries
+
+CSS and component libraries sit between your CSS and the browser.
+
+Examples include:
+
+- Tailwind
+- Bootstrap
+- Material UI
+
+These libraries typically:
+
+- Apply their own CSS reset or normalisation
+- Override browser defaults
+- Provide consistent styling across browsers
+- Recreate form controls using custom CSS
+
+This reduces cross-browser differences, but does not eliminate them completely.
+
+Even when using a component library, native browser behaviour, operating system differences, zoom levels, accessibility settings, and font rendering can still affect the final result.
+
+It is important to make sure that if you plan to use a library, that you choose one that places accessibility as a top priority.
+
+## Key Takeaway
+
+A browser does not render a page using your CSS alone.
+
+The final result is influenced by:
+
+1. Your CSS
+2. Any component library styles
+3. Browser default styles
+4. Operating system rendering
+5. User preferences and accessibility settings
+
+Because of this, pixel-perfect consistency across every browser, operating system, and device is rarely achievable. The goal is usually **functional consistency and a good user experience**, rather than identical rendering everywhere.
