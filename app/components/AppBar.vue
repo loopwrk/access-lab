@@ -8,12 +8,19 @@ const font = useFont()
 // On mobile while the reader is open, the logo should not navigate —
 // "/" would close the reader and dump the user onto MobileBlocker,
 // which contradicts the rule that reader is the only mobile surface.
-// We render a non-link <span> instead of a disabled <a> so it's
-// honest about being non-interactive (no link semantics, not in the
-// tab order, no hover affordance).
+//
+// We render the same `<NuxtLink>` on server and client (so SSR HTML
+// matches client hydration — no element-type swap on mount) and
+// suppress the click in JS only when the mobile-in-reader condition
+// holds. Visually identical to today's UX without the hydration jank.
 const isBelowDesktop = useIsBelowDesktop()
 const { isOpen: readModeOpen } = useReadMode()
-const logoIsLink = computed(() => !(readModeOpen.value && isBelowDesktop.value))
+
+function onLogoClick(event: MouseEvent) {
+  if (readModeOpen.value && isBelowDesktop.value) {
+    event.preventDefault()
+  }
+}
 
 interface FontOption {
   label: string
@@ -45,8 +52,9 @@ const sizes: SizeOption[] = [
   <header role="banner" :aria-label="t('appBar.ariaLabel')"
     class="flex items-center justify-between flex-wrap gap-4 py-3 px-5 border-b border-(--border) bg-(--bg)">
     <div class="flex items-center gap-4">
-      <NuxtLink v-if="logoIsLink" to="/"
-        class="inline-flex items-center gap-2.5 font-medium text-(length:--al-font-size-brand) text-(--text-primary) tracking-[-0.01em] no-underline">
+      <NuxtLink to="/"
+        class="inline-flex items-center gap-2.5 font-medium text-(length:--al-font-size-brand) text-(--text-primary) tracking-[-0.01em] no-underline"
+        @click="onLogoClick">
         <span aria-hidden="true" class="
             relative shrink-0 w-[22px] h-[22px] bg-(--brand) rounded-[5px]
             after:content-[''] after:absolute after:inset-1 after:bg-(--on-brand) after:rounded-[2px]
@@ -54,15 +62,6 @@ const sizes: SizeOption[] = [
           " />
         <span>{{ t('appBar.brand') }}</span>
       </NuxtLink>
-      <span v-else
-        class="inline-flex items-center gap-2.5 font-medium text-(length:--al-font-size-brand) text-(--text-primary) tracking-[-0.01em]">
-        <span aria-hidden="true" class="
-            relative shrink-0 w-[22px] h-[22px] bg-(--brand) rounded-[5px]
-            after:content-[''] after:absolute after:inset-1 after:bg-(--on-brand) after:rounded-[2px]
-            after:[clip-path:polygon(0_0,100%_0,100%_100%,50%_100%,50%_50%,0_50%)]
-          " />
-        <span>{{ t('appBar.brand') }}</span>
-      </span>
     </div>
 
     <div class="flex items-center gap-4">

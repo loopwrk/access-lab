@@ -15,7 +15,10 @@ export default defineNuxtConfig({
     "nuxt-color-picker",
   ],
 
-  ssr: false,
+  // Top-level SSR is on so we can opt routes *out* via routeRules.
+  // (Nuxt's hybrid rendering only works in this direction — you
+  // can't be globally-off-with-route-exceptions.) See `routeRules`
+  // below for the per-route split.
 
   // @nuxtjs/i18n auto-imports its own helpers but not `useI18n`, which
   // lives in vue-i18n. Without this entry, the TS plugin flags every
@@ -37,7 +40,19 @@ export default defineNuxtConfig({
   css: ["~/assets/css/main.css"],
 
   routeRules: {
+    // `/` redirects to a default component via `pages/index.vue` —
+    // prerender so the redirect HTML is served straight from the
+    // edge with no server round-trip.
     "/": { prerender: true },
+    // Studio is highly interactive, depends on browser-only state
+    // (localStorage-backed preferences, iframe message channel,
+    // axe-core in the iframe), and has zero SEO value. Render
+    // client-side only, exactly as before this hybrid split.
+    "/components/**": { ssr: false },
+    // Reader pages are content. SSR gives crawlers real HTML to
+    // index and keeps deep-links fast. The article body, frontmatter
+    // title, and Nuxt Content payload all serialise cleanly.
+    "/learn/**": { ssr: true },
   },
 
   compatibilityDate: "2025-01-15",

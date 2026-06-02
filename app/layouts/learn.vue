@@ -15,7 +15,6 @@
  */
 const { t } = useI18n()
 const { activeTopicId, close } = useReadMode()
-const isBelowDesktop = useIsBelowDesktop()
 
 // Slideover state. Reset to closed whenever the topic changes so the
 // user lands on the new article rather than staring at a tree.
@@ -45,7 +44,15 @@ function onTreeSelect() {
             {{ t('learn.readMode.title') }}
           </span>
         </div>
-        <UButton v-if="!isBelowDesktop" color="neutral" variant="ghost" size="xl" icon="i-lucide-x"
+        <!--
+          CSS-based visibility (rather than `v-if`) so the same DOM
+          renders on server and client. A JS-driven `v-if` keyed off
+          `useMediaQuery` would mismatch hydration: the server has
+          no viewport so it always rendered the button, then mobile
+          clients would unmount it on mount. `hidden lg:flex` lines
+          up with the 1024px threshold used by `useIsBelowDesktop`.
+        -->
+        <UButton class="hidden lg:flex" color="neutral" variant="ghost" size="xl" icon="i-lucide-x"
           :aria-label="t('learn.readMode.close')" @click="close">
           {{ t('learn.readMode.close') }}
         </UButton>
