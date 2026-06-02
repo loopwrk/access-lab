@@ -3,7 +3,6 @@
     "index": {
       "title": "Topics"
     },
-    "backToTopics": "All topics",
     "readMode": {
       "button": "Read mode",
       "title": "Reader view",
@@ -14,7 +13,6 @@
       "goBack": "Go back",
       "openTree": "Browse topics"
     },
-    "relatedTitle": "Related topics",
     "categories": {
       "foundations": "Foundations",
       "accessibleNames": "Accessible names",

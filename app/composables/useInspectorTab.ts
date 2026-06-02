@@ -3,11 +3,6 @@ export type InspectorTab = "controls" | "issues" | "manual" | "learn";
 export function useInspectorTab() {
   const activeTab = useState<InspectorTab>("inspector-tab", () => "controls");
 
-  const activeLearnTopic = useState<string | null>(
-    "active-learn-topic",
-    () => null,
-  );
-
   function setActive(tab: InspectorTab) {
     activeTab.value = tab;
   }
@@ -26,26 +21,27 @@ export function useInspectorTab() {
     target.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
-  async function focusLearnTopic(topicId: string) {
-    activeLearnTopic.value = topicId;
-    setActive("learn");
-    await nextTick();
-    const target = document.getElementById(`topic-${topicId}`);
-    if (!target) return;
-    target.focus({ preventScroll: true });
-    target.scrollIntoView({ behavior: "smooth", block: "start" });
-  }
-
-  function clearLearnTopic() {
-    activeLearnTopic.value = null;
+  /**
+   * Open a learn topic in the reader. Name preserved from when this
+   * function "focused" the topic inside the inspector panel — call
+   * sites across the studio (control labels, issues panel, toasts,
+   * preview toolbar) all use this single entry point so swapping
+   * the behaviour here propagates without touching them.
+   *
+   * Now that the inspector's Learn panel is a picker (not a reader),
+   * the only place articles render is `/learn/<topicId>`. This just
+   * forwards to that — `useReadMode().open()` handles stashing the
+   * current studio path so the close button can restore it.
+   */
+  function focusLearnTopic(topicId: string) {
+    const { open } = useReadMode();
+    open(topicId);
   }
 
   return {
     activeTab,
-    activeLearnTopic,
     setActive,
     focusPanel,
     focusLearnTopic,
-    clearLearnTopic,
   };
 }
