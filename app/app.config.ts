@@ -33,10 +33,10 @@ export default defineAppConfig({
           variant: "ghost",
           fieldGroup: "horizontal",
           class:
-            "bg-[var(--surface)] text-[var(--text-primary)] " +
-            "hover:bg-[var(--brand-soft)] " +
-            "active:bg-[var(--brand-soft)] " +
-            "focus-visible:bg-[var(--brand-soft)]",
+            "bg-[var(--surface)] text-[var(--text-primary)] "
+            + "hover:bg-[var(--brand-soft)] "
+            + "active:bg-[var(--brand-soft)] "
+            + "focus-visible:bg-[var(--brand-soft)]",
         },
       ],
     },

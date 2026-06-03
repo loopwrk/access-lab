@@ -5,15 +5,15 @@ import { radioGroupNoFieldset } from "~/rules/radio/group-no-fieldset";
 import type { ComponentDefinition } from "~/types/component";
 import type { CssLength } from "~/composables/useUnitConversion";
 
-export type RadioLabelAssociation =
-  | "for-id"
-  | "wrapping"
-  | "aria-label"
-  | "none";
+export type RadioLabelAssociation
+  = | "for-id"
+    | "wrapping"
+    | "aria-label"
+    | "none";
 
-export type RadioGroupMode =
-  | "group-with-fieldset" // correct: <fieldset><legend>…
-  | "group-no-fieldset"; // anti-pattern: visible heading only
+export type RadioGroupMode
+  = | "group-with-fieldset" // correct: <fieldset><legend>…
+    | "group-no-fieldset"; // anti-pattern: visible heading only
 
 export interface RadioProps {
   renderAs: string;
@@ -61,7 +61,7 @@ export const radioDefinition: ComponentDefinition<RadioProps> = {
   variants: [
     {
       key: "input-radio",
-      label: '<input type="radio">',
+      label: "<input type=\"radio\">",
       status: "recommended",
       statusNote: "components.radio.variants.input-radio.statusNote",
       section: "<input> Element",

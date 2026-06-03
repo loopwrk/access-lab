@@ -1,4 +1,4 @@
-import { defineCollection, defineContentConfig, z } from '@nuxt/content'
+import { defineCollection, defineContentConfig, z } from "@nuxt/content";
 
 /**
  * Nuxt Content collection registration.
@@ -21,38 +21,38 @@ import { defineCollection, defineContentConfig, z } from '@nuxt/content'
 export default defineContentConfig({
   collections: {
     content: defineCollection({
-      type: 'page',
-      source: 'learn/**/*.md',
+      type: "page",
+      source: "learn/**/*.md",
       schema: z.object({
         title: z.string(),
         topicId: z.string(),
         summary: z.string(),
         category: z
           .enum([
-            'foundations',
-            'accessible-names',
-            'forms',
-            'form-inputs',
-            'buttons-with-state',
-            'disclosure-and-menu'
+            "foundations",
+            "accessible-names",
+            "forms",
+            "form-inputs",
+            "buttons-with-state",
+            "disclosure-and-menu",
           ])
           .optional(),
         order: z.number().optional(),
         related: z.array(z.string()).optional(),
         concepts: z
           .array(z.enum([
-            'accessible-name',
-            'button-element',
-            'form-control',
-            'form-context',
-            'disabled-state',
-            'aria-state',
-            'disclosure-pattern',
-            'menu-pattern',
-            'native-elements'
+            "accessible-name",
+            "button-element",
+            "form-control",
+            "form-context",
+            "disabled-state",
+            "aria-state",
+            "disclosure-pattern",
+            "menu-pattern",
+            "native-elements",
           ]))
-          .optional()
-      })
-    })
-  }
-})
+          .optional(),
+      }),
+    }),
+  },
+});

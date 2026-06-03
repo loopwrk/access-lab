@@ -39,6 +39,20 @@ export default defineNuxtConfig({
 
   css: ["~/assets/css/main.css"],
 
+  colorMode: {
+    classSuffix: "",
+    preference: "system",
+    fallback: "light",
+  },
+
+  content: {
+    renderer: {
+      anchorLinks: {
+        h4: false,
+      },
+    },
+  },
+
   routeRules: {
     // `/` redirects to a default component via `pages/index.vue` —
     // prerender so the redirect HTML is served straight from the
@@ -55,12 +69,6 @@ export default defineNuxtConfig({
     "/learn/**": { ssr: true },
   },
 
-  colorMode: {
-    classSuffix: "",
-    preference: "system",
-    fallback: "light",
-  },
-
   compatibilityDate: "2025-01-15",
 
   vite: {
@@ -72,7 +80,10 @@ export default defineNuxtConfig({
   eslint: {
     config: {
       stylistic: {
-        commaDangle: "never",
+        arrowParens: true,
+        quotes: "double",
+        semi: true,
+        commaDangle: "always-multiline",
         braceStyle: "1tbs",
       },
     },
@@ -92,13 +103,5 @@ export default defineNuxtConfig({
       },
     ],
     defaultLocale: "en",
-  },
-
-  content: {
-    renderer: {
-      anchorLinks: {
-        h4: false,
-      },
-    },
   },
 });

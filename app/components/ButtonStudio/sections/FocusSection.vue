@@ -1,39 +1,39 @@
 <script setup lang="ts">
-import type { BaseButtonProps } from '~/types/button'
-import type { CssLength, CssUnit } from '~/composables/useUnitConversion'
-import LengthControl from '~/components/controls/LengthControl.vue'
+import type { BaseButtonProps } from "~/types/button";
+import type { CssLength, CssUnit } from "~/composables/useUnitConversion";
+import LengthControl from "~/components/controls/LengthControl.vue";
 
-const model = defineModel<Partial<BaseButtonProps>>({ required: true })
-const { update } = useButtonControlsModel(model)
+const model = defineModel<Partial<BaseButtonProps>>({ required: true });
+const { update } = useButtonControlsModel(model);
 
-const { t } = useI18n()
+const { t } = useI18n();
 
 const FOCUS_DEFAULTS = {
-  width: { value: 2, unit: 'px' as CssUnit } satisfies CssLength,
-  offset: { value: 2, unit: 'px' as CssUnit } satisfies CssLength,
-  color: '#1d4ed8'
-}
+  width: { value: 2, unit: "px" as CssUnit } satisfies CssLength,
+  offset: { value: 2, unit: "px" as CssUnit } satisfies CssLength,
+  color: "#1d4ed8",
+};
 
-const enabled = computed(() => model.value.focusRingEnabled === true)
+const enabled = computed(() => model.value.focusRingEnabled === true);
 
-function toggleFocus(value: boolean | 'indeterminate') {
-  const on = value === true
+function toggleFocus(value: boolean | "indeterminate") {
+  const on = value === true;
   if (!on) {
-    update('focusRingEnabled', false)
-    return
+    update("focusRingEnabled", false);
+    return;
   }
   Object.assign(model.value, {
     focusRingEnabled: true,
     focusRingWidth: model.value.focusRingWidth ?? FOCUS_DEFAULTS.width,
     focusRingOffset: model.value.focusRingOffset ?? FOCUS_DEFAULTS.offset,
-    focusRingColor: model.value.focusRingColor ?? FOCUS_DEFAULTS.color
-  })
+    focusRingColor: model.value.focusRingColor ?? FOCUS_DEFAULTS.color,
+  });
 }
 
 const focusRingColor = computed({
   get: () => model.value.focusRingColor ?? FOCUS_DEFAULTS.color,
-  set: (value: string) => update('focusRingColor', value)
-})
+  set: (value: string) => update("focusRingColor", value),
+});
 </script>
 
 <template>

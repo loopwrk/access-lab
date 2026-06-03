@@ -27,67 +27,67 @@
  */
 
 export type LearnConceptId
-  = | 'accessible-name'
-    | 'button-element'
-    | 'form-control'
-    | 'form-context'
-    | 'disabled-state'
-    | 'aria-state'
-    | 'disclosure-pattern'
-    | 'menu-pattern'
-    | 'native-elements'
+  = | "accessible-name"
+    | "button-element"
+    | "form-control"
+    | "form-context"
+    | "disabled-state"
+    | "aria-state"
+    | "disclosure-pattern"
+    | "menu-pattern"
+    | "native-elements";
 
 export interface LearnConcept {
-  id: LearnConceptId
+  id: LearnConceptId;
   /**
    * Short description of what this concept covers. Not surfaced in
    * the UI today — purely for authors deciding which concepts to
    * tag an article or component with.
    */
-  description: string
+  description: string;
 }
 
 export const LEARN_CONCEPTS: LearnConcept[] = [
   {
-    id: 'accessible-name',
-    description: 'Labels, naming, vague vs meaningful labels, hidden text'
+    id: "accessible-name",
+    description: "Labels, naming, vague vs meaningful labels, hidden text",
   },
   {
-    id: 'button-element',
-    description: '<button> semantics: type, value, native vs custom'
+    id: "button-element",
+    description: "<button> semantics: type, value, native vs custom",
   },
   {
-    id: 'form-control',
-    description: 'Form widgets — inputs, checkboxes, radios, switches'
+    id: "form-control",
+    description: "Form widgets — inputs, checkboxes, radios, switches",
   },
   {
-    id: 'form-context',
-    description: 'Forms, wrapping, submit behaviour, form attributes'
+    id: "form-context",
+    description: "Forms, wrapping, submit behaviour, form attributes",
   },
   {
-    id: 'disabled-state',
-    description: 'disabled vs aria-disabled, the disabled UX'
+    id: "disabled-state",
+    description: "disabled vs aria-disabled, the disabled UX",
   },
   {
-    id: 'aria-state',
-    description: 'aria-pressed, aria-expanded, aria-checked, role=switch'
+    id: "aria-state",
+    description: "aria-pressed, aria-expanded, aria-checked, role=switch",
   },
   {
-    id: 'disclosure-pattern',
-    description: 'Show/hide triggers, accordions, details/summary'
+    id: "disclosure-pattern",
+    description: "Show/hide triggers, accordions, details/summary",
   },
   {
-    id: 'menu-pattern',
-    description: 'Menu buttons, popovers, the menu-button keyboard contract'
+    id: "menu-pattern",
+    description: "Menu buttons, popovers, the menu-button keyboard contract",
   },
   {
-    id: 'native-elements',
-    description: 'Choosing native HTML over custom (div with role) implementations'
-  }
-]
+    id: "native-elements",
+    description: "Choosing native HTML over custom (div with role) implementations",
+  },
+];
 
 /**
  * Convenience array of just the ids, for cases that need them as
  * plain strings (e.g. building a Zod enum or running set-intersect).
  */
-export const LEARN_CONCEPT_IDS = LEARN_CONCEPTS.map(c => c.id) as readonly LearnConceptId[]
+export const LEARN_CONCEPT_IDS = LEARN_CONCEPTS.map((c) => c.id) as readonly LearnConceptId[];

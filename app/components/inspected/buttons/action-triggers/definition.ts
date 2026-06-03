@@ -1,32 +1,32 @@
-import { renderButton } from '../shared/render'
-import { variants } from '../shared/variants'
-import { formWrapper, linkWrapper } from '../shared/wrappers'
-import type { ButtonProps } from '../shared/types'
-import { targetSizeAA, targetSizeAAA } from '~/rules/buttons/shared/target-size'
-import { focusableInAnchor } from '~/rules/buttons/shared/focusable-in-anchor'
-import { focusNotVisible, focusLowContrast } from '~/rules/buttons/shared/focus-visible'
-import { buttonManualChecklist } from '~/rules/buttons/shared/manual-checklist'
-import type { ComponentDefinition } from '~/types/component'
+import { renderButton } from "../shared/render";
+import { variants } from "../shared/variants";
+import { formWrapper, linkWrapper } from "../shared/wrappers";
+import type { ButtonProps } from "../shared/types";
+import { targetSizeAA, targetSizeAAA } from "~/rules/buttons/shared/target-size";
+import { focusableInAnchor } from "~/rules/buttons/shared/focusable-in-anchor";
+import { focusNotVisible, focusLowContrast } from "~/rules/buttons/shared/focus-visible";
+import { buttonManualChecklist } from "~/rules/buttons/shared/manual-checklist";
+import type { ComponentDefinition } from "~/types/component";
 
 export const actionTriggerDefinition: ComponentDefinition<ButtonProps> = {
-  id: 'buttons-action-triggers',
-  name: 'Action Trigger',
-  tagName: 'button',
+  id: "buttons-action-triggers",
+  name: "Action Trigger",
+  tagName: "button",
 
   defaultProps: {
-    renderAs: 'button-button',
+    renderAs: "button-button",
     wrappers: [],
-    label: 'Trigger click event',
-    value: '',
-    name: '',
-    src: '',
-    alt: '',
+    label: "Trigger click event",
+    value: "",
+    name: "",
+    src: "",
+    alt: "",
     disabled: false,
-    contentType: 'text',
-    focusRingEnabled: false
+    contentType: "text",
+    focusRingEnabled: false,
   },
 
-  variants: variants(['button-button', 'button']),
+  variants: variants(["button-button", "button"]),
 
   contextWrappers: [formWrapper, linkWrapper],
 
@@ -37,12 +37,12 @@ export const actionTriggerDefinition: ComponentDefinition<ButtonProps> = {
     targetSizeAAA,
     focusableInAnchor,
     focusNotVisible,
-    focusLowContrast
+    focusLowContrast,
   ],
   manualChecklist: buttonManualChecklist,
   render: renderButton,
   controlsComponent: defineAsyncComponent(
-    () => import('./ActionTriggerControls.vue')
+    () => import("./ActionTriggerControls.vue"),
   ),
-  relevantConcepts: ['button-element', 'accessible-name', 'disabled-state', 'native-elements']
-}
+  relevantConcepts: ["button-element", "accessible-name", "disabled-state", "native-elements"],
+};

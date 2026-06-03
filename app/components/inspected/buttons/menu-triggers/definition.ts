@@ -1,37 +1,37 @@
-import { renderButton } from '../shared/render'
-import { variants } from '../shared/variants'
-import { linkWrapper } from '../shared/wrappers'
-import type { ButtonProps } from '../shared/types'
-import { targetSizeAA, targetSizeAAA } from '~/rules/buttons/shared/target-size'
-import { focusableInAnchor } from '~/rules/buttons/shared/focusable-in-anchor'
-import { focusNotVisible, focusLowContrast } from '~/rules/buttons/shared/focus-visible'
-import { menuNoHasPopup } from '~/rules/buttons/menu-triggers/menu-no-haspopup'
-import { menuNoExpanded } from '~/rules/buttons/menu-triggers/menu-no-expanded'
-import { menuTriggerManualChecklist } from '~/rules/buttons/menu-triggers/manual-checklist'
-import type { ComponentDefinition } from '~/types/component'
+import { renderButton } from "../shared/render";
+import { variants } from "../shared/variants";
+import { linkWrapper } from "../shared/wrappers";
+import type { ButtonProps } from "../shared/types";
+import { targetSizeAA, targetSizeAAA } from "~/rules/buttons/shared/target-size";
+import { focusableInAnchor } from "~/rules/buttons/shared/focusable-in-anchor";
+import { focusNotVisible, focusLowContrast } from "~/rules/buttons/shared/focus-visible";
+import { menuNoHasPopup } from "~/rules/buttons/menu-triggers/menu-no-haspopup";
+import { menuNoExpanded } from "~/rules/buttons/menu-triggers/menu-no-expanded";
+import { menuTriggerManualChecklist } from "~/rules/buttons/menu-triggers/manual-checklist";
+import type { ComponentDefinition } from "~/types/component";
 
 export const menuTriggerDefinition: ComponentDefinition<ButtonProps> = {
-  id: 'buttons-menu-triggers',
-  name: 'Menu Trigger',
-  tagName: 'button',
+  id: "buttons-menu-triggers",
+  name: "Menu Trigger",
+  tagName: "button",
 
   defaultProps: {
-    renderAs: 'button-button',
+    renderAs: "button-button",
     wrappers: [],
-    label: 'Account',
-    value: '',
-    name: '',
-    src: '',
-    alt: '',
+    label: "Account",
+    value: "",
+    name: "",
+    src: "",
+    alt: "",
     disabled: false,
-    contentType: 'text',
+    contentType: "text",
     focusRingEnabled: false,
-    menuBehaviour: 'aria-expanded-haspopup',
+    menuBehaviour: "aria-expanded-haspopup",
     menuOpen: false,
-    menuShowControls: true
+    menuShowControls: true,
   },
 
-  variants: variants(['button-button', 'button']),
+  variants: variants(["button-button", "button"]),
 
   // The form wrapper is deliberately omitted — a menu trigger inside a
   // form would default to type=submit and submit the form on click,
@@ -48,16 +48,16 @@ export const menuTriggerDefinition: ComponentDefinition<ButtonProps> = {
     focusNotVisible,
     focusLowContrast,
     menuNoHasPopup,
-    menuNoExpanded
+    menuNoExpanded,
   ],
-  primaryLearnTopicId: 'menu-triggers',
-  relevantConcepts: ['button-element', 'aria-state', 'menu-pattern', 'accessible-name'],
+  primaryLearnTopicId: "menu-triggers",
+  relevantConcepts: ["button-element", "aria-state", "menu-pattern", "accessible-name"],
   manualChecklist: menuTriggerManualChecklist,
   render: renderButton,
   controlsComponent: defineAsyncComponent(
-    () => import('./MenuTriggerControls.vue')
+    () => import("./MenuTriggerControls.vue"),
   ),
   // The popup reveal is the feedback — the generic click toast would
   // pile on top of it.
-  suppressDemoClickToast: true
-}
+  suppressDemoClickToast: true,
+};

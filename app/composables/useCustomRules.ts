@@ -1,16 +1,16 @@
-import type { Rule, ViolationResult } from '~/rules/types'
-import type { AxeResult } from '~/types/axe'
+import type { Rule, ViolationResult } from "~/rules/types";
+import type { AxeResult } from "~/types/axe";
 
 function violationToAxeResult(
   rule: Rule,
   result: ViolationResult,
-  tagName: string
+  tagName: string,
 ): AxeResult {
   return {
     id: rule.id,
     description: rule.description,
     help: rule.help,
-    helpUrl: rule.helpUrl ?? '',
+    helpUrl: rule.helpUrl ?? "",
     learnTopicId: rule.learnTopicId,
     impact: result.severity,
     tags: rule.tags ?? [],
@@ -26,33 +26,33 @@ function violationToAxeResult(
             id: rule.id,
             impact: result.severity,
             message: result.measurement,
-            data: null
-          }
-        ]
-      }
-    ]
-  }
+            data: null,
+          },
+        ],
+      },
+    ],
+  };
 }
 
 export function useCustomRules(rules: Rule[], tagName: string) {
-  const customViolations = useState<AxeResult[]>('custom-violations', () => [])
+  const customViolations = useState<AxeResult[]>("custom-violations", () => []);
 
   function evaluate(props: Record<string, unknown>) {
-    const results: AxeResult[] = []
+    const results: AxeResult[] = [];
 
     for (const rule of rules) {
-      const result = rule.evaluate(props)
+      const result = rule.evaluate(props);
       if (result) {
-        results.push(violationToAxeResult(rule, result, tagName))
+        results.push(violationToAxeResult(rule, result, tagName));
       }
     }
 
-    customViolations.value = results
+    customViolations.value = results;
   }
 
   function clear() {
-    customViolations.value = []
+    customViolations.value = [];
   }
 
-  return { customViolations, evaluate, clear }
+  return { customViolations, evaluate, clear };
 }

@@ -74,8 +74,8 @@ function formatNode(node: Node, depth: number, lines: string[]): void {
     const text = escapeText((el.textContent ?? "").trim());
     const singleLine = indent + buildInlineOpenTag(el) + text + `</${tag}>`;
     if (
-      singleLine.length <= MAX_LINE &&
-      !buildInlineOpenTag(el).includes("\n")
+      singleLine.length <= MAX_LINE
+      && !buildInlineOpenTag(el).includes("\n")
     ) {
       lines.push(singleLine);
       return;
@@ -118,9 +118,9 @@ function emitOpenTag(
   const attrStrings = attrs.map(formatAttr);
   const inline = `<${tag} ${attrStrings.join(" ")}${tagClose}${trailing}`;
 
-  const shouldWrap =
-    attrs.length >= ATTR_WRAP_THRESHOLD ||
-    depth * INDENT.length + inline.length > MAX_LINE;
+  const shouldWrap
+    = attrs.length >= ATTR_WRAP_THRESHOLD
+      || depth * INDENT.length + inline.length > MAX_LINE;
 
   if (!shouldWrap) {
     lines.push(indent + inline);

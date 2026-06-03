@@ -33,10 +33,10 @@ export function useManualReview(staticItems?: StaticChecklistItem[]): {
 
   const axeItems = computed<ManualItem[]>(() =>
     axeState.value.incomplete.map((result) => {
-      const message =
-        result.nodes[0]?.none[0]?.message ||
-        result.nodes[0]?.failureSummary ||
-        result.description;
+      const message
+        = result.nodes[0]?.none[0]?.message
+          || result.nodes[0]?.failureSummary
+          || result.description;
 
       return {
         id: result.id,

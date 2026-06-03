@@ -18,13 +18,13 @@
  * check — this composable trusts any sender, which is correct for the
  * studio's single-iframe setup but wrong for a multi-iframe page.
  */
-export type PreviewMessageHandlers = Record<string, (data: any) => void>
+export type PreviewMessageHandlers = Record<string, (data: unknown) => void>;
 
 export function usePreviewMessage(handlers: PreviewMessageHandlers) {
-  useEventListener(window, 'message', (event: MessageEvent) => {
-    const type = event.data?.type
-    if (typeof type !== 'string') return
-    const handler = handlers[type]
-    if (handler) handler(event.data)
-  })
+  useEventListener(window, "message", (event: MessageEvent) => {
+    const type = event.data?.type;
+    if (typeof type !== "string") return;
+    const handler = handlers[type];
+    if (handler) handler(event.data);
+  });
 }

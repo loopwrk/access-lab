@@ -9,38 +9,47 @@
  * teleport targets) appears here any more — that whole flow is now
  * a real route hop.
  */
-const isBelowDesktop = useIsBelowDesktop()
+const isBelowDesktop = useIsBelowDesktop();
 
-const { t } = useI18n()
+const { t } = useI18n();
 
-const { activeTab } = useInspectorTab()
+const { activeTab } = useInspectorTab();
 
-function skipToPanel(tabName: 'controls' | 'issues') {
-  activeTab.value = tabName
-  document.getElementById(INSPECTOR_PANEL_IDS[tabName])?.focus()
+function skipToPanel(tabName: "controls" | "issues") {
+  activeTab.value = tabName;
+  document.getElementById(INSPECTOR_PANEL_IDS[tabName])?.focus();
 }
 function skipToMain() {
-  const iframe = document.getElementById(PREVIEW_IFRAME_ID)
-  focusPreviewContent(iframe instanceof HTMLIFrameElement ? iframe : null)
+  const iframe = document.getElementById(PREVIEW_IFRAME_ID);
+  focusPreviewContent(iframe instanceof HTMLIFrameElement ? iframe : null);
 }
 </script>
 
 <template>
-  <div :inert="isBelowDesktop" class="grid grid-rows-[auto_1fr] min-h-dvh bg-(--bg) text-(--text-secondary)">
+  <div
+    :inert="isBelowDesktop"
+    class="grid grid-rows-[auto_1fr] min-h-dvh bg-(--bg) text-(--text-secondary)"
+  >
     <div class="absolute z-50">
-      <a href="#main-content"
+      <a
+        href="#main-content"
         class="absolute sr-only top-2 py-2 px-4 bg-(--brand) text-(--on-brand) rounded-r font-medium no-underline focus:not-sr-only"
-        @click.prevent="skipToMain">
+        @click.prevent="skipToMain"
+      >
         {{ t('skipLinks.main') }}
       </a>
-      <a :href="`#${INSPECTOR_PANEL_IDS.controls}`"
+      <a
+        :href="`#${INSPECTOR_PANEL_IDS.controls}`"
         class="absolute sr-only top-2 py-2 px-4 bg-(--brand) text-(--on-brand) rounded-r font-medium no-underline focus:not-sr-only"
-        @click.prevent="skipToPanel('controls')">
+        @click.prevent="skipToPanel('controls')"
+      >
         {{ t('skipLinks.controls') }}
       </a>
-      <a :href="`#${INSPECTOR_PANEL_IDS.issues}`"
+      <a
+        :href="`#${INSPECTOR_PANEL_IDS.issues}`"
         class="absolute sr-only top-2 py-2 px-4 bg-(--brand) text-(--on-brand) rounded-r font-medium no-underline focus:not-sr-only"
-        @click.prevent="skipToPanel('issues')">
+        @click.prevent="skipToPanel('issues')"
+      >
         {{ t('skipLinks.issues') }}
       </a>
     </div>
@@ -50,7 +59,11 @@ function skipToMain() {
     <div class="relative grid grid-cols-[auto_1fr_auto] overflow-hidden">
       <AppSidebar />
 
-      <main id="main-content" tabindex="-1" class="flex flex-col min-w-0 overflow-hidden focus:outline-none">
+      <main
+        id="main-content"
+        tabindex="-1"
+        class="flex flex-col min-w-0 overflow-hidden focus:outline-none"
+      >
         <PreviewToolbar />
 
         <div class="flex-1 flex items-center justify-center overflow-auto p-6 bg-(--surface-2)">

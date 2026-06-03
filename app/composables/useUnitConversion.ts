@@ -80,11 +80,11 @@ export function useUnitConversion() {
 
   function isCssLength(value: unknown): value is CssLength {
     return (
-      typeof value === "object" &&
-      value !== null &&
-      "value" in value &&
-      "unit" in value &&
-      typeof (value as CssLength).value === "number"
+      typeof value === "object"
+      && value !== null
+      && "value" in value
+      && "unit" in value
+      && typeof (value as CssLength).value === "number"
     );
   }
 

@@ -1,26 +1,26 @@
 <script setup lang="ts">
-import type { BaseButtonProps } from '~/types/button'
-import type { ToggleBehaviour } from '~/components/inspected/buttons/shared/types'
+import type { BaseButtonProps } from "~/types/button";
+import type { ToggleBehaviour } from "~/components/inspected/buttons/shared/types";
 
 type ToggleProps = Partial<BaseButtonProps> & {
-  toggleBehaviour?: ToggleBehaviour
-  togglePressed?: boolean
-}
+  toggleBehaviour?: ToggleBehaviour;
+  togglePressed?: boolean;
+};
 
-const model = defineModel<ToggleProps>({ required: true })
-const { update } = useButtonControlsModel(model)
+const model = defineModel<ToggleProps>({ required: true });
+const { update } = useButtonControlsModel(model);
 
-const { t } = useI18n()
-const { focusLearnTopic } = useInspectorTab()
+const { t } = useI18n();
+const { focusLearnTopic } = useInspectorTab();
 
-const behaviour = computed(() => model.value.toggleBehaviour ?? 'none')
+const behaviour = computed(() => model.value.toggleBehaviour ?? "none");
 
-const OPTIONS: { value: ToggleBehaviour, labelKey: string }[] = [
-  { value: 'none', labelKey: 'controls.toggleBehaviourNone' },
-  { value: 'aria-pressed', labelKey: 'controls.toggleBehaviourAriaPressed' },
-  { value: 'aria-checked', labelKey: 'controls.toggleBehaviourAriaChecked' },
-  { value: 'visual-only', labelKey: 'controls.toggleBehaviourVisualOnly' }
-]
+const OPTIONS: { value: ToggleBehaviour; labelKey: string }[] = [
+  { value: "none", labelKey: "controls.toggleBehaviourNone" },
+  { value: "aria-pressed", labelKey: "controls.toggleBehaviourAriaPressed" },
+  { value: "aria-checked", labelKey: "controls.toggleBehaviourAriaChecked" },
+  { value: "visual-only", labelKey: "controls.toggleBehaviourVisualOnly" },
+];
 </script>
 
 <template>

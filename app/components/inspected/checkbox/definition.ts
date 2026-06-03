@@ -10,21 +10,21 @@ import type { CssLength } from "~/composables/useUnitConversion";
  * variants is the main teaching surface — each renders differently
  * and produces different screen-reader announcements.
  */
-export type CheckboxLabelAssociation =
-  | "for-id" // <label for="x"><input id="x"> + label sibling
-  | "wrapping" // <label><input> Text </label>
-  | "aria-label" // <input aria-label="..."> (no visible text label)
-  | "none"; // <input> with no accessible name — anti-pattern
+export type CheckboxLabelAssociation
+  = | "for-id" // <label for="x"><input id="x"> + label sibling
+    | "wrapping" // <label><input> Text </label>
+    | "aria-label" // <input aria-label="..."> (no visible text label)
+    | "none"; // <input> with no accessible name — anti-pattern
 
 /**
  * How many checkboxes to render and whether they sit inside a
  * <fieldset>/<legend>. Groups without a fieldset are an anti-pattern
  * that axe-core does not flag — that's our custom rule's job.
  */
-export type CheckboxGroupMode =
-  | "single" // one checkbox + label
-  | "group-with-fieldset" // multiple checkboxes inside <fieldset><legend>
-  | "group-no-fieldset"; // multiple checkboxes, no fieldset (anti-pattern)
+export type CheckboxGroupMode
+  = | "single" // one checkbox + label
+    | "group-with-fieldset" // multiple checkboxes inside <fieldset><legend>
+    | "group-no-fieldset"; // multiple checkboxes, no fieldset (anti-pattern)
 
 export interface CheckboxProps {
   renderAs: string;
@@ -78,7 +78,7 @@ export const checkboxDefinition: ComponentDefinition<CheckboxProps> = {
   variants: [
     {
       key: "input-checkbox",
-      label: '<input type="checkbox">',
+      label: "<input type=\"checkbox\">",
       status: "recommended",
       statusNote: "components.checkbox.variants.input-checkbox.statusNote",
       section: "<input> Element",

@@ -7,5 +7,5 @@
  * components from drifting apart on what "mobile" means.
  */
 export function useIsBelowDesktop() {
-  return useMediaQuery('(max-width: 1023px)')
+  return useMediaQuery("(max-width: 1023px)");
 }

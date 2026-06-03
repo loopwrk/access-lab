@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const iframeRef = useTemplateRef<HTMLIFrameElement>('iframe')
+const iframeRef = useTemplateRef<HTMLIFrameElement>("iframe");
 
 const {
   violations,
@@ -7,18 +7,18 @@ const {
   incomplete,
   isReady,
 
-} = useAxeAudit(iframeRef)
+} = useAxeAudit(iframeRef);
 
-const pendingRender = ref<{ html: string; css?: string; rootFontSize?: number } | null>(null)
+const pendingRender = ref<{ html: string; css?: string; rootFontSize?: number } | null>(null);
 
 function send(html: string, css?: string, rootFontSize?: number) {
-  const iframe = iframeRef.value
-  if (!iframe || !iframe.contentWindow) return
+  const iframe = iframeRef.value;
+  if (!iframe || !iframe.contentWindow) return;
 
   iframe.contentWindow.postMessage(
-    { type: 'preview:render', html, css: css ?? '', rootFontSize },
-    window.location.origin
-  )
+    { type: "preview:render", html, css: css ?? "", rootFontSize },
+    window.location.origin,
+  );
 }
 
 /**
@@ -30,37 +30,53 @@ function send(html: string, css?: string, rootFontSize?: number) {
  */
 function render(html: string, css?: string, rootFontSize?: number) {
   if (isReady.value) {
-    send(html, css, rootFontSize)
+    send(html, css, rootFontSize);
   } else {
-    pendingRender.value = { html, css, rootFontSize }
+    pendingRender.value = { html, css, rootFontSize };
   }
 }
 
 watch(isReady, (ready) => {
   if (ready && pendingRender.value) {
-    send(pendingRender.value.html, pendingRender.value.css, pendingRender.value.rootFontSize)
-    pendingRender.value = null
+    send(pendingRender.value.html, pendingRender.value.css, pendingRender.value.rootFontSize);
+    pendingRender.value = null;
   }
-})
+});
 
-defineExpose({ render, violations, passes, incomplete })
+defineExpose({ render, violations, passes, incomplete });
 
-const { t } = useI18n()
+const { t } = useI18n();
 
 function focusContent() {
-  focusPreviewContent(iframeRef.value)
+  focusPreviewContent(iframeRef.value);
 }
 </script>
 
 <template>
   <div class="relative flex-1 flex items-center justify-center bg-(--surface-2)">
-    <UButton class="absolute top-2 left-2 z-[1]" color="neutral" variant="soft" size="sm" icon="i-lucide-focus"
-      :aria-label="t('preview.focusContentAria')" @click="focusContent">
+    <UButton
+      class="absolute top-2 left-2 z-[1]"
+      color="neutral"
+      variant="soft"
+      size="sm"
+      icon="i-lucide-focus"
+      :aria-label="t('preview.focusContentAria')"
+      @click="focusContent"
+    >
       {{ t('preview.focusContent') }}
     </UButton>
-    <iframe :id="PREVIEW_IFRAME_ID" ref="iframe" src="/preview-shell.html" title="Component preview"
-      sandbox="allow-scripts allow-same-origin allow-forms" class="w-full h-full border-none bg-white" />
-    <div v-if="!isReady" class="absolute inset-0 flex items-center justify-center pointer-events-none">
+    <iframe
+      :id="PREVIEW_IFRAME_ID"
+      ref="iframe"
+      src="/preview-shell.html"
+      title="Component preview"
+      sandbox="allow-scripts allow-same-origin allow-forms"
+      class="w-full h-full border-none bg-white"
+    />
+    <div
+      v-if="!isReady"
+      class="absolute inset-0 flex items-center justify-center pointer-events-none"
+    >
       <p class="text-muted">
         Loading preview…
       </p>

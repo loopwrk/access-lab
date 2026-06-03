@@ -101,23 +101,23 @@ function buildCss(props: Partial<ButtonProps>): string {
     rules.push(
       `.${SWITCH_WRAP_CLASS}{display:inline-flex;flex-direction:column;align-items:flex-start;gap:0.8em;font-family:Arial, Helvetica, sans-serif;}`,
       `.${INSPECTED_CLASS}.${SWITCH_CLASS}{${hostDecls.join("")}}`,
-      `.${INSPECTED_CLASS}.${SWITCH_CLASS}::before{` +
-        `content:'';` +
-        `position:absolute;` +
-        `left:0.2em;` +
-        `top:50%;` +
-        `width:1.2em;` +
-        `height:1.2em;` +
-        `margin-top:-0.6em;` +
-        `border-radius:50%;` +
-        `background:#fff;` +
-        `box-shadow:0 1px 3px rgb(0 0 0 / 0.3);` +
-        `transition:left 220ms cubic-bezier(0.4, 0, 0.2, 1);` +
-        `pointer-events:none;` +
-        `}`,
-      `.${INSPECTED_CLASS}.${SWITCH_CLASS}.${PRESSED_CLASS}::before{` +
-        `left:calc(100% - 1.2em - 0.2em);` +
-        `}`,
+      `.${INSPECTED_CLASS}.${SWITCH_CLASS}::before{`
+      + `content:'';`
+      + `position:absolute;`
+      + `left:0.2em;`
+      + `top:50%;`
+      + `width:1.2em;`
+      + `height:1.2em;`
+      + `margin-top:-0.6em;`
+      + `border-radius:50%;`
+      + `background:#fff;`
+      + `box-shadow:0 1px 3px rgb(0 0 0 / 0.3);`
+      + `transition:left 220ms cubic-bezier(0.4, 0, 0.2, 1);`
+      + `pointer-events:none;`
+      + `}`,
+      `.${INSPECTED_CLASS}.${SWITCH_CLASS}.${PRESSED_CLASS}::before{`
+      + `left:calc(100% - 1.2em - 0.2em);`
+      + `}`,
     );
   }
 
@@ -126,11 +126,11 @@ function buildCss(props: Partial<ButtonProps>): string {
 
 function hasUserPadding(props: Partial<ButtonProps>): boolean {
   return (
-    props.padding != null ||
-    props.paddingTop != null ||
-    props.paddingRight != null ||
-    props.paddingBottom != null ||
-    props.paddingLeft != null
+    props.padding != null
+    || props.paddingTop != null
+    || props.paddingRight != null
+    || props.paddingBottom != null
+    || props.paddingLeft != null
   );
 }
 
@@ -162,11 +162,11 @@ function isPilledSwitch(props: Partial<ButtonProps>): boolean {
 
 function buildElementClass(props: Partial<ButtonProps>): string | null {
   const tokens: string[] = [];
-  const pressed =
-    (isToggleable(props) && props.togglePressed) ||
-    (isSwitchable(props) && props.switchChecked);
-  const needsInspected =
-    props.focusRingEnabled || isPilledSwitch(props) || pressed;
+  const pressed
+    = (isToggleable(props) && props.togglePressed)
+      || (isSwitchable(props) && props.switchChecked);
+  const needsInspected
+    = props.focusRingEnabled || isPilledSwitch(props) || pressed;
   if (needsInspected) tokens.push(INSPECTED_CLASS);
   if (isPilledSwitch(props)) tokens.push(SWITCH_CLASS);
   if (pressed) tokens.push(PRESSED_CLASS);
@@ -277,11 +277,11 @@ function buildInlineStyle(props: Partial<ButtonProps>): string {
     declarations.push(`font-size:${formatLength(props.fontSize)}`);
   }
 
-  const hasIndividualPadding =
-    props.paddingTop != null ||
-    props.paddingRight != null ||
-    props.paddingBottom != null ||
-    props.paddingLeft != null;
+  const hasIndividualPadding
+    = props.paddingTop != null
+      || props.paddingRight != null
+      || props.paddingBottom != null
+      || props.paddingLeft != null;
 
   if (hasIndividualPadding) {
     const top = resolveSide(props.paddingTop, props.padding);
@@ -295,11 +295,11 @@ function buildInlineStyle(props: Partial<ButtonProps>): string {
     declarations.push(`padding:${formatLength(props.padding)}`);
   }
 
-  const hasIndividualBorder =
-    props.borderTopWidth != null ||
-    props.borderRightWidth != null ||
-    props.borderBottomWidth != null ||
-    props.borderLeftWidth != null;
+  const hasIndividualBorder
+    = props.borderTopWidth != null
+      || props.borderRightWidth != null
+      || props.borderBottomWidth != null
+      || props.borderLeftWidth != null;
 
   if (hasIndividualBorder) {
     const top = resolveSide(props.borderTopWidth, props.borderWidth);
@@ -320,9 +320,9 @@ function buildInlineStyle(props: Partial<ButtonProps>): string {
     );
   }
 
-  const hasAnyBorder =
-    hasIndividualBorder ||
-    (props.borderWidth != null && props.borderWidth.value > 0);
+  const hasAnyBorder
+    = hasIndividualBorder
+      || (props.borderWidth != null && props.borderWidth.value > 0);
   if (props.borderColor && hasAnyBorder) {
     declarations.push(`border-color:${props.borderColor}`);
   }
@@ -343,7 +343,7 @@ function renderNativeButton(
   const content = externalLabelId
     ? ""
     : props.contentType === "icon"
-      ? '<span aria-hidden="true">&#128269;</span>'
+      ? "<span aria-hidden=\"true\">&#128269;</span>"
       : label;
 
   const attrs: string[] = [];
@@ -453,11 +453,11 @@ export function renderButton(props?: Partial<ButtonProps>): RenderedFragment {
   // pattern (visible label left, switch right).
   if (pilled) {
     const labelText = escapeHtml(props.label ?? DEFAULT_LABEL);
-    element =
-      `<div class="${SWITCH_WRAP_CLASS}">` +
-      `<span id="${SWITCH_LABEL_ID}">${labelText}</span>` +
-      element +
-      `</div>`;
+    element
+      = `<div class="${SWITCH_WRAP_CLASS}">`
+        + `<span id="${SWITCH_LABEL_ID}">${labelText}</span>`
+        + element
+        + `</div>`;
   }
 
   // Disclosure pattern: the trigger sits above a reveal panel that
@@ -481,13 +481,13 @@ export function renderButton(props?: Partial<ButtonProps>): RenderedFragment {
     const hiddenAttr = expanded ? "" : " hidden";
 
     // 3. Inject paragraphsHtml instead of `<p>${panelText}</p>`
-    element =
-      `<div class="${DISCLOSURE_WRAP_CLASS}">` +
-      element +
-      `<div id="${DISCLOSURE_PANEL_ID}" class="${DISCLOSURE_PANEL_CLASS}"${hiddenAttr}>` +
-      paragraphsHtml +
-      `</div>` +
-      `</div>`;
+    element
+      = `<div class="${DISCLOSURE_WRAP_CLASS}">`
+        + element
+        + `<div id="${DISCLOSURE_PANEL_ID}" class="${DISCLOSURE_PANEL_CLASS}"${hiddenAttr}>`
+        + paragraphsHtml
+        + `</div>`
+        + `</div>`;
   }
 
   if (isMenu(props)) {
@@ -502,13 +502,13 @@ export function renderButton(props?: Partial<ButtonProps>): RenderedFragment {
       .join("");
     const open = props.menuOpen === true;
     const hiddenAttr = open ? "" : " hidden";
-    element =
-      `<div class="${MENU_WRAP_CLASS}">` +
-      element +
-      `<ul id="${MENU_POPUP_ID}" class="${MENU_POPUP_CLASS}" role="menu"${hiddenAttr}>` +
-      itemsHtml +
-      `</ul>` +
-      `</div>`;
+    element
+      = `<div class="${MENU_WRAP_CLASS}">`
+        + element
+        + `<ul id="${MENU_POPUP_ID}" class="${MENU_POPUP_CLASS}" role="menu"${hiddenAttr}>`
+        + itemsHtml
+        + `</ul>`
+        + `</div>`;
   }
 
   return css ? { html: element, css } : { html: element };

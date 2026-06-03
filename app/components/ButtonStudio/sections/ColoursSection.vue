@@ -1,57 +1,57 @@
 <script setup lang="ts">
-import type { BaseButtonProps } from '~/types/button'
-import type { ButtonStudioDefaults } from '~/composables/useButtonStudioDefaults'
+import type { BaseButtonProps } from "~/types/button";
+import type { ButtonStudioDefaults } from "~/composables/useButtonStudioDefaults";
 
 const props = defineProps<{
-  defaults: ButtonStudioDefaults
+  defaults: ButtonStudioDefaults;
   // When true (input-image), background and text-colour swatches are
   // hidden — the image provides its own visible content; only the
   // border colour applies.
-  hideBgAndText?: boolean
-}>()
-const model = defineModel<Partial<BaseButtonProps>>({ required: true })
-const { update } = useButtonControlsModel(model)
+  hideBgAndText?: boolean;
+}>();
+const model = defineModel<Partial<BaseButtonProps>>({ required: true });
+const { update } = useButtonControlsModel(model);
 
-const unitConv = useUnitConversion()
-const { t } = useI18n()
+const unitConv = useUnitConversion();
+const { t } = useI18n();
 
 const { enabled, toggle } = useToggleableSection(model, {
-  keys: ['bg', 'fgText', 'borderColor'],
+  keys: ["bg", "fgText", "borderColor"],
   enable: () => ({
     bg: props.defaults.bg,
     fgText: props.defaults.fgText,
-    borderColor: props.defaults.borderColor
+    borderColor: props.defaults.borderColor,
   }),
-  disable: () => ({ bg: undefined, fgText: undefined, borderColor: undefined })
-})
+  disable: () => ({ bg: undefined, fgText: undefined, borderColor: undefined }),
+});
 
 const bgColor = computed({
   get: () => model.value.bg ?? props.defaults.bg,
-  set: (value: string) => update('bg', value)
-})
+  set: (value: string) => update("bg", value),
+});
 
 const fgTextColor = computed({
   get: () => model.value.fgText ?? props.defaults.fgText,
-  set: (value: string) => update('fgText', value)
-})
+  set: (value: string) => update("fgText", value),
+});
 
 const borderColorComputed = computed({
   get: () => model.value.borderColor ?? props.defaults.borderColor,
-  set: (value: string) => update('borderColor', value)
-})
+  set: (value: string) => update("borderColor", value),
+});
 
 const { ratio: contrastRatio, verdict: contrastVerdict } = useContrast(
   fgTextColor,
   bgColor,
   {
     fontSizePx: () => {
-      const f = model.value.fontSize
-      if (!f) return props.defaults.fontSize
-      return unitConv.lengthToPx(f)
+      const f = model.value.fontSize;
+      if (!f) return props.defaults.fontSize;
+      return unitConv.lengthToPx(f);
     },
-    bold: false
-  }
-)
+    bold: false,
+  },
+);
 </script>
 
 <template>

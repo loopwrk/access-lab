@@ -1,44 +1,44 @@
 <script setup lang="ts">
-import type { BaseButtonProps } from '~/types/button'
+import type { BaseButtonProps } from "~/types/button";
 
-const model = defineModel<Partial<BaseButtonProps>>({ required: true })
-const { update } = useButtonControlsModel(model)
+const model = defineModel<Partial<BaseButtonProps>>({ required: true });
+const { update } = useButtonControlsModel(model);
 
-const { t } = useI18n()
-const { focusLearnTopic } = useInspectorTab()
+const { t } = useI18n();
+const { focusLearnTopic } = useInspectorTab();
 
 const VARIANT_LABEL_PLACEHOLDER_KEYS: Record<string, string> = {
-  'button-submit': 'controls.labelPlaceholderSubmit',
-  'button-reset': 'controls.labelPlaceholderReset',
-  'input-submit': 'controls.labelPlaceholderSubmit',
-  'input-reset': 'controls.labelPlaceholderReset'
-}
+  "button-submit": "controls.labelPlaceholderSubmit",
+  "button-reset": "controls.labelPlaceholderReset",
+  "input-submit": "controls.labelPlaceholderSubmit",
+  "input-reset": "controls.labelPlaceholderReset",
+};
 
-const VARIANTS_WITHOUT_NAME_EFFECT = ['button-button', 'input-button']
+const VARIANTS_WITHOUT_NAME_EFFECT = ["button-button", "input-button"];
 
-const SAMPLE_IMAGE_PATH_SVG = '/images/click-event-button.svg'
-const SAMPLE_IMAGE_PATH_PNG = '/images/click-event-button.png'
+const SAMPLE_IMAGE_PATH_SVG = "/images/click-event-button.svg";
+const SAMPLE_IMAGE_PATH_PNG = "/images/click-event-button.png";
 
-const isButtonTag = computed(() => !(model.value.renderAs ?? 'button').startsWith('input-'))
-const isImageInput = computed(() => model.value.renderAs === 'input-image')
-const showsLabelField = computed(() => !isImageInput.value)
+const isButtonTag = computed(() => !(model.value.renderAs ?? "button").startsWith("input-"));
+const isImageInput = computed(() => model.value.renderAs === "input-image");
+const showsLabelField = computed(() => !isImageInput.value);
 const showsNameField = computed(
-  () => !VARIANTS_WITHOUT_NAME_EFFECT.includes(model.value.renderAs ?? '')
-)
-const hasSeparateValueAttribute = computed(() => isButtonTag.value || isImageInput.value)
+  () => !VARIANTS_WITHOUT_NAME_EFFECT.includes(model.value.renderAs ?? ""),
+);
+const hasSeparateValueAttribute = computed(() => isButtonTag.value || isImageInput.value);
 const isSvgImage = computed(
-  () => (model.value.src ?? SAMPLE_IMAGE_PATH_SVG) === SAMPLE_IMAGE_PATH_SVG
-)
+  () => (model.value.src ?? SAMPLE_IMAGE_PATH_SVG) === SAMPLE_IMAGE_PATH_SVG,
+);
 
 const labelFieldKey = computed(() =>
-  isButtonTag.value ? 'controls.label' : 'controls.valueAttribute'
-)
+  isButtonTag.value ? "controls.label" : "controls.valueAttribute",
+);
 const labelFieldTopicId = computed(() =>
-  isButtonTag.value ? 'vague-label' : 'button-value-attribute'
-)
+  isButtonTag.value ? "vague-label" : "button-value-attribute",
+);
 const labelFieldPlaceholderKey = computed(
-  () => VARIANT_LABEL_PLACEHOLDER_KEYS[model.value.renderAs ?? ''] ?? 'controls.labelPlaceholder'
-)
+  () => VARIANT_LABEL_PLACEHOLDER_KEYS[model.value.renderAs ?? ""] ?? "controls.labelPlaceholder",
+);
 </script>
 
 <template>

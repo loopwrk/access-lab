@@ -1,17 +1,17 @@
 <script setup lang="ts">
-const { allViolations: violations } = useAllViolations()
-const results = useAxeResults()
-const passes = computed(() => results.value.passes)
+const { allViolations: violations } = useAllViolations();
+const results = useAxeResults();
+const passes = computed(() => results.value.passes);
 
 const criticalViolations = computed(() =>
-  violations.value.filter(v => v.impact === 'critical' || v.impact === 'serious')
-)
+  violations.value.filter((v) => v.impact === "critical" || v.impact === "serious"),
+);
 
 const warningViolations = computed(() =>
-  violations.value.filter(v => v.impact === 'moderate' || v.impact === 'minor')
-)
+  violations.value.filter((v) => v.impact === "moderate" || v.impact === "minor"),
+);
 
-const { t } = useI18n()
+const { t } = useI18n();
 </script>
 
 <template>

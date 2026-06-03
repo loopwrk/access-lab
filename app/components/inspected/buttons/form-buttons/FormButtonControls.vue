@@ -1,72 +1,72 @@
 <script setup lang="ts">
-import type { BaseButtonProps } from '~/types/button'
-import { formButtonDefinition } from './definition'
-import ResetDefaultsSection from '~/components/ButtonStudio/sections/ResetDefaultsSection.vue'
-import ContentSection from '~/components/ButtonStudio/sections/ContentSection.vue'
-import AriaSection from '~/components/ButtonStudio/sections/AriaSection.vue'
-import TextSection from '~/components/ButtonStudio/sections/TextSection.vue'
-import DimensionsSection from '~/components/ButtonStudio/sections/DimensionsSection.vue'
-import BorderSection from '~/components/ButtonStudio/sections/BorderSection.vue'
-import ColoursSection from '~/components/ButtonStudio/sections/ColoursSection.vue'
-import FocusSection from '~/components/ButtonStudio/sections/FocusSection.vue'
+import type { BaseButtonProps } from "~/types/button";
+import { formButtonDefinition } from "./definition";
+import ResetDefaultsSection from "~/components/ButtonStudio/sections/ResetDefaultsSection.vue";
+import ContentSection from "~/components/ButtonStudio/sections/ContentSection.vue";
+import AriaSection from "~/components/ButtonStudio/sections/AriaSection.vue";
+import TextSection from "~/components/ButtonStudio/sections/TextSection.vue";
+import DimensionsSection from "~/components/ButtonStudio/sections/DimensionsSection.vue";
+import BorderSection from "~/components/ButtonStudio/sections/BorderSection.vue";
+import ColoursSection from "~/components/ButtonStudio/sections/ColoursSection.vue";
+import FocusSection from "~/components/ButtonStudio/sections/FocusSection.vue";
 
-const model = defineModel<Partial<BaseButtonProps> & { wrappers?: string[] }>({ required: true })
+const model = defineModel<Partial<BaseButtonProps> & { wrappers?: string[] }>({ required: true });
 
-const tagName = formButtonDefinition.tagName
-const { naturalSize } = useNaturalSize(model, tagName)
-const defaults = useButtonStudioDefaults(tagName)
+const tagName = formButtonDefinition.tagName;
+const { naturalSize } = useNaturalSize(model, tagName);
+const defaults = useButtonStudioDefaults(tagName);
 
-const isImageInput = computed(() => model.value.renderAs === 'input-image')
-const isButtonTag = computed(() => !(model.value.renderAs ?? 'button').startsWith('input-'))
+const isImageInput = computed(() => model.value.renderAs === "input-image");
+const isButtonTag = computed(() => !(model.value.renderAs ?? "button").startsWith("input-"));
 
 // Switching to an `<input>` variant clears any icon contentType because
 // inputs are void elements and can't host inner markup.
 watch(isButtonTag, (buttonTag) => {
-  if (!buttonTag && model.value.contentType === 'icon') {
-    model.value.contentType = 'text'
+  if (!buttonTag && model.value.contentType === "icon") {
+    model.value.contentType = "text";
   }
-})
+});
 
 const VARIANT_DEFAULT_LABELS: Record<string, string> = {
-  'button-submit': 'Save changes',
-  'button-reset': 'Discard changes',
-  'input-submit': 'Save changes',
-  'input-reset': 'Discard changes'
-}
+  "button-submit": "Save changes",
+  "button-reset": "Discard changes",
+  "input-submit": "Save changes",
+  "input-reset": "Discard changes",
+};
 
 const ALL_KNOWN_DEFAULTS = new Set<string>([
   ...Object.values(VARIANT_DEFAULT_LABELS),
-  ''
-])
+  "",
+]);
 
 const VARIANTS_WRAPPED_IN_FORM_BY_DEFAULT = new Set([
-  'button-submit',
-  'button-reset',
-  'input-submit',
-  'input-reset',
-  'input-image'
-])
+  "button-submit",
+  "button-reset",
+  "input-submit",
+  "input-reset",
+  "input-image",
+]);
 
-const FORM_WRAPPER_KEY = 'form'
+const FORM_WRAPPER_KEY = "form";
 
 watch(() => model.value.renderAs, (newRenderAs) => {
   // Swap to variant default label only when the user hasn't typed
   // something bespoke (current value matches any known default).
-  if (ALL_KNOWN_DEFAULTS.has(model.value.label ?? '')) {
-    model.value.label = VARIANT_DEFAULT_LABELS[newRenderAs ?? ''] ?? ''
+  if (ALL_KNOWN_DEFAULTS.has(model.value.label ?? "")) {
+    model.value.label = VARIANT_DEFAULT_LABELS[newRenderAs ?? ""] ?? "";
   }
 
   // Variant choice wins for the container: submit-like variants force
   // Form; non-submit variants only clear Form (Link or Button container
   // survives).
-  const shouldWrap = VARIANTS_WRAPPED_IN_FORM_BY_DEFAULT.has(newRenderAs ?? '')
-  const currentKey = (model.value.wrappers ?? [])[0]
+  const shouldWrap = VARIANTS_WRAPPED_IN_FORM_BY_DEFAULT.has(newRenderAs ?? "");
+  const currentKey = (model.value.wrappers ?? [])[0];
   if (shouldWrap) {
-    if (currentKey !== FORM_WRAPPER_KEY) model.value.wrappers = [FORM_WRAPPER_KEY]
+    if (currentKey !== FORM_WRAPPER_KEY) model.value.wrappers = [FORM_WRAPPER_KEY];
   } else if (currentKey === FORM_WRAPPER_KEY) {
-    model.value.wrappers = []
+    model.value.wrappers = [];
   }
-})
+});
 </script>
 
 <template>

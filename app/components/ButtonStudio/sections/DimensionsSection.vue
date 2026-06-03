@@ -1,57 +1,57 @@
 <script setup lang="ts">
-import type { BaseButtonProps } from '~/types/button'
-import type { ButtonStudioDefaults } from '~/composables/useButtonStudioDefaults'
-import type { SpacingValue } from '~/components/controls/SplitSpacingControl.vue'
-import LengthControl from '~/components/controls/LengthControl.vue'
-import SplitSpacingControl from '~/components/controls/SplitSpacingControl.vue'
+import type { BaseButtonProps } from "~/types/button";
+import type { ButtonStudioDefaults } from "~/composables/useButtonStudioDefaults";
+import type { SpacingValue } from "~/components/controls/SplitSpacingControl.vue";
+import LengthControl from "~/components/controls/LengthControl.vue";
+import SplitSpacingControl from "~/components/controls/SplitSpacingControl.vue";
 
 const props = defineProps<{
-  defaults: ButtonStudioDefaults
-  naturalSize: { width: number, height: number }
-}>()
-const model = defineModel<Partial<BaseButtonProps>>({ required: true })
-const { update } = useButtonControlsModel(model)
+  defaults: ButtonStudioDefaults;
+  naturalSize: { width: number; height: number };
+}>();
+const model = defineModel<Partial<BaseButtonProps>>({ required: true });
+const { update } = useButtonControlsModel(model);
 
-const unitConv = useUnitConversion()
-const { t } = useI18n()
+const unitConv = useUnitConversion();
+const { t } = useI18n();
 
 // Derived so the switches flip off when the model is cleared from
 // elsewhere (e.g. the reset-to-defaults control).
-const widthEnabled = computed(() => model.value.width != null)
-const heightEnabled = computed(() => model.value.height != null)
+const widthEnabled = computed(() => model.value.width != null);
+const heightEnabled = computed(() => model.value.height != null);
 
-function toggleWidth(value: boolean | 'indeterminate') {
-  update('width', value === true
-    ? unitConv.fromPx(props.naturalSize.width || props.defaults.width, 'px')
-    : undefined)
+function toggleWidth(value: boolean | "indeterminate") {
+  update("width", value === true
+    ? unitConv.fromPx(props.naturalSize.width || props.defaults.width, "px")
+    : undefined);
 }
 
-function toggleHeight(value: boolean | 'indeterminate') {
-  update('height', value === true
-    ? unitConv.fromPx(props.naturalSize.height || props.defaults.height, 'px')
-    : undefined)
+function toggleHeight(value: boolean | "indeterminate") {
+  update("height", value === true
+    ? unitConv.fromPx(props.naturalSize.height || props.defaults.height, "px")
+    : undefined);
 }
 
 const { enabled: paddingEnabled, toggle: togglePadding } = useToggleableSection(model, {
-  keys: ['padding', 'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft'],
+  keys: ["padding", "paddingTop", "paddingRight", "paddingBottom", "paddingLeft"],
   enable: () => {
-    const length = unitConv.fromPx(props.defaults.padding, 'px')
+    const length = unitConv.fromPx(props.defaults.padding, "px");
     return {
       padding: length,
       paddingTop: length,
       paddingRight: length,
       paddingBottom: length,
-      paddingLeft: length
-    }
+      paddingLeft: length,
+    };
   },
   disable: () => ({
     padding: undefined,
     paddingTop: undefined,
     paddingRight: undefined,
     paddingBottom: undefined,
-    paddingLeft: undefined
-  })
-})
+    paddingLeft: undefined,
+  }),
+});
 
 const paddingValue = computed<SpacingValue>({
   get: () => ({
@@ -59,16 +59,16 @@ const paddingValue = computed<SpacingValue>({
     top: model.value.paddingTop,
     right: model.value.paddingRight,
     bottom: model.value.paddingBottom,
-    left: model.value.paddingLeft
+    left: model.value.paddingLeft,
   }),
   set: (next) => {
-    model.value.padding = next.shorthand
-    model.value.paddingTop = next.top
-    model.value.paddingRight = next.right
-    model.value.paddingBottom = next.bottom
-    model.value.paddingLeft = next.left
-  }
-})
+    model.value.padding = next.shorthand;
+    model.value.paddingTop = next.top;
+    model.value.paddingRight = next.right;
+    model.value.paddingBottom = next.bottom;
+    model.value.paddingLeft = next.left;
+  },
+});
 </script>
 
 <template>

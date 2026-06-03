@@ -35,8 +35,8 @@ interface Rgb {
  * -------------------------------------------------------------------- */
 
 const HEX_RE = /^#?([0-9a-f]{3,8})$/i;
-const RGBA_RE =
-  /^rgba?\(\s*(\d+(?:\.\d+)?)\s*[,\s]\s*(\d+(?:\.\d+)?)\s*[,\s]\s*(\d+(?:\.\d+)?)\s*(?:[,/]\s*([\d.]+%?)\s*)?\)$/i;
+const RGBA_RE
+  = /^rgba?\(\s*(\d+(?:\.\d+)?)\s*[,\s]\s*(\d+(?:\.\d+)?)\s*[,\s]\s*(\d+(?:\.\d+)?)\s*(?:[,/]\s*([\d.]+%?)\s*)?\)$/i;
 
 function parseHex(input: string): Rgba | null {
   const m = HEX_RE.exec(input.trim());

@@ -3,30 +3,30 @@
 // pseudo-element rules. Not a general-purpose CSS formatter — no media
 // queries, no nested at-rules, no comments.
 export function prettifyCss(css: string): string {
-  if (!css.trim()) return ''
+  if (!css.trim()) return "";
 
-  const out: string[] = []
-  const rules = css.split('}').filter(r => r.trim())
+  const out: string[] = [];
+  const rules = css.split("}").filter((r) => r.trim());
 
   for (const rule of rules) {
-    const braceIndex = rule.indexOf('{')
-    if (braceIndex === -1) continue
-    const selector = rule.slice(0, braceIndex).trim()
-    const body = rule.slice(braceIndex + 1).trim()
+    const braceIndex = rule.indexOf("{");
+    if (braceIndex === -1) continue;
+    const selector = rule.slice(0, braceIndex).trim();
+    const body = rule.slice(braceIndex + 1).trim();
     const declarations = body
-      .split(';')
-      .map(d => d.trim())
-      .filter(Boolean)
+      .split(";")
+      .map((d) => d.trim())
+      .filter(Boolean);
 
-    if (!declarations.length) continue
+    if (!declarations.length) continue;
 
-    out.push(`${selector} {`)
+    out.push(`${selector} {`);
     for (const decl of declarations) {
-      out.push(`  ${decl};`)
+      out.push(`  ${decl};`);
     }
-    out.push('}')
-    out.push('')
+    out.push("}");
+    out.push("");
   }
 
-  return out.join('\n').trimEnd()
+  return out.join("\n").trimEnd();
 }

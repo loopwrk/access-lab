@@ -7,41 +7,41 @@
  * visual styles the user could have customised through the studio
  * sections (Text, Dimensions, Border, Colours, Focus) get cleared.
  */
-const model = defineModel<Record<string, unknown>>({ required: true })
+const model = defineModel<Record<string, unknown>>({ required: true });
 
-const { t } = useI18n()
-const { focusLearnTopic } = useInspectorTab()
+const { t } = useI18n();
+const { focusLearnTopic } = useInspectorTab();
 
 // Keys that any styling section can write into the model. Listed in
 // one place so this control stays in sync with every section's enable/
 // disable contract; if a new section adds a new styling prop, add its
 // key here too.
 const STYLE_KEYS = [
-  'width',
-  'height',
-  'padding',
-  'paddingTop',
-  'paddingRight',
-  'paddingBottom',
-  'paddingLeft',
-  'borderWidth',
-  'borderTopWidth',
-  'borderRightWidth',
-  'borderBottomWidth',
-  'borderLeftWidth',
-  'borderColor',
-  'fontSize',
-  'bg',
-  'fgText',
-  'focusRingEnabled',
-  'focusRingWidth',
-  'focusRingColor',
-  'focusRingOffset'
-] as const
+  "width",
+  "height",
+  "padding",
+  "paddingTop",
+  "paddingRight",
+  "paddingBottom",
+  "paddingLeft",
+  "borderWidth",
+  "borderTopWidth",
+  "borderRightWidth",
+  "borderBottomWidth",
+  "borderLeftWidth",
+  "borderColor",
+  "fontSize",
+  "bg",
+  "fgText",
+  "focusRingEnabled",
+  "focusRingWidth",
+  "focusRingColor",
+  "focusRingOffset",
+] as const;
 
 function resetToBrowserDefaults() {
   for (const key of STYLE_KEYS) {
-    delete model.value[key]
+    model.value[key] = undefined;
   }
 }
 </script>
@@ -49,7 +49,10 @@ function resetToBrowserDefaults() {
 <template>
   <fieldset class="flex flex-col gap-2 border-0 p-0 m-0">
     <legend class="control-group-title mb-1.5">
-      <i18n-t keypath="controls.resetDefaults.label" tag="span">
+      <i18n-t
+        keypath="controls.resetDefaults.label"
+        tag="span"
+      >
         <template #learnMoreLink>
           <a
             href="#topic-native-rendering"

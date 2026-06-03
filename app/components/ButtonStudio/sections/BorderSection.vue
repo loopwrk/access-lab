@@ -1,34 +1,34 @@
 <script setup lang="ts">
-import type { BaseButtonProps } from '~/types/button'
-import type { ButtonStudioDefaults } from '~/composables/useButtonStudioDefaults'
-import type { SpacingValue } from '~/components/controls/SplitSpacingControl.vue'
-import SplitSpacingControl from '~/components/controls/SplitSpacingControl.vue'
+import type { BaseButtonProps } from "~/types/button";
+import type { ButtonStudioDefaults } from "~/composables/useButtonStudioDefaults";
+import type { SpacingValue } from "~/components/controls/SplitSpacingControl.vue";
+import SplitSpacingControl from "~/components/controls/SplitSpacingControl.vue";
 
-const props = defineProps<{ defaults: ButtonStudioDefaults }>()
-const model = defineModel<Partial<BaseButtonProps>>({ required: true })
+const props = defineProps<{ defaults: ButtonStudioDefaults }>();
+const model = defineModel<Partial<BaseButtonProps>>({ required: true });
 
-const unitConv = useUnitConversion()
-const { t } = useI18n()
+const unitConv = useUnitConversion();
+const { t } = useI18n();
 
 const { enabled, toggle } = useToggleableSection(model, {
   keys: [
-    'borderWidth',
-    'borderTopWidth',
-    'borderRightWidth',
-    'borderBottomWidth',
-    'borderLeftWidth',
-    'borderColor'
+    "borderWidth",
+    "borderTopWidth",
+    "borderRightWidth",
+    "borderBottomWidth",
+    "borderLeftWidth",
+    "borderColor",
   ],
   enable: () => {
-    const length = unitConv.fromPx(props.defaults.borderWidth, 'px')
+    const length = unitConv.fromPx(props.defaults.borderWidth, "px");
     return {
       borderWidth: length,
       borderTopWidth: length,
       borderRightWidth: length,
       borderBottomWidth: length,
       borderLeftWidth: length,
-      borderColor: props.defaults.borderColor
-    }
+      borderColor: props.defaults.borderColor,
+    };
   },
   disable: () => ({
     borderWidth: undefined,
@@ -36,9 +36,9 @@ const { enabled, toggle } = useToggleableSection(model, {
     borderRightWidth: undefined,
     borderBottomWidth: undefined,
     borderLeftWidth: undefined,
-    borderColor: undefined
-  })
-})
+    borderColor: undefined,
+  }),
+});
 
 const borderWidthValue = computed<SpacingValue>({
   get: () => ({
@@ -46,16 +46,16 @@ const borderWidthValue = computed<SpacingValue>({
     top: model.value.borderTopWidth,
     right: model.value.borderRightWidth,
     bottom: model.value.borderBottomWidth,
-    left: model.value.borderLeftWidth
+    left: model.value.borderLeftWidth,
   }),
   set: (next) => {
-    model.value.borderWidth = next.shorthand
-    model.value.borderTopWidth = next.top
-    model.value.borderRightWidth = next.right
-    model.value.borderBottomWidth = next.bottom
-    model.value.borderLeftWidth = next.left
-  }
-})
+    model.value.borderWidth = next.shorthand;
+    model.value.borderTopWidth = next.top;
+    model.value.borderRightWidth = next.right;
+    model.value.borderBottomWidth = next.bottom;
+    model.value.borderLeftWidth = next.left;
+  },
+});
 </script>
 
 <template>

@@ -1,19 +1,19 @@
 <script setup lang="ts">
-import type { BaseButtonProps } from '~/types/button'
-import type { ButtonStudioDefaults } from '~/composables/useButtonStudioDefaults'
-import LengthControl from '~/components/controls/LengthControl.vue'
+import type { BaseButtonProps } from "~/types/button";
+import type { ButtonStudioDefaults } from "~/composables/useButtonStudioDefaults";
+import LengthControl from "~/components/controls/LengthControl.vue";
 
-const props = defineProps<{ defaults: ButtonStudioDefaults }>()
-const model = defineModel<Partial<BaseButtonProps>>({ required: true })
+const props = defineProps<{ defaults: ButtonStudioDefaults }>();
+const model = defineModel<Partial<BaseButtonProps>>({ required: true });
 
-const unitConv = useUnitConversion()
-const { t } = useI18n()
+const unitConv = useUnitConversion();
+const { t } = useI18n();
 
 const { enabled, toggle } = useToggleableSection(model, {
-  keys: ['fontSize'],
-  enable: () => ({ fontSize: unitConv.fromPx(props.defaults.fontSize, 'rem') }),
-  disable: () => ({ fontSize: undefined })
-})
+  keys: ["fontSize"],
+  enable: () => ({ fontSize: unitConv.fromPx(props.defaults.fontSize, "rem") }),
+  disable: () => ({ fontSize: undefined }),
+});
 </script>
 
 <template>

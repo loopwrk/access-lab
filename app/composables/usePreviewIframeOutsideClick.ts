@@ -7,6 +7,6 @@
  */
 export function usePreviewIframeOutsideClick(onPreviewClick: () => void) {
   usePreviewMessage({
-    'preview:pointerdown': onPreviewClick
-  })
+    "preview:pointerdown": onPreviewClick,
+  });
 }

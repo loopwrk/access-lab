@@ -4,34 +4,34 @@
  *
  * Controls panel is sourced from `definition.controlsComponent`
  */
-import type { ComponentDefinition } from '~/types/component'
+import type { ComponentDefinition } from "~/types/component";
 
 const props = defineProps<{
-  definition: ComponentDefinition<Record<string, unknown>>
-}>()
+  definition: ComponentDefinition<Record<string, unknown>>;
+}>();
 
-const { t } = useI18n()
-const { focusLearnTopic } = useInspectorTab()
-const { previewRef, componentProps } = useInspectedComponent(props.definition)
-const { activeComponentName, activeLearnTopicId, activeRelevantConcepts } = useStudioToolbar()
+const { t } = useI18n();
+const { focusLearnTopic } = useInspectorTab();
+const { previewRef, componentProps } = useInspectedComponent(props.definition);
+const { activeComponentName, activeLearnTopicId, activeRelevantConcepts } = useStudioToolbar();
 
 const renderAs = computed({
-  get: () => (componentProps.value.renderAs as string | undefined) ?? '',
+  get: () => (componentProps.value.renderAs as string | undefined) ?? "",
   set: (next: string) => {
-    componentProps.value = { ...componentProps.value, renderAs: next }
-  }
-})
+    componentProps.value = { ...componentProps.value, renderAs: next };
+  },
+});
 
 const variantPlaceholder = computed(() =>
-  t('variantPicker.placeholderForElement', { name: props.definition.name })
-)
+  t("variantPicker.placeholderForElement", { name: props.definition.name }),
+);
 
 const enabledWrappers = computed({
   get: () => (componentProps.value.wrappers as string[] | undefined) ?? [],
   set: (next: string[]) => {
-    componentProps.value = { ...componentProps.value, wrappers: next }
-  }
-})
+    componentProps.value = { ...componentProps.value, wrappers: next };
+  },
+});
 
 /**
  * Context-wrappers actually available for the current variant. A wrapper
@@ -40,26 +40,26 @@ const enabledWrappers = computed({
  * runtime because the HTML parser auto-closes the outer button.
  */
 const availableContextWrappers = computed(() => {
-  const all = props.definition.contextWrappers ?? []
-  const renderAs = componentProps.value.renderAs as string | undefined
-  return all.filter(w => w.availableFor?.(renderAs) ?? true)
-})
+  const all = props.definition.contextWrappers ?? [];
+  const renderAs = componentProps.value.renderAs as string | undefined;
+  return all.filter((w) => w.availableFor?.(renderAs) ?? true);
+});
 
 watch(availableContextWrappers, (next) => {
-  const current = (componentProps.value.wrappers as string[] | undefined)?.[0]
-  if (!current) return
-  if (!next.some(w => w.key === current)) {
-    componentProps.value = { ...componentProps.value, wrappers: [] }
+  const current = (componentProps.value.wrappers as string[] | undefined)?.[0];
+  if (!current) return;
+  if (!next.some((w) => w.key === current)) {
+    componentProps.value = { ...componentProps.value, wrappers: [] };
   }
-})
+});
 
-const toast = useToast()
+const toast = useToast();
 
-interface FormSubmittedEntry { name: string, value: string }
+interface FormSubmittedEntry { name: string; value: string }
 interface FormSubmittedMessage {
-  type: 'form:submitted'
-  entries: FormSubmittedEntry[]
-  wasImplicitSubmit: boolean
+  type: "form:submitted";
+  entries: FormSubmittedEntry[];
+  wasImplicitSubmit: boolean;
 }
 
 /**
@@ -69,83 +69,83 @@ interface FormSubmittedMessage {
  * "(no payload)" label.
  */
 function buildSubmittedDescription(entries: FormSubmittedEntry[]): string {
-  if (!entries.length) return t('studio.toasts.formSubmittedNoPayload')
-  return entries.map(e => `${e.name}=${e.value}`).join(', ')
+  if (!entries.length) return t("studio.toasts.formSubmittedNoPayload");
+  return entries.map((e) => `${e.name}=${e.value}`).join(", ");
 }
 
 const formSubmittedAction = computed(() => [{
-  label: t('studio.toasts.formSubmittedLink'),
-  onClick: () => focusLearnTopic('form-wrapping'),
-  color: 'neutral' as const,
-  variant: 'link' as const
-}])
+  label: t("studio.toasts.formSubmittedLink"),
+  onClick: () => focusLearnTopic("form-wrapping"),
+  color: "neutral" as const,
+  variant: "link" as const,
+}]);
 
 const submitNoFormAction = computed(() => [{
-  label: t('studio.toasts.submitNoFormLink'),
-  onClick: () => focusLearnTopic('button-types'),
-  color: 'neutral' as const,
-  variant: 'link' as const
-}])
+  label: t("studio.toasts.submitNoFormLink"),
+  onClick: () => focusLearnTopic("button-types"),
+  color: "neutral" as const,
+  variant: "link" as const,
+}]);
 
 usePreviewMessage({
-  'demo:click': () => {
-    if (props.definition.suppressDemoClickToast) return
+  "demo:click": () => {
+    if (props.definition.suppressDemoClickToast) return;
     toast.add({
-      title: t('studio.toasts.demoAction'),
-      icon: 'i-lucide-circle-check',
-      color: 'success'
-    })
+      title: t("studio.toasts.demoAction"),
+      icon: "i-lucide-circle-check",
+      color: "success",
+    });
   },
-  'form:submitted': (data) => {
-    const submitted = data as FormSubmittedMessage
+  "form:submitted": (data) => {
+    const submitted = data as FormSubmittedMessage;
     toast.add({
-      title: t('studio.toasts.formSubmitted'),
+      title: t("studio.toasts.formSubmitted"),
       description: buildSubmittedDescription(submitted.entries),
-      icon: 'i-lucide-send',
-      color: 'info',
+      icon: "i-lucide-send",
+      color: "info",
       // The "Why did the button send a form submission?" prompt only
       // makes sense when the submitter was a <button> with no type
       // attribute — that's the implicit-submit pitfall the link
       // explains. An explicit type="submit" button is doing exactly
       // what the developer wrote, so the question is misleading.
-      actions: submitted.wasImplicitSubmit ? formSubmittedAction.value : undefined
-    })
+      actions: submitted.wasImplicitSubmit ? formSubmittedAction.value : undefined,
+    });
   },
-  'form:reset': () => {
+  "form:reset": () => {
     toast.add({
-      title: t('studio.toasts.formReset'),
-      icon: 'i-lucide-rotate-ccw',
-      color: 'warning'
-    })
+      title: t("studio.toasts.formReset"),
+      icon: "i-lucide-rotate-ccw",
+      color: "warning",
+    });
   },
-  'form:submitMissingForm': () => {
+  "form:submitMissingForm": () => {
     toast.add({
-      title: t('studio.toasts.submitNoForm'),
-      icon: 'i-lucide-circle-alert',
-      color: 'error',
-      actions: submitNoFormAction.value
-    })
+      title: t("studio.toasts.submitNoForm"),
+      icon: "i-lucide-circle-alert",
+      color: "error",
+      actions: submitNoFormAction.value,
+    });
   },
-  'form:resetMissingForm': () => {
+  "form:resetMissingForm": () => {
     toast.add({
-      title: t('studio.toasts.resetNoForm'),
-      icon: 'i-lucide-circle-alert',
-      color: 'error'
-    })
-  }
-})
+      title: t("studio.toasts.resetNoForm"),
+      icon: "i-lucide-circle-alert",
+      color: "error",
+    });
+  },
+});
 
 onMounted(() => {
-  activeComponentName.value = props.definition.name
-  activeLearnTopicId.value = props.definition.primaryLearnTopicId ?? null
-  activeRelevantConcepts.value = props.definition.relevantConcepts ?? []
-})
+  activeComponentName.value = props.definition.name;
+  activeLearnTopicId.value = props.definition.primaryLearnTopicId ?? null;
+  activeRelevantConcepts.value = props.definition.relevantConcepts ?? [];
+});
 
 onBeforeUnmount(() => {
-  activeComponentName.value = null
-  activeLearnTopicId.value = null
-  activeRelevantConcepts.value = []
-})
+  activeComponentName.value = null;
+  activeLearnTopicId.value = null;
+  activeRelevantConcepts.value = [];
+});
 </script>
 
 <template>
@@ -154,15 +154,34 @@ onBeforeUnmount(() => {
       <PreviewIframe ref="previewRef" />
     </div>
   </div>
-  <Teleport v-if="props.definition.variants?.length" to="#preview-toolbar-variant">
-    <VariantPicker v-model="renderAs" :variants="props.definition.variants" :placeholder="variantPlaceholder" />
+  <Teleport
+    v-if="props.definition.variants?.length"
+    to="#preview-toolbar-variant"
+  >
+    <VariantPicker
+      v-model="renderAs"
+      :variants="props.definition.variants"
+      :placeholder="variantPlaceholder"
+    />
   </Teleport>
-  <Teleport v-if="availableContextWrappers.length" to="#preview-toolbar-wrappers">
-    <WrapperToggles v-model="enabledWrappers" :options="availableContextWrappers"
-      :element-name="props.definition.tagName" />
+  <Teleport
+    v-if="availableContextWrappers.length"
+    to="#preview-toolbar-wrappers"
+  >
+    <WrapperToggles
+      v-model="enabledWrappers"
+      :options="availableContextWrappers"
+      :element-name="props.definition.tagName"
+    />
   </Teleport>
-  <Teleport v-if="props.definition.controlsComponent" :to="`#${INSPECTOR_PANEL_IDS.controls}`">
-    <component :is="props.definition.controlsComponent" v-model="componentProps" />
+  <Teleport
+    v-if="props.definition.controlsComponent"
+    :to="`#${INSPECTOR_PANEL_IDS.controls}`"
+  >
+    <component
+      :is="props.definition.controlsComponent"
+      v-model="componentProps"
+    />
   </Teleport>
   <Teleport :to="`#${INSPECTOR_PANEL_IDS.issues}`">
     <IssuesPanel />
@@ -174,4 +193,3 @@ onBeforeUnmount(() => {
     <LearnPanel />
   </Teleport>
 </template>
-

@@ -11,16 +11,15 @@ const props = withDefaults(defineProps<{
   violationIds: () => [],
 });
 
-
 const showsGlow = computed(() => props.color !== "success");
 
 const isGlowing = ref(false);
 const GLOW_DURATION_MS = 720;
 
 const { start: scheduleGlowEnd } = useTimeoutFn(
-  () => { isGlowing.value = false },
+  () => { isGlowing.value = false; },
   GLOW_DURATION_MS,
-  { immediate: false }
+  { immediate: false },
 );
 
 function pulseGlow() {
@@ -48,7 +47,7 @@ const { start: scheduleTallyApply } = useTimeoutFn(
     }
   },
   TALLY_SETTLE_MS,
-  { immediate: false }
+  { immediate: false },
 );
 
 watch(() => props.count, (next) => {
@@ -74,20 +73,28 @@ watch(() => props.violationIds, (next, prev) => {
   }
   if (!showsGlow.value) return;
   const prevSet = new Set(prev ?? []);
-  const hasNew = next.some(id => !prevSet.has(id));
+  const hasNew = next.some((id) => !prevSet.has(id));
   if (hasNew) pulseGlow();
 });
 </script>
 
 <template>
-  <UBadge :color="color" variant="soft" size="lg" :class="[
-    'count-badge',
-    `count-badge--${color}`,
-    isGlowing && 'count-badge--glow'
-  ]">
+  <UBadge
+    :color="color"
+    variant="soft"
+    size="lg"
+    :class="[
+      'count-badge',
+      `count-badge--${color}`,
+      isGlowing && 'count-badge--glow',
+    ]"
+  >
     <span class="count-num-wrap">
       <Transition name="tally">
-        <span :key="stableKey" class="count-num">{{ displayCount }}</span>
+        <span
+          :key="stableKey"
+          class="count-num"
+        >{{ displayCount }}</span>
       </Transition>
     </span>
     <span>{{ ' ' }}{{ noun }}</span>

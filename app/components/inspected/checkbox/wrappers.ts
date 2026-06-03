@@ -1,4 +1,4 @@
-import type { ContextWrapper } from '~/types/component'
+import type { ContextWrapper } from "~/types/component";
 
 /**
  * Form wrapper for the checkbox studio. Differs from the button-family
@@ -9,9 +9,9 @@ import type { ContextWrapper } from '~/types/component'
  * `form:submitted` toast plumbing in ComponentStudio.
  */
 export const formSubmitWrapper: ContextWrapper = {
-  key: 'form',
-  label: '<form>',
-  learnTopicId: 'form-wrapping',
+  key: "form",
+  label: "<form>",
+  learnTopicId: "form-wrapping",
   wrap: (html: string) =>
-    `<form>${html}<div style="margin-top:0.8em;"><button type="submit">Submit</button></div></form>`
-}
+    `<form>${html}<div style="margin-top:0.8em;"><button type="submit">Submit</button></div></form>`,
+};

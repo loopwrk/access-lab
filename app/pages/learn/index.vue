@@ -8,9 +8,9 @@
  * nuxt.config routeRule) lets it react to the live topic list — if
  * the first category becomes empty, the next one wins.
  */
-definePageMeta({ layout: 'learn' })
+definePageMeta({ layout: "learn" });
 
-const { groups } = useLearnTopicTree()
+const { groups } = useLearnTopicTree();
 
 // We can't `await` reactive state during setup the way we would a
 // promise, but the tree is resolved by the time the page renders
@@ -18,11 +18,11 @@ const { groups } = useLearnTopicTree()
 // list is empty (e.g. content build hasn't completed yet), fall back
 // to `/` rather than getting stuck on a blank page.
 watchEffect(() => {
-  const firstTopic = groups.value[0]?.topics[0]
+  const firstTopic = groups.value[0]?.topics[0];
   if (firstTopic) {
-    navigateTo(`/learn/${firstTopic.id}`, { replace: true })
+    navigateTo(`/learn/${firstTopic.id}`, { replace: true });
   }
-})
+});
 </script>
 
 <template>
@@ -32,7 +32,11 @@ watchEffect(() => {
     transition doesn't flash a different style.
   -->
   <div class="flex items-center justify-center gap-2 py-16">
-    <UIcon name="i-lucide-loader-circle" class="size-6 animate-spin text-(--text-muted)" aria-hidden="true" />
+    <UIcon
+      name="i-lucide-loader-circle"
+      class="size-6 animate-spin text-(--text-muted)"
+      aria-hidden="true"
+    />
     <span class="sr-only">Loading…</span>
   </div>
 </template>

@@ -36,16 +36,16 @@ export function useAxeCounts() {
 
   const criticalCount = computed(
     () =>
-      axeState.value.violations.filter((v) => isCritical(v.impact)).length +
-      customViolations.value.filter((v) => isCritical(v.impact)).length +
-      domViolations.value.filter((v) => isCritical(v.impact)).length,
+      axeState.value.violations.filter((v) => isCritical(v.impact)).length
+      + customViolations.value.filter((v) => isCritical(v.impact)).length
+      + domViolations.value.filter((v) => isCritical(v.impact)).length,
   );
 
   const warningCount = computed(
     () =>
-      axeState.value.violations.filter((v) => isWarning(v.impact)).length +
-      customViolations.value.filter((v) => isWarning(v.impact)).length +
-      domViolations.value.filter((v) => isWarning(v.impact)).length,
+      axeState.value.violations.filter((v) => isWarning(v.impact)).length
+      + customViolations.value.filter((v) => isWarning(v.impact)).length
+      + domViolations.value.filter((v) => isWarning(v.impact)).length,
   );
 
   const passingCount = computed(() => axeState.value.passes.length);

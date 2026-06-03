@@ -13,7 +13,7 @@ export function focusPreviewContent(
   // Standard focusable selector — covers buttons, links with href, form
   // fields, and anything with explicit positive tabindex.
   const firstFocusable = mount?.querySelector<HTMLElement>(
-    'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+    "button, [href], input, select, textarea, [tabindex]:not([tabindex=\"-1\"])",
   );
   if (firstFocusable) {
     firstFocusable.focus();

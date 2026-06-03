@@ -10,30 +10,30 @@ import type { LearnConceptId } from "~/utils/learnConcepts";
  * component starts here: add the id to this union, then add the matching
  * definition to the registry.
  */
-export type ComponentId =
-  | "buttons-action-triggers"
-  | "buttons-form-buttons"
-  | "buttons-toggle-buttons"
-  | "buttons-switches"
-  | "buttons-disclosure-triggers"
-  | "buttons-menu-triggers"
-  | "accordion"
-  | "carousel"
-  | "modal"
-  | "menu"
-  | "tooltip"
-  | "tabs"
-  | "input"
-  | "checkbox"
-  | "radio";
+export type ComponentId
+  = | "buttons-action-triggers"
+    | "buttons-form-buttons"
+    | "buttons-toggle-buttons"
+    | "buttons-switches"
+    | "buttons-disclosure-triggers"
+    | "buttons-menu-triggers"
+    | "accordion"
+    | "carousel"
+    | "modal"
+    | "menu"
+    | "tooltip"
+    | "tabs"
+    | "input"
+    | "checkbox"
+    | "radio";
 
 /**
  * Schema entries for the auto-rendered controls panel. Discriminated by
  * `kind`. `group` is recursive — groups contain other controls.
  */
-export type ControlSchema =
-  | { kind: "text"; key: string; label: string; placeholder?: string }
-  | {
+export type ControlSchema
+  = | { kind: "text"; key: string; label: string; placeholder?: string }
+    | {
       kind: "slider";
       key: string;
       label: string;
@@ -43,14 +43,14 @@ export type ControlSchema =
       unit?: string;
       splittable?: boolean;
     }
-  | { kind: "colour"; key: string; label: string }
-  | {
+    | { kind: "colour"; key: string; label: string }
+    | {
       kind: "segmented";
       key: string;
       label: string;
       options: { value: string; label: string }[];
     }
-  | { kind: "group"; label: string; controls: ControlSchema[] };
+    | { kind: "group"; label: string; controls: ControlSchema[] };
 
 /**
  * Contract every inspected component conforms to (plan.md §7).
@@ -116,12 +116,12 @@ export interface RenderedFragment {
   css?: string;
 }
 
-export type ComponentVariantStatus =
-  | "recommended"
-  | "info"
-  | "avoid"
-  | "rare"
-  | "neutral";
+export type ComponentVariantStatus
+  = | "recommended"
+    | "info"
+    | "avoid"
+    | "rare"
+    | "neutral";
 
 export interface ComponentVariant {
   /** Value written into `props.renderAs`. */

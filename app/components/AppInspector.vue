@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import type { TabsItem } from '@nuxt/ui'
+import type { TabsItem } from "@nuxt/ui";
 
-const { t } = useI18n()
-const { activeTab } = useInspectorTab()
+const { t } = useI18n();
+const { activeTab } = useInspectorTab();
 
 const tabItems = computed<TabsItem[]>(() => [
-  { label: t('inspector.controls'), value: 'controls' },
-  { label: t('inspector.issues'), value: 'issues' },
-  { label: t('inspector.manual'), value: 'manual' },
-  { label: t('inspector.learn'), value: 'learn' }
-])
+  { label: t("inspector.controls"), value: "controls" },
+  { label: t("inspector.issues"), value: "issues" },
+  { label: t("inspector.manual"), value: "manual" },
+  { label: t("inspector.learn"), value: "learn" },
+]);
 </script>
 
 <template>

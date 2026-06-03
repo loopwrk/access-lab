@@ -1,27 +1,27 @@
 <script setup lang="ts">
-import type { BaseButtonProps } from '~/types/button'
-import type { MenuBehaviour } from '~/components/inspected/buttons/shared/types'
+import type { BaseButtonProps } from "~/types/button";
+import type { MenuBehaviour } from "~/components/inspected/buttons/shared/types";
 
 type MenuProps = Partial<BaseButtonProps> & {
-  menuBehaviour?: MenuBehaviour
-  menuOpen?: boolean
-  menuShowControls?: boolean
-}
+  menuBehaviour?: MenuBehaviour;
+  menuOpen?: boolean;
+  menuShowControls?: boolean;
+};
 
-const model = defineModel<MenuProps>({ required: true })
-const { update } = useButtonControlsModel(model)
+const model = defineModel<MenuProps>({ required: true });
+const { update } = useButtonControlsModel(model);
 
-const { t } = useI18n()
-const { focusLearnTopic } = useInspectorTab()
+const { t } = useI18n();
+const { focusLearnTopic } = useInspectorTab();
 
-const behaviour = computed(() => model.value.menuBehaviour ?? 'none')
+const behaviour = computed(() => model.value.menuBehaviour ?? "none");
 
-const OPTIONS: { value: MenuBehaviour, labelKey: string }[] = [
-  { value: 'none', labelKey: 'controls.menuBehaviourNone' },
-  { value: 'aria-expanded-haspopup', labelKey: 'controls.menuBehaviourBoth' },
-  { value: 'haspopup-only', labelKey: 'controls.menuBehaviourHasPopupOnly' },
-  { value: 'expanded-only', labelKey: 'controls.menuBehaviourExpandedOnly' }
-]
+const OPTIONS: { value: MenuBehaviour; labelKey: string }[] = [
+  { value: "none", labelKey: "controls.menuBehaviourNone" },
+  { value: "aria-expanded-haspopup", labelKey: "controls.menuBehaviourBoth" },
+  { value: "haspopup-only", labelKey: "controls.menuBehaviourHasPopupOnly" },
+  { value: "expanded-only", labelKey: "controls.menuBehaviourExpandedOnly" },
+];
 </script>
 
 <template>

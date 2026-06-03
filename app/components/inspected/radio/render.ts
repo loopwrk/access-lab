@@ -30,7 +30,7 @@ interface InputAttrs {
 
 function inputTag(attrs: InputAttrs): string {
   const parts: string[] = [
-    'type="radio"',
+    "type=\"radio\"",
     `id="${attrs.id}"`,
     `name="${escape(attrs.name)}"`,
     `value="${escape(attrs.value)}"`,
@@ -73,7 +73,7 @@ function renderSingleRadio(
   switch (association) {
     case "wrapping": {
       const wrappedAttrs: string[] = [
-        'type="radio"',
+        "type=\"radio\"",
         `id="${id}"`,
         `name="${escape(baseAttrs.name)}"`,
         `value="${escape(baseAttrs.value)}"`,
@@ -100,7 +100,7 @@ function renderSingleRadio(
 }
 
 export function renderRadio(props?: Partial<RadioProps>): string {
-  if (!props) return '<input type="radio" />';
+  if (!props) return "<input type=\"radio\" />";
 
   const groupMode = props.groupMode ?? "group-with-fieldset";
   const items = props.groupItems?.length ? props.groupItems : [];

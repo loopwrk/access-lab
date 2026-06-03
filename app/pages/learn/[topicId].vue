@@ -14,17 +14,17 @@
  * topic's DOM lingering during reactivity transitions.
  */
 definePageMeta({
-  layout: 'learn',
-  key: route => route.path
-})
+  layout: "learn",
+  key: (route) => route.path,
+});
 
-const { t } = useI18n()
-const route = useRoute()
+const { t } = useI18n();
+const route = useRoute();
 
 const topicId = computed(() => {
-  const raw = route.params.topicId
-  return Array.isArray(raw) ? raw[0] : raw
-})
+  const raw = route.params.topicId;
+  return Array.isArray(raw) ? raw[0] : raw;
+});
 
 // useAsyncData is *cached by key*. The page re-mounts per topic
 // (via `definePageMeta({ key })` below), so we want each topic to
@@ -33,18 +33,18 @@ const topicId = computed(() => {
 // (the `watch` only fires on subsequent changes, not initial mount).
 // Capturing `topicId.value` at setup time gives each fresh mount a
 // unique, stable key for its lifetime — no watch needed.
-const cacheKey = `learn-topic-page:${topicId.value}`
+const cacheKey = `learn-topic-page:${topicId.value}`;
 
 const { data: doc, status } = useAsyncData(
   cacheKey,
   () => {
-    const id = topicId.value
-    if (!id) return Promise.resolve(null)
-    return queryCollection('content').where('topicId', '=', id).first()
-  }
-)
+    const id = topicId.value;
+    if (!id) return Promise.resolve(null);
+    return queryCollection("content").where("topicId", "=", id).first();
+  },
+);
 
-const articleRef = ref<HTMLElement | null>(null)
+const articleRef = ref<HTMLElement | null>(null);
 
 // Move focus into the article once the markdown has resolved so a
 // screen-reader user lands at the title and can read forward
@@ -59,21 +59,35 @@ const articleRef = ref<HTMLElement | null>(null)
 watch(
   [status, articleRef],
   ([currentStatus, el]) => {
-    if (currentStatus === 'success' && el) {
-      nextTick(() => el.focus({ preventScroll: true }))
+    if (currentStatus === "success" && el) {
+      nextTick(() => el.focus({ preventScroll: true }));
     }
-  }
-)
+  },
+);
 </script>
 
 <template>
-  <div v-if="status === 'pending'" class="flex items-center justify-center gap-2 py-16">
-    <UIcon name="i-lucide-loader-circle" class="size-6 animate-spin text-(--text-muted)" aria-hidden="true" />
+  <div
+    v-if="status === 'pending'"
+    class="flex items-center justify-center gap-2 py-16"
+  >
+    <UIcon
+      name="i-lucide-loader-circle"
+      class="size-6 animate-spin text-(--text-muted)"
+      aria-hidden="true"
+    />
     <span class="sr-only">{{ t('learn.readMode.loading') }}</span>
   </div>
 
-  <div v-else-if="!doc" class="flex flex-col items-center justify-center gap-3 py-16">
-    <UIcon name="i-lucide-file-question" class="size-8 text-(--text-muted)" aria-hidden="true" />
+  <div
+    v-else-if="!doc"
+    class="flex flex-col items-center justify-center gap-3 py-16"
+  >
+    <UIcon
+      name="i-lucide-file-question"
+      class="size-8 text-(--text-muted)"
+      aria-hidden="true"
+    />
     <p class="text-(--text-muted) text-(length:--al-font-size-body)">
       {{ t('learn.readMode.notFound') }}
     </p>
@@ -83,7 +97,12 @@ watch(
       so this is the only escape hatch — explicit text rather than
       an icon so screen-reader users get a clear destination.
     -->
-    <UButton color="neutral" variant="outline" size="sm" :to="'/'">
+    <UButton
+      color="neutral"
+      variant="outline"
+      size="sm"
+      :to="'/'"
+    >
       {{ t('learn.readMode.goBack') }}
     </UButton>
   </div>
@@ -94,10 +113,19 @@ watch(
     <h1> so the markdown body stays focused on section content
     (## and below) — single source of truth for the article title.
   -->
-  <article v-else ref="articleRef" tabindex="-1"
-    class="mx-auto max-w-[66ch] px-4 py-6 sm:px-8 sm:py-10 focus:outline-none read-mode-prose">
-    <h1 v-if="doc.title">{{ doc.title }}</h1>
-    <ContentRenderer :value="doc" prose />
+  <article
+    v-else
+    ref="articleRef"
+    tabindex="-1"
+    class="mx-auto max-w-[66ch] px-4 py-6 sm:px-8 sm:py-10 focus:outline-none read-mode-prose"
+  >
+    <h1 v-if="doc.title">
+      {{ doc.title }}
+    </h1>
+    <ContentRenderer
+      :value="doc"
+      prose
+    />
   </article>
 </template>
 

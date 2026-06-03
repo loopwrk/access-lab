@@ -1,26 +1,26 @@
 <script setup lang="ts">
-import type { BaseButtonProps } from '~/types/button'
-import type { DisclosureBehaviour } from '~/components/inspected/buttons/shared/types'
+import type { BaseButtonProps } from "~/types/button";
+import type { DisclosureBehaviour } from "~/components/inspected/buttons/shared/types";
 
 type DisclosureProps = Partial<BaseButtonProps> & {
-  disclosureBehaviour?: DisclosureBehaviour
-  disclosureExpanded?: boolean
-  disclosureShowControls?: boolean
-}
+  disclosureBehaviour?: DisclosureBehaviour;
+  disclosureExpanded?: boolean;
+  disclosureShowControls?: boolean;
+};
 
-const model = defineModel<DisclosureProps>({ required: true })
-const { update } = useButtonControlsModel(model)
+const model = defineModel<DisclosureProps>({ required: true });
+const { update } = useButtonControlsModel(model);
 
-const { t } = useI18n()
-const { focusLearnTopic } = useInspectorTab()
+const { t } = useI18n();
+const { focusLearnTopic } = useInspectorTab();
 
-const behaviour = computed(() => model.value.disclosureBehaviour ?? 'none')
+const behaviour = computed(() => model.value.disclosureBehaviour ?? "none");
 
-const OPTIONS: { value: DisclosureBehaviour, labelKey: string }[] = [
-  { value: 'none', labelKey: 'controls.disclosureBehaviourNone' },
-  { value: 'aria-expanded', labelKey: 'controls.disclosureBehaviourAriaExpanded' },
-  { value: 'out-of-sync', labelKey: 'controls.disclosureBehaviourOutOfSync' }
-]
+const OPTIONS: { value: DisclosureBehaviour; labelKey: string }[] = [
+  { value: "none", labelKey: "controls.disclosureBehaviourNone" },
+  { value: "aria-expanded", labelKey: "controls.disclosureBehaviourAriaExpanded" },
+  { value: "out-of-sync", labelKey: "controls.disclosureBehaviourOutOfSync" },
+];
 </script>
 
 <template>

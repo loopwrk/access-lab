@@ -8,7 +8,7 @@
  * change the default later by editing this single line.
  *
  */
-await navigateTo('/components/buttons/action-triggers', { replace: true })
+await navigateTo("/components/buttons/action-triggers", { replace: true });
 </script>
 
 <template>

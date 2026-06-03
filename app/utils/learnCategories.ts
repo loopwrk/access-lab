@@ -15,24 +15,24 @@
  */
 
 export type LearnCategoryId
-  = | 'foundations'
-    | 'accessible-names'
-    | 'forms'
-    | 'form-inputs'
-    | 'buttons-with-state'
-    | 'disclosure-and-menu'
+  = | "foundations"
+    | "accessible-names"
+    | "forms"
+    | "form-inputs"
+    | "buttons-with-state"
+    | "disclosure-and-menu";
 
 export interface LearnCategory {
-  id: LearnCategoryId
-  titleKey: string
+  id: LearnCategoryId;
+  titleKey: string;
 }
 
 // Index order = display order in the Learn tree.
 export const LEARN_CATEGORIES: LearnCategory[] = [
-  { id: 'foundations', titleKey: 'learn.categories.foundations' },
-  { id: 'accessible-names', titleKey: 'learn.categories.accessibleNames' },
-  { id: 'forms', titleKey: 'learn.categories.forms' },
-  { id: 'form-inputs', titleKey: 'learn.categories.formInputs' },
-  { id: 'buttons-with-state', titleKey: 'learn.categories.buttonsWithState' },
-  { id: 'disclosure-and-menu', titleKey: 'learn.categories.disclosureAndMenu' }
-]
+  { id: "foundations", titleKey: "learn.categories.foundations" },
+  { id: "accessible-names", titleKey: "learn.categories.accessibleNames" },
+  { id: "forms", titleKey: "learn.categories.forms" },
+  { id: "form-inputs", titleKey: "learn.categories.formInputs" },
+  { id: "buttons-with-state", titleKey: "learn.categories.buttonsWithState" },
+  { id: "disclosure-and-menu", titleKey: "learn.categories.disclosureAndMenu" },
+];

@@ -1,4 +1,4 @@
-import type { ComponentDefinition, ComponentId } from '~/types/component'
+import type { ComponentDefinition, ComponentId } from "~/types/component";
 
 /**
  * When a placeholder is promoted to a real component:
@@ -11,7 +11,7 @@ import type { ComponentDefinition, ComponentId } from '~/types/component'
 function createPlaceholder(
   id: ComponentId,
   name: string,
-  tagName: string
+  tagName: string,
 ): ComponentDefinition {
   return {
     id,
@@ -21,9 +21,9 @@ function createPlaceholder(
     controls: [],
     rules: [],
     manualChecklist: [],
-    render: () => '',
-    placeholder: true
-  }
+    render: () => "",
+    placeholder: true,
+  };
 }
 
 /**
@@ -34,14 +34,14 @@ function createPlaceholder(
 export const placeholderDefinitions: Record<
   Exclude<
     ComponentId,
-    'buttons-action-triggers' | 'buttons-form-buttons' | 'buttons-toggle-buttons' | 'buttons-switches' | 'buttons-disclosure-triggers' | 'buttons-menu-triggers' | 'input' | 'checkbox' | 'radio'
+    "buttons-action-triggers" | "buttons-form-buttons" | "buttons-toggle-buttons" | "buttons-switches" | "buttons-disclosure-triggers" | "buttons-menu-triggers" | "input" | "checkbox" | "radio"
   >,
   ComponentDefinition
 > = {
-  accordion: createPlaceholder('accordion', 'Accordion', 'div'),
-  carousel: createPlaceholder('carousel', 'Carousel', 'div'),
-  modal: createPlaceholder('modal', 'Modal', 'dialog'),
-  menu: createPlaceholder('menu', 'Menu', 'div'),
-  tooltip: createPlaceholder('tooltip', 'Tooltip', 'div'),
-  tabs: createPlaceholder('tabs', 'Tabs', 'div')
-}
+  accordion: createPlaceholder("accordion", "Accordion", "div"),
+  carousel: createPlaceholder("carousel", "Carousel", "div"),
+  modal: createPlaceholder("modal", "Modal", "dialog"),
+  menu: createPlaceholder("menu", "Menu", "div"),
+  tooltip: createPlaceholder("tooltip", "Tooltip", "div"),
+  tabs: createPlaceholder("tabs", "Tabs", "div"),
+};

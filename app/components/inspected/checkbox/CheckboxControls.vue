@@ -1,31 +1,31 @@
 <script setup lang="ts">
-import type { CheckboxProps, CheckboxLabelAssociation, CheckboxGroupMode } from './definition'
-import ResetDefaultsSection from '~/components/ButtonStudio/sections/ResetDefaultsSection.vue'
+import type { CheckboxProps, CheckboxLabelAssociation, CheckboxGroupMode } from "./definition";
+import ResetDefaultsSection from "~/components/ButtonStudio/sections/ResetDefaultsSection.vue";
 
-const model = defineModel<Partial<CheckboxProps>>({ required: true })
+const model = defineModel<Partial<CheckboxProps>>({ required: true });
 
 function update<K extends keyof CheckboxProps>(key: K, value: CheckboxProps[K]) {
-  model.value = { ...model.value, [key]: value }
+  model.value = { ...model.value, [key]: value };
 }
 
-const { t } = useI18n()
-const { focusLearnTopic } = useInspectorTab()
+const { t } = useI18n();
+const { focusLearnTopic } = useInspectorTab();
 
-const LABEL_OPTIONS: { value: CheckboxLabelAssociation, labelKey: string }[] = [
-  { value: 'for-id', labelKey: 'controls.checkbox.labelForId' },
-  { value: 'wrapping', labelKey: 'controls.checkbox.labelWrapping' },
-  { value: 'aria-label', labelKey: 'controls.checkbox.labelAriaLabel' },
-  { value: 'none', labelKey: 'controls.checkbox.labelNone' }
-]
+const LABEL_OPTIONS: { value: CheckboxLabelAssociation; labelKey: string }[] = [
+  { value: "for-id", labelKey: "controls.checkbox.labelForId" },
+  { value: "wrapping", labelKey: "controls.checkbox.labelWrapping" },
+  { value: "aria-label", labelKey: "controls.checkbox.labelAriaLabel" },
+  { value: "none", labelKey: "controls.checkbox.labelNone" },
+];
 
-const GROUP_OPTIONS: { value: CheckboxGroupMode, labelKey: string }[] = [
-  { value: 'single', labelKey: 'controls.checkbox.groupSingle' },
-  { value: 'group-with-fieldset', labelKey: 'controls.checkbox.groupWithFieldset' },
-  { value: 'group-no-fieldset', labelKey: 'controls.checkbox.groupNoFieldset' }
-]
+const GROUP_OPTIONS: { value: CheckboxGroupMode; labelKey: string }[] = [
+  { value: "single", labelKey: "controls.checkbox.groupSingle" },
+  { value: "group-with-fieldset", labelKey: "controls.checkbox.groupWithFieldset" },
+  { value: "group-no-fieldset", labelKey: "controls.checkbox.groupNoFieldset" },
+];
 
-const labelAssociation = computed(() => model.value.labelAssociation ?? 'for-id')
-const groupMode = computed(() => model.value.groupMode ?? 'single')
+const labelAssociation = computed(() => model.value.labelAssociation ?? "for-id");
+const groupMode = computed(() => model.value.groupMode ?? "single");
 </script>
 
 <template>
@@ -42,7 +42,11 @@ const groupMode = computed(() => model.value.groupMode ?? 'single')
           @click.prevent="focusLearnTopic('accessible-name')"
         >
           {{ t('controls.checkbox.label') }}
-          <UIcon name="i-lucide-arrow-up-right" class="control-label-link-icon" aria-hidden="true" />
+          <UIcon
+            name="i-lucide-arrow-up-right"
+            class="control-label-link-icon"
+            aria-hidden="true"
+          />
         </a>
       </template>
       <UInput
@@ -64,10 +68,17 @@ const groupMode = computed(() => model.value.groupMode ?? 'single')
           @click.prevent="focusLearnTopic('checkbox')"
         >
           {{ t('controls.checkbox.labelAssociation') }}
-          <UIcon name="i-lucide-arrow-up-right" class="control-label-link-icon" aria-hidden="true" />
+          <UIcon
+            name="i-lucide-arrow-up-right"
+            class="control-label-link-icon"
+            aria-hidden="true"
+          />
         </a>
       </legend>
-      <UFieldGroup size="sm" orientation="vertical">
+      <UFieldGroup
+        size="sm"
+        orientation="vertical"
+      >
         <UButton
           v-for="opt in LABEL_OPTIONS"
           :key="opt.value"
@@ -91,10 +102,17 @@ const groupMode = computed(() => model.value.groupMode ?? 'single')
           @click.prevent="focusLearnTopic('checkbox')"
         >
           {{ t('controls.checkbox.groupMode') }}
-          <UIcon name="i-lucide-arrow-up-right" class="control-label-link-icon" aria-hidden="true" />
+          <UIcon
+            name="i-lucide-arrow-up-right"
+            class="control-label-link-icon"
+            aria-hidden="true"
+          />
         </a>
       </legend>
-      <UFieldGroup size="sm" orientation="vertical">
+      <UFieldGroup
+        size="sm"
+        orientation="vertical"
+      >
         <UButton
           v-for="opt in GROUP_OPTIONS"
           :key="opt.value"
@@ -111,7 +129,9 @@ const groupMode = computed(() => model.value.groupMode ?? 'single')
 
     <!-- State + validation -->
     <fieldset class="flex flex-col gap-2 border-0 p-0 m-0">
-      <legend class="control-group-title mb-1.5">{{ t('controls.checkbox.state') }}</legend>
+      <legend class="control-group-title mb-1.5">
+        {{ t('controls.checkbox.state') }}
+      </legend>
 
       <UFormField>
         <template #label>

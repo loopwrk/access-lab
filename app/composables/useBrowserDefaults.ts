@@ -65,9 +65,9 @@ export function useBrowserDefaults(tagName: string) {
     if (!import.meta.client) return { width: 0, height: 0 };
 
     const el = document.createElement(tagName);
-    el.style.cssText =
-      `all: revert; position: absolute; visibility: hidden; left: -9999px; top: -9999px;` +
-      (cssText ? ` ${cssText}` : "");
+    el.style.cssText
+      = `all: revert; position: absolute; visibility: hidden; left: -9999px; top: -9999px;`
+        + (cssText ? ` ${cssText}` : "");
 
     if (asHtml) el.innerHTML = content;
     else el.textContent = content;

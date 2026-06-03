@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import type { BaseButtonProps } from '~/types/button'
+import type { BaseButtonProps } from "~/types/button";
 
-const model = defineModel<Partial<BaseButtonProps>>({ required: true })
-const { update } = useButtonControlsModel(model)
+const model = defineModel<Partial<BaseButtonProps>>({ required: true });
+const { update } = useButtonControlsModel(model);
 
-const { t } = useI18n()
-const { focusLearnTopic } = useInspectorTab()
+const { t } = useI18n();
+const { focusLearnTopic } = useInspectorTab();
 </script>
 
 <template>
