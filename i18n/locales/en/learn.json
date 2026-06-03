@@ -3,6 +3,7 @@
     "index": {
       "title": "Topics"
     },
+    "pinnedForComponent": "Relevant to {component}",
     "readMode": {
       "button": "Read mode",
       "title": "Reader view",

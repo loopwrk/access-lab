@@ -13,7 +13,7 @@ const props = defineProps<{
 const { t } = useI18n()
 const { focusLearnTopic } = useInspectorTab()
 const { previewRef, componentProps } = useInspectedComponent(props.definition)
-const { activeComponentName, activeLearnTopicId } = useStudioToolbar()
+const { activeComponentName, activeLearnTopicId, activeRelevantConcepts } = useStudioToolbar()
 
 const renderAs = computed({
   get: () => (componentProps.value.renderAs as string | undefined) ?? '',
@@ -136,12 +136,14 @@ onMounted(() => {
   window.addEventListener('message', onMessage)
   activeComponentName.value = props.definition.name
   activeLearnTopicId.value = props.definition.primaryLearnTopicId ?? null
+  activeRelevantConcepts.value = props.definition.relevantConcepts ?? []
 })
 
 onBeforeUnmount(() => {
   window.removeEventListener('message', onMessage)
   activeComponentName.value = null
   activeLearnTopicId.value = null
+  activeRelevantConcepts.value = []
 })
 </script>
 

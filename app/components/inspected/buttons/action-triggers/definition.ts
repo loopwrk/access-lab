@@ -43,5 +43,6 @@ export const actionTriggerDefinition: ComponentDefinition<ButtonProps> = {
   render: renderButton,
   controlsComponent: defineAsyncComponent(
     () => import('./ActionTriggerControls.vue')
-  )
+  ),
+  relevantConcepts: ['button-element', 'accessible-name', 'disabled-state', 'native-elements']
 }

@@ -6,6 +6,10 @@ order: 2
 related:
   - accessible-name
   - disclosure-triggers
+concepts:
+  - button-element
+  - aria-state
+  - menu-pattern
 summary: A menu trigger opens a popup of choices. The button needs both
   aria-haspopup and aria-expanded, plus a real keyboard contract that browsers
   do not give you for free.

@@ -6,6 +6,9 @@ order: 1
 related:
   - accessible-name
   - switches
+concepts:
+  - button-element
+  - aria-state
 summary: A toggle button is an action whose effect sticks — mute, bold, pin,
   follow. Use a button with aria-pressed; never aria-checked, never visual-only.
 ---

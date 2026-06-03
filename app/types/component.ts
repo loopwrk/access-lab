@@ -1,5 +1,6 @@
 import type { Component } from "vue";
 import type { ManualChecklistItem, Rule } from "~/rules/types";
+import type { LearnConceptId } from "~/utils/learnConcepts";
 
 /**
  * Stable identifiers for every inspected component in the studio.
@@ -107,6 +108,7 @@ export interface ComponentDefinition<P = Record<string, unknown>> {
    */
   suppressDemoClickToast?: boolean;
   primaryLearnTopicId?: string;
+  relevantConcepts?: LearnConceptId[];
 }
 
 export interface RenderedFragment {

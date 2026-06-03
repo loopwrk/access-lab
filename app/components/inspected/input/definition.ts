@@ -36,4 +36,5 @@ export const inputDefinition: ComponentDefinition<InputProps> = {
   manualChecklist: [],
   render: renderInput,
   controlsComponent: defineAsyncComponent(() => import("./InputControls.vue")),
+  relevantConcepts: ["form-control", "accessible-name", "form-context", "native-elements"],
 };

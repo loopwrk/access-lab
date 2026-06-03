@@ -5,6 +5,8 @@ category: accessible-names
 order: 1
 related:
   - button-value-attribute
+concepts:
+  - accessible-name
 summary: An "accessible name" is the exact text a screen reader speaks to
   describe a web element. Browsers calculate this name by checking a specific
   list of sources (like text content, `aria-label`, or form labels) in a strict

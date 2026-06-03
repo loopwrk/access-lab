@@ -46,6 +46,7 @@ export const toggleButtonDefinition: ComponentDefinition<ButtonProps> = {
     toggleWrongAttribute
   ],
   primaryLearnTopicId: 'toggle-buttons',
+  relevantConcepts: ['button-element', 'aria-state', 'accessible-name'],
   manualChecklist: buttonManualChecklist,
   render: renderButton,
   controlsComponent: defineAsyncComponent(

@@ -11,6 +11,12 @@ import { defineCollection, defineContentConfig, z } from '@nuxt/content'
  *   - `category`  — grouping hint for the sidebar (optional)
  *   - `order`     — sort key for the Learn index (smaller = earlier)
  *   - `related`   — topicIds shown in the "Related topics" footer list
+ *   - `concepts`  — closed-vocabulary tags used to relate articles to
+ *     components in the studio's Learn picker. Validated against the
+ *     same id list exported from `app/utils/learnConcepts.ts` —
+ *     keep both lists in sync (adding to one without the other
+ *     either fails Zod validation here or fails the type-check on
+ *     the component side).
  */
 export default defineContentConfig({
   collections: {
@@ -32,7 +38,20 @@ export default defineContentConfig({
           ])
           .optional(),
         order: z.number().optional(),
-        related: z.array(z.string()).optional()
+        related: z.array(z.string()).optional(),
+        concepts: z
+          .array(z.enum([
+            'accessible-name',
+            'button-element',
+            'form-control',
+            'form-context',
+            'disabled-state',
+            'aria-state',
+            'disclosure-pattern',
+            'menu-pattern',
+            'native-elements'
+          ]))
+          .optional()
       })
     })
   }

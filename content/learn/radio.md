@@ -6,6 +6,9 @@ order: 2
 related:
   - checkbox
   - accessible-name
+concepts:
+  - form-control
+  - accessible-name
 summary: A radio group lets users pick exactly one option from a small set. The
   lessons cluster around three things — shared name, fieldset/legend for the
   group, and the arrow-key keyboard contract.

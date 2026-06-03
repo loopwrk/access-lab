@@ -6,6 +6,9 @@ order: 4
 related:
   - accessible-name
   - button-types
+concepts:
+  - button-element
+  - disabled-state
 summary: "The disabled attribute makes a button inert: no clicks, no focus, no
   submit. The aria-disabled alternative keeps the button reachable while
   announcing its unavailable state."

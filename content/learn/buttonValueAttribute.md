@@ -6,6 +6,10 @@ order: 2
 related:
   - button-types
   - form-wrapping
+concepts:
+  - button-element
+  - form-context
+  - accessible-name
 summary: On a button element, the value attribute is hidden form data, not a
   label. Screen readers ignore it entirely. This is the opposite of how value
   works on an input button.

@@ -22,6 +22,14 @@ export interface LearnTopic {
   category?: LearnTopicCategory
   order?: number
   related?: string[]
+  /**
+   * Closed-vocabulary tags declared by the article. Used by the
+   * studio's Learn picker to intersect with the active component's
+   * `relevantConcepts` for the "Relevant to <component>" pinned
+   * section. Empty / undefined means the article isn't pinned for
+   * any component but still appears in its category in the library.
+   */
+  concepts?: LearnConceptId[]
 }
 
 /**
@@ -41,7 +49,7 @@ export function useLearnTopics() {
     'learn-topics-index',
     () =>
       queryCollection('content')
-        .select('topicId', 'title', 'summary', 'category', 'order', 'related')
+        .select('topicId', 'title', 'summary', 'category', 'order', 'related', 'concepts')
         .order('order', 'ASC')
         .all()
   )
@@ -53,7 +61,8 @@ export function useLearnTopics() {
       summary: d.summary,
       category: d.category as LearnTopicCategory | undefined,
       order: d.order ?? undefined,
-      related: d.related ?? []
+      related: d.related ?? [],
+      concepts: (d.concepts ?? []) as LearnConceptId[]
     }))
   )
 

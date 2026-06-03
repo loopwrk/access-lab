@@ -4,6 +4,9 @@ topicId: vague-label
 category: accessible-names
 order: 2
 related: []
+concepts:
+  - accessible-name
+  - button-element
 summary: Automated tools verify a button has a name, but they can't tell whether
   the name is meaningful out of context.
 ---

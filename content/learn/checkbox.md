@@ -6,6 +6,9 @@ order: 1
 related:
   - accessible-name
   - switches
+concepts:
+  - form-control
+  - accessible-name
 summary: A checkbox captures a yes-or-no value as part of a form. Labelling it
   correctly and grouping related checkboxes inside a fieldset/legend are the two
   lessons that get missed most often.

@@ -51,6 +51,7 @@ export const menuTriggerDefinition: ComponentDefinition<ButtonProps> = {
     menuNoExpanded
   ],
   primaryLearnTopicId: 'menu-triggers',
+  relevantConcepts: ['button-element', 'aria-state', 'menu-pattern', 'accessible-name'],
   manualChecklist: menuTriggerManualChecklist,
   render: renderButton,
   controlsComponent: defineAsyncComponent(

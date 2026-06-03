@@ -6,6 +6,10 @@ order: 2
 related:
   - accessible-name
   - toggle-buttons
+concepts:
+  - aria-state
+  - form-control
+  - accessible-name
 summary: "A switch is a setting whose value is the point: on or off. Use a
   button with role=switch and aria-checked, or natively an input type=checkbox
   with role=switch."

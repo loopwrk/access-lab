@@ -6,6 +6,9 @@ order: 1
 related:
   - button-value-attribute
   - form-wrapping
+concepts:
+  - button-element
+  - form-context
 summary: The type attribute on a button element controls what the button does
   inside a form. Omitting it leads to one of the most common bugs in web forms.
 ---

@@ -6,6 +6,11 @@ order: 1
 related:
   - switches
   - toggle-buttons
+concepts:
+  - button-element
+  - aria-state
+  - disclosure-pattern
+  - native-elements
 summary: A disclosure trigger reveals a panel of related content. The trigger
   needs aria-expanded so assistive tech can announce whether the panel is open
   or shut.

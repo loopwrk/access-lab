@@ -4,6 +4,9 @@ topicId: native-rendering
 category: foundations
 order: 1
 related: []
+concepts:
+  - native-elements
+  - form-control
 summary: Browsers use a mix of user-agent styles and platform-native rendering
   for form controls. CSS can partially or fully override this behaviour
   depending on properties such as appearance.

@@ -71,6 +71,7 @@ export const radioDefinition: ComponentDefinition<RadioProps> = {
   controls: [],
   rules: [radioGroupNoFieldset],
   primaryLearnTopicId: "radio",
+  relevantConcepts: ["form-control", "accessible-name", "form-context", "aria-state", "native-elements"],
   manualChecklist: radioManualChecklist,
   render: renderRadio,
   controlsComponent: defineAsyncComponent(() => import("./RadioControls.vue")),
