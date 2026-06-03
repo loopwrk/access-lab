@@ -8,6 +8,7 @@ export default defineNuxtConfig({
     "@nuxt/hints",
     "@nuxt/image",
     "@nuxt/test-utils",
+    "@nuxtjs/color-mode",
     "@nuxtjs/google-fonts",
     "@pinia/nuxt",
     "@nuxtjs/i18n",

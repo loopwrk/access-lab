@@ -4,17 +4,8 @@ import { useUnitConversion } from '~/composables/useUnitConversion'
 import type { CssUnit, CssLength } from '~/composables/useUnitConversion'
 import ResetDefaultsSection from '~/components/ButtonStudio/sections/ResetDefaultsSection.vue'
 
-const props = defineProps<{
-  modelValue: Partial<InputProps>
-}>()
-
-const emit = defineEmits<{
-  'update:modelValue': [value: Partial<InputProps>]
-}>()
-
-function update<K extends keyof InputProps>(key: K, value: InputProps[K]) {
-  emit('update:modelValue', { ...props.modelValue, [key]: value })
-}
+const model = defineModel<Partial<InputProps>>({ required: true })
+const { update } = useButtonControlsModel(model)
 
 const { t } = useI18n()
 const unitConv = useUnitConversion()
@@ -22,11 +13,11 @@ const { focusLearnTopic } = useInspectorTab()
 
 // Derived so the switches flip off when the model is cleared from
 // elsewhere (e.g. the reset-to-defaults control).
-const fontSizeEnabled = computed(() => props.modelValue.fontSize != null)
+const fontSizeEnabled = computed(() => model.value.fontSize != null)
 const colorsEnabled = computed(() =>
-  props.modelValue.bg != null
-  || props.modelValue.fgText != null
-  || props.modelValue.borderColor != null
+  model.value.bg != null
+  || model.value.fgText != null
+  || model.value.borderColor != null
 )
 
 const _HARDCODED = {
@@ -44,17 +35,17 @@ const DEFAULTS = computed(() => ({
 }))
 
 const bgColor = computed({
-  get: () => props.modelValue.bg ?? DEFAULTS.value.bg,
+  get: () => model.value.bg ?? DEFAULTS.value.bg,
   set: (value: string) => update('bg', value)
 })
 
 const fgTextColor = computed({
-  get: () => props.modelValue.fgText ?? DEFAULTS.value.fgText,
+  get: () => model.value.fgText ?? DEFAULTS.value.fgText,
   set: (value: string) => update('fgText', value)
 })
 
 const borderColorComputed = computed({
-  get: () => props.modelValue.borderColor ?? DEFAULTS.value.borderColor,
+  get: () => model.value.borderColor ?? DEFAULTS.value.borderColor,
   set: (value: string) => update('borderColor', value)
 })
 
@@ -63,7 +54,7 @@ const { ratio: contrastRatio, verdict: contrastVerdict } = useContrast(
   bgColor,
   {
     fontSizePx: () => {
-      const f = props.modelValue.fontSize
+      const f = model.value.fontSize
       if (!f) return DEFAULTS.value.fontSize
       return unitConv.lengthToPx(f)
     },
@@ -75,24 +66,24 @@ function toggleFontSize(value: boolean | 'indeterminate') {
   if (value === true) {
     update('fontSize', unitConv.fromPx(DEFAULTS.value.fontSize, 'rem'))
   } else {
-    update('fontSize', undefined as unknown as CssLength)
+    update('fontSize', undefined)
   }
 }
 
 function toggleColors(value: boolean | 'indeterminate') {
   if (value === true) {
-    emit('update:modelValue', {
-      ...props.modelValue,
+    model.value = {
+      ...model.value,
       bg: DEFAULTS.value.bg,
       fgText: DEFAULTS.value.fgText,
       borderColor: DEFAULTS.value.borderColor
-    })
+    }
   } else {
-    const next = { ...props.modelValue }
+    const next = { ...model.value }
     delete next.bg
     delete next.fgText
     delete next.borderColor
-    emit('update:modelValue', next)
+    model.value = next
   }
 }
 
@@ -119,12 +110,12 @@ function lengthOrFallback(length: CssLength | undefined, fallbackPx: number): Cs
 }
 
 const showLabel = computed({
-  get: () => props.modelValue.showLabel !== false,
+  get: () => model.value.showLabel !== false,
   set: (value: boolean) => update('showLabel', value)
 })
 
 const required = computed({
-  get: () => props.modelValue.required === true,
+  get: () => model.value.required === true,
   set: (value: boolean) => update('required', value)
 })
 
@@ -140,8 +131,7 @@ const colorLabelHexClass = 'text-(length:--al-font-size-detail) text-(--text-mut
 
 <template>
   <div class="flex flex-col gap-4">
-    <ResetDefaultsSection :model-value="modelValue"
-      @update:model-value="emit('update:modelValue', $event as Partial<InputProps>)" />
+    <ResetDefaultsSection v-model="model" />
     <USeparator />
 
 
@@ -155,7 +145,7 @@ const colorLabelHexClass = 'text-(length:--al-font-size-detail) text-(--text-mut
             aria-hidden="true" />
         </a>
       </template>
-      <UInput :model-value="modelValue.label ?? ''" :placeholder="t('controls.input.labelPlaceholder')" class="w-full"
+      <UInput :model-value="model.label ?? ''" :placeholder="t('controls.input.labelPlaceholder')" class="w-full"
         @update:model-value="update('label', $event)" />
     </UFormField>
 
@@ -170,7 +160,7 @@ const colorLabelHexClass = 'text-(length:--al-font-size-detail) text-(--text-mut
         <template #label>
           <span class="control-group-title">{{ t('controls.input.ariaLabel') }}</span>
         </template>
-        <UInput :model-value="modelValue.ariaLabel ?? ''" :placeholder="t('controls.input.ariaLabelPlaceholder')"
+        <UInput :model-value="model.ariaLabel ?? ''" :placeholder="t('controls.input.ariaLabelPlaceholder')"
           class="w-full" @update:model-value="update('ariaLabel', $event)" />
       </UFormField>
     </fieldset>
@@ -180,7 +170,7 @@ const colorLabelHexClass = 'text-(length:--al-font-size-detail) text-(--text-mut
       <template #label>
         <span class="control-group-title">{{ t('controls.input.placeholder') }}</span>
       </template>
-      <UInput :model-value="modelValue.placeholder ?? ''" :placeholder="t('controls.input.placeholderHint')"
+      <UInput :model-value="model.placeholder ?? ''" :placeholder="t('controls.input.placeholderHint')"
         class="w-full" @update:model-value="update('placeholder', $event)" />
     </UFormField>
 
@@ -189,7 +179,7 @@ const colorLabelHexClass = 'text-(length:--al-font-size-detail) text-(--text-mut
       <template #label>
         <span class="control-group-title">{{ t('controls.input.type') }}</span>
       </template>
-      <USelect :model-value="modelValue.type ?? 'email'" :items="typeOptions" size="sm" class="w-full"
+      <USelect :model-value="model.type ?? 'email'" :items="typeOptions" size="sm" class="w-full"
         @update:model-value="update('type', $event as InputProps['type'])" />
     </UFormField>
 
@@ -207,7 +197,7 @@ const colorLabelHexClass = 'text-(length:--al-font-size-detail) text-(--text-mut
       <template #label>
         <span class="control-group-title">{{ t('controls.input.helpText') }}</span>
       </template>
-      <UInput :model-value="modelValue.helpText ?? ''" :placeholder="t('controls.input.helpTextPlaceholder')"
+      <UInput :model-value="model.helpText ?? ''" :placeholder="t('controls.input.helpTextPlaceholder')"
         class="w-full" @update:model-value="update('helpText', $event)" />
     </UFormField>
 
@@ -221,11 +211,11 @@ const colorLabelHexClass = 'text-(length:--al-font-size-detail) text-(--text-mut
           <USwitch :model-value="fontSizeEnabled" size="xs" color="primary" @update:model-value="toggleFontSize" />
         </div>
         <div :class="[fontSizeEnabled ? '' : 'opacity-50']" class="flex items-center gap-3">
-          <USlider :model-value="pxOrFallback(modelValue.fontSize, DEFAULTS.fontSize)" :min="8" :max="128" :step="2"
+          <USlider :model-value="pxOrFallback(model.fontSize, DEFAULTS.fontSize)" :min="8" :max="128" :step="2"
             color="primary" size="sm" :disabled="!fontSizeEnabled" class="flex-1"
-            @update:model-value="update('fontSize', unitConv.fromSliderPx(Number($event), unitFor(modelValue.fontSize)))" />
+            @update:model-value="update('fontSize', unitConv.fromSliderPx(Number($event), unitFor(model.fontSize)))" />
           <LengthValueInput v-if="fontSizeEnabled"
-            :model-value="lengthOrFallback(modelValue.fontSize, DEFAULTS.fontSize)" :px-step="2"
+            :model-value="lengthOrFallback(model.fontSize, DEFAULTS.fontSize)" :px-step="2"
             :disabled="!fontSizeEnabled" @update:model-value="update('fontSize', $event)" />
         </div>
       </div>

@@ -10,17 +10,14 @@ export interface SpacingValue {
   left: CssLength | undefined
 }
 
+const model = defineModel<SpacingValue>({ required: true })
+
 const props = defineProps<{
-  modelValue: SpacingValue
   fallbackPx: number
   min: number
   max: number
   step: number
   disabled?: boolean
-}>()
-
-const emit = defineEmits<{
-  'update:modelValue': [value: SpacingValue]
 }>()
 
 const split = ref(false)
@@ -33,16 +30,19 @@ const sides = [
   { id: 'left', key: 'left', label: 'L' }
 ] as const
 
-function setShorthand(value: CssLength) {
-  emit('update:modelValue', { shorthand: value, top: value, right: value, bottom: value, left: value })
+
+function setShorthand(value: CssLength | undefined) {
+  if (!value) return
+  model.value = { shorthand: value, top: value, right: value, bottom: value, left: value }
 }
 
-function setSide(side: 'top' | 'right' | 'bottom' | 'left', value: CssLength) {
-  emit('update:modelValue', { ...props.modelValue, [side]: value })
+function setSide(side: 'top' | 'right' | 'bottom' | 'left', value: CssLength | undefined) {
+  if (!value) return
+  model.value = { ...model.value, [side]: value }
 }
 
 function sideValue(side: 'top' | 'right' | 'bottom' | 'left') {
-  return props.modelValue[side] ?? props.modelValue.shorthand
+  return model.value[side] ?? model.value.shorthand
 }
 </script>
 
@@ -52,55 +52,21 @@ function sideValue(side: 'top' | 'right' | 'bottom' | 'left') {
       <template #label>
         <span class="flex items-center justify-between w-full">
           <span />
-          <UButton
-            size="xs"
-            variant="ghost"
-            color="primary"
-            class="pr-0"
-            :disabled="disabled"
-            :icon="effectiveSplit ? 'i-lucide-square' : 'i-lucide-grid-3x3'"
-            trailing
-            @click="split = !split"
-          >
+          <UButton size="xs" variant="ghost" color="primary" class="pr-0" :disabled="disabled"
+            :icon="effectiveSplit ? 'i-lucide-square' : 'i-lucide-grid-3x3'" trailing @click="split = !split">
             {{ effectiveSplit ? 'Merge' : 'Split' }}
           </UButton>
         </span>
       </template>
 
-      <LengthControl
-        v-if="!effectiveSplit"
-        :model-value="modelValue.shorthand"
-        :fallback-px="fallbackPx"
-        :min="min"
-        :max="max"
-        :step="step"
-        :disabled="disabled"
-        @update:model-value="setShorthand"
-      />
+      <LengthControl v-if="!effectiveSplit" :model-value="model.shorthand" :fallback-px="fallbackPx" :min="min"
+        :max="max" :step="step" :disabled="disabled" @update:model-value="setShorthand" />
 
-      <div
-        v-else
-        class="flex flex-col gap-2"
-      >
-        <div
-          v-for="side in sides"
-          :key="side.id"
-          class="flex items-center gap-2"
-        >
-          <label
-            :for="`split-${side.id}`"
-            class="control-split-label"
-          >{{ side.label }}</label>
-          <LengthControl
-            :id="`split-${side.id}`"
-            :model-value="sideValue(side.key)"
-            :fallback-px="fallbackPx"
-            :min="min"
-            :max="max"
-            :step="step"
-            :disabled="disabled"
-            @update:model-value="setSide(side.key, $event)"
-          />
+      <div v-else class="flex flex-col gap-2">
+        <div v-for="side in sides" :key="side.id" class="flex items-center gap-2">
+          <label :for="`split-${side.id}`" class="control-split-label">{{ side.label }}</label>
+          <LengthControl :id="`split-${side.id}`" :model-value="sideValue(side.key)" :fallback-px="fallbackPx"
+            :min="min" :max="max" :step="step" :disabled="disabled" @update:model-value="setSide(side.key, $event)" />
         </div>
       </div>
     </UFormField>

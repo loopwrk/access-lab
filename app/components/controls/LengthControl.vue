@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import type { CssLength, CssUnit } from '~/composables/useUnitConversion'
 
+const model = defineModel<CssLength | undefined>({ required: true })
+
 const props = defineProps<{
-  modelValue: CssLength | undefined
   fallbackPx: number
   min: number
   max: number
@@ -10,23 +11,19 @@ const props = defineProps<{
   disabled?: boolean
 }>()
 
-const emit = defineEmits<{
-  'update:modelValue': [value: CssLength]
-}>()
-
 const unitConv = useUnitConversion()
 
 const sliderPx = computed(() =>
-  props.modelValue ? unitConv.lengthToSliderPx(props.modelValue) : props.fallbackPx
+  model.value ? unitConv.lengthToSliderPx(model.value) : props.fallbackPx
 )
 
 const lengthValue = computed<CssLength>(() =>
-  props.modelValue ?? { value: props.fallbackPx, unit: 'px' }
+  model.value ?? { value: props.fallbackPx, unit: 'px' }
 )
 
 function onSliderChange(value: number) {
-  const unit: CssUnit = props.modelValue?.unit ?? 'px'
-  emit('update:modelValue', unitConv.fromSliderPx(value, unit))
+  const unit: CssUnit = model.value?.unit ?? 'px'
+  model.value = unitConv.fromSliderPx(value, unit)
 }
 </script>
 
@@ -47,7 +44,7 @@ function onSliderChange(value: number) {
       v-if="!disabled"
       :model-value="lengthValue"
       :px-step="step"
-      @update:model-value="emit('update:modelValue', $event)"
+      @update:model-value="model = $event"
     />
   </div>
 </template>

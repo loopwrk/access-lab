@@ -7,11 +7,13 @@ export const useFont = defineStore("font", () => {
   const family = useLocalStorage<string>("al-font-family", defaultFont);
   const size = useLocalStorage<FontSize>("al-font-size", defaultSize);
 
+  const fontVar = useCssVar("--al-font");
+  watchEffect(() => {
+    fontVar.value = family.value;
+  });
   watchEffect(() => {
     if (!import.meta.client) return;
-    const html = document.documentElement;
-    html.style.setProperty("--al-font", family.value);
-    html.style.fontSize = size.value;
+    document.documentElement.style.fontSize = size.value;
   });
 
   function setFont(f: string) {
