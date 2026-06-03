@@ -55,6 +55,12 @@ export default defineNuxtConfig({
     "/learn/**": { ssr: true },
   },
 
+  colorMode: {
+    classSuffix: "",
+    preference: "system",
+    fallback: "light",
+  },
+
   compatibilityDate: "2025-01-15",
 
   vite: {

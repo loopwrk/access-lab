@@ -95,11 +95,11 @@ const sizes: SizeOption[] = [
       <!-- Light / Dark toggle -->
       <UFieldGroup size="sm">
         <UButton :color="!theme.isDark ? 'primary' : 'neutral'" :variant="!theme.isDark ? 'solid' : 'ghost'"
-          icon="i-lucide-sun" :aria-pressed="!theme.isDark" @click="theme.isDark && theme.toggleMode()">
+          icon="i-lucide-sun" :aria-pressed="!theme.isDark" @click="theme.setMode('light')">
           {{ t('theme.light') }}
         </UButton>
         <UButton :color="theme.isDark ? 'primary' : 'neutral'" :variant="theme.isDark ? 'solid' : 'ghost'"
-          icon="i-lucide-moon" :aria-pressed="theme.isDark" @click="!theme.isDark && theme.toggleMode()">
+          icon="i-lucide-moon" :aria-pressed="theme.isDark" @click="theme.setMode('dark')">
           {{ t('theme.dark') }}
         </UButton>
       </UFieldGroup>
