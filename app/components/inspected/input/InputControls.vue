@@ -12,8 +12,6 @@ const { t } = useI18n()
 const unitConv = useUnitConversion()
 const { focusLearnTopic } = useInspectorTab()
 
-// Derived so the switches flip off when the model is cleared from
-// elsewhere (e.g. the reset-to-defaults control).
 const fontSizeEnabled = computed(() => model.value.fontSize != null)
 const colorsEnabled = computed(() =>
   model.value.bg != null
@@ -21,32 +19,25 @@ const colorsEnabled = computed(() =>
   || model.value.borderColor != null
 )
 
-const _HARDCODED = {
+const DEFAULTS = {
   fontSize: 14,
   bg: '#FFFFFF',
   fgText: '#000000',
   borderColor: '#888888'
-}
-
-const DEFAULTS = computed(() => ({
-  fontSize: _HARDCODED.fontSize,
-  bg: _HARDCODED.bg,
-  fgText: _HARDCODED.fgText,
-  borderColor: _HARDCODED.borderColor
-}))
+} as const
 
 const bgColor = computed({
-  get: () => model.value.bg ?? DEFAULTS.value.bg,
+  get: () => model.value.bg ?? DEFAULTS.bg,
   set: (value: string) => update('bg', value)
 })
 
 const fgTextColor = computed({
-  get: () => model.value.fgText ?? DEFAULTS.value.fgText,
+  get: () => model.value.fgText ?? DEFAULTS.fgText,
   set: (value: string) => update('fgText', value)
 })
 
 const borderColorComputed = computed({
-  get: () => model.value.borderColor ?? DEFAULTS.value.borderColor,
+  get: () => model.value.borderColor ?? DEFAULTS.borderColor,
   set: (value: string) => update('borderColor', value)
 })
 
@@ -56,7 +47,7 @@ const { ratio: contrastRatio, verdict: contrastVerdict } = useContrast(
   {
     fontSizePx: () => {
       const f = model.value.fontSize
-      if (!f) return DEFAULTS.value.fontSize
+      if (!f) return DEFAULTS.fontSize
       return unitConv.lengthToPx(f)
     },
     bold: false
@@ -65,7 +56,7 @@ const { ratio: contrastRatio, verdict: contrastVerdict } = useContrast(
 
 function toggleFontSize(value: boolean | 'indeterminate') {
   if (value === true) {
-    update('fontSize', unitConv.fromPx(DEFAULTS.value.fontSize, 'rem'))
+    update('fontSize', unitConv.fromPx(DEFAULTS.fontSize, 'rem'))
   } else {
     update('fontSize', undefined)
   }
@@ -75,9 +66,9 @@ function toggleColors(value: boolean | 'indeterminate') {
   if (value === true) {
     model.value = {
       ...model.value,
-      bg: DEFAULTS.value.bg,
-      fgText: DEFAULTS.value.fgText,
-      borderColor: DEFAULTS.value.borderColor
+      bg: DEFAULTS.bg,
+      fgText: DEFAULTS.fgText,
+      borderColor: DEFAULTS.borderColor
     }
   } else {
     const next = { ...model.value }

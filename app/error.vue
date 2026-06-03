@@ -18,19 +18,26 @@ async function goSomewhereUseful() {
 
 <template>
   <NuxtLayout>
-    <section class="error-page" role="region" :aria-label="t('errorPage.ariaLabel')">
-      <UCard variant="outline" class="error-card">
+    <section class="flex-1 flex items-center justify-center p-8 min-h-0" role="region"
+      :aria-label="t('errorPage.ariaLabel')">
+      <UCard variant="outline" class="w-full max-w-lg">
         <div class="flex flex-col gap-5 items-center text-center">
-          <NuxtImg src="/images/404.png" width="120" height="120" alt="" class="error-illustration shrink-0 -m-4" />
-          <h1 class="error-title m-0">
+          <NuxtImg src="/images/404.png" width="120" height="120" alt="" class="shrink-0 -m-4" />
+          <h1
+            class="m-0 text-(length:--al-font-size-heading) font-semibold text-(--text-primary) leading-tight text-balance">
             {{ is404 ? t('errorPage.title404') : t('errorPage.titleGeneric') }}
           </h1>
-          <p v-if="missingComponentSlug" class="error-detail m-0">
+          <p v-if="missingComponentSlug"
+            class="m-0 text-(length:--al-font-size-detail) text-(--text-muted) font-mono text-balance">
             {{ t('errorPage.componentMissing', { slug: missingComponentSlug }) }}
           </p>
           <div class="flex flex-col gap-2">
-            <p class="error-body m-0">{{ t('errorPage.body1') }}</p>
-            <p class="error-body m-0">{{ t('errorPage.body2') }}</p>
+            <p class="m-0 text-(length:--al-font-size-body) leading-normal text-(--text-secondary) text-balance">
+              {{ t('errorPage.body1') }}
+            </p>
+            <p class="m-0 text-(length:--al-font-size-body) leading-normal text-(--text-secondary) text-balance">
+              {{ t('errorPage.body2') }}
+            </p>
           </div>
           <UButton color="primary" variant="solid" @click="goSomewhereUseful">
             {{ t('errorPage.actionLabel') }}
@@ -40,49 +47,3 @@ async function goSomewhereUseful() {
     </section>
   </NuxtLayout>
 </template>
-
-<style scoped>
-.error-page {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 32px;
-  min-height: 0;
-}
-
-.error-card {
-  width: 100%;
-  max-width: 32rem;
-}
-
-.error-illustration {
-  width: 120px;
-  height: 120px;
-}
-
-.error-title,
-.error-body,
-.error-detail {
-  text-wrap: balance;
-}
-
-.error-title {
-  font-size: var(--al-font-size-heading);
-  font-weight: 600;
-  color: var(--text-primary);
-  line-height: 1.2;
-}
-
-.error-detail {
-  font-size: var(--al-font-size-detail);
-  color: var(--text-muted);
-  font-family: var(--al-font-mono);
-}
-
-.error-body {
-  font-size: var(--al-font-size-body);
-  line-height: 1.5;
-  color: var(--text-secondary);
-}
-</style>

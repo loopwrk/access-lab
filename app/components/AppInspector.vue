@@ -1,16 +1,4 @@
 <script setup lang="ts">
-/**
- * Right-hand inspector pane.
- *
- * Owns the tab strip and the four panel containers. UTabs runs with
- * `:content="false"` so we manage the panels ourselves — each ID is a
- * teleport target that ComponentStudio writes its IssuesPanel /
- * ManualReviewPanel / LearnPanel / controls component into. The
- * controls panel additionally hosts the RootEmSlider directly.
- *
- * State is read from useInspectorTab(); the toolbar and other parts of
- * the app can switch tabs through the same composable.
- */
 import type { TabsItem } from '@nuxt/ui'
 
 const { t } = useI18n()
@@ -39,21 +27,14 @@ const tabItems = computed<TabsItem[]>(() => [
       :ui="{ list: 'justify-around', label: 'overflow-visible whitespace-nowrap' }"
     />
 
-    <!--
-      Each panel is a tabpanel-shaped teleport target. tabindex=-1 keeps
-      them out of the natural tab order while still allowing programmatic
-      focus (used by the skip-to-controls / skip-to-issues links). The
-      role and aria-label give assistive tech the tab-pattern relationship
-      that UTabs doesn't wire because content rendering is disabled.
-    -->
-    <div class="flex-1 overflow-y-auto">
+    <div class="flex-1 min-h-0 overflow-y-auto">
       <div
         v-show="activeTab === 'controls'"
         :id="INSPECTOR_PANEL_IDS.controls"
         role="tabpanel"
         tabindex="-1"
         :aria-label="t('inspector.controls')"
-        class="h-[1vh] p-4"
+        class="p-4"
       >
         <RootEmSlider />
       </div>
@@ -64,7 +45,7 @@ const tabItems = computed<TabsItem[]>(() => [
         role="tabpanel"
         tabindex="-1"
         :aria-label="t('inspector.issues')"
-        class="h-[1vh] p-4"
+        class="p-4"
       />
 
       <div
@@ -73,7 +54,7 @@ const tabItems = computed<TabsItem[]>(() => [
         role="tabpanel"
         tabindex="-1"
         :aria-label="t('inspector.manual')"
-        class="h-[1vh] p-4"
+        class="p-4"
       />
 
       <div
@@ -82,7 +63,7 @@ const tabItems = computed<TabsItem[]>(() => [
         role="tabpanel"
         tabindex="-1"
         :aria-label="t('inspector.learn')"
-        class="h-[1vh] p-4"
+        class="p-4"
       />
     </div>
   </aside>

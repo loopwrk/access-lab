@@ -13,9 +13,6 @@ export function useNaturalSize(model: Ref<NaturalSizeModel>, tagName: string) {
   const px = (length: CssLength | undefined): number =>
     length ? unitConv.lengthToPx(length) : 0
 
-  // Inline CSS that mirrors render.ts. Only declarations the user has
-  // explicitly set are emitted; absent values defer to the UA default
-  // via the probe's `all: revert` shell.
   function buildEffectiveCss(): string {
     const m = model.value
     const parts: string[] = []
@@ -48,7 +45,7 @@ export function useNaturalSize(model: Ref<NaturalSizeModel>, tagName: string) {
         + `border-left-width:${px(m.borderLeftWidth ?? fallback)}px;`
         + `border-style:solid`
       )
-    } else if (m.borderWidth != null && m.borderWidth.value > 0) {
+    } else if (m.borderWidth != null) {
       parts.push(`border-width:${px(m.borderWidth)}px;border-style:solid`)
     }
 

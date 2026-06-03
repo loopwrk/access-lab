@@ -140,13 +140,10 @@ async function copyContent(mode: 'inline' | 'class' | 'css') {
 
 <template>
   <div>
-    <!--
-      Resize handle at the drawer's top edge — where it borders the
-      preview area above.
-    -->
     <div v-if="isOpen" role="separator" aria-orientation="horizontal" :aria-label="t('codeDrawer.resizeLabel')"
       :aria-valuenow="effectiveHeight" :aria-valuemin="MIN_HEIGHT" :aria-valuemax="maxHeightPx" tabindex="0" :class="[
-        'h-1.5 cursor-row-resize outline-none transition-colors',
+        'relative h-1.5 cursor-row-resize outline-none transition-colors',
+        `before:content-[''] before:absolute before:inset-x-0 before:-inset-y-2`,
         isDragging
           ? 'bg-(--brand)'
           : 'bg-(--border) hover:bg-(--brand) focus-visible:bg-(--brand)'

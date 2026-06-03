@@ -1,6 +1,10 @@
 import type { DomMeasurement } from "~/rules/types";
 import type { AxeResult } from "~/types/axe";
 
+function asAxeResults(value: unknown): AxeResult[] {
+  return Array.isArray(value) ? (value as AxeResult[]) : [];
+}
+
 export function useAxeAudit(iframeRef: {
   readonly value: HTMLIFrameElement | null;
 }) {
@@ -12,13 +16,19 @@ export function useAxeAudit(iframeRef: {
   const isReady = computed(() => state.value.isReady);
   const errorMessage = computed(() => state.value.errorMessage);
 
-  // DOM-rule measurement posted by the iframe after each render. Stored
-  // here so rules can react via watch in useDomRules — keeps useAxeAudit
-  // ignorant of which DOM rules are registered.
   const measurement = useState<DomMeasurement | null>(
     "dom-measurement",
     () => null,
   );
+
+  function resetState() {
+    state.value.isReady = false;
+    state.value.violations = [];
+    state.value.passes = [];
+    state.value.incomplete = [];
+    state.value.errorMessage = null;
+    measurement.value = null;
+  }
 
   function handler(event: MessageEvent) {
     const iframe = iframeRef.value;
@@ -32,13 +42,13 @@ export function useAxeAudit(iframeRef: {
         state.value.isReady = true;
         break;
       case "axe:result":
-        state.value.violations = (data.violations || []) as AxeResult[];
-        state.value.passes = (data.passes || []) as AxeResult[];
-        state.value.incomplete = (data.incomplete || []) as AxeResult[];
+        state.value.violations = asAxeResults(data.violations);
+        state.value.passes = asAxeResults(data.passes);
+        state.value.incomplete = asAxeResults(data.incomplete);
         state.value.errorMessage = null;
         break;
       case "axe:error":
-        state.value.errorMessage = data.message;
+        state.value.errorMessage = typeof data.message === "string" ? data.message : null;
         break;
       case "overflow:result":
         measurement.value = data.measurement;
@@ -46,23 +56,7 @@ export function useAxeAudit(iframeRef: {
     }
   }
 
-  onMounted(() => {
-    // Reset readiness + stale results when a new PreviewIframe mounts.
-    // `axe-results` is shared via useState so it survives route changes
-    // (the layout's counter pills read it). Without this reset, the
-    // second time a user lands on a studio route, `isReady` is still
-    // `true` from the previous iframe — so render() fires postMessage
-    // before the new iframe shell has attached its message listener,
-    // the message is lost, and the new `preview:ready` flip doesn't
-    // re-trigger PreviewIframe's watch (no value change).
-    state.value.isReady = false;
-    state.value.violations = [];
-    state.value.passes = [];
-    state.value.incomplete = [];
-    state.value.errorMessage = null;
-    measurement.value = null;
-  });
-
+  onMounted(resetState);
   useEventListener(window, "message", handler);
 
   return {
