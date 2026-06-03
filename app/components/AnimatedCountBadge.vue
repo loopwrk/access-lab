@@ -15,16 +15,21 @@ const props = withDefaults(defineProps<{
 const showsGlow = computed(() => props.color !== "success");
 
 const isGlowing = ref(false);
-let glowTimer: ReturnType<typeof setTimeout> | null = null;
+const GLOW_DURATION_MS = 720;
+
+const { start: scheduleGlowEnd } = useTimeoutFn(
+  () => { isGlowing.value = false },
+  GLOW_DURATION_MS,
+  { immediate: false }
+);
 
 function pulseGlow() {
   // Restart cleanly: drop the class, wait a tick, re-add. CSS animations
   // don't replay if the class is already on the same element.
   isGlowing.value = false;
-  if (glowTimer) clearTimeout(glowTimer);
   nextTick(() => {
     isGlowing.value = true;
-    glowTimer = setTimeout(() => { isGlowing.value = false }, 720);
+    scheduleGlowEnd();
   });
 }
 
@@ -33,7 +38,18 @@ const displayCount = ref(props.count);
 const TALLY_SETTLE_MS = 200;
 
 let firstCountChangeHandled = false;
-let pendingTallyApply: ReturnType<typeof setTimeout> | null = null;
+let pendingNextCount = props.count;
+
+const { start: scheduleTallyApply } = useTimeoutFn(
+  () => {
+    if (pendingNextCount !== stableKey.value) {
+      stableKey.value = pendingNextCount;
+      displayCount.value = pendingNextCount;
+    }
+  },
+  TALLY_SETTLE_MS,
+  { immediate: false }
+);
 
 watch(() => props.count, (next) => {
   if (!firstCountChangeHandled) {
@@ -44,14 +60,8 @@ watch(() => props.count, (next) => {
     stableKey.value = next;
     return;
   }
-  if (pendingTallyApply) clearTimeout(pendingTallyApply);
-  pendingTallyApply = setTimeout(() => {
-    if (next !== stableKey.value) {
-      stableKey.value = next;
-      displayCount.value = next;
-    }
-    pendingTallyApply = null;
-  }, TALLY_SETTLE_MS);
+  pendingNextCount = next;
+  scheduleTallyApply();
 });
 
 // Glow watch: fire on appearance of any NEW violation id, regardless of
@@ -66,11 +76,6 @@ watch(() => props.violationIds, (next, prev) => {
   const prevSet = new Set(prev ?? []);
   const hasNew = next.some(id => !prevSet.has(id));
   if (hasNew) pulseGlow();
-});
-
-onBeforeUnmount(() => {
-  if (glowTimer) clearTimeout(glowTimer);
-  if (pendingTallyApply) clearTimeout(pendingTallyApply);
 });
 </script>
 

@@ -30,13 +30,11 @@ const defaults = useButtonStudioDefaults(tagName)
 // studio deliberately does not wire arrow-key navigation, Escape, or
 // outside-click — those belong in the production keyboard contract and
 // are covered by the manual checklist.
-function handleMessage(event: MessageEvent) {
-  if (event.data?.type !== 'demo:click') return
-  model.value.menuOpen = !model.value.menuOpen
-}
-
-onMounted(() => window.addEventListener('message', handleMessage))
-onBeforeUnmount(() => window.removeEventListener('message', handleMessage))
+usePreviewMessage({
+  'demo:click': () => {
+    model.value.menuOpen = !model.value.menuOpen
+  }
+})
 </script>
 
 <template>

@@ -1,5 +1,5 @@
 ---
-title: Disclosure triggers and aria-expanded
+title: Disclosure trigger buttons and aria-expanded
 topicId: disclosure-triggers
 category: disclosure-and-menu
 order: 1
@@ -16,77 +16,140 @@ summary: A disclosure trigger reveals a panel of related content. The trigger
   or shut.
 ---
 
-A disclosure trigger is a button whose only job is to reveal or hide a region of related content. Accordions, FAQ items, expandable cards, and "Show more" links are all disclosure patterns. The trigger is a plain button — the meaning is in the relationship between the button and the panel below it.
+A disclosure trigger is a `<button>` or a `<summary>` element (when wrapped in a `<details>` element) whose only job is to reveal or hide a region of related content.
 
+Common examples where `<button>` elements are used as diclosure triggers are [accordions](https://www.w3.org/WAI/ARIA/apg/patterns/accordion/) and [expandable cards](https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/examples/disclosure-card/). The trigger the button, which has a relationship with content that is shown or hidden (or most commonly, both), when the button is used.
+
+In this article, we will be focusing on `<button>` elements only, however, note that `<summary>` elements are often preferred by developers as when they are paired with `<details>` elements, they can provide the same reveal/hide behaviour with accessibility features that are easier to implement as no JavaScript is required. read more about the `<details>` HTML details disclosure element [here](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/details).
 
 ## The correct pattern
 
-Use a plain `<button>` element with `aria-expanded`. The attribute carries the current state of the panel. Flip it in the same click handler that shows or hides the panel.
+Use a `<button>` element with `aria-expanded` when it controls a collapsible region of content. The attribute carries the current state of the panel. Flip it in the same click handler that shows or hides the panel.
 
-Screen readers announce a button with aria-expanded as "button, expanded" or "button, collapsed." The label stays stable — "Show details" stays "Show details" whether the panel is open or shut. The state is carried by the attribute, not by relabeling.
+Most screen readers announce a button with aria-expanded as "button, expanded" or "button, collapsed." The label stays stable — "Show details" stays "Show details" whether the panel is open or shut. The state is carried by the attribute, not by relabeling.
 
-Hide the panel with the browser-native `hidden` attribute or `display: none`. Both remove the panel from the accessibility tree while it is collapsed, which matches how assistive tech expects a collapsed disclosure to behave.
+Hide the panel with the browser-native `hidden` attribute or `display: none`.
 
+### The Button Trigger
 
-## When to add aria-controls
+- **`aria-expanded`**: This is the star of the show. Update it dynamically to `true` (open) or `false` (closed) via JavaScript.
+- **What to avoid**: Do _not_ use `aria-haspopup` here. That attribute tells screen readers a menu or dialog is coming, which confuses users expecting a regular section of text.
 
-The `aria-controls` attribute points from the trigger to the panel it controls, by id. It can help some assistive technology surface a "jump to controlled element" affordance, but support is patchy and many screen readers ignore it.
+### Connecting the Content
 
-Add aria-controls when the panel is far from the trigger in the DOM, or when one trigger controls a panel that lives elsewhere on the page. For the common case — a trigger immediately followed by its panel — the attribute is a nice-to-have rather than a requirement.
+- Give your content panel (like a `<div>`) a unique `id`.
+- Add **`aria-controls="your-id-here"`** to the button. This programmatically links the button to the panel it operates.
 
-Whichever you choose, keep the id reference accurate. A stale aria-controls pointing at a removed element confuses tools more than no attribute at all.
+### Hiding the Content
 
+When the panel is closed, hide it using the HTML `hidden` attribute or CSS `display: none`. This ensures screen readers completely ignore the hidden text until the user expands it.
 
-## Why the label stays stable
+#### Example
 
-It is tempting to alternate the label between "Show details" and "Hide details" as the panel opens and closes. The intuition is that the button always says what it will do next. Two problems arise.
+```html
+<!-- The Button Trigger -->
+<!-- Note: aria-expanded switches between "true" and "false" via JavaScript -->
+<button type="button" aria-expanded="false" aria-controls="faq-content-1">
+  What is a disclosure pattern?
+</button>
 
-First, voice-control users speak the visible label. If the label changes between activations, they cannot rely on a stable command — at the moment they speak, the button might read either way.
+<!-- The Content Panel -->
+<!-- Note: The 'id' matches the 'aria-controls' value above. -->
+<!-- The 'hidden' attribute ensures screen readers dont read out the content  . -->
+<div id="faq-content-1" hidden>
+  <p>
+    A disclosure pattern is a simple UI mechanism that lets users toggle the
+    visibility of a content section. It uses a button to control a content
+    panel.
+  </p>
+</div>
+```
 
-Second, screen reader users hear aria-expanded announced as "expanded" or "collapsed" automatically. Pairing that with a flipping label is redundant at best and contradictory at worst ("Hide details, collapsed"). Stable label plus state attribute is calmer and more predictable.
+## Understanding `aria-controls`
 
+The `aria-controls` attribute points from a button to the content panel it opens using an `id`. Think of it as a virtual bridge connecting the trigger to the data.
 
-## Common anti-patterns
+However, **screen reader support for `aria-controls` is patchy.** Many screen readers ignore it entirely, while only a few use it to let users "jump" straight to the opened content. Because support is unreliable, you need to know when it actually matters.
 
+---
 
-### Two failure modes show up repeatedly in production code:
+## Keyboard behaviour and focus management
 
-Visual-only state. The panel appears and disappears on click but the trigger exposes no aria-expanded. Sighted users see the change; assistive technology hears a plain button each time, with no indication that anything has revealed or hidden. Level A failure of SC 4.1.2 Name, Role, Value.
+For simple disclosure patterns (such as accordions or "show more" sections), focus should normally remain on the trigger button when the panel is opened or closed.
 
-aria-expanded that never updates. The attribute is on the trigger but stuck at "false" — the developer added it once and forgot to flip it in the toggle handler. Sighted users see the panel open while screen readers are told it is still closed. This is harder to catch than the missing attribute because automated tools see the attribute and assume the pattern is wired up.
+When the user activates the button:
 
+- The `aria-expanded` state updates (`true` or `false`)
+- The associated panel becomes visible or hidden
+- Focus does **not** automatically move into the revealed content
 
-## The native `details`/`summary` alternative
+This keeps interaction predictable and prevents users from losing their place in the interface.
 
-HTML ships a built-in disclosure pattern. A `<details>` element wrapping a `<summary>` and any other content gives you the trigger and the panel in one declaration. The browser handles the open/close toggling, the keyboard activation (Space and Enter), and the accessibility state announcements automatically — there is no aria-expanded to set and nothing to keep in sync.
+### When focus _should_ move
 
+Only move focus into the revealed content when:
 
-### Reach for the native element first. It wins whenever:
+- The panel contains interactive elements that require immediate action (e.g. form inputs, filters, or dialogs)
+- The content is functionally a new task area rather than informational expansion
 
-- You need zero JavaScript — the pattern keeps working in static HTML, in markdown renderers, and before any client-side bundle has hydrated.
-- You want unbreakable accessibility — the browser owns the state, so there is no equivalent of the "out-of-sync" bug. Whatever the visible state, the announced state matches.
-- You want built-in keyboard support, a default disclosure marker, and (in Chrome) Find-in-page searching inside collapsed panels — all without writing code.
+If focus is moved, ensure:
 
-### Choose the button + aria-expanded pattern only when the native element cannot do what you need:
+- The transition is obvious to assistive technology users
+- Focus is placed at a logical starting point inside the panel (usually the first focusable element)
 
-- Full visual control. The `<summary>` element is stylable but quirky — the default marker, cursor behaviour, and rendering differ across browsers. If your design system has a strict button vocabulary, mounting a summary to match it can be more work than using a real button.
-- The trigger and panel are not adjacent in the DOM. A header button that reveals a sidebar elsewhere on the page cannot use `<details>` — the element requires the panel to be its own child.
-- You need to react to opens and closes for animations, data loading, focus management, or analytics. The native element does fire a toggle event, but if you are writing the handlers anyway the saving evaporates.
-- Animation. Native disclosure does not animate the reveal natively. Modern CSS is improving here (`interpolate-size`, transitions on `display`) but it is still finicky compared to a JavaScript-driven height transition.
-Rule of thumb: default to `<details>`/`<summary>` unless you have a concrete reason not to. Move to the button + panel pattern when you need behaviour or layout the native element cannot give you — and accept that you have taken on the state-wiring responsibility the browser was handling for free.
+### Why this matters
 
+Automatic focus movement in simple disclosures can:
 
-## Disclosure vs. toggle vs. switch
+- Disorient keyboard and screen reader users
+- Break expected tab order
+- Make repeated toggling harder to control
 
-All three patterns flip between two visible states. The semantic difference is what the button represents.
+Keeping focus stable ensures the disclosure behaves like an expansion of context, not a navigation event.
 
-Use a disclosure trigger (`aria-expanded`) when the button reveals related content — a panel, a tooltip, an extra row of details. The button is not the setting; the panel is the thing.
+---
 
-Use a toggle button (`aria-pressed`) when the button performs an action whose effect persists — Mute, Bold, Pin. Use a switch (`role="switch"`) when the control represents a setting whose value is the point — Dark mode, Notifications.
+### When to Use `aria-controls`
 
+- **When the content lives elsewhere on the page:** Use it if the button is in one part of the HTML (like a sidebar) but the content panel opens up somewhere else entirely.
+- **The Golden Rule:** If you use it, ensure the `id` matches perfectly. A broken `aria-controls` link pointing to an ID that doesn't exist confuses screen readers much more than leaving the attribute off entirely.
 
-## Related topics
+### When It's Optional (The Common Case)
 
-Toggle buttons and aria-pressed
+- **When the content is right next to the button:** If your content panel immediately follows the button in your HTML, `aria-controls` is just a "nice-to-have." You don't strictly need it because the natural structure of your HTML already solves the problem.
 
-Switches and role=switch
+---
+
+### The Best Alternative: Natural DOM Order
+
+Instead of relying heavily on `aria-controls`, use the [DOM Order](https://web.dev/articles/dom-order-matters) to your advantage. This is the ultimate accessibility alternative.
+
+If you place your content panel **immediately after** the button in your HTML:
+
+1. The user interacts with the button and hears that it is collapsed.
+2. They click it, and JavaScript changes `aria-expanded` to `true`.
+3. They move to the very next element in the reading order, which is naturally the newly revealed content panel.
+
+## Why the Label Should Stay the Same
+
+It is tempting to flip a button's text between "Show details" and "Hide details" as it opens and closes. It feels intuitive to show what the button will do next, but this actually causes two major issues.
+
+First, **voice-control users** navigate by speaking the exact text they see on the screen. If the text keeps changing, they cannot rely on a consistent voice command to interact with the button.
+
+Second, **screen readers** automatically announce the state as "expanded" or "collapsed" based on your `aria-expanded` attribute. If you flip the text too, it sounds repetitive and confusing (like hearing "Hide details, collapsed").
+
+Keeping a stable label (like "Details") and letting the `aria-expanded` attribute handle the state is much more predictable and accessible for everyone.
+
+## Common Mistakes
+
+Watch out for these two frequent mistakes when building disclosures:
+
+### 1. The "Visual-Only" Toggle
+
+The panel opens and closes perfectly on screen, but the button completely lacks the `aria-expanded` attribute. Sighted users see the change, but screen reader users just hear a plain button with zero indication that something was revealed. This breaks core accessibility standards ([WCAG 4.1.2 Name, Role, Value](https://www.w3.org/WAI/WCAG21/Understanding/name-role-value)).
+
+### 2. The Frozen `aria-expanded` Attribute
+
+The `aria-expanded` attribute is present on the button, but it stays stuck at `"false"`. The developer added it for compliance but forgot to toggle it to `"true"` inside their JavaScript click handler.
+
+Sighted users see the panel open, but screen readers are told it is still closed. This is a sneaky bug because automated testing tools usually miss it, they see that the attribute exists and assume everything is working correctly.

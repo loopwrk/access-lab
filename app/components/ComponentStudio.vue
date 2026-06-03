@@ -87,16 +87,16 @@ const submitNoFormAction = computed(() => [{
   variant: 'link' as const
 }])
 
-function onMessage(event: MessageEvent) {
-  const data = event.data
-  if (data?.type === 'demo:click') {
+usePreviewMessage({
+  'demo:click': () => {
     if (props.definition.suppressDemoClickToast) return
     toast.add({
       title: t('studio.toasts.demoAction'),
       icon: 'i-lucide-circle-check',
       color: 'success'
     })
-  } else if (data?.type === 'form:submitted') {
+  },
+  'form:submitted': (data) => {
     const submitted = data as FormSubmittedMessage
     toast.add({
       title: t('studio.toasts.formSubmitted'),
@@ -110,37 +110,38 @@ function onMessage(event: MessageEvent) {
       // what the developer wrote, so the question is misleading.
       actions: submitted.wasImplicitSubmit ? formSubmittedAction.value : undefined
     })
-  } else if (data?.type === 'form:reset') {
+  },
+  'form:reset': () => {
     toast.add({
       title: t('studio.toasts.formReset'),
       icon: 'i-lucide-rotate-ccw',
       color: 'warning'
     })
-  } else if (data?.type === 'form:submitMissingForm') {
+  },
+  'form:submitMissingForm': () => {
     toast.add({
       title: t('studio.toasts.submitNoForm'),
       icon: 'i-lucide-circle-alert',
       color: 'error',
       actions: submitNoFormAction.value
     })
-  } else if (data?.type === 'form:resetMissingForm') {
+  },
+  'form:resetMissingForm': () => {
     toast.add({
       title: t('studio.toasts.resetNoForm'),
       icon: 'i-lucide-circle-alert',
       color: 'error'
     })
   }
-}
+})
 
 onMounted(() => {
-  window.addEventListener('message', onMessage)
   activeComponentName.value = props.definition.name
   activeLearnTopicId.value = props.definition.primaryLearnTopicId ?? null
   activeRelevantConcepts.value = props.definition.relevantConcepts ?? []
 })
 
 onBeforeUnmount(() => {
-  window.removeEventListener('message', onMessage)
   activeComponentName.value = null
   activeLearnTopicId.value = null
   activeRelevantConcepts.value = []

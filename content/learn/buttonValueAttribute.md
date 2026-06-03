@@ -1,5 +1,5 @@
 ---
-title: How the value attribute behaves on a button
+title: "Button vs. Input: The value attribute explained"
 topicId: button-value-attribute
 category: forms
 order: 2
@@ -11,65 +11,131 @@ concepts:
   - form-context
   - accessible-name
 summary: On a button element, the value attribute is hidden form data, not a
-  label. Screen readers ignore it entirely. This is the opposite of how value
+  label. Screen readers do not use it as the button’s accessible nam. This is the opposite of how value
   works on an input button.
 ---
 
-The value attribute is a frequent source of confusion because it does completely different things depending on which element it is set on. Understanding the split prevents a class of subtle accessibility bugs.
+The `value` attribute is a frequent source of confusion because it does completely different things depending on which element it is set on. Understanding the split prevents a class of subtle accessibility bugs.
 
+## The core difference: `<button>` vs. `<input>`
 
-## The difference between button and input elements
+Consider the following:
 
-On an input element with type=button, type=submit, or type=reset, the value attribute is the visible text shown to the user. It is also the accessible name announced by assistive technology. Set value=Save and the input button reads Save on screen and to a screen reader.
+- `<button type="button">I am a button element</button>` <br>
+- `<input type="button" value='I am an input element'/>` <br>
 
-The reason input behaves this way is that `<input>` is a void element. HTML defines it as self-closing with no children, so writing `<input>Save</input>` is invalid and browsers silently correct it. With nowhere inside the element for text content, the specification puts the visible label on the value attribute. Same attribute, two roles by necessity: the visible label and the form data the server receives.
+When rendered, they both look like buttons:
 
-On a button element, the value attribute does not appear on screen at all. It is hidden form data, included with the form submission when the user clicks the button. The visible text is whatever you put between the opening and closing tags of the button.
+<button type="button" value="I am an button element" style="all: revert; width: 12rem; height: 2.5rem; font-size: 1rem">I am a button element</button>
 
-Two elements that look identical in the UI carry the value attribute in completely different roles. A developer used to one pattern may carry the assumption over to the other and create a button that appears to have a label but does not.
+<input type="button" value="I am an input element" style="all: revert; width: 12rem; height: 2.5rem; font-size: 1rem" /> <br>
 
+Although they are visually similar, that's where the similarities end.
+Buttons and inputs handle the `value` attribute differently.
+
+### The `<input>` element: double duty
+
+For `<input>` elements (specifically `type="button"`, `type="submit"`, or `type="reset"` - all which look like buttons when rendered), the `value` attribute acts as both the **visible text** and the **accessible name** read by screen readers. For example, setting `value="Save"` makes the button visibly say "Save" to all users.
+
+**Why?** Because `<input>` is a _void element_. It is self-closing and cannot contain text or child elements. Writing `<input>Save</input>` is invalid HTML. Since there is nowhere to place text inside the tags, the `value` attribute is forced to serve two roles simultaneously: the visible UI label and the underlying form data.
+
+### The `<button>` element: single duty
+
+On a `<button>` element, the `value` attribute's text never appears on the screen, and screen readers do not announce it.
+
+Instead, the visible text is simply whatever content you place _between_ the opening and closing tags (e.g., `<button>Save</button>`). The `value` is only used when the user triggers the button and the form data is sent to the server.
+
+### The Danger Zone
+
+Because these two elements look exactly the same to the end-user, developers often carry their assumptions from one pattern to the other. If you treat a `<button>` like an `<input>` by relying on the `value` attribute to label it, you will accidentally create a button that might look correct in the source code, but lacks a label entirely.
 
 ## When you would actually use the button value attribute
 
 The most common reason to set a value on a button is when a single form has more than one submit button, and the server needs to know which one was clicked.
 
-Imagine a form for writing a blog post. At the bottom you have two submit buttons. One is labelled Save as Draft and carries value=draft. The other is labelled Publish Now and carries value=publish. Both buttons share the same name attribute, for example name=action. When the user clicks Save as Draft, the form submits and the server receives action=draft in the request data. When they click Publish Now, the server receives action=publish.
+Imagine a form for writing a blog post. At the bottom you have two submit buttons. One is labelled Save as Draft and carries `value=draft`. The other is labelled Publish Now and carries `value=publish`. Both buttons share the same `name` attribute, for example `name=action`. When the user clicks Save as Draft, the form submits and the server receives `action=draft` in the request data. When they click Publish Now, the server receives `action=publish`.
 
-The server reads the name and value pair to decide what to do next. Without the value attribute, the server would have no way to distinguish which button submitted the form.
+The server reads the `name` and `value` pair to decide what to do next. Without the `value` attribute, the server would have no way to distinguish which button submitted the form.
 
+## When should you use the `value` attribute on a `<button>`?
 
-## Why the value attribute is invisible to screen readers
+The most common reason to use the `value` attribute on a `<button>` is when a single form has **more than one submit button**, and the server needs to know exactly which one the user clicked.
 
-When a screen reader announces a button, it reads only the accessible name. For a button element, the accessible name comes from the text content between the opening and closing tags, or from an aria-label if one is set. The value attribute is not part of the accessible name computation at all.
+Imagine a form for writing a blog post. At the bottom, you have two distinct buttons:
 
-This creates a quiet accessibility failure. A developer writes a button with the visible text X and sets value=Delete Item, expecting the value to convey the action. A screen reader user hears only X, button. They have no idea that this button is intended to delete something.
+1. **Save as Draft**
+2. **Publish Now**
 
-The fix is to make the action part of the visible label, or to add an aria-label that describes the action in plain words. For example, aria-label=Delete Item paired with the X icon. The screen reader now announces Delete Item, button, regardless of what value is set for the form data.
+If a user clicks one of these, how does the server know which action to take? It needs a way to distinguish them behind the scenes.
 
+### How it works (The Key-Value Pair)
 
-## The link to label in name
+To send this information to the server, forms use a pair of attributes: `name` (which acts like a category tag) and `value` (the specific choice).
 
-The same example reveals another concern. WCAG Success Criterion 2.5.3, Label in Name, requires the accessible name of a control to contain its visible text. Voice control users speak the visible label to activate a control.
+You would give both buttons the exact same `name` (for example, `name="action"`), but give them completely different values:
 
-An X button with value=Delete Item and no aria-label has visible text X. A voice user saying click Delete Item finds nothing matching, because no control on the page is named Delete Item. Saying click X works, but only because the user can see the visible text.
+- The "Save as Draft" button gets `value="draft"`
+- The "Publish Now" button gets `value="publish"`
 
-If the developer adds aria-label=Delete Item to fix the screen reader problem, a new issue appears. The visible label is X but the accessible name is Delete Item. The two no longer agree. Axe flags this with the label-content-name-mismatch rule.
+When the user clicks **Publish Now**, the form submits and sends a message to the server that looks like this: `action=publish`.
 
-Resolving both at once means pairing a visible label with a matching accessible name. Either replace the X with the word Delete and let the visible text speak for itself, or pair the X icon with aria-label=Delete Item and accept that voice users will need to speak the action rather than the icon. The choice depends on which user groups the product prioritises and whether the icon is reinforced elsewhere.
+The server reads that hidden data and knows exactly what to do. Without the `value` attribute, the server would just know that _a_ button was clicked, but would have absolutely no idea which one.
 
+#### Example
+
+```html
+<form action="/submit-blog-post" method="POST">
+  <input type="text" name="title" placeholder="Post Title" />
+  <textarea name="content" placeholder="Write your post here..."></textarea>
+
+  <div class="button-group">
+    <button type="submit" name="action" value="draft">Save as Draft</button>
+    <button type="submit" name="action" value="publish">Publish Now</button>
+  </div>
+</form>
+```
+
+## Why Screen Readers Ignore the `value` Attribute
+
+A screen reader only announces a button's **accessible name**, which comes from the text.
+
+This creates a silent accessibility failure:
+
+```html
+<button type="submit" value="Delete Item">X</button>
+```
+
+Sighted users guess that "X" means delete, but screen readers might not receive the full context because the descriptive `value` is not announced. To fix this, the descriptive action must be part of the accessible name.
+
+## The "Label in Name" Mismatch (Voice Control)
+
+Attempting to fix the screen reader issue with an `aria-label` can accidentally break things for **voice-control users**, who navigate by speaking the text they see on screen.
+
+A button's hidden accessible name must contain its visible text. Notice the conflict created here:
+
+```html
+<button type="submit" aria-label="Delete Item">X</button>
+```
+
+- Visible text: "X"
+- Accessible name: "Delete Item"
+
+Voice control systems often rely on visible text. If the accessible name (in this case, the `aria-label` value) diverges too much, commands may become unreliable or harder to discover.
+
+When a voice user says "Click X", screen readers can fail because the `aria-label` could override the visible text. Automated tools like Axe flag this immediately as a `label-content-name-mismatch`.
+
+## The Solution
+
+To satisfy both screen readers and voice control, align the visible text with the accessible name:
+
+1. **Visible Text (Best Practice):** Use plain text instead of an icon: `<button type="submit">Delete Item</button>`.
+2. **Accessible Icon:** If you must use an "X" icon, ensure the `aria-label="Delete Item"` is acceptable for voice users to speak aloud, or ensure any accompanying visual text matches the label perfectly.
 
 ## Practical guidance
 
-
 ### A few rules of thumb that prevent most value-attribute confusion:
 
-- Treat value on a button element as form data only. If you want a label, set the text content of the button, not the value attribute.
-- Treat value on an input button as both the label and the form data. The same string fills both roles. Make sure the string is meaningful in both contexts.
-- When building multi-submit forms, give each button visible text that matches its intent. Save as Draft and Publish Now are clearer than reusing a single Submit button with hidden value differences.
-- When an icon must stand in for text, add an aria-label that describes the action. Do not rely on the value attribute to convey meaning to assistive technology.
-
-## Related topics
-
-Why button type matters
-
-Why wrapping a button in a form matters
+- Treat `value` on a button element as form data only. If you want a label, set the text content of the button, not the `value` attribute.
+- Treat `value` on an input button as both the label and the form data. The same string fills both roles. Make sure the string is meaningful in both contexts.
+- When building multi-submit forms, give each button visible text that matches its intent. Save as Draft and Publish Now are clearer than reusing a single Submit button with hidden `value` differences.
+- When an icon must stand in for text, add an `aria-label` that describes the action. Do not rely on the `value` attribute to convey meaning to assistive technology.

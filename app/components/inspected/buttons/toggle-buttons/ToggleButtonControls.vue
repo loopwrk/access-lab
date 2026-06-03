@@ -29,15 +29,13 @@ const defaults = useButtonStudioDefaults(tagName)
 // For an active toggle behaviour, that activation flips togglePressed
 // here — which re-renders the iframe with the new ARIA state and the
 // pressed-state CSS class, so a real screen reader announces the change.
-function handleMessage(event: MessageEvent) {
-  if (event.data?.type !== 'demo:click') return
-  const behaviour = model.value.toggleBehaviour
-  if (!behaviour || behaviour === 'none') return
-  model.value.togglePressed = !model.value.togglePressed
-}
-
-onMounted(() => window.addEventListener('message', handleMessage))
-onBeforeUnmount(() => window.removeEventListener('message', handleMessage))
+usePreviewMessage({
+  'demo:click': () => {
+    const behaviour = model.value.toggleBehaviour
+    if (!behaviour || behaviour === 'none') return
+    model.value.togglePressed = !model.value.togglePressed
+  }
+})
 </script>
 
 <template>

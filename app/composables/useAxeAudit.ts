@@ -61,9 +61,9 @@ export function useAxeAudit(iframeRef: {
     state.value.incomplete = [];
     state.value.errorMessage = null;
     measurement.value = null;
-    window.addEventListener("message", handler);
   });
-  onBeforeUnmount(() => window.removeEventListener("message", handler));
+
+  useEventListener(window, "message", handler);
 
   return {
     violations,

@@ -49,9 +49,3 @@ Custom buttons built from div or span elements break this entirely. They are not
 - Use type=button for any button that triggers JavaScript-only behaviour: opening a dialog, expanding a section, toggling a state, anything that is not a form submission.
 - Use type=submit for the single primary action of a form. If a form needs more than one submit button, see the related topic on the value attribute for the multi-submit pattern.
 - Avoid type=reset unless you have specific evidence that users want it. The cost of an accidental click is high and the value of a form-clearing button is low.
-
-## Related topics
-
-Why wrapping a button in a form matters
-
-How the value attribute behaves on a button

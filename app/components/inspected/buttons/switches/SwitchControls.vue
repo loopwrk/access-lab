@@ -32,12 +32,13 @@ const toast = useToast()
 // rendered button is activated in the iframe, preview-shell posts
 // `demo:click` back; we flip switchChecked so the new ARIA state
 // re-renders into the iframe and a real screen reader announces it.
-function handleMessage(event: MessageEvent) {
-  if (event.data?.type !== 'demo:click') return
-  const behaviour = model.value.switchBehaviour
-  if (!behaviour || behaviour === 'none') return
-  model.value.switchChecked = !model.value.switchChecked
-}
+usePreviewMessage({
+  'demo:click': () => {
+    const behaviour = model.value.switchBehaviour
+    if (!behaviour || behaviour === 'none') return
+    model.value.switchChecked = !model.value.switchChecked
+  }
+})
 
 // The "Toggle notification" switch drives a non-dismissable toast so
 // the student can see a live demo of switch state controlling something
@@ -72,13 +73,9 @@ watch(
   }
 )
 
-onMounted(() => window.addEventListener('message', handleMessage))
-onBeforeUnmount(() => {
-  window.removeEventListener('message', handleMessage)
-  // Clean up the toast when navigating away from the switches page —
-  // otherwise it would persist over unrelated routes.
-  dismissNotificationToast()
-})
+// Clean up the toast when navigating away from the switches page —
+// otherwise it would persist over unrelated routes.
+onBeforeUnmount(dismissNotificationToast)
 </script>
 
 <template>

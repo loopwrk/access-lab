@@ -46,13 +46,16 @@ const KEYBOARD_STEP_PX = 24
 const codeAreaHeight = useLocalStorage('al-code-drawer-height', DEFAULT_HEIGHT)
 const isDragging = ref(false)
 
-function maxHeightPx(): number {
-  if (typeof window === 'undefined') return MAX_HEIGHT_VH * 8
-  return Math.round((window.innerHeight * MAX_HEIGHT_VH) / 100)
-}
+// Reactive viewport height — drawer max recomputes automatically when
+// the window resizes, so a re-clamped height applies the next time
+// effectiveHeight reads it.
+const { height: windowHeight } = useWindowSize()
+const maxHeightPx = computed(() =>
+  Math.round((windowHeight.value * MAX_HEIGHT_VH) / 100)
+)
 
 function clamp(value: number): number {
-  return Math.max(MIN_HEIGHT, Math.min(maxHeightPx(), value))
+  return Math.max(MIN_HEIGHT, Math.min(maxHeightPx.value, value))
 }
 
 const effectiveHeight = computed(() => clamp(codeAreaHeight.value))
@@ -60,25 +63,27 @@ const effectiveHeight = computed(() => clamp(codeAreaHeight.value))
 let dragStartY = 0
 let dragStartHeight = 0
 
+// Pointer-drag listeners are always attached to window (auto-cleaned on
+// unmount by useEventListener) and gated by isDragging so they're cheap
+// when idle. We can't dynamically toggle the target because the drag
+// would start on a stale closure.
+useEventListener(window, 'pointermove', (event: PointerEvent) => {
+  if (!isDragging.value) return
+  const delta = dragStartY - event.clientY
+  codeAreaHeight.value = clamp(dragStartHeight + delta)
+})
+useEventListener(window, 'pointerup', () => {
+  if (!isDragging.value) return
+  isDragging.value = false
+  document.body.style.userSelect = ''
+})
+
 function onPointerDown(event: PointerEvent) {
   isDragging.value = true
   dragStartY = event.clientY
-  dragStartHeight = effectiveHeight.value;
-  (event.currentTarget as Element).setPointerCapture(event.pointerId)
-  window.addEventListener('pointermove', onPointerMove)
-  window.addEventListener('pointerup', onPointerUp, { once: true })
+  dragStartHeight = effectiveHeight.value
+  ;(event.currentTarget as Element).setPointerCapture(event.pointerId)
   document.body.style.userSelect = 'none'
-}
-
-function onPointerMove(event: PointerEvent) {
-  const delta = dragStartY - event.clientY
-  codeAreaHeight.value = clamp(dragStartHeight + delta)
-}
-
-function onPointerUp() {
-  isDragging.value = false
-  window.removeEventListener('pointermove', onPointerMove)
-  document.body.style.userSelect = ''
 }
 
 function onKeydown(event: KeyboardEvent) {
@@ -93,16 +98,25 @@ function onKeydown(event: KeyboardEvent) {
     codeAreaHeight.value = MIN_HEIGHT
   } else if (event.key === 'End') {
     event.preventDefault()
-    codeAreaHeight.value = maxHeightPx()
+    codeAreaHeight.value = maxHeightPx.value
   }
 }
 
 onBeforeUnmount(() => {
-  window.removeEventListener('pointermove', onPointerMove)
   document.body.style.userSelect = ''
 })
 
 const copied = ref<'inline' | 'class' | 'css' | 'error' | null>(null)
+const COPY_FEEDBACK_MS = 800
+
+// useTimeoutFn handles the start/stop lifecycle for us. Restarting
+// before the previous timer fires (back-to-back copies) cancels and
+// re-schedules cleanly.
+const { start: scheduleCopyReset } = useTimeoutFn(
+  () => { copied.value = null },
+  COPY_FEEDBACK_MS,
+  { immediate: false }
+)
 
 async function copyContent(mode: 'inline' | 'class' | 'css') {
   let text = ''
@@ -116,16 +130,11 @@ async function copyContent(mode: 'inline' | 'class' | 'css') {
   try {
     await navigator.clipboard.writeText(text)
     copied.value = mode
-    setTimeout(() => {
-      copied.value = null
-    }, 800)
   } catch (err) {
     console.error('Failed to copy to clipboard:', err)
     copied.value = 'error'
-    setTimeout(() => {
-      copied.value = null
-    }, 800)
   }
+  scheduleCopyReset()
 }
 </script>
 
@@ -136,7 +145,7 @@ async function copyContent(mode: 'inline' | 'class' | 'css') {
       preview area above.
     -->
     <div v-if="isOpen" role="separator" aria-orientation="horizontal" :aria-label="t('codeDrawer.resizeLabel')"
-      :aria-valuenow="effectiveHeight" :aria-valuemin="MIN_HEIGHT" :aria-valuemax="maxHeightPx()" tabindex="0" :class="[
+      :aria-valuenow="effectiveHeight" :aria-valuemin="MIN_HEIGHT" :aria-valuemax="maxHeightPx" tabindex="0" :class="[
         'h-1.5 cursor-row-resize outline-none transition-colors',
         isDragging
           ? 'bg-(--brand)'

@@ -29,13 +29,11 @@ const defaults = useButtonStudioDefaults(tagName)
 // disclosureExpanded, which re-renders the iframe with the new ARIA
 // state (when the behaviour exposes it) and either reveals or hides the
 // sibling panel via the `hidden` attribute.
-function handleMessage(event: MessageEvent) {
-  if (event.data?.type !== 'demo:click') return
-  model.value.disclosureExpanded = !model.value.disclosureExpanded
-}
-
-onMounted(() => window.addEventListener('message', handleMessage))
-onBeforeUnmount(() => window.removeEventListener('message', handleMessage))
+usePreviewMessage({
+  'demo:click': () => {
+    model.value.disclosureExpanded = !model.value.disclosureExpanded
+  }
+})
 </script>
 
 <template>
