@@ -3,7 +3,7 @@ import type { FontSize } from "~/types/typography";
 const defaultFont = "Figtree Variable";
 const defaultSize: FontSize = "100%";
 
-export const useFont = defineStore("font", () => {
+export function useFont() {
   const family = useLocalStorage<string>("al-font-family", defaultFont);
   const size = useLocalStorage<FontSize>("al-font-size", defaultSize);
 
@@ -30,4 +30,4 @@ export const useFont = defineStore("font", () => {
     setFont,
     setSize,
   };
-});
+}

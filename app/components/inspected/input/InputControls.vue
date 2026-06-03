@@ -3,6 +3,7 @@ import type { InputProps } from './definition'
 import { useUnitConversion } from '~/composables/useUnitConversion'
 import type { CssUnit, CssLength } from '~/composables/useUnitConversion'
 import ResetDefaultsSection from '~/components/ButtonStudio/sections/ResetDefaultsSection.vue'
+import ColorPickerRow from '~/components/controls/ColorPickerRow.vue'
 
 const model = defineModel<Partial<InputProps>>({ required: true })
 const { update } = useButtonControlsModel(model)
@@ -119,14 +120,6 @@ const required = computed({
   set: (value: boolean) => update('required', value)
 })
 
-const swatchClass
-  = 'w-10 h-10 p-1 rounded-md border-2 border-(--border-strong) bg-transparent cursor-pointer shrink-0 '
-  + 'focus-visible:outline-[3px] focus-visible:outline-(--focus-ring) focus-visible:outline-offset-0 '
-  + 'disabled:opacity-30 disabled:cursor-not-allowed'
-
-const swatchInnerClass = 'w-full h-full rounded-[3px]'
-const colorLabelTitleClass = 'text-(length:--al-font-size-heading) font-medium text-(--text-primary)'
-const colorLabelHexClass = 'text-(length:--al-font-size-detail) text-(--text-muted) font-mono'
 </script>
 
 <template>
@@ -231,52 +224,10 @@ const colorLabelHexClass = 'text-(length:--al-font-size-detail) text-(--text-mut
       </legend>
 
       <div :class="[colorsEnabled ? '' : 'opacity-50 pointer-events-none']" class="flex flex-col gap-3">
-        <ColorPicker v-slot="{ show }" v-model="bgColor" with-alpha with-initial-color with-eye-dropper with-hex-input
-          with-rgb-input>
-          <div class="flex items-center justify-between gap-3">
-            <button type="button" :class="swatchClass" :disabled="!colorsEnabled" @click="show">
-              <div :class="swatchInnerClass" :style="{ backgroundColor: bgColor }" />
-            </button>
-            <div class="flex flex-col flex-1 min-w-0">
-              <span :class="colorLabelTitleClass">{{ t('controls.background') }}</span>
-              <span :class="colorLabelHexClass">{{ bgColor }}</span>
-            </div>
-            <UInput :model-value="bgColor" size="sm" :disabled="!colorsEnabled" class="w-24 shrink-0"
-              @update:model-value="update('bg', $event)" />
-          </div>
-        </ColorPicker>
-
-        <ColorPicker v-slot="{ show }" v-model="fgTextColor" with-alpha with-initial-color with-eye-dropper
-          with-hex-input with-rgb-input>
-          <div class="flex items-center justify-between gap-3">
-            <button type="button" :class="swatchClass" :disabled="!colorsEnabled" @click="show">
-              <div :class="swatchInnerClass" :style="{ backgroundColor: fgTextColor }" />
-            </button>
-            <div class="flex flex-col flex-1 min-w-0">
-              <span :class="colorLabelTitleClass">{{ t('controls.textColor') }}</span>
-              <span :class="colorLabelHexClass">{{ fgTextColor }}</span>
-            </div>
-            <UInput :model-value="fgTextColor" size="sm" :disabled="!colorsEnabled" class="w-24 shrink-0"
-              @update:model-value="update('fgText', $event)" />
-          </div>
-        </ColorPicker>
-
+        <ColorPickerRow v-model="bgColor" :label="t('controls.background')" :disabled="!colorsEnabled" />
+        <ColorPickerRow v-model="fgTextColor" :label="t('controls.textColor')" :disabled="!colorsEnabled" />
         <ContrastBadge :ratio="contrastRatio" :verdict="contrastVerdict" />
-
-        <ColorPicker v-slot="{ show }" v-model="borderColorComputed" with-alpha with-initial-color with-eye-dropper
-          with-hex-input with-rgb-input>
-          <div class="flex items-center justify-between gap-3">
-            <button type="button" :class="swatchClass" :disabled="!colorsEnabled" @click="show">
-              <div :class="swatchInnerClass" :style="{ backgroundColor: borderColorComputed }" />
-            </button>
-            <div class="flex flex-col flex-1 min-w-0">
-              <span :class="colorLabelTitleClass">{{ t('controls.borderColor') }}</span>
-              <span :class="colorLabelHexClass">{{ borderColorComputed }}</span>
-            </div>
-            <UInput :model-value="borderColorComputed" size="sm" :disabled="!colorsEnabled" class="w-24 shrink-0"
-              @update:model-value="update('borderColor', $event)" />
-          </div>
-        </ColorPicker>
+        <ColorPickerRow v-model="borderColorComputed" :label="t('controls.borderColor')" :disabled="!colorsEnabled" />
       </div>
     </fieldset>
   </div>

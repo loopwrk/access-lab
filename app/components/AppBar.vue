@@ -2,8 +2,8 @@
 import type { FontSize } from '~/types/typography'
 
 const { t } = useI18n()
-const theme = useTheme()
-const font = useFont()
+const { isDark, isHighContrast, setMode, toggleContrast } = useTheme()
+const { family: fontFamily, size: fontSize, setFont, setSize } = useFont()
 
 // On mobile while the reader is open, the logo should not navigate —
 // "/" would close the reader and dump the user onto MobileBlocker,
@@ -67,39 +67,38 @@ const sizes: SizeOption[] = [
     <div class="flex items-center gap-4">
       <!-- Font family picker -->
       <UFieldGroup size="sm">
-        <UButton v-for="fontFamily in fonts" :key="fontFamily.value"
-          :color="font.family === fontFamily.value ? 'primary' : 'neutral'"
-          :variant="font.family === fontFamily.value ? 'solid' : 'ghost'" :style="{ fontFamily: fontFamily.family }"
-          @click="font.setFont(fontFamily.value)">
-          {{ fontFamily.label }}
+        <UButton v-for="option in fonts" :key="option.value"
+          :color="fontFamily === option.value ? 'primary' : 'neutral'"
+          :variant="fontFamily === option.value ? 'solid' : 'ghost'" :style="{ fontFamily: option.family }"
+          @click="setFont(option.value)">
+          {{ option.label }}
         </UButton>
       </UFieldGroup>
 
       <!-- Font size picker -->
       <UFieldGroup size="sm">
-        <UButton v-for="size in sizes" :key="size.value" :color="font.size === size.value ? 'primary' : 'neutral'"
-          :variant="font.size === size.value ? 'solid' : 'ghost'" @click="font.setSize(size.value)">
-          {{ size.label }}
+        <UButton v-for="option in sizes" :key="option.value" :color="fontSize === option.value ? 'primary' : 'neutral'"
+          :variant="fontSize === option.value ? 'solid' : 'ghost'" @click="setSize(option.value)">
+          {{ option.label }}
         </UButton>
       </UFieldGroup>
 
       <!-- High-contrast toggle -->
       <UFieldGroup size="sm">
-        <UButton :color="theme.isHighContrast ? 'primary' : 'neutral'"
-          :variant="theme.isHighContrast ? 'solid' : 'ghost'" icon="i-lucide-contrast"
-          :aria-pressed="theme.isHighContrast" @click="theme.toggleContrast()">
+        <UButton :color="isHighContrast ? 'primary' : 'neutral'" :variant="isHighContrast ? 'solid' : 'ghost'"
+          icon="i-lucide-contrast" :aria-pressed="isHighContrast" @click="toggleContrast()">
           {{ t('theme.highContrast') }}
         </UButton>
       </UFieldGroup>
 
       <!-- Light / Dark toggle -->
       <UFieldGroup size="sm">
-        <UButton :color="!theme.isDark ? 'primary' : 'neutral'" :variant="!theme.isDark ? 'solid' : 'ghost'"
-          icon="i-lucide-sun" :aria-pressed="!theme.isDark" @click="theme.setMode('light')">
+        <UButton :color="!isDark ? 'primary' : 'neutral'" :variant="!isDark ? 'solid' : 'ghost'" icon="i-lucide-sun"
+          :aria-pressed="!isDark" @click="setMode('light')">
           {{ t('theme.light') }}
         </UButton>
-        <UButton :color="theme.isDark ? 'primary' : 'neutral'" :variant="theme.isDark ? 'solid' : 'ghost'"
-          icon="i-lucide-moon" :aria-pressed="theme.isDark" @click="theme.setMode('dark')">
+        <UButton :color="isDark ? 'primary' : 'neutral'" :variant="isDark ? 'solid' : 'ghost'" icon="i-lucide-moon"
+          :aria-pressed="isDark" @click="setMode('dark')">
           {{ t('theme.dark') }}
         </UButton>
       </UFieldGroup>

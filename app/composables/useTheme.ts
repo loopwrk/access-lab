@@ -1,7 +1,7 @@
 type Mode = "light" | "dark";
 type Contrast = "normal" | "high";
 
-export const useTheme = defineStore("theme", () => {
+export function useTheme() {
   const colorMode = useColorMode();
   const contrast = useLocalStorage<Contrast>("al-contrast", "normal");
 
@@ -41,4 +41,4 @@ export const useTheme = defineStore("theme", () => {
     isDark,
     isHighContrast,
   };
-});
+}

@@ -10,7 +10,6 @@ export default defineNuxtConfig({
     "@nuxt/test-utils",
     "@nuxtjs/color-mode",
     "@nuxtjs/google-fonts",
-    "@pinia/nuxt",
     "@nuxtjs/i18n",
     "@vueuse/nuxt",
     "nuxt-color-picker",
