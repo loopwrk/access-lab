@@ -1,5 +1,5 @@
-import type { AxeResult } from "~/composables/useAxeAudit";
 import type { DomMeasurement, DomRule, ViolationResult } from "~/rules/types";
+import type { AxeResult } from "~/types/axe";
 
 /**
  * DOM-based rule engine.

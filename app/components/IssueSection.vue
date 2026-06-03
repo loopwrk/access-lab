@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import type { AxeResult } from '~/composables/useAxeAudit'
-
-type ImpactValue = 'minor' | 'moderate' | 'serious' | 'critical' | null
+import type { AxeResult, ImpactValue } from '~/types/axe'
 
 const props = defineProps<{
   color: 'error' | 'warning' | 'success'

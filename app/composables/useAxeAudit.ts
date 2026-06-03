@@ -1,51 +1,10 @@
 import type { DomMeasurement } from "~/rules/types";
-
-type ImpactValue = "minor" | "moderate" | "serious" | "critical" | null;
-
-interface CheckResult {
-  id: string;
-  impact?: ImpactValue;
-  message: string;
-  data: unknown;
-}
-
-interface NodeResult {
-  html: string;
-  impact?: ImpactValue;
-  target: string[];
-  any: CheckResult[];
-  all: CheckResult[];
-  none: CheckResult[];
-  failureSummary?: string;
-}
-
-export interface AxeResult {
-  id: string;
-  description: string;
-  help: string;
-  helpUrl: string;
-  impact?: ImpactValue;
-  tags: string[];
-  nodes: NodeResult[];
-  learnTopicId?: string;
-}
+import type { AxeResult } from "~/types/axe";
 
 export function useAxeAudit(iframeRef: {
   readonly value: HTMLIFrameElement | null;
 }) {
-  const state = useState<{
-    violations: AxeResult[];
-    passes: AxeResult[];
-    incomplete: AxeResult[];
-    isReady: boolean;
-    errorMessage: string | null;
-  }>("axe-results", () => ({
-    violations: [],
-    passes: [],
-    incomplete: [],
-    isReady: false,
-    errorMessage: null,
-  }));
+  const state = useAxeResults();
 
   const violations = computed(() => state.value.violations);
   const passes = computed(() => state.value.passes);
@@ -73,9 +32,9 @@ export function useAxeAudit(iframeRef: {
         state.value.isReady = true;
         break;
       case "axe:result":
-        state.value.violations = data.violations || [];
-        state.value.passes = data.passes || [];
-        state.value.incomplete = data.incomplete || [];
+        state.value.violations = (data.violations || []) as AxeResult[];
+        state.value.passes = (data.passes || []) as AxeResult[];
+        state.value.incomplete = (data.incomplete || []) as AxeResult[];
         state.value.errorMessage = null;
         break;
       case "axe:error":
