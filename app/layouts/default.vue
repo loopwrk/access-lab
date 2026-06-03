@@ -28,7 +28,7 @@ function skipToMain() {
 <template>
   <div
     :inert="isBelowDesktop"
-    class="grid grid-rows-[auto_1fr] min-h-dvh bg-(--bg) text-(--text-secondary)"
+    class="grid grid-rows-[auto_1fr] h-dvh bg-(--bg) text-(--text-secondary)"
   >
     <div class="absolute z-50">
       <a

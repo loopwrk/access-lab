@@ -14,6 +14,9 @@ export const switchWrongAttribute: Rule = {
   help: "Replace `aria-pressed` with `role=\"switch\"` + `aria-checked=\"true|false\"`. The element is still rendered as a `<button>`, but assistive tech now understands it represents a setting rather than an action.",
   helpUrl: "https://www.w3.org/WAI/ARIA/apg/patterns/switch/",
   evaluate(props) {
+    // The input-checkbox-switch variant hardcodes role="switch" in the
+    // markup, so the switchBehaviour prop doesn't drive output for it.
+    if (props.renderAs === "input-checkbox-switch") return null;
     if (props.switchBehaviour !== "aria-pressed") return null;
     return {
       severity: "serious",

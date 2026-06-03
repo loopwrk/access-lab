@@ -160,13 +160,23 @@ function isPilledSwitch(props: Partial<ButtonProps>): boolean {
   );
 }
 
+function isInputCheckboxSwitch(props: Partial<ButtonProps>): boolean {
+  return props.renderAs === "input-checkbox-switch";
+}
+
 function buildElementClass(props: Partial<ButtonProps>): string | null {
   const tokens: string[] = [];
   const pressed
     = (isToggleable(props) && props.togglePressed)
       || (isSwitchable(props) && props.switchChecked);
+  // The inspected-class marker also gates the iframe shell's change-event
+  // bridge, so input-checkbox-switch needs it unconditionally — otherwise
+  // a click on the rendered checkbox can't flip switchChecked back here.
   const needsInspected
-    = props.focusRingEnabled || isPilledSwitch(props) || pressed;
+    = props.focusRingEnabled
+      || isPilledSwitch(props)
+      || pressed
+      || isInputCheckboxSwitch(props);
   if (needsInspected) tokens.push(INSPECTED_CLASS);
   if (isPilledSwitch(props)) tokens.push(SWITCH_CLASS);
   if (pressed) tokens.push(PRESSED_CLASS);

@@ -14,6 +14,9 @@ export const switchNoRole: Rule = {
   help: "Add `role=\"switch\"` and `aria-checked=\"true|false\"`. Together they tell assistive tech that this is a setting control and what its current value is. Keep the label stable — let aria-checked carry the on/off state.",
   helpUrl: "https://www.w3.org/WAI/ARIA/apg/patterns/switch/",
   evaluate(props) {
+    // The input-checkbox-switch variant hardcodes role="switch" in the
+    // markup, so the switchBehaviour prop doesn't drive output for it.
+    if (props.renderAs === "input-checkbox-switch") return null;
     if (props.switchBehaviour !== "none") return null;
     return {
       severity: "serious",

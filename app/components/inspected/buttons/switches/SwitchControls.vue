@@ -28,14 +28,19 @@ const defaults = useButtonStudioDefaults(tagName);
 const { t } = useI18n();
 const toast = useToast();
 
-// Same iframe click bridge as the toggle-buttons page. When the
-// rendered button is activated in the iframe, preview-shell posts
-// `demo:click` back; we flip switchChecked so the new ARIA state
-// re-renders into the iframe and a real screen reader announces it.
+// Iframe click bridge. When the rendered control is activated in the
+// iframe (button click or native-checkbox change), preview-shell posts
+// `demo:click` back; we flip switchChecked so the new state re-renders
+// and a real screen reader announces it. The input-checkbox-switch
+// variant is always an active switch regardless of `switchBehaviour`
+// (the markup hardcodes role="switch"), so we skip the behaviour gate
+// for that variant.
 usePreviewMessage({
   "demo:click": () => {
-    const behaviour = model.value.switchBehaviour;
-    if (!behaviour || behaviour === "none") return;
+    if (model.value.renderAs !== "input-checkbox-switch") {
+      const behaviour = model.value.switchBehaviour;
+      if (!behaviour || behaviour === "none") return;
+    }
     model.value.switchChecked = !model.value.switchChecked;
   },
 });
@@ -89,8 +94,10 @@ onBeforeUnmount(dismissNotificationToast);
     <AriaSection v-model="model" />
     <USeparator />
 
-    <SwitchStateSection v-model="model" />
-    <USeparator />
+    <template v-if="model.renderAs !== 'input-checkbox-switch'">
+      <SwitchStateSection v-model="model" />
+      <USeparator />
+    </template>
 
     <TextSection
       v-model="model"

@@ -15,7 +15,7 @@ const tabItems = computed<TabsItem[]>(() => [
 <template>
   <aside
     :aria-label="t('inspector.ariaLabel')"
-    class="w-[380px] shrink-0 flex flex-col overflow-y-auto border-l border-(--border) bg-(--bg)"
+    class="w-[380px] shrink-0 flex flex-col min-h-0 border-l border-(--border) bg-(--bg)"
   >
     <UTabs
       v-model="activeTab"
