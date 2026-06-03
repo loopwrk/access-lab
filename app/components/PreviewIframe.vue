@@ -53,51 +53,17 @@ function focusContent() {
 </script>
 
 <template>
-  <div class="preview-iframe-wrap">
-    <UButton class="focus-content-btn" color="neutral" variant="soft" size="sm" icon="i-lucide-focus"
+  <div class="relative flex-1 flex items-center justify-center bg-(--surface-2)">
+    <UButton class="absolute top-2 left-2 z-[1]" color="neutral" variant="soft" size="sm" icon="i-lucide-focus"
       :aria-label="t('preview.focusContentAria')" @click="focusContent">
       {{ t('preview.focusContent') }}
     </UButton>
     <iframe :id="PREVIEW_IFRAME_ID" ref="iframe" src="/preview-shell.html" title="Component preview"
-      sandbox="allow-scripts allow-same-origin allow-forms" class="preview-iframe" />
-    <div v-if="!isReady" class="preview-placeholder">
+      sandbox="allow-scripts allow-same-origin allow-forms" class="w-full h-full border-none bg-white" />
+    <div v-if="!isReady" class="absolute inset-0 flex items-center justify-center pointer-events-none">
       <p class="text-muted">
         Loading preview…
       </p>
     </div>
   </div>
 </template>
-
-<style scoped>
-.preview-iframe-wrap {
-  position: relative;
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--surface-2);
-}
-
-.preview-iframe {
-  width: 100%;
-  height: 100%;
-  border: none;
-  background-color: #FFFFFF;
-}
-
-.focus-content-btn {
-  position: absolute;
-  top: 0.5rem;
-  left: 0.5rem;
-  z-index: 1;
-}
-
-.preview-placeholder {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-}
-</style>

@@ -148,8 +148,8 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="component-studio">
-    <div class="studio-preview">
+  <div class="flex flex-1 h-full min-h-0">
+    <div class="flex-1 flex min-w-0">
       <PreviewIframe ref="previewRef" />
     </div>
   </div>
@@ -174,17 +174,3 @@ onBeforeUnmount(() => {
   </Teleport>
 </template>
 
-<style scoped>
-.component-studio {
-  display: flex;
-  flex: 1;
-  height: 100%;
-  min-height: 0;
-}
-
-.studio-preview {
-  flex: 1;
-  display: flex;
-  min-width: 0;
-}
-</style>

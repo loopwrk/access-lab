@@ -127,23 +127,32 @@ const required = computed({
   get: () => props.modelValue.required === true,
   set: (value: boolean) => update('required', value)
 })
+
+const swatchClass
+  = 'w-10 h-10 p-1 rounded-md border-2 border-(--border-strong) bg-transparent cursor-pointer shrink-0 '
+  + 'focus-visible:outline-[3px] focus-visible:outline-(--focus-ring) focus-visible:outline-offset-0 '
+  + 'disabled:opacity-30 disabled:cursor-not-allowed'
+
+const swatchInnerClass = 'w-full h-full rounded-[3px]'
+const colorLabelTitleClass = 'text-(length:--al-font-size-heading) font-medium text-(--text-primary)'
+const colorLabelHexClass = 'text-(length:--al-font-size-detail) text-(--text-muted) font-mono'
 </script>
 
 <template>
   <div class="flex flex-col gap-4">
-    <ResetDefaultsSection
-      :model-value="modelValue"
-      @update:model-value="emit('update:modelValue', $event as Partial<InputProps>)"
-    />
+    <ResetDefaultsSection :model-value="modelValue"
+      @update:model-value="emit('update:modelValue', $event as Partial<InputProps>)" />
     <USeparator />
 
 
     <UFormField class="flex flex-col">
       <template #label>
-        <a href="#topic-vague-label" class="control-group-title control-label-link"
+        <a href="#topic-vague-label"
+          class="control-group-title inline-flex items-center gap-1 text-(--text-primary) no-underline cursor-pointer hover:text-(--brand) hover:underline hover:underline-offset-2 focus-visible:text-(--brand) focus-visible:underline focus-visible:underline-offset-2 focus-visible:outline-[3px] focus-visible:outline-(--focus-ring) focus-visible:outline-offset-2 focus-visible:rounded-[2px]"
           @click.prevent="focusLearnTopic('vague-label')">
           {{ t('controls.input.label') }}
-          <UIcon name="i-lucide-arrow-up-right" class="control-label-link-icon" aria-hidden="true" />
+          <UIcon name="i-lucide-arrow-up-right" class="text-(length:--al-font-size-detail) opacity-70"
+            aria-hidden="true" />
         </a>
       </template>
       <UInput :model-value="modelValue.label ?? ''" :placeholder="t('controls.input.labelPlaceholder')" class="w-full"
@@ -215,8 +224,9 @@ const required = computed({
           <USlider :model-value="pxOrFallback(modelValue.fontSize, DEFAULTS.fontSize)" :min="8" :max="128" :step="2"
             color="primary" size="sm" :disabled="!fontSizeEnabled" class="flex-1"
             @update:model-value="update('fontSize', unitConv.fromSliderPx(Number($event), unitFor(modelValue.fontSize)))" />
-          <LengthValueInput v-if="fontSizeEnabled" :model-value="lengthOrFallback(modelValue.fontSize, DEFAULTS.fontSize)"
-            :px-step="2" :disabled="!fontSizeEnabled" @update:model-value="update('fontSize', $event)" />
+          <LengthValueInput v-if="fontSizeEnabled"
+            :model-value="lengthOrFallback(modelValue.fontSize, DEFAULTS.fontSize)" :px-step="2"
+            :disabled="!fontSizeEnabled" @update:model-value="update('fontSize', $event)" />
         </div>
       </div>
     </fieldset>
@@ -234,12 +244,12 @@ const required = computed({
         <ColorPicker v-slot="{ show }" v-model="bgColor" with-alpha with-initial-color with-eye-dropper with-hex-input
           with-rgb-input>
           <div class="flex items-center justify-between gap-3">
-            <button type="button" class="color-swatch" :disabled="!colorsEnabled" @click="show">
-              <div class="color-swatch-inner" :style="{ backgroundColor: bgColor }" />
+            <button type="button" :class="swatchClass" :disabled="!colorsEnabled" @click="show">
+              <div :class="swatchInnerClass" :style="{ backgroundColor: bgColor }" />
             </button>
             <div class="flex flex-col flex-1 min-w-0">
-              <span class="color-label-title">{{ t('controls.background') }}</span>
-              <span class="color-label-hex">{{ bgColor }}</span>
+              <span :class="colorLabelTitleClass">{{ t('controls.background') }}</span>
+              <span :class="colorLabelHexClass">{{ bgColor }}</span>
             </div>
             <UInput :model-value="bgColor" size="sm" :disabled="!colorsEnabled" class="w-24 shrink-0"
               @update:model-value="update('bg', $event)" />
@@ -249,12 +259,12 @@ const required = computed({
         <ColorPicker v-slot="{ show }" v-model="fgTextColor" with-alpha with-initial-color with-eye-dropper
           with-hex-input with-rgb-input>
           <div class="flex items-center justify-between gap-3">
-            <button type="button" class="color-swatch" :disabled="!colorsEnabled" @click="show">
-              <div class="color-swatch-inner" :style="{ backgroundColor: fgTextColor }" />
+            <button type="button" :class="swatchClass" :disabled="!colorsEnabled" @click="show">
+              <div :class="swatchInnerClass" :style="{ backgroundColor: fgTextColor }" />
             </button>
             <div class="flex flex-col flex-1 min-w-0">
-              <span class="color-label-title">{{ t('controls.textColor') }}</span>
-              <span class="color-label-hex">{{ fgTextColor }}</span>
+              <span :class="colorLabelTitleClass">{{ t('controls.textColor') }}</span>
+              <span :class="colorLabelHexClass">{{ fgTextColor }}</span>
             </div>
             <UInput :model-value="fgTextColor" size="sm" :disabled="!colorsEnabled" class="w-24 shrink-0"
               @update:model-value="update('fgText', $event)" />
@@ -266,12 +276,12 @@ const required = computed({
         <ColorPicker v-slot="{ show }" v-model="borderColorComputed" with-alpha with-initial-color with-eye-dropper
           with-hex-input with-rgb-input>
           <div class="flex items-center justify-between gap-3">
-            <button type="button" class="color-swatch" :disabled="!colorsEnabled" @click="show">
-              <div class="color-swatch-inner" :style="{ backgroundColor: borderColorComputed }" />
+            <button type="button" :class="swatchClass" :disabled="!colorsEnabled" @click="show">
+              <div :class="swatchInnerClass" :style="{ backgroundColor: borderColorComputed }" />
             </button>
             <div class="flex flex-col flex-1 min-w-0">
-              <span class="color-label-title">{{ t('controls.borderColor') }}</span>
-              <span class="color-label-hex">{{ borderColorComputed }}</span>
+              <span :class="colorLabelTitleClass">{{ t('controls.borderColor') }}</span>
+              <span :class="colorLabelHexClass">{{ borderColorComputed }}</span>
             </div>
             <UInput :model-value="borderColorComputed" size="sm" :disabled="!colorsEnabled" class="w-24 shrink-0"
               @update:model-value="update('borderColor', $event)" />
@@ -281,80 +291,3 @@ const required = computed({
     </fieldset>
   </div>
 </template>
-
-<style scoped>
-.control-group-title {
-  font-size: var(--al-font-size-caption);
-  font-weight: 600;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin: 0;
-}
-
-.color-swatch {
-  width: 40px;
-  height: 40px;
-  padding: 4px;
-  border-radius: 6px;
-  border: 2px solid var(--border-strong);
-  background: transparent;
-  cursor: pointer;
-  flex-shrink: 0;
-}
-
-.color-swatch:focus-visible {
-  outline: 3px solid var(--focus-ring);
-  outline-offset: 0;
-}
-
-.color-swatch:disabled {
-  opacity: 0.3;
-  cursor: not-allowed;
-}
-
-.color-swatch-inner {
-  width: 100%;
-  height: 100%;
-  border-radius: 3px;
-}
-
-.color-label-title {
-  font-size: var(--al-font-size-heading);
-  font-weight: 500;
-  color: var(--text-primary);
-}
-
-.color-label-hex {
-  font-size: var(--al-font-size-detail);
-  color: var(--text-muted);
-  font-family: var(--al-font-mono);
-}
-
-.control-label-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  color: var(--text-primary);
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.control-label-link:hover,
-.control-label-link:focus-visible {
-  color: var(--brand);
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-
-.control-label-link:focus-visible {
-  outline: 3px solid var(--focus-ring);
-  outline-offset: 2px;
-  border-radius: 2px;
-}
-
-.control-label-link-icon {
-  font-size: var(--al-font-size-detail);
-  opacity: 0.7;
-}
-</style>

@@ -180,7 +180,7 @@ function maybeTranslate(value?: string): string {
 
                   <div v-if="variant.seeAlsoTopicId" class="px-4 pb-3 -mt-1">
                     <a :href="`#topic-${variant.seeAlsoTopicId}`"
-                      class="see-also-link inline-flex items-center gap-1 text-(length:--al-font-size-detail) text-(--text-secondary)"
+                      class="inline-flex items-center gap-1 text-(length:--al-font-size-detail) text-(--text-secondary) no-underline cursor-pointer hover:text-(--brand) hover:underline hover:underline-offset-2 focus-visible:text-(--brand) focus-visible:underline focus-visible:underline-offset-2 focus-visible:outline-[3px] focus-visible:outline-(--focus-ring) focus-visible:outline-offset-2"
                       @click.prevent="openSeeAlso(variant.seeAlsoTopicId)">
                       {{ t('variantPicker.seeAlso') }}
                       <UIcon name="i-lucide-arrow-up-right" class="size-3 opacity-70" aria-hidden="true" />
@@ -196,21 +196,3 @@ function maybeTranslate(value?: string): string {
   </div>
 </template>
 
-<style scoped>
-.see-also-link {
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.see-also-link:hover,
-.see-also-link:focus-visible {
-  color: var(--brand);
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-
-.see-also-link:focus-visible {
-  outline: 3px solid var(--focus-ring);
-  outline-offset: 2px;
-}
-</style>

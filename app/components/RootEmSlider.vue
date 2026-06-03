@@ -7,14 +7,18 @@ const { focusLearnTopic } = useInspectorTab()
 </script>
 
 <template>
-  <section class="root-em-slider" :aria-label="t('controls.simulatedRoot.label')">
-    <div class="root-em-slider-inner">
-      <div class="root-em-slider-header">
-        <a href="#topic-rem-units" class="root-em-slider-title" @click.prevent="focusLearnTopic('rem-units')">
+  <section class="-mt-4 -mx-4 mb-4 bg-(--brand-soft) border-b border-(--border)"
+    :aria-label="t('controls.simulatedRoot.label')">
+    <div class="px-4 py-3 flex flex-col gap-2">
+      <div class="flex items-center justify-between gap-3">
+        <a href="#topic-rem-units"
+          class="inline-flex items-center gap-1 text-(length:--al-font-size-caption) font-semibold text-(--text-muted) uppercase tracking-[0.08em] no-underline cursor-pointer hover:text-(--brand) hover:underline hover:underline-offset-2 focus-visible:text-(--brand) focus-visible:underline focus-visible:underline-offset-2 focus-visible:outline-[3px] focus-visible:outline-(--focus-ring) focus-visible:outline-offset-2 focus-visible:rounded-[2px]"
+          @click.prevent="focusLearnTopic('rem-units')">
           {{ t('controls.simulatedRoot.label') }}
-          <UIcon name="i-lucide-arrow-up-right" class="root-em-slider-title-icon" aria-hidden="true" />
+          <UIcon name="i-lucide-arrow-up-right"
+            class="text-(length:--al-font-size-detail) opacity-70" aria-hidden="true" />
         </a>
-        <span class="root-em-slider-value">
+        <span class="text-(length:--al-font-size-detail) text-(--text-muted) font-mono">
           {{ unitConv.simulatedRootPx.value }}px
         </span>
       </div>
@@ -28,62 +32,3 @@ const { focusLearnTopic } = useInspectorTab()
     </div>
   </section>
 </template>
-
-<style scoped>
-.root-em-slider {
-  margin: -16px -16px 16px -16px;
-  background: var(--brand-soft);
-  border-bottom: 1px solid var(--border);
-}
-
-.root-em-slider-inner {
-  padding: 12px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.root-em-slider-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.root-em-slider-title {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: var(--al-font-size-caption);
-  font-weight: 600;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.root-em-slider-title:hover,
-.root-em-slider-title:focus-visible {
-  color: var(--brand);
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-
-.root-em-slider-title:focus-visible {
-  outline: 3px solid var(--focus-ring);
-  outline-offset: 2px;
-  border-radius: 2px;
-}
-
-.root-em-slider-title-icon {
-  font-size: var(--al-font-size-detail);
-  opacity: 0.7;
-}
-
-.root-em-slider-value {
-  font-size: var(--al-font-size-detail);
-  color: var(--text-muted);
-  font-family: var(--al-font-mono);
-}
-</style>

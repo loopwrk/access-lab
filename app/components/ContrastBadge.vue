@@ -46,33 +46,13 @@ const displayRatio = computed(() => props.ratio.toFixed(2))
     <span class="text-(length:--al-font-size-caption) font-semibold text-(--text-muted) uppercase tracking-[0.08em]">
       {{ t('contrast.label') }}
     </span>
-    <UBadge :color="verdictMeta.color" variant="subtle" size="md" class="contrast-pill">
+    <UBadge :color="verdictMeta.color" variant="subtle" size="md"
+      class="inline-flex items-center gap-1.5 tabular-nums">
       <UIcon :name="verdictMeta.icon" class="shrink-0" aria-hidden="true" />
-      <span class="contrast-pill-ratio">{{ t('contrast.ratio', { ratio: displayRatio }) }}</span>
-      <span class="contrast-pill-divider" aria-hidden="true">·</span>
-      <span class="contrast-pill-verdict">{{ verdictMeta.label }}</span>
+      <span class="font-mono font-semibold">{{ t('contrast.ratio', { ratio: displayRatio }) }}</span>
+      <span class="opacity-50" aria-hidden="true">·</span>
+      <span class="font-medium">{{ verdictMeta.label }}</span>
     </UBadge>
   </div>
 </template>
 
-<style scoped>
-.contrast-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-variant-numeric: tabular-nums;
-}
-
-.contrast-pill-ratio {
-  font-family: var(--al-font-mono);
-  font-weight: 600;
-}
-
-.contrast-pill-divider {
-  opacity: 0.5;
-}
-
-.contrast-pill-verdict {
-  font-weight: 500;
-}
-</style>
