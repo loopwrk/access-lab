@@ -1,7 +1,11 @@
 import type { AxeResult } from '~/composables/useAxeAudit'
 import type { Rule, ViolationResult } from '~/rules/types'
 
-function violationToAxeResult(rule: Rule, result: ViolationResult): AxeResult {
+function violationToAxeResult(
+  rule: Rule,
+  result: ViolationResult,
+  tagName: string
+): AxeResult {
   return {
     id: rule.id,
     description: rule.description,
@@ -12,9 +16,9 @@ function violationToAxeResult(rule: Rule, result: ViolationResult): AxeResult {
     tags: rule.tags ?? [],
     nodes: [
       {
-        html: '<button>',
+        html: `<${tagName}>`,
         impact: result.severity,
-        target: ['button'],
+        target: [tagName],
         any: [],
         all: [],
         none: [
@@ -30,7 +34,7 @@ function violationToAxeResult(rule: Rule, result: ViolationResult): AxeResult {
   }
 }
 
-export function useCustomRules(rules: Rule[]) {
+export function useCustomRules(rules: Rule[], tagName: string) {
   const customViolations = useState<AxeResult[]>('custom-violations', () => [])
 
   function evaluate(props: Record<string, unknown>) {
@@ -39,7 +43,7 @@ export function useCustomRules(rules: Rule[]) {
     for (const rule of rules) {
       const result = rule.evaluate(props)
       if (result) {
-        results.push(violationToAxeResult(rule, result))
+        results.push(violationToAxeResult(rule, result, tagName))
       }
     }
 

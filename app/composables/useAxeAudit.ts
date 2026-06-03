@@ -53,20 +53,6 @@ export function useAxeAudit(iframeRef: {
   const isReady = computed(() => state.value.isReady);
   const errorMessage = computed(() => state.value.errorMessage);
 
-  const criticalCount = computed(
-    () =>
-      state.value.violations.filter(
-        (v) => v.impact === "critical" || v.impact === "serious",
-      ).length,
-  );
-  const warningCount = computed(
-    () =>
-      state.value.violations.filter(
-        (v) => v.impact === "moderate" || v.impact === "minor",
-      ).length,
-  );
-  const passingCount = computed(() => state.value.passes.length);
-
   // DOM-rule measurement posted by the iframe after each render. Stored
   // here so rules can react via watch in useDomRules — keeps useAxeAudit
   // ignorant of which DOM rules are registered.
@@ -126,8 +112,5 @@ export function useAxeAudit(iframeRef: {
     incomplete,
     isReady,
     errorMessage,
-    criticalCount,
-    warningCount,
-    passingCount,
   };
 }

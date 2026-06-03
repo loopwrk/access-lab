@@ -45,9 +45,6 @@ const selectedVariant = computed(() =>
   props.variants.find(variant => variant.key === props.modelValue),
 )
 
-const triggerLabel = computed(
-  () => selectedVariant.value?.label ?? props.placeholder,
-)
 const isSingleVariant = computed(() => props.variants.length <= 1)
 
 interface StatusVisual {

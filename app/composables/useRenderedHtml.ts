@@ -7,10 +7,5 @@ export function useRenderedHtml() {
     renderedCss.value = css
   }
 
-  // Back-compat shim — callers that still pass a single string keep working.
-  function setHtml(html: string) {
-    setOutput(html, '')
-  }
-
-  return { renderedHtml, renderedCss, setHtml, setOutput }
+  return { renderedHtml, renderedCss, setOutput }
 }

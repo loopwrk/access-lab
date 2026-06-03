@@ -6,10 +6,7 @@ const {
   passes,
   incomplete,
   isReady,
-  errorMessage,
-  criticalCount,
-  warningCount,
-  passingCount
+
 } = useAxeAudit(iframeRef)
 
 const pendingRender = ref<{ html: string; css?: string; rootFontSize?: number } | null>(null)
@@ -46,7 +43,7 @@ watch(isReady, (ready) => {
   }
 })
 
-defineExpose({ render, violations, passes, incomplete, criticalCount, warningCount, passingCount })
+defineExpose({ render, violations, passes, incomplete })
 
 const { t } = useI18n()
 

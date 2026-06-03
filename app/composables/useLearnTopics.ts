@@ -99,9 +99,6 @@ export function useLearnTopic(topicId: MaybeRefOrGetter<string | null | undefine
  * by `LEARN_CATEGORIES`. Topics within each group are sorted by
  * their `order` field. Empty categories are dropped so the consumer
  * can render the result without filtering.
- *
- * Not wired into the UI yet — built ahead of the Learn-index tree
- * view. Use this when the index view ships.
  */
 export function useLearnTopicTree() {
   const { topics } = useLearnTopics()

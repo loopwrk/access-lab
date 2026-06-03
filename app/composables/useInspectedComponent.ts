@@ -45,11 +45,10 @@ export function useInspectedComponent(
     () => ({ ...definition.defaultProps })
   )
 
-  const customRules = useCustomRules([
-    ...definition.rules,
-    invisibleText,
-    vagueLabel
-  ])
+  const customRules = useCustomRules(
+    [...definition.rules, invisibleText, vagueLabel],
+    definition.tagName
+  )
 
   useDomRules([contentOverflow])
 
