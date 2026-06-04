@@ -7,44 +7,13 @@ const { t } = useI18n();
 
 const navItems = computed<NavigationMenuItem[][]>(() => [
   [
-    {
-      label: t("nav.buttons"),
-      icon: "i-lucide-square-mouse-pointer",
-      type: "trigger",
-      defaultOpen: true,
-      children: [
-        {
-          label: t("nav.buttonsActionTriggers"),
-          value: "buttons-action-triggers",
-          to: "/components/buttons/action-triggers",
-        },
-        {
-          label: t("nav.buttonsFormButtons"),
-          value: "buttons-form-buttons",
-          to: "/components/buttons/form-buttons",
-        },
-        {
-          label: t("nav.buttonsToggleButtons"),
-          value: "buttons-toggle-buttons",
-          to: "/components/buttons/toggle-buttons",
-        },
-        {
-          label: t("nav.buttonsSwitches"),
-          value: "buttons-switches",
-          to: "/components/buttons/switches",
-        },
-        {
-          label: t("nav.buttonsDisclosureTriggers"),
-          value: "buttons-disclosure-triggers",
-          to: "/components/buttons/disclosure-triggers",
-        },
-        {
-          label: t("nav.buttonsMenuTriggers"),
-          value: "buttons-menu-triggers",
-          to: "/components/buttons/menu-triggers",
-        },
-      ],
-    },
+    { label: t("nav.buttons"), type: "label" },
+    { label: t("nav.buttonsActionTriggers"), value: "buttons-action-triggers", to: "/components/buttons/action-triggers", icon: "i-lucide-square-mouse-pointer" },
+    { label: t("nav.buttonsFormButtons"), value: "buttons-form-buttons", to: "/components/buttons/form-buttons", icon: "i-lucide-send" },
+    { label: t("nav.buttonsToggleButtons"), value: "buttons-toggle-buttons", to: "/components/buttons/toggle-buttons", icon: "i-lucide-toggle-left" },
+    { label: t("nav.buttonsSwitches"), value: "buttons-switches", to: "/components/buttons/switches", icon: "i-lucide-toggle-right" },
+    { label: t("nav.buttonsDisclosureTriggers"), value: "buttons-disclosure-triggers", to: "/components/buttons/disclosure-triggers", icon: "i-lucide-chevrons-down-up" },
+    { label: t("nav.buttonsMenuTriggers"), value: "buttons-menu-triggers", to: "/components/buttons/menu-triggers", icon: "i-lucide-menu" },
   ],
   [
     { label: t("nav.forms"), type: "label" },

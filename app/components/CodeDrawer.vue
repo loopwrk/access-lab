@@ -207,8 +207,11 @@ async function copyContent(mode: "inline" | "class" | "css") {
           </UFieldGroup>
 
           <div
-            class="overflow-auto rounded bg-(--surface-2)"
+            class="overflow-auto rounded bg-(--surface-2) focus-visible:outline-[3px] focus-visible:outline-(--focus-ring) focus-visible:outline-offset-[-3px]"
             :style="{ height: `${effectiveHeight}px` }"
+            tabindex="0"
+            role="region"
+            :aria-label="t(codeView === 'css' ? 'codeDrawer.cssRegionLabel' : 'codeDrawer.htmlRegionLabel')"
           >
             <ProsePre
               v-if="renderedHtml && codeView === 'html'"

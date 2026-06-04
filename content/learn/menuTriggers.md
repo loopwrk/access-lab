@@ -1,5 +1,5 @@
 ---
-title: Menu triggers and the menu button pattern
+title: Menu Triggers and Custom Popup Menus
 topicId: menu-triggers
 category: disclosure-and-menu
 order: 2
@@ -15,50 +15,68 @@ summary: A menu trigger opens a popup of choices. The button needs both
   do not give you for free.
 ---
 
-A menu trigger is a button that opens a popup of choices — a profile menu, an actions overflow, a context menu. It is the most ARIA-heavy of the disclosure family because the popup is a custom widget that the browser does not understand natively, so the relationship and the keyboard behaviour are both your responsibility.
+A menu trigger is a button that opens a pop-up list of choices, such as a user profile or settings menu. When building a custom menu using ARIA, browsers do not provide complete accessible behaviour automatically. This means you must implement keyboard interaction, focus management, and open/close state handling yourself using JavaScript.
 
-## The correct pattern
+Since browsers don't support these custom pop-ups automatically, your code will just need to explicitly link the button to the menu and ensure the whole component responds smoothly to standard keyboard controls.
 
-Use a plain `<button>` element with both `aria-haspopup` and `aria-expanded`. The first tells assistive technology that activating the button reveals a popup; the second carries the current open/closed state.
+## The Correct Pattern
 
-Mark the popup with `role="menu"` and each choice with `role="menuitem"`. Screen readers announce the trigger as "Account, menu button, collapsed" and the items as "Profile, menu item, 1 of 3" — the menu metaphor is preserved end to end.
+If you are implementing the ARIA menu pattern, use a standard HTML `<button>` element with the following attributes:
 
-Like the disclosure pattern, the popup itself should be hidden with the browser-native `hidden` attribute (or `display: none`) when closed. Hidden popups stay out of the accessibility tree, matching how assistive tech expects a closed menu to behave.
+- **`aria-haspopup="menu"`**
+- **`aria-expanded`** (updated dynamically to reflect open or closed state)
 
-## Why both attributes are needed
+Optionally, you may include `aria-controls` to associate the button with the menu element it opens, although this is not strictly required.
 
-`aria-haspopup` and `aria-expanded` solve different problems. aria-haspopup tells the user what kind of widget the button opens — a menu, a listbox, a dialog. aria-expanded tells them whether it is currently open. Drop either and the announcement degrades.
+The menu container should use `role="menu"` when implementing the ARIA menu pattern. Each interactive option inside it should use `role="menuitem"` to ensure assistive technologies correctly announce the structure and available actions.
 
-With aria-haspopup but no aria-expanded, the screen reader announces "Account, menu button" — but on every activation, regardless of state. The user cannot tell whether the menu is open without exploring the page.
+When the menu is closed, the container element must be completely hidden using the native HTML `hidden` attribute or CSS `display: none`. This keeps the hidden items out of the digital accessibility tree, matching the expectations of users navigating non-visually.
 
-With aria-expanded but no aria-haspopup, the announcement becomes "Account, button, expanded" — the generic disclosure announcement. The user is not told that activating the button reveals a menu of choices to pick from, only that something opened.
+#### Example
 
-## The keyboard contract
+```html
+<button
+  type="button"
+  id="menu-button"
+  aria-haspopup="menu"
+  aria-expanded="false"
+>
+  Actions
+</button>
 
-### Native browsers give you nothing for menus beyond "Enter and Space activate buttons." Everything else is yours to wire up. The WAI-ARIA Authoring Practices specify the full keyboard contract:
+<ul id="actions-menu" role="menu" hidden>
+  <li role="none">
+    <a href="/edit" role="menuitem">Edit Item</a>
+  </li>
+  <li role="none">
+    <button type="button" role="menuitem">
+      Delete Item
+    </button>
+  </li>
+</ul>
+```
 
-Down Arrow opens the menu and moves focus to the first item. Up Arrow opens the menu and moves focus to the last item. Enter and Space open the menu without moving focus.
+## Why Both Attributes Are Essential
 
-Inside the menu, Down Arrow and Up Arrow move between items (wrapping at the ends). Home jumps to the first item; End jumps to the last. Typing a letter jumps to the next item whose label starts with that letter.
+The `aria-haspopup` and `aria-expanded` attributes solve two entirely different communication problems:
 
-Escape closes the menu and returns focus to the trigger. Tab closes the menu and continues outward focus order, as if the menu had not been there. Clicking outside the menu also closes it.
+1. **`aria-haspopup`** tells the user **what** kind of interface element will appear (e.g., a menu, a listbox, or a dialog window).
+2. **`aria-expanded`** tells the user **when** that element is active and visible.
 
-None of these are free. They require listeners on the trigger and on the menu, a roving tabindex pattern across the menu items (every item gets tabindex="-1" and focus is moved with JavaScript), and an outside-click handler. Most accessibility regressions in menu components come from skipping one of these steps.
+If you include `aria-haspopup` but forget `aria-expanded`, screen-reader users will be told that a menu exists, but they will not receive confirmation whether it has actually opened. Conversely, if you include `aria-expanded` without `aria-haspopup`, users will hear that a section expanded but will lack context on what type of HTML element has appeared.
 
-## Common anti-patterns
+## The Keyboard Contract
 
-### Three failure modes show up repeatedly:
+The keyboard behaviour described here applies specifically to the ARIA menu pattern (`role="menu"`). Browsers only provide basic keyboard support for the trigger element itself, so additional JavaScript is required to implement full menu navigation and focus control.
 
-No aria-haspopup and no aria-expanded. The element is a plain button that toggles a div on click. Sighted users see the popup; assistive technology announces a button with no popup relationship and no state. Level A failure of SC 4.1.2 Name, Role, Value.
+- **Down Arrow:** Opens the menu and automatically moves focus to the first menu item.
+- **Up Arrow:** Opens the menu and automatically moves focus to the last menu item.
+- **Up and Down Arrows (Inside the Menu):** Moves focus sequentially between the items. Many implementations wrap focus back to the top or bottom when reaching the ends.
+- **Home and End:** Instantly jumps focus to the first or last menu item, respectively.
+- **Escape:** Closes the menu immediately and returns focus directly back to the trigger button.
+- **Tab:** Closes the menu and moves focus out of the component to the next focusable element in the normal page order.
+- **Outside Clicks:** Clicking anywhere outside the open menu container should immediately close it.
 
-Half-wired ARIA. The developer copy-pasted aria-haspopup from a guide and shipped without aria-expanded, or the other way round. Looks correct to automated tools; reads incorrectly to users.
+Failing to implement this focus-management behavior is where most menu components break down. To make this work, you must listen for keyboard events and use programming strategies like a rolling `tabindex` or the `aria-activedescendant` attribute to manage which item is currently highlighted.
 
-Click-only menus. The popup opens with a mouse click but the arrow keys, Escape, and outside-click do nothing. Keyboard users can sometimes get focus into the menu by tabbing, but cannot exit cleanly, cannot navigate with arrows, and may end up trapped.
-
-## Menu vs. select
-
-If the popup is a list of options the user picks one of, and the picked value persists as the value of a form field, you probably want a `<select>` element or the listbox pattern — not a menu. Selects and listboxes carry a current value; menus do not.
-
-Reach for a menu when the popup is a list of actions to perform — "Edit, Duplicate, Delete", "Sort ascending, Sort descending, Sort by date". Each item is a verb. Activation runs the action and the menu closes.
-
-Reach for `<select>` or the ARIA listbox pattern when the popup is a list of values to choose between, where the chosen value sticks. Country, time zone, theme.
+To learn how to implement the JavaScript required to make these elements accessible, [view this guide on MDN](https://developer.mozilla.org/en-US/docs/Web/Accessibility/Guides/Keyboard-navigable_JavaScript_widgets?utm_source=chatgpt.com).

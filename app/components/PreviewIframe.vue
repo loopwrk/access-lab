@@ -65,6 +65,15 @@ function focusContent() {
     >
       {{ t('preview.focusContent') }}
     </UButton>
+    <!--
+      Chrome warns that `allow-scripts allow-same-origin` lets the iframe
+      escape its sandbox. We accept that tradeoff: axe-core runs inside
+      the iframe and needs same-origin DOM access to audit the rendered
+      component. The iframe document is `preview-shell.html` from our
+      own origin and only renders markup posted from the parent — there
+      is no untrusted content path. `allow-forms` lets the form-wrapper
+      demo submit-event behaviour.
+    -->
     <iframe
       :id="PREVIEW_IFRAME_ID"
       ref="iframe"

@@ -48,18 +48,24 @@ When the panel is closed, hide it using the HTML `hidden` attribute or CSS `disp
 
 ```html
 <!-- The Button Trigger -->
-<!-- Note: aria-expanded switches between "true" and "false" via JavaScript -->
-<button type="button" aria-expanded="false" aria-controls="faq-content-1">
+<!-- Note: aria-expanded switches between -->
+<!-- "true" and "false" via JavaScript -->
+<button
+  type="button"
+  aria-expanded="false"
+  aria-controls="faq-content-1">
   What is a disclosure pattern?
 </button>
 
 <!-- The Content Panel -->
-<!-- Note: The 'id' matches the 'aria-controls' value above. -->
-<!-- The 'hidden' attribute ensures screen readers dont read out the content  . -->
+<!-- Note: The 'id' matches the -->
+<!-- 'aria-controls' value above. -->
 <div id="faq-content-1" hidden>
   <p>
-    A disclosure pattern is a simple UI mechanism that lets users toggle the
-    visibility of a content section. It uses a button to control a content
+    A disclosure pattern is a simple UI
+    mechanism that lets users toggle the
+    visibility of a content section. It
+    uses a button to control a content
     panel.
   </p>
 </div>

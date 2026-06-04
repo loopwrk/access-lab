@@ -14,7 +14,7 @@ summary: A checkbox captures a yes-or-no value as part of a form. Labelling it
   lessons that get missed most often.
 ---
 
-A checkbox is a form control that represents a [boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean) choice: selected (checked) or unselected (unchecked). Ensuring a checkbox is accessible comes down to two essential practices:
+A checkbox is an HTML form control that represents a [boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean) choice: selected (checked) or unselected (unchecked). Ensuring a checkbox is accessible comes down to two essential practices:
 
 1. **A label association:** You must explicitly link the checkbox element to a text label. This ensures assistive technologies can announce what the checkbox is for
 2. **Group context for related choices:** Every checkbox needs a clear name. When multiple checkboxes are grouped together to represent a list of related options, they should be wrapped inside a `<fieldset>` element with a `<legend>` to provide vital context for the entire group.

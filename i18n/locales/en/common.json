@@ -129,7 +129,9 @@
     "copied": "Copied",
     "empty": "No code generated yet.",
     "resizeLabel": "Resize code area. Use up and down arrows to adjust.",
-    "cssDisabledTooltip": "No CSS to display. Enable the focus ring, switch pill, or set inline styles to inject CSS here."
+    "cssDisabledTooltip": "No CSS to display. Enable the focus ring, switch pill, or set inline styles to inject CSS here.",
+    "htmlRegionLabel": "Generated HTML for the previewed component (scrollable)",
+    "cssRegionLabel": "Generated CSS for the previewed component (scrollable)"
   },
   "manual": {
     "title": "Manual Review",
