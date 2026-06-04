@@ -22,7 +22,7 @@ export const radioManualChecklist: ManualChecklistItem[] = [
     title: "Clicking the label selects the radio",
     wcagSc: "2.5.5 Target Size (Enhanced)",
     description:
-      "A correctly-associated `<label>` extends the click target from the small native circle to the full label text. Click each label and confirm the radio selects. If the label is not associated, only the circle itself is clickable — much worse for motor-impaired and touch users.",
+      "A correctly-associated `<label>` extends the click target from the small native circle to the full label text. Click each label and confirm the radio selects. If the label is not associated, only the circle itself is clickable — much worse for touch users.",
     url: "https://www.w3.org/WAI/WCAG22/Understanding/target-size-enhanced.html",
   },
   {

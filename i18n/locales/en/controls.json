@@ -120,6 +120,24 @@
       "disabled": "Disabled",
       "name": "Shared name attribute",
       "namePlaceholder": "e.g. plan"
+    },
+    "select": {
+      "label": "Label text",
+      "labelPlaceholder": "e.g. Choose a plan",
+      "labelAssociation": "Label association",
+      "labelForId": "label for/id (recommended)",
+      "labelWrapping": "Wrapping label",
+      "labelAriaLabel": "aria-label only (no visible label)",
+      "labelNone": "No label at all (anti-pattern)",
+      "options": "Options (one per line)",
+      "optionsPlaceholder": "Free\nPro\nEnterprise",
+      "selectedOption": "Default selection",
+      "selectedNone": "(none — first option shown, no value submitted)",
+      "state": "State",
+      "required": "Required (form will not submit without a choice)",
+      "disabled": "Disabled",
+      "name": "Name attribute (form submission key)",
+      "namePlaceholder": "e.g. plan"
     }
   }
 }

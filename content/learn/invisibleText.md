@@ -56,7 +56,7 @@ Avoid hiding text by making it the exact same color as your background. Instead,
 
 This safer method is important for two main reasons:
 
-It supports assistive tech: Screen readers (software that reads web pages aloud for visually impaired users) can still find and announce the hidden text.
+It supports assistive tech: Screen readers can still find and announce the hidden text.
 
 It prevents visual glitches: The text won't accidentally reappear if a user highlights the page, overrides your website's colors, or enables a high-contrast theme.
 

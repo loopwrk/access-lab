@@ -25,7 +25,8 @@ export type ComponentId
     | "tabs"
     | "input"
     | "checkbox"
-    | "radio";
+    | "radio"
+    | "select";
 
 /**
  * Schema entries for the auto-rendered controls panel. Discriminated by

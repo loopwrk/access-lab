@@ -53,6 +53,22 @@
           "statusNote": "The native radio. Browsers handle arrow-key navigation, mutual exclusion within a shared name, and accessible role for free."
         }
       }
+    },
+    "select": {
+      "variants": {
+        "select-native": {
+          "description": "The native single-choice select element. Renders as the platform picker — a wheel on iOS, a list on Android, an OS dropdown on desktop.",
+          "statusNote": "Browsers handle keyboard activation, type-ahead, focus management, and accessible role for free."
+        },
+        "select-multiple": {
+          "description": "Native multi-select with the multiple attribute. Renders as a visible list-box; users hold Cmd/Ctrl to select more than one.",
+          "statusNote": "The multi-select interaction is not visually discoverable — pair it with a usage hint near the field."
+        },
+        "div-combobox": {
+          "description": "A div with role=\"combobox\" — no listbox, no aria-controls, no keyboard handling. The canonical broken-custom-select pattern.",
+          "statusNote": "Avoid. Sighted mouse users see a dropdown; keyboard and screen reader users cannot operate the control."
+        }
+      }
     }
   }
 }

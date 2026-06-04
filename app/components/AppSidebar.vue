@@ -51,6 +51,7 @@ const navItems = computed<NavigationMenuItem[][]>(() => [
     { label: t("nav.input"), value: "input", to: "/components/input", icon: "i-lucide-text-cursor-input" },
     { label: t("nav.checkbox"), value: "checkbox", to: "/components/checkbox", icon: "i-lucide-square-check-big" },
     { label: t("nav.radio"), value: "radio", to: "/components/radio", icon: "i-lucide-circle-dot" },
+    { label: t("nav.select"), value: "select", to: "/components/select", icon: "i-lucide-chevron-down-square" },
   ],
 ]);
 </script>
