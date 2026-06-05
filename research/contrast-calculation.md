@@ -1,4 +1,4 @@
-# WCAG Contrast Calculation — research notes
+# WCAG Contrast Calculation - research notes
 
 Reference material for the live contrast badge in `ControlsPanel`. Captures
 the formulas verbatim from the W3C, the thresholds, the things WCAG
@@ -7,24 +7,24 @@ making for AccessLab.
 
 ## Canonical sources
 
-- **W3C — Understanding SC 1.4.3 Contrast (Minimum)**
+- **W3C - Understanding SC 1.4.3 Contrast (Minimum)**
   <https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html>
   The Understanding documents are where the actual formulas live in
   full; the WCAG 2.x normative spec just links to them.
-- **W3C — WCAG 2.2 Recommendation**
+- **W3C - WCAG 2.2 Recommendation**
   <https://www.w3.org/TR/WCAG22/>
   Defines the success criteria and threshold numbers.
-- **W3C — Glossary entries** (formulas embedded inline):
+- **W3C - Glossary entries** (formulas embedded inline):
   - <https://www.w3.org/TR/WCAG22/#dfn-contrast-ratio>
   - <https://www.w3.org/TR/WCAG22/#dfn-relative-luminance>
-- **WebAIM — "Contrast and Color Accessibility"**
+- **WebAIM - "Contrast and Color Accessibility"**
   <https://webaim.org/articles/contrast/>
   Independent, well-respected practical explainer; mirrors W3C maths and
   adds implementation guidance.
 - **APCA / SAPC repository (for context on WCAG 3)**
   <https://github.com/Myndex/SAPC-APCA>
 
-The maths is the same in WCAG 2.0, 2.1, and 2.2 — the only differences
+The maths is the same in WCAG 2.0, 2.1, and 2.2 - the only differences
 between versions are the _thresholds_ and _which colour pairs need checking_.
 WCAG 2.2 is the currently-adopted standard.
 
@@ -53,7 +53,7 @@ And combine using the ITU-R BT.709 luminance weights:
 L = 0.2126 * R + 0.7152 * G + 0.0722 * B
 ```
 
-`L` is in the range `[0, 1]` — `0` for pure black, `1` for pure white.
+`L` is in the range `[0, 1]` - `0` for pure black, `1` for pure white.
 
 ### Why these numbers
 
@@ -65,7 +65,7 @@ L = 0.2126 * R + 0.7152 * G + 0.0722 * B
   segments meet continuously at `0.04045`.
 - `2.4` is the sRGB transfer-function exponent.
 - `0.2126 / 0.7152 / 0.0722` are the BT.709 / sRGB primaries' luminous
-  weights — they sum to `1.0` and reflect the human eye's relative
+  weights - they sum to `1.0` and reflect the human eye's relative
   sensitivity to red, green, and blue light.
 
 These constants are fixed by the sRGB specification (IEC 61966-2-1); they
@@ -88,8 +88,8 @@ of viewing-flare a screen produces in a typical viewing environment.
 
 ### Range
 
-- `1.0:1` — identical colours (no contrast at all).
-- `21.0:1` — pure black on pure white (theoretical maximum).
+- `1.0:1` - identical colours (no contrast at all).
+- `21.0:1` - pure black on pure white (theoretical maximum).
 
 ---
 
@@ -105,11 +105,11 @@ From WCAG 2.2 success criteria, by level:
 
 ### "Large text" definition
 
-Large is **18pt or 14pt bold** — approximately **24px or 18.67px** in CSS
+Large is **18pt or 14pt bold** - approximately **24px or 18.67px** in CSS
 pixels, with `font-weight: 700` qualifying the smaller size. AccessLab's
 ControlsPanel lets the user set `fontSize` directly in CSS px, so the
 threshold check just compares the rendered px size against `24px` (or
-`18.67px` when the bold control is on — we don't have one yet, so for the
+`18.67px` when the bold control is on - we don't have one yet, so for the
 first cut we just check the regular threshold).
 
 ### Don't round
@@ -142,7 +142,7 @@ C_eff = C_fg * α + C_bg * (1 - α)
 applied per channel to the foreground colour before computing luminance.
 The contrast is then between `C_eff` (now opaque) and the background.
 
-**Edge case:** if the background itself has alpha, you have to recurse —
+**Edge case:** if the background itself has alpha, you have to recurse -
 blend the background against _its_ backdrop (the next layer down, or
 ultimately the page bg). AccessLab's button is rendered into a clean
 iframe with the iframe's body as the next layer; we'll use the iframe
@@ -172,7 +172,7 @@ when we get to components like Carousel where text overlays imagery.
 
 WCAG 2.4.7 and 1.4.11 both apply: each state's colour pair must
 independently meet 3:1 against its adjacent colours. AccessLab will
-eventually want to surface this — for now, only the resting state is
+eventually want to surface this - for now, only the resting state is
 audited.
 
 ### 4.5 Disabled elements
@@ -246,15 +246,15 @@ Four buckets, in descending order:
 
 The badge shows two things: the raw ratio (e.g. `3.42:1`) and the
 verdict tag (e.g. `AA Large only`). Colour-coded with the design
-tokens — `--success` for AAA, neutral for AA, `--warn` for AALarge,
-`--error` for Fail. The colour is never the only cue — every verdict
+tokens - `--success` for AAA, neutral for AA, `--warn` for AALarge,
+`--error` for Fail. The colour is never the only cue - every verdict
 also carries text per plan.md §11 ("No content via colour alone").
 
 ### Cross-check
 
 Sanity-check our implementation against:
 
-- WebAIM's Contrast Checker — <https://webaim.org/resources/contrastchecker/>
+- WebAIM's Contrast Checker - <https://webaim.org/resources/contrastchecker/>
 - Chrome DevTools' Issues panel contrast calculation.
 - axe-core's `color-contrast` rule output (already running in the iframe).
 

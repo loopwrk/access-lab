@@ -60,7 +60,7 @@ const OPTIONS: { value: ToggleBehaviour; labelKey: string }[] = [
       class="flex flex-col mt-2"
     >
       <template #label>
-        <span class="control-group-title">{{ t('controls.togglePressedInitial') }}</span>
+        <span class="control-group-title">{{ t('controls.togglePressed') }}</span>
       </template>
       <USwitch
         :model-value="model.togglePressed === true"

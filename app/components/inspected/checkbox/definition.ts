@@ -88,6 +88,13 @@ export const checkboxDefinition: ComponentDefinition<CheckboxProps> = {
   controls: [],
   rules: [checkboxGroupNoFieldset],
   primaryLearnTopicId: "checkbox",
+  relatedLearnTopicIds: [
+    "radio",
+    "switches",
+    "accessible-name",
+    "form-wrapping",
+    "vague-label",
+  ],
   relevantConcepts: ["form-control", "accessible-name", "form-context", "native-elements"],
   manualChecklist: checkboxManualChecklist,
   render: renderCheckbox,

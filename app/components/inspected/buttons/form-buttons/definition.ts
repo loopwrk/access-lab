@@ -47,6 +47,12 @@ export const formButtonDefinition: ComponentDefinition<ButtonProps> = {
     focusLowContrast,
   ],
   primaryLearnTopicId: "form-wrapping",
+  relatedLearnTopicIds: [
+    "button-types",
+    "button-value-attribute",
+    "accessible-name",
+    "vague-label",
+  ],
   relevantConcepts: ["button-element", "form-context", "accessible-name", "disabled-state"],
   manualChecklist: buttonManualChecklist,
   render: renderButton,

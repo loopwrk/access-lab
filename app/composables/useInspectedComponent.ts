@@ -76,16 +76,18 @@ export function useInspectedComponent(
     const fragment = typeof raw === "string" ? { html: raw } : raw;
     const html = applyContextWrappers(fragment.html);
     const css = fragment.css ?? "";
+    const js = fragment.js ?? "";
     // Iframe still receives one concatenated payload — the <style>
     // block needs to live in the same document as the element it
-    // targets.
+    // targets. `js` is not injected; it surfaces in the code drawer
+    // as the canonical production code, not as runtime behaviour.
     const payload = css ? `<style>${css}</style>${html}` : html;
     previewRef.value?.render(
       payload,
       undefined,
       unitConv.simulatedRootPx.value,
     );
-    setOutput(html, css);
+    setOutput(html, css, js);
     // Resolve any CssLength values to flat px so rule evaluators
     // (target-size, contrast-via-fontSize, etc.) can keep reading
     // props.<key> as numbers without caring about units.

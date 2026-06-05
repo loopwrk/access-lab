@@ -1,50 +1,62 @@
 ---
-title: Toggle Buttons and the aria-pressed Attribute
+title: Toggle buttons and aria-pressed
 topicId: toggle-buttons
 category: buttons-with-state
 order: 1
 related:
   - accessible-name
   - switches
+  - toggle-vs-switch
 concepts:
   - button-element
   - aria-state
-summary: A toggle button is an action whose effect sticks — mute, bold, pin,
-  follow. Use a button with aria-pressed; never aria-checked, never visual-only.
+summary: A toggle button applies or removes a specific effect - Bold, Mute,
+  Pin, Like. Use a button with aria-pressed; never aria-checked, never
+  visual-only.
 ---
 
-A toggle button is a control that performs a specific action and stays in that active state until you click it again. Common examples include a "Mute/Unmute" microphone button, a "Bold" text formatting button, or a "Pin" icon on a message board.
+A toggle button is a control that applies or removes a specific effect. Bold in a text editor, Mute in a video player, Pin on a saved item, Like (:u-icon{name="i-lucide-thumbs-up"}) on a post. The button stays "pressed" while the effect is applied and returns to "unpressed" when it is removed.
 
-Because the button stays pressed, it needs to communicate two pieces of information: what the button does, and whether it is currently pressed or unpressed.
+> Not sure if you should use a toggle button or a switch? See [Choosing between a toggle and a switch](/learn/toggle-vs-switch).
 
-## The Correct Pattern
+Because the button stays in a state (e.g. pressed or unpressed), it needs to communicate two pieces of information: what the button does, and whether the effect is currently applied.
 
-To build an accessible toggle button, use a standard HTML `<button>` element and add the `aria-pressed` attribute. This attribute explicitly tells assistive technologies that the button can be toggled, and communicates its current status.
+## The correct pattern
 
-When a screen reader encounters this element, it will typically announce something like _"toggle button, pressed"_ or _"toggle button, not pressed."_ When a user activates the button, your JavaScript must do two things simultaneously: perform the action (like muting the audio) and flip the `aria-pressed` value between `true` and `false`. This ensures the digital, behind-the-scenes state always matches the visual design on the screen.
+Build a toggle button on a real `<button>` element and add the `aria-pressed` attribute. The attribute tells assistive technology that this control toggles, and carries its current value.
 
-## Why You Should Keep the Text Label Stable
+```html
+<button type="button" aria-pressed="false">
+  Bold
+</button>
+```
 
-When designing a toggle, it is very tempting to change the visible text label based on the current state (for example, swapping the text from "Mute" to "Unmute"). However, it is almost always better to keep the text label exactly the same and rely on `aria-pressed` to communicate the state.
+Screen readers typically announce this as _"Bold, toggle button, not pressed"_, and as _"Bold, toggle button, pressed"_ once the effect is applied.
 
-Keeping a stable label (e.g., "Mute") has two major accessibility benefits:
+Your click handler should do two things in the same step:
 
-1. **Better for voice control:** People using speech recognition software rely on the visible text to click a button with their voice. If the text constantly changes between "Mute" and "Unmute," the user might issue the wrong command or feel unsure of what to say.
-2. **Better for screen readers:** People navigating non-visually build a mental map of your interface based on the names of the controls. A stable name combined with an `aria-pressed` status indicator prevents users from having to constantly relearn or re-map the button after every click.
+1. Apply (or remove) the effect on whatever the button controls.
+2. Flip `aria-pressed` between `"true"` and `"false"`.
 
-While flipping the text label is not strictly forbidden, keeping a stable name makes your interface much more predictable and easier to navigate.
+If you only do one of those, the visual state and the announced state will disagree.
 
-## Common Mistakes to Avoid
+## Keep the label stable
 
-When building toggle buttons, developers frequently run into these three failure modes:
+A common temptation is to swap the visible text based on state - "Mute" becomes "Unmute" once muted. It is almost always better to keep the label as the name of the action and let `aria-pressed` carry the state.
 
-- **Visual-Only Changes:** The button changes visually when clicked—perhaps the background color shifts or the icon gains a thicker border—but the `aria-pressed` attribute is missing. Screen reader users will hear the exact same generic button announcement every time they interact with it, leaving them with no way to know if the toggle is actually active.
-- **Using `aria-checked`:** The `aria-checked` attribute is strictly meant for checkboxes, radio buttons, and switches. A native `<button>` element does not support this state. Always use `aria-pressed` for standard buttons.
-- **Flipping Labels Too Drastically:** If you do decide to change the text label (like switching from "Follow" to "Following"), be careful not to make the two labels so completely different that they sound like unrelated actions. Drastic shifts increase the mental effort required to understand the interface.
+A stable label is easier on two groups of users in particular:
 
-## Toggle Button vs. Switch
+- **Voice-control users** speak the text they see on screen to activate a control. A label that keeps changing means the spoken command changes too, and users cannot be sure what to say.
+- **Screen reader users** build a mental map of the page from the names of its controls. A label that stays put is easier to find again, and the `pressed` / `not pressed` state already says everything that needs to be said about the current value.
 
-Because toggle buttons and switches both flip between two states, it can be confusing to know which one to use. Here is the standard rule:
+Changing the label is not strictly forbidden, but a stable name produces a more predictable interface.
 
-- **Use a toggle button (`aria-pressed`):** When the control triggers a specific action that leaves a lingering effect, like _Muting_ audio, _Bolding_ text, or _Pinning_ a document. The action itself is the primary focus.
-- **Use a switch (`aria-checked`):** When the control represents a system setting or preference, like turning on _Dark Mode_, enabling _Email Notifications_, or toggling _Wi-Fi_. The on/off value of the setting is the primary focus.
+## Common mistakes
+
+### Visual-only toggles
+
+The button changes appearance when clicked - a background colour shift, a border, a tint - but `aria-pressed` is missing. Sighted users see the change; assistive technology has no information that anything has toggled, and screen reader users hear the same plain button announcement either way. This breaks [WCAG 4.1.2 Name, Role, Value](https://www.w3.org/WAI/WCAG21/Understanding/name-role-value).
+
+### Using `aria-checked` instead of `aria-pressed`
+
+`aria-checked` is for checkboxes, radio buttons, and switches. A toggle button uses `aria-pressed`. Mixing them up announces the control as the wrong kind of thing - a toggle button with `aria-checked` is announced as if it were a switch, which gives users an inaccurate mental model of what activating it will do.

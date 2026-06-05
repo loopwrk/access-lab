@@ -255,6 +255,12 @@ watch(
   margin: 2rem 0;
 }
 
+.read-mode-prose :deep(th),
+.read-mode-prose :deep(td) {
+  font-size: var(--al-learn-paragraph-font-size);
+  color: var(--text-secondary);
+}
+
 .read-mode-prose :deep(strong) {
   color: var(--text-primary);
 }

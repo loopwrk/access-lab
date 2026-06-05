@@ -74,5 +74,20 @@ const OPTIONS: { value: SwitchBehaviour; labelKey: string }[] = [
         @update:model-value="update('switchPillStyling', $event === true)"
       />
     </UFormField>
+
+    <UFormField
+      v-if="behaviour !== 'none'"
+      class="flex flex-col mt-2"
+    >
+      <template #label>
+        <span class="control-group-title">{{ t('controls.switchChecked') }}</span>
+      </template>
+      <USwitch
+        :model-value="model.switchChecked === true"
+        size="sm"
+        color="primary"
+        @update:model-value="update('switchChecked', $event === true)"
+      />
+    </UFormField>
   </fieldset>
 </template>

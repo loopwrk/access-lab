@@ -27,6 +27,35 @@
       var mount = document.getElementById("mount");
       var frameworkCss = document.getElementById("framework-css");
 
+      // Pre-defined for inspected components whose rendered HTML
+      // includes inline event handlers referencing the canonical
+      // production-style JS shown in the code drawer's JS tab. The
+      // HTML pane shows production-style code (e.g. the switches
+      // dark-mode demo's `onclick="toggleDarkMode()"`); this binding
+      // lets that handler actually fire inside the iframe. The body
+      // class is paired with a `body.dark-mode { ... }` rule in the
+      // rendered CSS. See `inspected/buttons/switches/definition.ts`.
+      window.toggleDarkMode = function () {
+        document.body.classList.toggle("dark-mode");
+      };
+
+      // Pre-defined for the toggle-button demo's
+      // `onclick="toggleBold()"`. Wraps / unwraps the sample
+      // paragraph in `<strong>` so the click actually does
+      // something visible — mirrors the simple production-style JS
+      // shown in the code drawer's JS tab. The host also re-renders
+      // (driven by togglePressed) so any state-restoration after
+      // navigation produces the same markup; see
+      // `inspected/buttons/toggle-buttons/definition.ts`.
+      window.toggleBold = function () {
+        var text = document.querySelector("p");
+        if (!text) return;
+        var isBold = text.querySelector("strong") !== null;
+        text.innerHTML = isBold
+          ? text.textContent
+          : "<strong>" + text.textContent + "</strong>";
+      };
+
       window.addEventListener("message", function (e) {
         if (e.data && e.data.type === "preview:render") {
           if (

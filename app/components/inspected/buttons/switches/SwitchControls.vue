@@ -17,6 +17,7 @@ type SwitchModel = Partial<BaseButtonProps> & {
   wrappers?: string[];
   switchBehaviour?: SwitchBehaviour;
   switchChecked?: boolean;
+  switchPillStyling?: boolean;
 };
 
 const model = defineModel<SwitchModel>({ required: true });
@@ -25,16 +26,15 @@ const tagName = switchDefinition.tagName;
 const { naturalSize } = useNaturalSize(model, tagName);
 const defaults = useButtonStudioDefaults(tagName);
 
-const { t } = useI18n();
-const toast = useToast();
-
 // Iframe click bridge. When the rendered control is activated in the
 // iframe (button click or native-checkbox change), preview-shell posts
 // `demo:click` back; we flip switchChecked so the new state re-renders
 // and a real screen reader announces it. The input-checkbox-switch
 // variant is always an active switch regardless of `switchBehaviour`
 // (the markup hardcodes role="switch"), so we skip the behaviour gate
-// for that variant.
+// for that variant. The dark-mode background flip is driven from the
+// render output's CSS (a :has() rule reads aria-checked), so no extra
+// side-effect is needed here.
 usePreviewMessage({
   "demo:click": () => {
     if (model.value.renderAs !== "input-checkbox-switch") {
@@ -44,43 +44,6 @@ usePreviewMessage({
     model.value.switchChecked = !model.value.switchChecked;
   },
 });
-
-// The "Toggle notification" switch drives a non-dismissable toast so
-// the student can see a live demo of switch state controlling something
-// in the wider UI. The toast can only be closed by toggling the switch
-// back off — no close affordance, no auto-dismiss.
-let activeToastId: string | number | null = null;
-
-function showNotificationToast() {
-  if (activeToastId != null) return;
-  const created = toast.add({
-    title: t("switches.toastTitle"),
-    description: t("switches.toastDescription"),
-    icon: "i-lucide-bell",
-    color: "info",
-    close: false,
-    duration: 0,
-  });
-  activeToastId = created.id ?? null;
-}
-
-function dismissNotificationToast() {
-  if (activeToastId == null) return;
-  toast.remove(activeToastId);
-  activeToastId = null;
-}
-
-watch(
-  () => model.value.switchChecked === true,
-  (on) => {
-    if (on) showNotificationToast();
-    else dismissNotificationToast();
-  },
-);
-
-// Clean up the toast when navigating away from the switches page —
-// otherwise it would persist over unrelated routes.
-onBeforeUnmount(dismissNotificationToast);
 </script>
 
 <template>
@@ -88,7 +51,10 @@ onBeforeUnmount(dismissNotificationToast);
     <ResetDefaultsSection v-model="model" />
     <USeparator />
 
-    <ContentSection v-model="model" />
+    <ContentSection
+      v-model="model"
+      :hide-content-type="model.switchPillStyling === true"
+    />
     <USeparator />
 
     <AriaSection v-model="model" />

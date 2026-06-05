@@ -92,6 +92,12 @@ export const selectDefinition: ComponentDefinition<SelectProps> = {
   controls: [],
   rules: [selectNoLabel, selectOptionsEmpty, selectNotKeyboard],
   primaryLearnTopicId: "select",
+  relatedLearnTopicIds: [
+    "accessible-name",
+    "vague-label",
+    "native-rendering",
+    "form-wrapping",
+  ],
   relevantConcepts: [
     "form-control",
     "accessible-name",

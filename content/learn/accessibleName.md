@@ -94,7 +94,7 @@ This is the universally supported, standard method for identifying form controls
 This is the default, most common method for labeling interactive elements. Unless overridden by higher-priority ARIA attributes (like `aria-label`), the browser will automatically extract the literal text written inside the element to use as its accessible name.
 
 - **When to use:** Whenever the element contains visible text that clearly describes its action or destination without needing extra icon-only adjustments.
-- **How it works:** The browser inspects the element and flattens all internal text nodes—including text wrapped in nested tags like `<span>`, `<strong>`, or `<em>`—into a single, clean text string.
+- **How it works:** The browser inspects the element and flattens all internal text nodes-including text wrapped in nested tags like `<span>`, `<strong>`, or `<em>`-into a single, clean text string.
 
 #### Examples
 

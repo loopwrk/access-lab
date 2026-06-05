@@ -55,6 +55,12 @@ export const disclosureTriggerDefinition: ComponentDefinition<ButtonProps> = {
     disclosureStateOutOfSync,
   ],
   primaryLearnTopicId: "disclosure-triggers",
+  relatedLearnTopicIds: [
+    "accessible-name",
+    "vague-label",
+    "menu-triggers",
+    "native-rendering",
+  ],
   relevantConcepts: ["button-element", "aria-state", "disclosure-pattern", "accessible-name"],
   manualChecklist: buttonManualChecklist,
   render: renderButton,

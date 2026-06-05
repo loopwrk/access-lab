@@ -109,12 +109,35 @@ export interface ComponentDefinition<P = Record<string, unknown>> {
    */
   suppressDemoClickToast?: boolean;
   primaryLearnTopicId?: string;
+  /**
+   * Curated list of Learn topic ids to surface in the "Relevant to
+   * <component>" section of the Learn panel, ordered by author intent
+   * (most relevant first). The primary topic (`primaryLearnTopicId`)
+   * always pins above this list, so don't include it here.
+   *
+   * Typed as `string[]` rather than a closed union because topic ids
+   * are author-defined in markdown frontmatter; a typo silently drops
+   * the article from the panel.
+   *
+   * Replaces the previous concept-tag matching, which was too eager —
+   * broad concepts like `accessible-name` and `button-element` matched
+   * most of the library. `relevantConcepts` below is retained for
+   * documentation / future search but no longer drives the panel.
+   */
+  relatedLearnTopicIds?: string[];
   relevantConcepts?: LearnConceptId[];
 }
 
 export interface RenderedFragment {
   html: string;
   css?: string;
+  /**
+   * Optional production-style JavaScript shown in the code drawer's
+   * JS tab. Not injected into the iframe — purely educational. Use
+   * for components whose real-world implementation typically involves
+   * a JS hook (e.g. switches toggling a class on body).
+   */
+  js?: string;
 }
 
 export type ComponentVariantStatus

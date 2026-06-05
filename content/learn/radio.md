@@ -10,7 +10,7 @@ concepts:
   - form-control
   - accessible-name
 summary: A radio group lets users pick exactly one option from a small set. The
-  lessons cluster around three things — shared name, fieldset/legend for the
+  lessons cluster around three things - shared name, fieldset/legend for the
   group, and the keyboard interaction model.
 ---
 
@@ -66,7 +66,7 @@ Custom div-based radio implementations often break this model. To replicate nati
 
 ## `required` is a group constraint
 
-Setting `required` on any radio in the group makes the entire group required — the form cannot be submitted unless one option is selected. The browser applies this rule at the group level, not per individual radio.
+Setting `required` on any radio in the group makes the entire group required - the form cannot be submitted unless one option is selected. The browser applies this rule at the group level, not per individual radio.
 
 Applying `required` to every radio is unnecessary but generally harmless.
 
@@ -79,7 +79,7 @@ The mental model is: “pick one” vs “pick zero or more”.
 Use radios when:
 
 - Exactly one option can be selected at a time (or selection is optional, but still limited to one choice)
-- Options are mutually exclusive — selecting one inherently excludes the others
+- Options are mutually exclusive - selecting one inherently excludes the others
 - The set of options is small enough to present without overwhelming the user
 
 Use checkboxes when:

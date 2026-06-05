@@ -10,18 +10,31 @@ export function useStudioToolbar() {
   );
 
   /**
-   * Concept tags declared by the active component's definition, used
-   * by `LearnPanel` to pin matching articles at the top of the
-   * picker. Set by `ComponentStudio` on mount, cleared on unmount.
-   * The panel does the topic-side intersection itself — the toolbar
-   * just propagates the component-side signal so panels (or any
-   * future surface that wants pinned topics) don't need a reference
-   * to the active definition.
+   * Concept tags declared by the active component's definition. Kept
+   * for documentation / potential future search use but no longer
+   * drives the LearnPanel pinning — see `activeRelatedLearnTopicIds`
+   * below. Set by `ComponentStudio` on mount, cleared on unmount.
    */
   const activeRelevantConcepts = useState<LearnConceptId[]>(
     "al-studio-toolbar-relevant-concepts",
     () => [],
   );
 
-  return { activeComponentName, activeLearnTopicId, activeRelevantConcepts };
+  /**
+   * Curated Learn topic ids declared by the active component's
+   * definition (`relatedLearnTopicIds`). The LearnPanel reads this
+   * directly — explicit author choice replaces the previous concept-
+   * tag overlap matching, which was too eager.
+   */
+  const activeRelatedLearnTopicIds = useState<string[]>(
+    "al-studio-toolbar-related-topic-ids",
+    () => [],
+  );
+
+  return {
+    activeComponentName,
+    activeLearnTopicId,
+    activeRelevantConcepts,
+    activeRelatedLearnTopicIds,
+  };
 }

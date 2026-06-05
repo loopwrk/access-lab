@@ -26,7 +26,7 @@ In this article, we will be focusing on `<button>` elements only, however, note 
 
 Use a `<button>` element with `aria-expanded` when it controls a collapsible region of content. The attribute carries the current state of the panel. Flip it in the same click handler that shows or hides the panel.
 
-Most screen readers announce a button with aria-expanded as "button, expanded" or "button, collapsed." The label stays stable — "Show details" stays "Show details" whether the panel is open or shut. The state is carried by the attribute, not by relabeling.
+Most screen readers announce a button with aria-expanded as "button, expanded" or "button, collapsed." The label stays stable - "Show details" stays "Show details" whether the panel is open or shut. The state is carried by the attribute, not by relabeling.
 
 Hide the panel with the browser-native `hidden` attribute or `display: none`.
 

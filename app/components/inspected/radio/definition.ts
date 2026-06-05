@@ -71,6 +71,12 @@ export const radioDefinition: ComponentDefinition<RadioProps> = {
   controls: [],
   rules: [radioGroupNoFieldset],
   primaryLearnTopicId: "radio",
+  relatedLearnTopicIds: [
+    "checkbox",
+    "accessible-name",
+    "form-wrapping",
+    "vague-label",
+  ],
   relevantConcepts: ["form-control", "accessible-name", "form-context", "aria-state", "native-elements"],
   manualChecklist: radioManualChecklist,
   render: renderRadio,

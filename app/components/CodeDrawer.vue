@@ -3,11 +3,11 @@ import { prettifyCss } from "~/utils/prettifyCss";
 import { prettifyHtml } from "~/utils/prettifyHtml";
 
 const { t } = useI18n();
-const { renderedHtml, renderedCss } = useRenderedHtml();
+const { renderedHtml, renderedCss, renderedJs } = useRenderedHtml();
 const { convert: toClassHtml } = useInlineToClass();
 
 const isOpen = ref(true);
-const codeView = ref<"html" | "css">("html");
+const codeView = ref<"html" | "css" | "js">("html");
 
 const converted = computed(() => toClassHtml(renderedHtml.value));
 
@@ -24,16 +24,18 @@ const combinedCss = computed(() => {
 });
 
 const hasCss = computed(() => combinedCss.value.length > 0);
+const hasJs = computed(() => renderedJs.value.trim().length > 0);
 
-// If the user enables a feature that adds CSS, then turns it off
-// while viewing the CSS tab, fall back to HTML so the pane isn't
-// left on an empty view.
 watch(hasCss, (present) => {
   if (!present && codeView.value === "css") codeView.value = "html";
+});
+watch(hasJs, (present) => {
+  if (!present && codeView.value === "js") codeView.value = "html";
 });
 
 const prettifiedHtml = computed(() => prettifyHtml(renderedHtml.value));
 const prettifiedCss = computed(() => prettifyCss(combinedCss.value));
+const prettifiedJs = computed(() => renderedJs.value.trim());
 
 // User-resizable code area. Height persists per-session via
 // localStorage. Bounded so the drawer can't swallow the preview or
@@ -82,7 +84,7 @@ function onPointerDown(event: PointerEvent) {
   isDragging.value = true;
   dragStartY = event.clientY;
   dragStartHeight = effectiveHeight.value
-  ;(event.currentTarget as Element).setPointerCapture(event.pointerId);
+  ; (event.currentTarget as Element).setPointerCapture(event.pointerId);
   document.body.style.userSelect = "none";
 }
 
@@ -106,7 +108,7 @@ onBeforeUnmount(() => {
   document.body.style.userSelect = "";
 });
 
-const copied = ref<"inline" | "class" | "css" | "error" | null>(null);
+const copied = ref<"inline" | "class" | "css" | "js" | "error" | null>(null);
 const COPY_FEEDBACK_MS = 800;
 
 // useTimeoutFn handles the start/stop lifecycle for us. Restarting
@@ -118,7 +120,7 @@ const { start: scheduleCopyReset } = useTimeoutFn(
   { immediate: false },
 );
 
-async function copyContent(mode: "inline" | "class" | "css") {
+async function copyContent(mode: "inline" | "class" | "css" | "js") {
   let text = "";
   if (mode === "inline") {
     text = prettifiedHtml.value;
@@ -126,6 +128,8 @@ async function copyContent(mode: "inline" | "class" | "css") {
     text = prettifyHtml(converted.value?.html ?? renderedHtml.value);
   } else if (mode === "css") {
     text = prettifiedCss.value;
+  } else if (mode === "js") {
+    text = prettifiedJs.value;
   }
   try {
     await navigator.clipboard.writeText(text);
@@ -181,11 +185,6 @@ async function copyContent(mode: "inline" | "class" | "css") {
       />
       <template #content>
         <div class="flex flex-col gap-3 px-5 pb-4">
-          <!--
-            View tabs. CSS stays present-but-disabled when there is
-            nothing to show, so the user always sees the surface and
-            learns that CSS can appear here.
-          -->
           <UFieldGroup size="xs">
             <UButton
               :color="codeView === 'html' ? 'primary' : 'neutral'"
@@ -204,6 +203,14 @@ async function copyContent(mode: "inline" | "class" | "css") {
                 CSS
               </UButton>
             </UTooltip>
+            <UButton
+              v-if="hasJs"
+              :color="codeView === 'js' ? 'primary' : 'neutral'"
+              :variant="codeView === 'js' ? 'solid' : 'ghost'"
+              @click="codeView = 'js'"
+            >
+              JS
+            </UButton>
           </UFieldGroup>
 
           <div
@@ -211,7 +218,13 @@ async function copyContent(mode: "inline" | "class" | "css") {
             :style="{ height: `${effectiveHeight}px` }"
             tabindex="0"
             role="region"
-            :aria-label="t(codeView === 'css' ? 'codeDrawer.cssRegionLabel' : 'codeDrawer.htmlRegionLabel')"
+            :aria-label="t(
+              codeView === 'css'
+                ? 'codeDrawer.cssRegionLabel'
+                : codeView === 'js'
+                  ? 'codeDrawer.jsRegionLabel'
+                  : 'codeDrawer.htmlRegionLabel',
+            )"
           >
             <ProsePre
               v-if="renderedHtml && codeView === 'html'"
@@ -226,6 +239,13 @@ async function copyContent(mode: "inline" | "class" | "css") {
               :code="prettifiedCss"
             >
               {{ prettifiedCss }}
+            </ProsePre>
+            <ProsePre
+              v-else-if="hasJs && codeView === 'js'"
+              language="javascript"
+              :code="prettifiedJs"
+            >
+              {{ prettifiedJs }}
             </ProsePre>
             <p
               v-else
@@ -288,6 +308,24 @@ async function copyContent(mode: "inline" | "class" | "css") {
               {{ copied === 'css'
                 ? t('codeDrawer.copied')
                 : t('codeDrawer.copyCss') }}
+            </UButton>
+          </div>
+          <div
+            v-else-if="codeView === 'js'"
+            class="flex gap-2 justify-start"
+          >
+            <UButton
+              class="min-w-[140px] flex justify-center"
+              size="md"
+              variant="ghost"
+              color="neutral"
+              :icon="copied === 'js' ? 'i-lucide-check' : undefined"
+              :disabled="!hasJs"
+              @click="copyContent('js')"
+            >
+              {{ copied === 'js'
+                ? t('codeDrawer.copied')
+                : t('codeDrawer.copyJs') }}
             </UButton>
           </div>
         </div>

@@ -6,72 +6,91 @@ order: 2
 related:
   - accessible-name
   - toggle-buttons
+  - toggle-vs-switch
 concepts:
   - aria-state
   - form-control
   - accessible-name
-summary: "A switch is a setting whose value is the point: on or off. Use a
-  button with role=switch and aria-checked, or natively an input type=checkbox
-  with role=switch."
+summary: A switch represents a setting that is on or off - Wi-Fi, Dark mode,
+  Notifications. Use a native checkbox with role=switch, or a button with
+  role=switch and aria-checked.
 ---
 
-A switch represents a simple on/off setting, for example, turning notifications "on" or "off". The most important part of a switch is the state it currently holds. This makes it fundamentally different from a standard button, which is used to trigger a specific action (like "Submit" or "Delete").
+A switch represents a binary setting - something that is on or off. Wi-Fi on/Wi-Fi off, Dark mode on/dark mode off etc. Both positions are equally valid states of a setting; neither is "doing nothing". This is what makes a switch different from a regular button (which performs an action) and from a toggle button (which applies or removes an effect).
 
-In code terms, the value of the state that the switch holds would be akin to the position of a lightswitch:
+> Not sure if you should use a switch or a toggle button? See [Choosing between a toggle and a switch](/learn/toggle-vs-switch).
 
-- It would hold the value of **true** for the **on** state
-- It would hold the value of **false** for the **off** state
+## The correct pattern
 
-## The Correct Pattern
+There are two good ways to build a switch.
 
-You have two good options for building a switch.
+### Option 1: Native checkbox with role="switch"
 
-1. **The Native Checkbox (Often Best):** Use a standard HTML `<input type="checkbox">` paired with a `<label>`. This is usually the easiest and most robust choice because the browser automatically handles all the keyboard controls, focus states, and label clicks without needing any extra JavaScript.
-2. **The Custom ARIA Switch:** In modern web design you will often see switches styled like a pill/capsule, like [this example](https://m3.material.io/components/switch/overview) in Google Material Design. Because of this, users have started expecting this as the default, rather than the browser-styled standard. To implement accessiblity controls correctly, use a standard `<button>` element and add `role="switch"` along with an `aria-checked` attribute. The `role` tells assistive technologies that this is a binary setting, and `aria-checked` communicates whether it is currently on or off.
+```html
+<label>
+  <span>Dark mode</span>
+  <input type="checkbox" role="switch" />
+</label>
+```
 
-### Keep the Label Stable
+This is often the better choice. The browser handles keyboard activation, focus styling, and label-click behaviour without any JavaScript. Adding `role="switch"` tells assistive technology to announce the control as a switch rather than a checkbox, so screen readers say _"Dark mode, switch, on"_ instead of _"Dark mode, checkbox, checked"_.
 
-The main label for a switch should remain consistent and describe what the setting controls, not its current state.
+### Option 2: Button with role="switch" and aria-checked
 
-For example, a switch labelled "Dark mode" should not change its label to "Light mode" when toggled. Instead, the switch itself communicates state (on/off) through its checked state.
+Switches are commonly styled as a pill with a sliding thumb - a visual popularised by [Material Design](https://m3.material.io/components/switch/overview) and mobile operating systems. Users have come to expect that look, and a native checkbox does not produce it without significant custom CSS.
 
-If you want to show the current state, do it through:
+If you build the pill from scratch, the most accessible approach is a `<button>` with `role="switch"` and `aria-checked`:
 
-- the switch control’s on/off state (e.g. aria-checked or checked)
-- optional secondary text or helper text near the control
+```html
+<button
+  type="button"
+  role="switch"
+  aria-checked="false"
+>
+  Dark mode
+</button>
+```
 
-This separation helps users understand both:
+`role="switch"` tells assistive technology that this control is a binary setting, and `aria-checked` carries its current value. Your event handler should flip `aria-checked` between `"true"` and `"false"` each time the setting changes.
 
-- what the setting controls (the label)
-- what its current value is (the switch state)
+## Keep the label stable
 
-## Making the Label Clickable
+A switch's label should name the setting, not its current state. "Dark mode" stays "Dark mode" whether the setting is on or off - flipping the label to "Light mode" would name a different setting and break the user's mental map of the control.
 
-People naturally expect to be able to click the text label to flip a switch—this is how it works on almost every smartphone and modern operating system.
+If you want to convey extra context about the current value, two patterns work:
 
-If you use the native `<input type="checkbox">` approach with a properly linked `<label>`, the browser makes the text clickable automatically. However, if you build a custom `<button role="switch">`, the browser will not do this for you. You must write custom code to ensure clicking the text label activates the switch.
+- The switch's own state (`aria-checked` or `checked`) - assistive technology already announces this.
+- Helper text near the switch - a small line of supplementary description.
 
-Expanding the clickable area to include the text makes your interface much easier to use, particularly for people using touch screens, individuals with hand tremors, or anyone who benefits from larger interactive targets.
+This separation helps people understand both what the setting controls (the label) and what its current value is (the switch state).
 
-## Switch vs. Checkbox
+## Make the label clickable
 
-Since both controls represent an on/off choice, it can be tricky to know which one to use. Here is the standard rule of thumb:
+People expect to tap the text label to flip a switch. That is how it works in every smartphone settings screen and in most modern desktop interfaces.
 
-- **Use a switch for instant changes:** If flipping the control updates the interface or saves the setting immediately (like turning on Airplane Mode), use a switch.
-- **Use a checkbox for delayed submission:** If the choice is part of a larger form that the user has to review and submit later (like agreeing to a terms of service policy), use a checkbox.
+The native checkbox approach gives you this for free, as long as the `<label>` is associated with the `<input>` (either by wrapping it or via the `for`/`id` pair). The custom button approach does not - you will need to wire the label's click event to the button's click event manually.
 
-## Common Mistakes to Avoid
+A larger clickable area benefits everyone, but it is especially helpful for touch users, people with motor difficulties, and anyone who finds small targets fiddly.
 
-When auditing custom switches, these three errors show up all the time:
+## Switch vs. checkbox
 
-### 1. Completely Silent Switches
+Both controls represent a binary choice. The difference is _when the change takes effect_:
 
-The element looks like a switch and flips back and forth visually, but the code does not include a `role` or an `aria-checked` state. Assistive technologies are left completely in the dark, leading to a critical accessibility failure.
+- **Switch** - the setting changes the moment the user flips it. Turning on Airplane mode disables the radios right then.
+- **Checkbox** - the choice is part of a larger form that the user submits later. Agreeing to terms of service, or selecting which topics a newsletter should cover.
 
-### 2. Using `aria-pressed` Instead of `aria-checked`
+If the user has to press a submit button before anything happens, use a checkbox. If the user's interaction itself is the commitment, use a switch.
 
-The `aria-pressed` attribute is meant for toggle buttons (like a "Play/Pause" button), which tells screen readers to announce the button as "pressed" or "unpressed." A true switch should use `aria-checked` so it is announced clearly as "on" or "off."
+## Common mistakes
 
-### 3. Flipper Labels
+### Silent switches
 
-As mentioned above, do not change the text label from "Dark Mode" to "Light Mode" when the user clicks it. Let the text describe the category, and let the switch's state communicate the status.
+The element looks like a switch and flips visually, but there is no `role` and no `aria-checked` value. Assistive technology has no way to announce what the control is or what state it is in, so a screen reader user can hit it without realising it is interactive at all.
+
+### Using `aria-pressed` instead of `aria-checked`
+
+`aria-pressed` is for toggle buttons - controls that apply or remove an effect. A switch uses `aria-checked` so it is announced as on or off, not as pressed or not pressed.
+
+### A label that flips with the state
+
+Changing "Dark mode" to "Light mode" when the user flips the switch turns a setting label into something more like an action label. The state is already conveyed by the `checked` value; let the label name the setting and let the state speak for itself.
