@@ -22,7 +22,13 @@ const GROUP_OPTIONS: { value: CheckboxGroupMode; labelKey: string }[] = [
   { value: "single", labelKey: "controls.checkbox.groupSingle" },
   { value: "group-with-fieldset", labelKey: "controls.checkbox.groupWithFieldset" },
   { value: "group-no-fieldset", labelKey: "controls.checkbox.groupNoFieldset" },
+  { value: "parent-with-children", labelKey: "controls.checkbox.groupParentWithChildren" },
 ];
+
+const CARD_UI = {
+  root: "has-data-[state=checked]:bg-(--brand-soft)",
+  label: "font-semibold text-(--text-primary)",
+};
 
 const labelAssociation = computed(() => model.value.labelAssociation ?? "for-id");
 const groupMode = computed(() => model.value.groupMode ?? "single");
@@ -40,13 +46,109 @@ watch(
   },
 );
 
-// Iframe click bridge: the native checkbox forwards `change` events
-// from preview-shell as `demo:click`; the div checkbox forwards
-// `click` events the same way. Either path flips `checked` here so
-// the re-render reflects what the user just did.
+watch(
+  () => model.value.groupMode,
+  (next, prev) => {
+    if (next === "parent-with-children" && prev !== "parent-with-children") {
+      const children = model.value.childChecked ?? [];
+      syncParentFromChildren(children);
+    }
+  },
+);
+
+/**
+ * Compute the parent's derived state from a children array. Pure
+ * function — returns the `checked` and `indeterminate` pair the
+ * canonical "select all" pattern requires:
+ *
+ *   - 0 children ticked  → unchecked
+ *   - all children ticked → checked
+ *   - some ticked         → indeterminate (and checked is false)
+ */
+function deriveParentState(children: boolean[]): {
+  checked: boolean;
+  indeterminate: boolean;
+} {
+  const total = children.length;
+  const ticked = children.filter(Boolean).length;
+  if (ticked === 0) return { checked: false, indeterminate: false };
+  if (ticked === total) return { checked: true, indeterminate: false };
+  return { checked: false, indeterminate: true };
+}
+
+/**
+ * Apply the parent's derived state. Single write to `model.value`
+ * because two back-to-back writes through `defineModel` race: the
+ * second write reads `model.value` from the prop which has not yet
+ * been refreshed by the first emit's parent-side commit.
+ */
+function syncParentFromChildren(children: boolean[]) {
+  const next = deriveParentState(children);
+  model.value = { ...model.value, ...next };
+}
+
+// Iframe click bridge:
+//   - `demo:click` — the inspected parent checkbox (or a standalone
+//     checkbox in any other group mode) was activated. In the
+//     `parent-with-children` mode, this cascades to all children
+//     and clears `indeterminate`, matching the canonical "select
+//     all" pattern in the Learn article. In every other mode it
+//     just flips `checked`.
+//   - `demo:click-child` — a child in the `parent-with-children`
+//     layout was activated. Flip the matching entry in
+//     `childChecked`, then auto-sync the parent.
 usePreviewMessage({
   "demo:click": () => {
-    update("checked", !(model.value.checked === true));
+    const newChecked = !(model.value.checked === true);
+    if (model.value.groupMode === "parent-with-children") {
+      const children = (model.value.childChecked ?? []).map(() => newChecked);
+      model.value = {
+        ...model.value,
+        checked: newChecked,
+        indeterminate: false,
+        childChecked: children,
+      };
+      return;
+    }
+    update("checked", newChecked);
+  },
+  "demo:click-child": (payload: unknown) => {
+    if (typeof payload !== "object" || payload === null) return;
+    const index = (payload as { index?: unknown }).index;
+    if (typeof index !== "number") return;
+    const current = model.value.childChecked ?? [];
+    const next = [...current];
+    next[index] = !(next[index] === true);
+
+    // Only auto-sync the parent when its state was already in sync
+    // with the children *before* this click. If the user has manually
+    // toggled a State card into a mismatch, that override represents
+    // exactly the production bug they want to demonstrate (e.g. code
+    // that forgets to clear `indeterminate` when children settle).
+    // Overwriting their override on the next child click would erase
+    // the very anti-pattern the demo is meant to surface. The
+    // `checkbox-parent-child-mismatch` rule keeps flagging the
+    // disagreement so the lesson stays visible.
+    const oldDerived = deriveParentState(current);
+    const parentInSyncBefore
+      = (model.value.checked === true) === oldDerived.checked
+      && (model.value.indeterminate === true) === oldDerived.indeterminate;
+
+    if (parentInSyncBefore) {
+      // One combined write — parent's checked + indeterminate and the
+      // child array all live in the same model object, so writing
+      // them together avoids the two-writes-race that drops the
+      // childChecked update on the floor.
+      const newDerived = deriveParentState(next);
+      model.value = {
+        ...model.value,
+        childChecked: next,
+        ...newDerived,
+      };
+    } else {
+      // Parent already overridden — touch only the children.
+      model.value = { ...model.value, childChecked: next };
+    }
   },
 });
 </script>
@@ -108,60 +210,36 @@ usePreviewMessage({
 
     <USeparator />
 
-    <!-- State + validation -->
     <fieldset class="flex flex-col gap-2 border-0 p-0 m-0">
       <legend class="control-group-title mb-1.5">
         {{ t('controls.checkbox.state') }}
       </legend>
-
-      <UFormField>
-        <template #label>
-          <span class="control-group-title">{{ t('controls.checkbox.checked') }}</span>
-        </template>
-        <USwitch :model-value="model.checked === true" size="sm" color="primary"
-          @update:model-value="update('checked', $event === true)" />
-      </UFormField>
-
-      <UFormField>
-        <template #label>
-          <span class="control-group-title">{{ t('controls.checkbox.indeterminate') }}</span>
-        </template>
-        <USwitch :model-value="model.indeterminate === true" size="sm" color="primary"
+      <div class="grid grid-cols-2 gap-3">
+        <UCheckbox :model-value="model.checked === true" :label="t('controls.checkbox.checked')" variant="card"
+          color="primary" size="md" :ui="CARD_UI" @update:model-value="update('checked', $event === true)" />
+        <UCheckbox :model-value="model.indeterminate === true" :label="t('controls.checkbox.indeterminate')"
+          variant="card" color="primary" size="md" :ui="CARD_UI"
           @update:model-value="update('indeterminate', $event === true)" />
-      </UFormField>
-
-      <UFormField>
-        <template #label>
-          <span class="control-group-title">{{ t('controls.checkbox.required') }}</span>
-        </template>
-        <USwitch :model-value="model.required === true" size="sm" color="primary"
-          @update:model-value="update('required', $event === true)" />
-      </UFormField>
-
-      <UFormField>
-        <template #label>
-          <span class="control-group-title">{{ t('controls.checkbox.disabled') }}</span>
-        </template>
-        <USwitch :model-value="model.disabled === true" size="sm" color="primary"
-          @update:model-value="update('disabled', $event === true)" />
-      </UFormField>
+        <UCheckbox :model-value="model.required === true" :label="t('controls.checkbox.required')" variant="card"
+          color="primary" size="md" :ui="CARD_UI" @update:model-value="update('required', $event === true)" />
+        <UCheckbox :model-value="model.disabled === true" :label="t('controls.checkbox.disabled')" variant="card"
+          color="primary" size="md" :ui="CARD_UI" @update:model-value="update('disabled', $event === true)" />
+      </div>
     </fieldset>
 
     <USeparator />
 
-    <!-- ARIA -->
+    <!--
+      ARIA. Single card spanning the full width — matches the State
+      grid's visual language so the two sections read as a pair, but
+      laid out 1-column because there is only one flag here today.
+    -->
     <fieldset class="flex flex-col gap-2 border-0 p-0 m-0">
       <legend class="control-group-title mb-1.5">
         {{ t('controls.checkbox.aria') }}
       </legend>
-
-      <UFormField>
-        <template #label>
-          <span class="control-group-title">{{ t('controls.checkbox.ariaChecked') }}</span>
-        </template>
-        <USwitch :model-value="model.ariaChecked === true" size="sm" color="primary"
-          @update:model-value="update('ariaChecked', $event === true)" />
-      </UFormField>
+      <UCheckbox :model-value="model.ariaChecked === true" :label="t('controls.checkbox.ariaChecked')" variant="card"
+        color="primary" size="md" :ui="CARD_UI" @update:model-value="update('ariaChecked', $event === true)" />
     </fieldset>
 
     <USeparator />

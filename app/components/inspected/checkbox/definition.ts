@@ -3,6 +3,8 @@ import { formSubmitWrapper } from "./wrappers";
 import { checkboxManualChecklist } from "~/rules/checkbox/manual-checklist";
 import { checkboxGroupNoFieldset } from "~/rules/checkbox/group-no-fieldset";
 import { checkboxAriaCheckedRedundant } from "~/rules/checkbox/aria-checked-redundant";
+import { checkboxCheckedAndIndeterminate } from "~/rules/checkbox/checked-and-indeterminate";
+import { checkboxParentChildMismatch } from "~/rules/checkbox/parent-child-mismatch";
 import type { ComponentDefinition } from "~/types/component";
 import type { CssLength } from "~/composables/useUnitConversion";
 
@@ -20,7 +22,8 @@ export type CheckboxLabelAssociation =
 export type CheckboxGroupMode =
   | "single" // one checkbox + label
   | "group-with-fieldset" // multiple checkboxes inside <fieldset><legend>
-  | "group-no-fieldset"; // multiple checkboxes, no fieldset (anti-pattern)
+  | "group-no-fieldset" // multiple checkboxes, no fieldset (anti-pattern)
+  | "parent-with-children"; // "select all" parent summarising a child group
 
 export interface CheckboxProps {
   renderAs: string;
@@ -44,6 +47,17 @@ export interface CheckboxProps {
 
   groupMode: CheckboxGroupMode;
   groupItems: string[];
+
+  /**
+   * Per-child checked state for the `parent-with-children` group
+   * mode. Each entry pairs with the corresponding entry in
+   * `groupItems`. Clicking a rendered child in the preview flips
+   * its entry here; the parent's `checked` / `indeterminate` then
+   * auto-sync to match (the canonical "select all" pattern).
+   *
+   * Has no effect outside `parent-with-children` mode.
+   */
+  childChecked: boolean[];
 
   /**
    * Whether to emit `aria-checked` on the rendered element. For the
@@ -79,6 +93,7 @@ export const checkboxDefinition: ComponentDefinition<CheckboxProps> = {
     disabled: false,
     groupMode: "single",
     groupItems: ["Updates", "Promotions", "Newsletter"],
+    childChecked: [true, false, false],
     ariaChecked: false,
   },
 
@@ -100,7 +115,12 @@ export const checkboxDefinition: ComponentDefinition<CheckboxProps> = {
   ],
   contextWrappers: [formSubmitWrapper],
   controls: [],
-  rules: [checkboxGroupNoFieldset, checkboxAriaCheckedRedundant],
+  rules: [
+    checkboxGroupNoFieldset,
+    checkboxAriaCheckedRedundant,
+    checkboxCheckedAndIndeterminate,
+    checkboxParentChildMismatch,
+  ],
   primaryLearnTopicId: "checkbox",
   relatedLearnTopicIds: [
     "radio",
@@ -108,6 +128,7 @@ export const checkboxDefinition: ComponentDefinition<CheckboxProps> = {
     "accessible-name",
     "form-wrapping",
     "vague-label",
+    "checkbox-indeterminate",
   ],
   relevantConcepts: [
     "form-control",

@@ -98,6 +98,7 @@
       "groupSingle": "Single checkbox",
       "groupWithFieldset": "Group with fieldset + legend (correct)",
       "groupNoFieldset": "Group without fieldset (anti-pattern)",
+      "groupParentWithChildren": "Parent + child group (select all)",
       "state": "State",
       "checked": "Checked",
       "indeterminate": "Indeterminate",

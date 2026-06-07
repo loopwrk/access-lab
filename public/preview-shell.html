@@ -220,13 +220,28 @@
       // before the checked state flips, and pattern listeners read the
       // post-toggle state from the next render — so we forward `change`
       // as demo:click so the same flip-state listener picks it up.
+      //
+      // Children of a `parent-with-children` group carry a
+      // `data-al-child-index` marker and forward as `demo:click-child`
+      // with that index, so the host can flip the matching entry in
+      // `childChecked` and let the parent auto-sync.
       mount.addEventListener("change", function (event) {
         var el = event.target;
         if (
-          el instanceof HTMLInputElement &&
-          el.type === "checkbox" &&
-          el.classList.contains("al-inspected-element")
+          !(el instanceof HTMLInputElement)
+          || el.type !== "checkbox"
         ) {
+          return;
+        }
+        var childIndex = el.getAttribute("data-al-child-index");
+        if (childIndex !== null) {
+          parent.postMessage(
+            { type: "demo:click-child", index: Number(childIndex) },
+            window.location.origin,
+          );
+          return;
+        }
+        if (el.classList.contains("al-inspected-element")) {
           parent.postMessage({ type: "demo:click" }, window.location.origin);
         }
       });
@@ -234,11 +249,22 @@
       // Custom div checkbox (`<div role="checkbox">`) has no native
       // click-as-change semantics, so we forward clicks directly. The
       // host's pattern listener flips `checked`; the re-render then
-      // shows the updated `aria-checked` state.
+      // shows the updated `aria-checked` state. Children of a parent-
+      // with-children group post `demo:click-child` with their index
+      // instead, matching the native-checkbox branch above.
       mount.addEventListener("click", function (event) {
         if (!(event.target instanceof Element)) return;
         var el = event.target.closest("[role='checkbox']");
-        if (el && el.classList.contains("al-inspected-element")) {
+        if (!el) return;
+        var childIndex = el.getAttribute("data-al-child-index");
+        if (childIndex !== null) {
+          parent.postMessage(
+            { type: "demo:click-child", index: Number(childIndex) },
+            window.location.origin,
+          );
+          return;
+        }
+        if (el.classList.contains("al-inspected-element")) {
           parent.postMessage({ type: "demo:click" }, window.location.origin);
         }
       });
