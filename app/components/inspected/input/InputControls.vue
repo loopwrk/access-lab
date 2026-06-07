@@ -1,23 +1,26 @@
 <script setup lang="ts">
-import type { InputProps } from "./definition";
+import type {
+  InputProps,
+  InputLabelAssociation,
+  InputType,
+  InputStyleTarget,
+  InputTextStyleSlice,
+} from "./definition";
 import { useUnitConversion } from "~/composables/useUnitConversion";
 import type { CssUnit, CssLength } from "~/composables/useUnitConversion";
 import ResetDefaultsSection from "~/components/ButtonStudio/sections/ResetDefaultsSection.vue";
 import ColorPickerRow from "~/components/controls/ColorPickerRow.vue";
+import StyleTargetPicker from "~/components/controls/StyleTargetPicker.vue";
 
 const model = defineModel<Partial<InputProps>>({ required: true });
-const { update } = useButtonControlsModel(model);
+
+function update<K extends keyof InputProps>(key: K, value: InputProps[K]) {
+  model.value = { ...model.value, [key]: value };
+}
 
 const { t } = useI18n();
 const unitConv = useUnitConversion();
 const { focusLearnTopic } = useInspectorTab();
-
-const fontSizeEnabled = computed(() => model.value.fontSize != null);
-const colorsEnabled = computed(() =>
-  model.value.bg != null
-  || model.value.fgText != null
-  || model.value.borderColor != null,
-);
 
 const DEFAULTS = {
   fontSize: 14,
@@ -26,14 +29,75 @@ const DEFAULTS = {
   borderColor: "#888888",
 } as const;
 
+// The "Style applies to" picker — which part of the input the
+// surrounding font-size and text-colour controls bind to. Local state;
+// not part of the model because it's a UI concern, not a rendered
+// property. Background and border controls are input-only and don't
+// follow the picker.
+const STYLE_TARGET_OPTIONS = [
+  { value: "label", label: "Label" },
+  { value: "input", label: "Input" },
+  { value: "placeholder", label: "Placeholder" },
+  { value: "helpText", label: "Help text" },
+];
+
+const activeStyleTarget = ref<InputStyleTarget>("input");
+const isInputTarget = computed(() => activeStyleTarget.value === "input");
+
+// Read the current target's slice. For the "input" target the slice
+// lives in the top-level props; for label / helpText it lives nested
+// under the corresponding `*Style` slot.
+function activeSlice(): InputTextStyleSlice {
+  if (activeStyleTarget.value === "label") return model.value.labelStyle ?? {};
+  if (activeStyleTarget.value === "placeholder") return model.value.placeholderStyle ?? {};
+  if (activeStyleTarget.value === "helpText") return model.value.helpTextStyle ?? {};
+  return { fontSize: model.value.fontSize, fgText: model.value.fgText };
+}
+
+function updateActiveSlice(patch: Partial<InputTextStyleSlice>) {
+  if (activeStyleTarget.value === "input") {
+    model.value = { ...model.value, ...patch } as Partial<InputProps>;
+    return;
+  }
+  const sliceKey
+    = activeStyleTarget.value === "label"
+      ? "labelStyle"
+      : activeStyleTarget.value === "placeholder"
+        ? "placeholderStyle"
+        : "helpTextStyle";
+  const current = model.value[sliceKey] ?? {};
+  // Build the next slice without spreading undefineds — so toggling
+  // a property off actually removes it rather than leaving an
+  // explicit `undefined` value.
+  const next: InputTextStyleSlice = {};
+  for (const key of Object.keys(current) as (keyof InputTextStyleSlice)[]) {
+    const value = current[key];
+    if (value !== undefined) next[key] = value as never;
+  }
+  for (const key of Object.keys(patch) as (keyof InputTextStyleSlice)[]) {
+    const value = patch[key];
+    if (value !== undefined) next[key] = value as never;
+  }
+  model.value = { ...model.value, [sliceKey]: next };
+}
+
+const activeFontSize = computed<CssLength | undefined>({
+  get: () => activeSlice().fontSize,
+  set: (value) => updateActiveSlice({ fontSize: value }),
+});
+
+const fontSizeEnabled = computed(() => activeFontSize.value != null);
+
+const activeFgText = computed({
+  get: () => activeSlice().fgText ?? DEFAULTS.fgText,
+  set: (value: string) => updateActiveSlice({ fgText: value }),
+});
+
+const activeFgTextEnabled = computed(() => activeSlice().fgText != null);
+
 const bgColor = computed({
   get: () => model.value.bg ?? DEFAULTS.bg,
   set: (value: string) => update("bg", value),
-});
-
-const fgTextColor = computed({
-  get: () => model.value.fgText ?? DEFAULTS.fgText,
-  set: (value: string) => update("fgText", value),
 });
 
 const borderColorComputed = computed({
@@ -41,12 +105,16 @@ const borderColorComputed = computed({
   set: (value: string) => update("borderColor", value),
 });
 
+const inputBgEnabled = computed(() =>
+  model.value.bg != null || model.value.borderColor != null,
+);
+
 const { ratio: contrastRatio, verdict: contrastVerdict } = useContrast(
-  fgTextColor,
+  activeFgText,
   bgColor,
   {
     fontSizePx: () => {
-      const f = model.value.fontSize;
+      const f = activeFontSize.value;
       if (!f) return DEFAULTS.fontSize;
       return unitConv.lengthToPx(f);
     },
@@ -56,38 +124,34 @@ const { ratio: contrastRatio, verdict: contrastVerdict } = useContrast(
 
 function toggleFontSize(value: boolean | "indeterminate") {
   if (value === true) {
-    update("fontSize", unitConv.fromPx(DEFAULTS.fontSize, "rem"));
+    activeFontSize.value = unitConv.fromPx(DEFAULTS.fontSize, "rem");
   } else {
-    update("fontSize", undefined);
+    activeFontSize.value = undefined;
   }
 }
 
-function toggleColors(value: boolean | "indeterminate") {
+function toggleActiveFgText(value: boolean | "indeterminate") {
+  if (value === true) {
+    activeFgText.value = DEFAULTS.fgText;
+  } else {
+    updateActiveSlice({ fgText: undefined });
+  }
+}
+
+function toggleInputBg(value: boolean | "indeterminate") {
   if (value === true) {
     model.value = {
       ...model.value,
       bg: DEFAULTS.bg,
-      fgText: DEFAULTS.fgText,
       borderColor: DEFAULTS.borderColor,
     };
   } else {
     const next = { ...model.value };
     delete next.bg;
-    delete next.fgText;
     delete next.borderColor;
     model.value = next;
   }
 }
-
-const typeOptions = [
-  { value: "text", label: "text" },
-  { value: "email", label: "email" },
-  { value: "tel", label: "tel" },
-  { value: "url", label: "url" },
-  { value: "password", label: "password" },
-  { value: "number", label: "number" },
-  { value: "search", label: "search" },
-];
 
 function pxOrFallback(length: CssLength | undefined, fallbackPx: number): number {
   return length ? unitConv.lengthToPx(length) : fallbackPx;
@@ -101,14 +165,45 @@ function lengthOrFallback(length: CssLength | undefined, fallbackPx: number): Cs
   return length ?? { value: fallbackPx, unit: "px" };
 }
 
-const showLabel = computed({
-  get: () => model.value.showLabel !== false,
-  set: (value: boolean) => update("showLabel", value),
-});
+const LABEL_OPTIONS: { value: InputLabelAssociation; labelKey: string }[] = [
+  { value: "for-id", labelKey: "controls.input.labelForId" },
+  { value: "wrapping", labelKey: "controls.input.labelWrapping" },
+  { value: "aria-label", labelKey: "controls.input.labelAriaLabel" },
+  { value: "none", labelKey: "controls.input.labelNone" },
+];
+
+const labelAssociation = computed(() => model.value.labelAssociation ?? "for-id");
 
 const required = computed({
   get: () => model.value.required === true,
   set: (value: boolean) => update("required", value),
+});
+
+const disabled = computed({
+  get: () => model.value.disabled === true,
+  set: (value: boolean) => update("disabled", value),
+});
+
+// Canonical field label for each input type. The variant-change
+// watcher below keeps `model.label` in step with `model.renderAs` so
+// switching from email to tel replaces "Email" with "Phone number"
+// (and replaces any custom text the user has typed). Per-component
+// labels live here rather than in the shared composable so the
+// vocabulary can be tuned without touching shared code.
+const INPUT_TYPE_LABELS: Record<InputType, string> = {
+  text: "Name",
+  email: "Email",
+  tel: "Phone number",
+  url: "Website",
+  password: "Password",
+  number: "Quantity",
+  search: "Search",
+};
+
+useVariantLabelSync(model, {
+  variantKey: "renderAs",
+  labelKey: "label",
+  labelByVariant: INPUT_TYPE_LABELS,
 });
 </script>
 
@@ -117,17 +212,18 @@ const required = computed({
     <ResetDefaultsSection v-model="model" />
     <USeparator />
 
+    <!-- Label / accessible name -->
     <UFormField class="flex flex-col">
       <template #label>
         <a
           href="#topic-vague-label"
-          class="control-group-title inline-flex items-center gap-1 text-(--text-primary) no-underline cursor-pointer hover:text-(--brand) hover:underline hover:underline-offset-2 focus-visible:text-(--brand) focus-visible:underline focus-visible:underline-offset-2 focus-visible:outline-[3px] focus-visible:outline-(--focus-ring) focus-visible:outline-offset-2 focus-visible:rounded-[2px]"
+          class="control-group-title control-label-link"
           @click.prevent="focusLearnTopic('vague-label')"
         >
           {{ t('controls.input.label') }}
           <UIcon
             name="i-lucide-arrow-up-right"
-            class="text-(length:--al-font-size-detail) opacity-70"
+            class="control-label-link-icon"
             aria-hidden="true"
           />
         </a>
@@ -142,32 +238,41 @@ const required = computed({
 
     <USeparator />
 
-    <fieldset class="flex flex-col gap-2 border-0 p-0 m-0">
-      <legend class="flex items-center justify-between w-full">
-        <span class="control-group-title">{{ t('controls.input.showLabel') }}</span>
-        <USwitch
-          v-model="showLabel"
-          size="xs"
-          color="primary"
-        />
+    <!-- Label-association pattern -->
+    <fieldset class="flex flex-col gap-3 border-0 p-0 m-0">
+      <legend class="control-group-title mb-1.5">
+        <a
+          href="#topic-accessible-name"
+          class="control-label-link"
+          @click.prevent="focusLearnTopic('accessible-name')"
+        >
+          {{ t('controls.input.labelAssociation') }}
+          <UIcon
+            name="i-lucide-arrow-up-right"
+            class="control-label-link-icon"
+            aria-hidden="true"
+          />
+        </a>
       </legend>
-      <UFormField
-        v-if="!showLabel"
-        class="flex flex-col"
+      <UFieldGroup
+        size="sm"
+        orientation="vertical"
       >
-        <template #label>
-          <span class="control-group-title">{{ t('controls.input.ariaLabel') }}</span>
-        </template>
-        <UInput
-          :model-value="model.ariaLabel ?? ''"
-          :placeholder="t('controls.input.ariaLabelPlaceholder')"
-          class="w-full"
-          @update:model-value="update('ariaLabel', $event)"
-        />
-      </UFormField>
+        <UButton
+          v-for="opt in LABEL_OPTIONS"
+          :key="opt.value"
+          :color="labelAssociation === opt.value ? 'primary' : 'neutral'"
+          :variant="labelAssociation === opt.value ? 'solid' : 'ghost'"
+          @click="update('labelAssociation', opt.value)"
+        >
+          {{ t(opt.labelKey) }}
+        </UButton>
+      </UFieldGroup>
     </fieldset>
 
     <USeparator />
+
+    <!-- Placeholder -->
     <UFormField class="flex flex-col">
       <template #label>
         <span class="control-group-title">{{ t('controls.input.placeholder') }}</span>
@@ -181,33 +286,54 @@ const required = computed({
     </UFormField>
 
     <USeparator />
-    <UFormField class="flex flex-col">
-      <template #label>
-        <span class="control-group-title">{{ t('controls.input.type') }}</span>
-      </template>
-      <USelect
-        :model-value="model.type ?? 'email'"
-        :items="typeOptions"
-        size="sm"
-        class="w-full"
-        @update:model-value="update('type', $event as InputProps['type'])"
-      />
-    </UFormField>
 
-    <USeparator />
+    <!-- State -->
     <fieldset class="flex flex-col gap-2 border-0 p-0 m-0">
-      <legend class="flex items-center justify-between w-full">
-        <span class="control-group-title">{{ t('controls.input.required') }}</span>
+      <legend class="control-group-title mb-1.5">
+        {{ t('controls.input.state') }}
+      </legend>
+
+      <UFormField>
+        <template #label>
+          <span class="control-group-title">{{ t('controls.input.required') }}</span>
+        </template>
         <USwitch
           v-model="required"
-          size="xs"
+          size="sm"
           color="primary"
         />
-      </legend>
+      </UFormField>
+
+      <UFormField>
+        <template #label>
+          <span class="control-group-title">{{ t('controls.input.disabled') }}</span>
+        </template>
+        <USwitch
+          v-model="disabled"
+          size="sm"
+          color="primary"
+        />
+      </UFormField>
     </fieldset>
 
     <USeparator />
 
+    <!-- Form attributes -->
+    <UFormField class="flex flex-col">
+      <template #label>
+        <span class="control-group-title">{{ t('controls.input.name') }}</span>
+      </template>
+      <UInput
+        :model-value="model.name ?? ''"
+        :placeholder="t('controls.input.namePlaceholder')"
+        class="w-full"
+        @update:model-value="update('name', $event)"
+      />
+    </UFormField>
+
+    <USeparator />
+
+    <!-- Help text -->
     <UFormField class="flex flex-col">
       <template #label>
         <span class="control-group-title">{{ t('controls.input.helpText') }}</span>
@@ -222,7 +348,16 @@ const required = computed({
 
     <USeparator />
 
-    <!-- TEXT -->
+    <!-- STYLE APPLIES TO picker -->
+    <StyleTargetPicker
+      v-model="activeStyleTarget"
+      :options="STYLE_TARGET_OPTIONS"
+      :legend="t('controls.input.styleAppliesTo')"
+    />
+
+    <USeparator />
+
+    <!-- FONT SIZE (active target) -->
     <fieldset class="flex flex-col gap-3 border-0 p-0 m-0">
       <div>
         <div class="flex items-center justify-between mb-1.5">
@@ -239,7 +374,7 @@ const required = computed({
           class="flex items-center gap-3"
         >
           <USlider
-            :model-value="pxOrFallback(model.fontSize, DEFAULTS.fontSize)"
+            :model-value="pxOrFallback(activeFontSize, DEFAULTS.fontSize)"
             :min="8"
             :max="128"
             :step="2"
@@ -247,14 +382,14 @@ const required = computed({
             size="sm"
             :disabled="!fontSizeEnabled"
             class="flex-1"
-            @update:model-value="update('fontSize', unitConv.fromSliderPx(Number($event), unitFor(model.fontSize)))"
+            @update:model-value="activeFontSize = unitConv.fromSliderPx(Number($event), unitFor(activeFontSize))"
           />
           <LengthValueInput
             v-if="fontSizeEnabled"
-            :model-value="lengthOrFallback(model.fontSize, DEFAULTS.fontSize)"
+            :model-value="lengthOrFallback(activeFontSize, DEFAULTS.fontSize)"
             :px-step="2"
             :disabled="!fontSizeEnabled"
-            @update:model-value="update('fontSize', $event)"
+            @update:model-value="activeFontSize = $event"
           />
         </div>
       </div>
@@ -262,42 +397,61 @@ const required = computed({
 
     <USeparator />
 
-    <!-- COLOURS -->
+    <!-- TEXT COLOUR (active target) -->
     <fieldset class="flex flex-col gap-3 border-0 p-0 m-0">
       <legend class="flex items-center justify-between w-full mb-1.5">
-        <span class="control-group-title">{{ t('controls.colours') }}</span>
+        <span class="control-group-title">{{ t('controls.textColor') }}</span>
         <USwitch
-          :model-value="colorsEnabled"
+          :model-value="activeFgTextEnabled"
           size="xs"
           color="primary"
-          @update:model-value="toggleColors"
+          @update:model-value="toggleActiveFgText"
         />
       </legend>
-
       <div
-        :class="[colorsEnabled ? '' : 'opacity-50 pointer-events-none']"
-        class="flex flex-col gap-3"
+        :class="[activeFgTextEnabled ? '' : 'opacity-50 pointer-events-none']"
       >
         <ColorPickerRow
-          v-model="bgColor"
-          :label="t('controls.background')"
-          :disabled="!colorsEnabled"
-        />
-        <ColorPickerRow
-          v-model="fgTextColor"
+          v-model="activeFgText"
           :label="t('controls.textColor')"
-          :disabled="!colorsEnabled"
-        />
-        <ContrastBadge
-          :ratio="contrastRatio"
-          :verdict="contrastVerdict"
-        />
-        <ColorPickerRow
-          v-model="borderColorComputed"
-          :label="t('controls.borderColor')"
-          :disabled="!colorsEnabled"
+          :disabled="!activeFgTextEnabled"
         />
       </div>
     </fieldset>
+
+    <!-- BACKGROUND + BORDER (input target only) -->
+    <template v-if="isInputTarget">
+      <USeparator />
+      <fieldset class="flex flex-col gap-3 border-0 p-0 m-0">
+        <legend class="flex items-center justify-between w-full mb-1.5">
+          <span class="control-group-title">{{ t('controls.input.background') }}</span>
+          <USwitch
+            :model-value="inputBgEnabled"
+            size="xs"
+            color="primary"
+            @update:model-value="toggleInputBg"
+          />
+        </legend>
+        <div
+          :class="[inputBgEnabled ? '' : 'opacity-50 pointer-events-none']"
+          class="flex flex-col gap-3"
+        >
+          <ColorPickerRow
+            v-model="bgColor"
+            :label="t('controls.background')"
+            :disabled="!inputBgEnabled"
+          />
+          <ContrastBadge
+            :ratio="contrastRatio"
+            :verdict="contrastVerdict"
+          />
+          <ColorPickerRow
+            v-model="borderColorComputed"
+            :label="t('controls.borderColor')"
+            :disabled="!inputBgEnabled"
+          />
+        </div>
+      </fieldset>
+    </template>
   </div>
 </template>

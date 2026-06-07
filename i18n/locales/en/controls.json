@@ -69,15 +69,22 @@
     "input": {
       "label": "Field label",
       "labelPlaceholder": "e.g. Email address",
-      "showLabel": "Show label",
-      "ariaLabel": "aria-label",
-      "ariaLabelPlaceholder": "Accessible name when the visible label is hidden",
+      "labelAssociation": "Label association",
+      "labelForId": "label for/id (recommended)",
+      "labelWrapping": "Wrapping label",
+      "labelAriaLabel": "aria-label only (no visible label)",
+      "labelNone": "No label at all (anti-pattern)",
       "placeholder": "Placeholder",
       "placeholderHint": "Optional hint shown inside the empty field",
-      "type": "Type",
+      "state": "State",
       "required": "Required",
+      "disabled": "Disabled",
+      "name": "Name attribute",
+      "namePlaceholder": "e.g. email",
       "helpText": "Help text",
-      "helpTextPlaceholder": "e.g. We'll never share this address"
+      "helpTextPlaceholder": "e.g. We'll never share this address",
+      "styleAppliesTo": "Style applies to",
+      "background": "Background"
     },
     "checkbox": {
       "label": "Label",
@@ -99,7 +106,9 @@
       "name": "Name attribute",
       "namePlaceholder": "e.g. newsletter",
       "value": "Value attribute",
-      "valuePlaceholder": "e.g. subscribe"
+      "valuePlaceholder": "e.g. subscribe",
+      "aria": "ARIA",
+      "ariaChecked": "Add aria-checked"
     },
     "radio": {
       "label": "Group question (legend)",

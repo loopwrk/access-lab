@@ -276,14 +276,17 @@ function resolveSide(
   return explicit ?? shorthand ?? { value: 0, unit: "px" };
 }
 
-function buildInlineStyle(props: Partial<ButtonProps>): string {
+function buildInlineStyle(
+  props: Partial<ButtonProps>,
+  options: { excludeFontSize?: boolean } = {},
+): string {
   const declarations: string[] = [];
 
   if (props.bg) declarations.push(`background:${props.bg}`);
   if (props.fgText) declarations.push(`color:${props.fgText}`);
   if (props.width) declarations.push(`width:${formatLength(props.width)}`);
   if (props.height) declarations.push(`height:${formatLength(props.height)}`);
-  if (props.fontSize) {
+  if (props.fontSize && !options.excludeFontSize) {
     declarations.push(`font-size:${formatLength(props.fontSize)}`);
   }
 
@@ -397,6 +400,7 @@ function renderInputButton(
 function renderInputCheckboxSwitch(
   props: Partial<ButtonProps>,
   style: string,
+  labelStyle: string,
 ): string {
   const label = escapeHtml(props.label ?? DEFAULT_LABEL);
   const attrs: string[] = [
@@ -411,7 +415,8 @@ function renderInputCheckboxSwitch(
   if (style) attrs.push(`style="${style}"`);
 
   const input = `<input ${withInspectedClass(attrs, props).join(" ")}>`;
-  return `<label for="${SWITCH_INPUT_ID}"><span>${label}</span>${input}</label>`;
+  const labelStyleAttr = labelStyle ? ` style="${labelStyle}"` : "";
+  return `<label for="${SWITCH_INPUT_ID}"><span${labelStyleAttr}>${label}</span>${input}</label>`;
 }
 
 function renderInputImage(props: Partial<ButtonProps>, style: string): string {
@@ -432,16 +437,25 @@ function renderInputImage(props: Partial<ButtonProps>, style: string): string {
 export function renderButton(props?: Partial<ButtonProps>): RenderedFragment {
   if (!props) return { html: `<button>${DEFAULT_LABEL}</button>` };
 
-  const style = buildInlineStyle(props);
-  const css = buildCss(props);
   const renderAs = props.renderAs ?? "button";
   const pilled = isPilledSwitch(props);
+  // When the visible label sits outside the inspected element (the
+  // pilled <button>'s sibling <span>, or the <span> next to the native
+  // checkbox switch), font-size belongs on that span — not the host
+  // element, whose own font-size drives unrelated geometry (the pilled
+  // thumb is em-based, and a checkbox ignores font-size entirely).
+  const labelOutsideHost = pilled || renderAs === "input-checkbox-switch";
+  const style = buildInlineStyle(props, { excludeFontSize: labelOutsideHost });
+  const labelStyle = labelOutsideHost && props.fontSize
+    ? `font-size:${formatLength(props.fontSize)}`
+    : "";
+  const css = buildCss(props);
 
   let element: string;
   if (renderAs === "input-image") {
     element = renderInputImage(props, style);
   } else if (renderAs === "input-checkbox-switch") {
-    element = renderInputCheckboxSwitch(props, style);
+    element = renderInputCheckboxSwitch(props, style, labelStyle);
   } else {
     const inputType = INPUT_TYPE_BY_RENDER_AS[renderAs];
     if (inputType) {
@@ -463,9 +477,10 @@ export function renderButton(props?: Partial<ButtonProps>): RenderedFragment {
   // pattern (visible label left, switch right).
   if (pilled) {
     const labelText = escapeHtml(props.label ?? DEFAULT_LABEL);
+    const labelStyleAttr = labelStyle ? ` style="${labelStyle}"` : "";
     element
       = `<div class="${SWITCH_WRAP_CLASS}">`
-        + `<span id="${SWITCH_LABEL_ID}">${labelText}</span>`
+        + `<span id="${SWITCH_LABEL_ID}"${labelStyleAttr}>${labelText}</span>`
         + element
         + `</div>`;
   }

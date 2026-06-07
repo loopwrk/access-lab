@@ -231,6 +231,18 @@
         }
       });
 
+      // Custom div checkbox (`<div role="checkbox">`) has no native
+      // click-as-change semantics, so we forward clicks directly. The
+      // host's pattern listener flips `checked`; the re-render then
+      // shows the updated `aria-checked` state.
+      mount.addEventListener("click", function (event) {
+        if (!(event.target instanceof Element)) return;
+        var el = event.target.closest("[role='checkbox']");
+        if (el && el.classList.contains("al-inspected-element")) {
+          parent.postMessage({ type: "demo:click" }, window.location.origin);
+        }
+      });
+
       // Cancel form submissions inside the preview so the iframe does
       // not navigate away. Report the full set of submitted name/value
       // pairs by reading FormData against the form + submitter (the

@@ -190,3 +190,11 @@ A future sidebar group dedicated to forms as a whole (rather than individual for
 ### Form attributes
 
 - Consider adding mock `action` and `method` attributes to form elements.
+
+### Mobile simulation
+
+- Add feat/mobile simulation to preview area
+
+### Add screen-reader simulation
+
+- Consider adding-screen reader simulation. As text-only for stage one and voice-only at a later stage

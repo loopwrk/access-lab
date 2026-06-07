@@ -8,7 +8,7 @@
         },
         "button": {
           "description": "No type. Defaults to submit when inside a form.",
-          "statusNote": "Omitting the type defaults the button to type=\"submit\"."
+          "statusNote": "Without a type, buttons default to type=\"submit\"."
         },
         "button-submit": {
           "description": "Submits the parent form.",
@@ -40,10 +40,38 @@
         }
       }
     },
+    "input": {
+      "variants": {
+        "text": {
+          "statusNote": "The default input type. Use for general short text entry like a name or subject line."
+        },
+        "email": {
+          "statusNote": "Triggers the email keyboard on mobile devices. Pair with autocomplete=\"email\" for autofill."
+        },
+        "tel": {
+          "statusNote": "Triggers the phone keyboard on mobile devices. Does not validate format — use the pattern attribute or JavaScript for that."
+        },
+        "url": {
+          "statusNote": "Triggers a URL keyboard with a .com key on mobile devices."
+        },
+        "password": {
+          "statusNote": "Masks the input visually. Browsers offer password manager integration; do not disable it."
+        },
+        "number": {
+          "statusNote": "Restricts input to digits and strips leading zeros — avoid for credit card numbers, phone numbers, and postal codes; use inputmode=\"numeric\" on a text input instead."
+        },
+        "search": {
+          "statusNote": "Triggers the search keyboard on mobile devices and may add a clear button to the input."
+        }
+      }
+    },
     "checkbox": {
       "variants": {
         "input-checkbox": {
           "statusNote": "The native checkbox. Browsers handle keyboard activation, label-click forwarding, and accessible role for free."
+        },
+        "div-checkbox": {
+          "statusNote": "A styled div with role=\"checkbox\". You must add aria-checked yourself to expose the state."
         }
       }
     },

@@ -46,83 +46,156 @@ const labelFieldPlaceholderKey = computed(
 
 <template>
   <div class="flex flex-col gap-4">
-    <UFormField v-if="showsLabelField" class="flex flex-col">
+    <UFormField
+      v-if="showsLabelField"
+      class="flex flex-col"
+    >
       <template #label>
-        <a :href="`#topic-${labelFieldTopicId}`" class="control-group-title control-label-link"
-          @click.prevent="focusLearnTopic(labelFieldTopicId)">
+        <a
+          :href="`#topic-${labelFieldTopicId}`"
+          class="control-group-title control-label-link"
+          @click.prevent="focusLearnTopic(labelFieldTopicId)"
+        >
           {{ t(labelFieldKey) }}
-          <UIcon name="i-lucide-arrow-up-right" class="control-label-link-icon" aria-hidden="true" />
+          <UIcon
+            name="i-lucide-arrow-up-right"
+            class="control-label-link-icon"
+            aria-hidden="true"
+          />
         </a>
       </template>
-      <UInput :model-value="model.label ?? ''" :placeholder="t(labelFieldPlaceholderKey)" class="w-full"
-        @update:model-value="update('label', String($event))" />
+      <UInput
+        :model-value="model.label ?? ''"
+        :placeholder="t(labelFieldPlaceholderKey)"
+        class="w-full"
+        @update:model-value="update('label', String($event))"
+      />
     </UFormField>
 
-    <UFormField v-if="isImageInput" class="flex flex-col">
+    <UFormField
+      v-if="isImageInput"
+      class="flex flex-col"
+    >
       <template #label>
         <span class="control-group-title">{{ t('controls.imageFormat') }}</span>
       </template>
       <UFieldGroup size="sm">
-        <UButton :color="isSvgImage ? 'primary' : 'neutral'" :variant="isSvgImage ? 'solid' : 'ghost'"
-          @click="update('src', SAMPLE_IMAGE_PATH_SVG)">
+        <UButton
+          :color="isSvgImage ? 'primary' : 'neutral'"
+          :variant="isSvgImage ? 'solid' : 'ghost'"
+          @click="update('src', SAMPLE_IMAGE_PATH_SVG)"
+        >
           SVG
         </UButton>
-        <UButton :color="!isSvgImage ? 'primary' : 'neutral'" :variant="!isSvgImage ? 'solid' : 'ghost'"
-          @click="update('src', SAMPLE_IMAGE_PATH_PNG)">
+        <UButton
+          :color="!isSvgImage ? 'primary' : 'neutral'"
+          :variant="!isSvgImage ? 'solid' : 'ghost'"
+          @click="update('src', SAMPLE_IMAGE_PATH_PNG)"
+        >
           PNG
         </UButton>
       </UFieldGroup>
     </UFormField>
 
-    <UFormField v-if="isImageInput" class="flex flex-col">
+    <UFormField
+      v-if="isImageInput"
+      class="flex flex-col"
+    >
       <template #label>
-        <a href="#topic-accessible-name" class="control-group-title control-label-link"
-          @click.prevent="focusLearnTopic('accessible-name')">
+        <a
+          href="#topic-accessible-name"
+          class="control-group-title control-label-link"
+          @click.prevent="focusLearnTopic('accessible-name')"
+        >
           {{ t('controls.alt') }}
-          <UIcon name="i-lucide-arrow-up-right" class="control-label-link-icon" aria-hidden="true" />
+          <UIcon
+            name="i-lucide-arrow-up-right"
+            class="control-label-link-icon"
+            aria-hidden="true"
+          />
         </a>
       </template>
-      <UInput :model-value="model.alt ?? ''" :placeholder="t('controls.altPlaceholder')" class="w-full"
-        @update:model-value="update('alt', String($event))" />
+      <UInput
+        :model-value="model.alt ?? ''"
+        :placeholder="t('controls.altPlaceholder')"
+        class="w-full"
+        @update:model-value="update('alt', String($event))"
+      />
     </UFormField>
 
-    <UFormField v-if="hasSeparateValueAttribute" class="flex flex-col">
+    <UFormField
+      v-if="hasSeparateValueAttribute"
+      class="flex flex-col"
+    >
       <template #label>
-        <a href="#topic-button-value-attribute" class="control-group-title control-label-link"
-          @click.prevent="focusLearnTopic('button-value-attribute')">
+        <a
+          href="#topic-button-value-attribute"
+          class="control-group-title control-label-link"
+          @click.prevent="focusLearnTopic('button-value-attribute')"
+        >
           {{ t('controls.valueAttribute') }}
-          <UIcon name="i-lucide-arrow-up-right" class="control-label-link-icon" aria-hidden="true" />
+          <UIcon
+            name="i-lucide-arrow-up-right"
+            class="control-label-link-icon"
+            aria-hidden="true"
+          />
         </a>
       </template>
-      <UInput :model-value="model.value ?? ''" :placeholder="t('controls.valueAttributePlaceholder')" class="w-full"
-        @update:model-value="update('value', String($event))" />
+      <UInput
+        :model-value="model.value ?? ''"
+        :placeholder="t('controls.valueAttributePlaceholder')"
+        class="w-full"
+        @update:model-value="update('value', String($event))"
+      />
     </UFormField>
 
-    <UFormField v-if="showsNameField" class="flex flex-col">
+    <UFormField
+      v-if="showsNameField"
+      class="flex flex-col"
+    >
       <template #label>
-        <a href="#topic-button-value-attribute" class="control-group-title control-label-link"
-          @click.prevent="focusLearnTopic('button-value-attribute')">
+        <a
+          href="#topic-button-value-attribute"
+          class="control-group-title control-label-link"
+          @click.prevent="focusLearnTopic('button-value-attribute')"
+        >
           {{ t('controls.nameAttribute') }}
-          <UIcon name="i-lucide-arrow-up-right" class="control-label-link-icon" aria-hidden="true" />
+          <UIcon
+            name="i-lucide-arrow-up-right"
+            class="control-label-link-icon"
+            aria-hidden="true"
+          />
         </a>
       </template>
-      <UInput :model-value="model.name ?? ''" :placeholder="t('controls.nameAttributePlaceholder')" class="w-full"
-        @update:model-value="update('name', String($event))" />
+      <UInput
+        :model-value="model.name ?? ''"
+        :placeholder="t('controls.nameAttributePlaceholder')"
+        class="w-full"
+        @update:model-value="update('name', String($event))"
+      />
     </UFormField>
 
-    <UFormField v-if="isButtonTag && !hideContentType" class="flex flex-col">
+    <UFormField
+      v-if="isButtonTag && !hideContentType"
+      class="flex flex-col"
+    >
       <template #label>
         <span class="control-group-title">{{ t('controls.contentType') }}</span>
       </template>
       <UFieldGroup size="sm">
-        <UButton :color="(model.contentType ?? 'text') === 'text' ? 'primary' : 'neutral'"
+        <UButton
+          :color="(model.contentType ?? 'text') === 'text' ? 'primary' : 'neutral'"
           :variant="(model.contentType ?? 'text') === 'text' ? 'solid' : 'ghost'"
-          @click="update('contentType', 'text')">
+          @click="update('contentType', 'text')"
+        >
           {{ t('controls.contentTypeText') }}
         </UButton>
-        <UButton :color="model.contentType === 'icon' ? 'primary' : 'neutral'"
-          :variant="model.contentType === 'icon' ? 'solid' : 'ghost'" icon="i-lucide-search"
-          @click="update('contentType', 'icon')">
+        <UButton
+          :color="model.contentType === 'icon' ? 'primary' : 'neutral'"
+          :variant="model.contentType === 'icon' ? 'solid' : 'ghost'"
+          icon="i-lucide-search"
+          @click="update('contentType', 'icon')"
+        >
           {{ t('controls.contentTypeIcon') }}
         </UButton>
       </UFieldGroup>

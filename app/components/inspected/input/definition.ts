@@ -1,21 +1,70 @@
 import { renderInput } from "./render";
+import { formSubmitWrapper } from "./wrappers";
+import { inputManualChecklist } from "~/rules/input/manual-checklist";
+import { placeholderContrast } from "~/rules/input/placeholder-contrast";
 import type { ComponentDefinition } from "~/types/component";
 import type { CssLength } from "~/composables/useUnitConversion";
 
+/**
+ * Visible label association strategy. Mirrors the pattern used by the
+ * checkbox and radio components — each mode renders differently and
+ * produces a different screen-reader announcement.
+ */
+export type InputLabelAssociation =
+  | "for-id" // <label for="x"><input id="x"> + label sibling
+  | "wrapping" // <label><input> Text </label>
+  | "aria-label" // <input aria-label="..."> (no visible text label)
+  | "none"; // <input> with no accessible name — anti-pattern
+
+/**
+ * Set of `type=` values the studio surfaces in the variant picker.
+ * Drives the variant chip; the active value lives in `props.renderAs`
+ * matching the pattern used by every other inspected component.
+ */
+export type InputType =
+  | "text"
+  | "email"
+  | "tel"
+  | "url"
+  | "password"
+  | "number"
+  | "search";
+
+export type InputStyleTarget = "label" | "input" | "placeholder" | "helpText";
+
+export interface InputTextStyleSlice {
+  fontSize?: CssLength;
+  fgText?: string;
+}
+
 export interface InputProps {
-  // Content
+  renderAs: InputType;
   label: string;
   placeholder: string;
   helpText: string;
-  type: "text" | "email" | "tel" | "url" | "password" | "number" | "search";
   name: string;
   required: boolean;
-  showLabel: boolean;
-  ariaLabel: string;
+  disabled: boolean;
+  labelAssociation: InputLabelAssociation;
+
+  // Optional surrounding context (e.g. <form>). Read by
+  // ComponentStudio's applyContextWrappers chain.
+  wrappers: string[];
+
+  // Input element's style (the "input" target slice). Kept flat at
+  // the top level for backwards compatibility with the original
+  // controls; semantically equivalent to an `inputStyle` slice.
   fontSize: CssLength;
   bg: string;
   fgText: string;
   borderColor: string;
+
+  // Per-target style slices for the other three targets. Placeholder
+  // requires injecting a `::placeholder` CSS rule (inline style won't
+  // reach the pseudo-element) — handled by the renderer.
+  labelStyle?: InputTextStyleSlice;
+  placeholderStyle?: InputTextStyleSlice;
+  helpTextStyle?: InputTextStyleSlice;
 }
 
 export const inputDefinition: ComponentDefinition<InputProps> = {
@@ -23,18 +72,71 @@ export const inputDefinition: ComponentDefinition<InputProps> = {
   name: "Input",
   tagName: "input",
   defaultProps: {
+    renderAs: "email",
     label: "Email",
     placeholder: "",
     helpText: "",
-    type: "email",
     name: "email",
     required: false,
-    showLabel: true,
-    ariaLabel: "",
+    disabled: false,
+    labelAssociation: "for-id",
+    wrappers: [],
   },
+  variants: [
+    {
+      key: "text",
+      label: '<input type="text">',
+      status: "info",
+      statusNote: "components.input.variants.text.statusNote",
+      section: "<input> Type",
+    },
+    {
+      key: "email",
+      label: '<input type="email">',
+      status: "info",
+      statusNote: "components.input.variants.email.statusNote",
+      section: "<input> Type",
+    },
+    {
+      key: "tel",
+      label: '<input type="tel">',
+      status: "info",
+      statusNote: "components.input.variants.tel.statusNote",
+      section: "<input> Type",
+    },
+    {
+      key: "url",
+      label: '<input type="url">',
+      status: "info",
+      statusNote: "components.input.variants.url.statusNote",
+      section: "<input> Type",
+    },
+    {
+      key: "password",
+      label: '<input type="password">',
+      status: "info",
+      statusNote: "components.input.variants.password.statusNote",
+      section: "<input> Type",
+    },
+    {
+      key: "number",
+      label: '<input type="number">',
+      status: "info",
+      statusNote: "components.input.variants.number.statusNote",
+      section: "<input> Type",
+    },
+    {
+      key: "search",
+      label: '<input type="search">',
+      status: "info",
+      statusNote: "components.input.variants.search.statusNote",
+      section: "<input> Type",
+    },
+  ],
+  contextWrappers: [formSubmitWrapper],
   controls: [],
-  rules: [],
-  manualChecklist: [],
+  rules: [placeholderContrast],
+  manualChecklist: inputManualChecklist,
   render: renderInput,
   controlsComponent: defineAsyncComponent(() => import("./InputControls.vue")),
   relatedLearnTopicIds: [
@@ -44,5 +146,10 @@ export const inputDefinition: ComponentDefinition<InputProps> = {
     "form-wrapping",
     "native-rendering",
   ],
-  relevantConcepts: ["form-control", "accessible-name", "form-context", "native-elements"],
+  relevantConcepts: [
+    "form-control",
+    "accessible-name",
+    "form-context",
+    "native-elements",
+  ],
 };

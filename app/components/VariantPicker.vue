@@ -213,7 +213,7 @@ function maybeTranslate(value?: string): string {
                       :color="visualFor(variant.status)!.color"
                       :icon="visualFor(variant.status)!.icon"
                       variant="soft"
-                      size="md"
+                      size="lg"
                       :ui="{
                         base: variant.status === 'neutral'
                           ? 'rounded-none self-start bg-(--surface-2) text-(--text-secondary)'
