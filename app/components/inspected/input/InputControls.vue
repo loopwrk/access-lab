@@ -184,10 +184,11 @@ const disabled = computed({
   set: (value: boolean) => update("disabled", value),
 });
 
-// Search-icon affordance is only meaningful when the input is a
-// search field AND the visible label has been removed (aria-label
-// strategy). In any other combination the toggle has no effect on
-// the rendered output, so we hide it.
+const ariaLabelAttr = computed({
+  get: () => model.value.ariaLabel === true,
+  set: (value: boolean) => update("ariaLabel", value),
+});
+
 const showSearchIconToggle = computed(() =>
   model.value.renderAs === "search",
 );
@@ -195,6 +196,11 @@ const showSearchIconToggle = computed(() =>
 const showSearchIcon = computed({
   get: () => model.value.showSearchIcon === true,
   set: (value: boolean) => update("showSearchIcon", value),
+});
+
+const ariaHidden = computed({
+  get: () => model.value.ariaHidden === true,
+  set: (value: boolean) => update("ariaHidden", value),
 });
 
 // Canonical field label for each input type. The variant-change
@@ -228,14 +234,25 @@ useVariantLabelSync(model, {
     <!-- Label / accessible name -->
     <UFormField class="flex flex-col">
       <template #label>
-        <a href="#topic-vague-label" class="control-group-title control-label-link"
-          @click.prevent="focusLearnTopic('vague-label')">
+        <a
+          href="#topic-vague-label"
+          class="control-group-title control-label-link"
+          @click.prevent="focusLearnTopic('vague-label')"
+        >
           {{ t('controls.input.label') }}
-          <UIcon name="i-lucide-arrow-up-right" class="control-label-link-icon" aria-hidden="true" />
+          <UIcon
+            name="i-lucide-arrow-up-right"
+            class="control-label-link-icon"
+            aria-hidden="true"
+          />
         </a>
       </template>
-      <UInput :model-value="model.label ?? ''" :placeholder="t('controls.input.labelPlaceholder')" class="w-full"
-        @update:model-value="update('label', $event)" />
+      <UInput
+        :model-value="model.label ?? ''"
+        :placeholder="t('controls.input.labelPlaceholder')"
+        class="w-full"
+        @update:model-value="update('label', $event)"
+      />
     </UFormField>
 
     <USeparator />
@@ -243,21 +260,69 @@ useVariantLabelSync(model, {
     <!-- Label-association pattern -->
     <fieldset class="flex flex-col gap-3 border-0 p-0 m-0">
       <legend class="control-group-title mb-1.5">
-        <a href="#topic-accessible-name" class="control-label-link" @click.prevent="focusLearnTopic('accessible-name')">
+        <a
+          href="#topic-accessible-name"
+          class="control-label-link"
+          @click.prevent="focusLearnTopic('accessible-name')"
+        >
           {{ t('controls.input.labelAssociation') }}
-          <UIcon name="i-lucide-arrow-up-right" class="control-label-link-icon" aria-hidden="true" />
+          <UIcon
+            name="i-lucide-arrow-up-right"
+            class="control-label-link-icon"
+            aria-hidden="true"
+          />
         </a>
       </legend>
-      <UFieldGroup size="sm" orientation="vertical">
-        <UButton v-for="opt in LABEL_OPTIONS" :key="opt.value"
+      <UFieldGroup
+        size="sm"
+        orientation="vertical"
+      >
+        <UButton
+          v-for="opt in LABEL_OPTIONS"
+          :key="opt.value"
           :color="labelAssociation === opt.value ? 'primary' : 'neutral'"
-          :variant="labelAssociation === opt.value ? 'solid' : 'ghost'" @click="update('labelAssociation', opt.value)">
+          :variant="labelAssociation === opt.value ? 'solid' : 'ghost'"
+          @click="update('labelAssociation', opt.value)"
+        >
           {{ t(opt.labelKey) }}
         </UButton>
       </UFieldGroup>
 
-      <UCheckbox v-if="showSearchIconToggle" v-model="showSearchIcon" :label="t('controls.input.showSearchIcon')"
-        variant="card" color="primary" size="md" :ui="CONTROL_CARD_UI" class="mt-2" />
+      <UCheckbox
+        v-if="showSearchIconToggle"
+        v-model="showSearchIcon"
+        :label="t('controls.input.showSearchIcon')"
+        variant="card"
+        color="primary"
+        size="md"
+        :ui="CONTROL_CARD_UI"
+        class="mt-2"
+      />
+    </fieldset>
+
+    <USeparator />
+
+    <!--
+      Attributes section: ARIA-related flags that aren't part of the
+      label-association decision. `aria-hidden` lives here so the
+      user can apply it to any input type — toggling it on a regular
+      text input demonstrates the anti-pattern (a form field hidden
+      from assistive technology), which is exactly the "learn by
+      failing" path the studio is built for. Never disabled, never
+      gated on the search icon.
+    -->
+    <fieldset class="flex flex-col gap-2 border-0 p-0 m-0">
+      <legend class="control-group-title mb-1.5">
+        {{ t('controls.input.attributes') }}
+      </legend>
+      <UCheckbox
+        v-model="ariaHidden"
+        :label="t('controls.input.ariaHidden')"
+        variant="card"
+        color="primary"
+        size="md"
+        :ui="CONTROL_CARD_UI"
+      />
     </fieldset>
 
     <USeparator />
@@ -267,35 +332,61 @@ useVariantLabelSync(model, {
       <template #label>
         <span class="control-group-title">{{ t('controls.input.placeholder') }}</span>
       </template>
-      <UInput :model-value="model.placeholder ?? ''" :placeholder="t('controls.input.placeholderHint')" class="w-full"
-        @update:model-value="update('placeholder', $event)" />
+      <UInput
+        :model-value="model.placeholder ?? ''"
+        :placeholder="t('controls.input.placeholderHint')"
+        class="w-full"
+        @update:model-value="update('placeholder', $event)"
+      />
     </UFormField>
 
     <USeparator />
 
-    <!-- State -->
-    <fieldset class="flex flex-col gap-2 border-0 p-0 m-0">
+    <!-- Attributes -->
+    <fieldset class="flex flex-col gap-3 border-0 p-0 m-0">
       <legend class="control-group-title mb-1.5">
-        {{ t('controls.input.state') }}
+        {{ t('controls.input.attributes') }}
       </legend>
+
+      <UFormField class="flex flex-col">
+        <template #label>
+          <span class="control-group-title">{{ t('controls.input.name') }}</span>
+        </template>
+        <UInput
+          :model-value="model.name ?? ''"
+          :placeholder="t('controls.input.namePlaceholder')"
+          class="w-full"
+          @update:model-value="update('name', $event)"
+        />
+      </UFormField>
+
       <div class="grid grid-cols-2 gap-3">
-        <UCheckbox v-model="required" :label="t('controls.input.required')" variant="card" color="primary" size="md"
-          :ui="CONTROL_CARD_UI" />
-        <UCheckbox v-model="disabled" :label="t('controls.input.disabled')" variant="card" color="primary" size="md"
-          :ui="CONTROL_CARD_UI" />
+        <UCheckbox
+          v-model="required"
+          :label="t('controls.input.required')"
+          variant="card"
+          color="primary"
+          size="md"
+          :ui="CONTROL_CARD_UI"
+        />
+        <UCheckbox
+          v-model="disabled"
+          :label="t('controls.input.disabled')"
+          variant="card"
+          color="primary"
+          size="md"
+          :ui="CONTROL_CARD_UI"
+        />
+        <UCheckbox
+          v-model="ariaLabelAttr"
+          :label="t('controls.input.ariaLabelAttr')"
+          variant="card"
+          color="primary"
+          size="md"
+          :ui="CONTROL_CARD_UI"
+        />
       </div>
     </fieldset>
-
-    <USeparator />
-
-    <!-- Form attributes -->
-    <UFormField class="flex flex-col">
-      <template #label>
-        <span class="control-group-title">{{ t('controls.input.name') }}</span>
-      </template>
-      <UInput :model-value="model.name ?? ''" :placeholder="t('controls.input.namePlaceholder')" class="w-full"
-        @update:model-value="update('name', $event)" />
-    </UFormField>
 
     <USeparator />
 
@@ -304,15 +395,22 @@ useVariantLabelSync(model, {
       <template #label>
         <span class="control-group-title">{{ t('controls.input.helpText') }}</span>
       </template>
-      <UInput :model-value="model.helpText ?? ''" :placeholder="t('controls.input.helpTextPlaceholder')" class="w-full"
-        @update:model-value="update('helpText', $event)" />
+      <UInput
+        :model-value="model.helpText ?? ''"
+        :placeholder="t('controls.input.helpTextPlaceholder')"
+        class="w-full"
+        @update:model-value="update('helpText', $event)"
+      />
     </UFormField>
 
     <USeparator />
 
     <!-- STYLE APPLIES TO picker -->
-    <StyleTargetPicker v-model="activeStyleTarget" :options="STYLE_TARGET_OPTIONS"
-      :legend="t('controls.input.styleAppliesTo')" />
+    <StyleTargetPicker
+      v-model="activeStyleTarget"
+      :options="STYLE_TARGET_OPTIONS"
+      :legend="t('controls.input.styleAppliesTo')"
+    />
 
     <USeparator />
 
@@ -321,14 +419,35 @@ useVariantLabelSync(model, {
       <div>
         <div class="flex items-center justify-between mb-1.5">
           <span class="control-group-title font-medium text-(--text-secondary)">{{ t('controls.fontSize') }}</span>
-          <USwitch :model-value="fontSizeEnabled" size="xs" color="primary" @update:model-value="toggleFontSize" />
+          <USwitch
+            :model-value="fontSizeEnabled"
+            size="xs"
+            color="primary"
+            @update:model-value="toggleFontSize"
+          />
         </div>
-        <div :class="[fontSizeEnabled ? '' : 'opacity-50']" class="flex items-center gap-3">
-          <USlider :model-value="pxOrFallback(activeFontSize, DEFAULTS.fontSize)" :min="8" :max="128" :step="2"
-            color="primary" size="sm" :disabled="!fontSizeEnabled" class="flex-1"
-            @update:model-value="activeFontSize = unitConv.fromSliderPx(Number($event), unitFor(activeFontSize))" />
-          <LengthValueInput v-if="fontSizeEnabled" :model-value="lengthOrFallback(activeFontSize, DEFAULTS.fontSize)"
-            :px-step="2" :disabled="!fontSizeEnabled" @update:model-value="activeFontSize = $event" />
+        <div
+          :class="[fontSizeEnabled ? '' : 'opacity-50']"
+          class="flex items-center gap-3"
+        >
+          <USlider
+            :model-value="pxOrFallback(activeFontSize, DEFAULTS.fontSize)"
+            :min="8"
+            :max="128"
+            :step="2"
+            color="primary"
+            size="sm"
+            :disabled="!fontSizeEnabled"
+            class="flex-1"
+            @update:model-value="activeFontSize = unitConv.fromSliderPx(Number($event), unitFor(activeFontSize))"
+          />
+          <LengthValueInput
+            v-if="fontSizeEnabled"
+            :model-value="lengthOrFallback(activeFontSize, DEFAULTS.fontSize)"
+            :px-step="2"
+            :disabled="!fontSizeEnabled"
+            @update:model-value="activeFontSize = $event"
+          />
         </div>
       </div>
     </fieldset>
@@ -339,11 +458,19 @@ useVariantLabelSync(model, {
     <fieldset class="flex flex-col gap-3 border-0 p-0 m-0">
       <legend class="flex items-center justify-between w-full mb-1.5">
         <span class="control-group-title">{{ t('controls.textColor') }}</span>
-        <USwitch :model-value="activeFgTextEnabled" size="xs" color="primary"
-          @update:model-value="toggleActiveFgText" />
+        <USwitch
+          :model-value="activeFgTextEnabled"
+          size="xs"
+          color="primary"
+          @update:model-value="toggleActiveFgText"
+        />
       </legend>
       <div :class="[activeFgTextEnabled ? '' : 'opacity-50 pointer-events-none']">
-        <ColorPickerRow v-model="activeFgText" :label="t('controls.textColor')" :disabled="!activeFgTextEnabled" />
+        <ColorPickerRow
+          v-model="activeFgText"
+          :label="t('controls.textColor')"
+          :disabled="!activeFgTextEnabled"
+        />
       </div>
     </fieldset>
 
@@ -353,13 +480,31 @@ useVariantLabelSync(model, {
       <fieldset class="flex flex-col gap-3 border-0 p-0 m-0">
         <legend class="flex items-center justify-between w-full mb-1.5">
           <span class="control-group-title">{{ t('controls.input.background') }}</span>
-          <USwitch :model-value="inputBgEnabled" size="xs" color="primary" @update:model-value="toggleInputBg" />
+          <USwitch
+            :model-value="inputBgEnabled"
+            size="xs"
+            color="primary"
+            @update:model-value="toggleInputBg"
+          />
         </legend>
-        <div :class="[inputBgEnabled ? '' : 'opacity-50 pointer-events-none']" class="flex flex-col gap-3">
-          <ColorPickerRow v-model="bgColor" :label="t('controls.background')" :disabled="!inputBgEnabled" />
-          <ContrastBadge :ratio="contrastRatio" :verdict="contrastVerdict" />
-          <ColorPickerRow v-model="borderColorComputed" :label="t('controls.borderColor')"
-            :disabled="!inputBgEnabled" />
+        <div
+          :class="[inputBgEnabled ? '' : 'opacity-50 pointer-events-none']"
+          class="flex flex-col gap-3"
+        >
+          <ColorPickerRow
+            v-model="bgColor"
+            :label="t('controls.background')"
+            :disabled="!inputBgEnabled"
+          />
+          <ContrastBadge
+            :ratio="contrastRatio"
+            :verdict="contrastVerdict"
+          />
+          <ColorPickerRow
+            v-model="borderColorComputed"
+            :label="t('controls.borderColor')"
+            :disabled="!inputBgEnabled"
+          />
         </div>
       </fieldset>
     </template>

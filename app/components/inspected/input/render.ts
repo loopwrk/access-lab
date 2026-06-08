@@ -49,6 +49,7 @@ interface InputAttrs {
   disabled: boolean;
   ariaLabel?: string;
   ariaDescribedby?: string;
+  ariaHidden: boolean;
   style: string;
 }
 
@@ -67,6 +68,11 @@ function inputTag(attrs: InputAttrs): string {
   if (attrs.ariaDescribedby) {
     parts.push(`aria-describedby="${attrs.ariaDescribedby}"`);
   }
+  // `aria-hidden` lives in the Attributes section as an opt-in flag.
+  // Applies to the input element itself — for any variant — so the
+  // user can demonstrate the anti-pattern (a form field hidden from
+  // AT) and see the markup change.
+  if (attrs.ariaHidden) parts.push(`aria-hidden="true"`);
   return `<input ${parts.join(" ")}${attrs.style} />`;
 }
 
@@ -94,6 +100,36 @@ function placeholderCss(slice: InputTextStyleSlice | undefined): string {
   return `#al-input::placeholder{${decls.join(";")};}`;
 }
 
+/**
+ * Wrap an input's HTML in a flex span with the magnifying-glass icon
+ * when the input is a search field AND the user has opted in via the
+ * `showSearchIcon` prop. Works for every label-association mode — the
+ * wrapping happens on the input element itself, so for-id puts the
+ * icon next to the input below the label, wrapping puts it next to
+ * the input inside the label, etc.
+ *
+ * The icon span never carries `aria-hidden` from the studio. The
+ * generic `ariaHidden` attribute now applies to the input element
+ * itself (see Attributes section), so the icon's decorative
+ * semantics aren't auto-decided here — the user controls all
+ * `aria-hidden` placement explicitly.
+ */
+function maybeWrapWithSearchIcon(
+  inputHtml: string,
+  props: Partial<InputProps>,
+): string {
+  const showIcon = props.renderAs === "search" && props.showSearchIcon === true;
+  if (!showIcon) return inputHtml;
+  const icon =
+    `<span style="display:inline-flex;align-items:center;justify-content:center;width:1.2em;height:1.2em;margin-right:0.4em;color:#555;vertical-align:middle;">` +
+    `<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">` +
+    `<circle cx="11" cy="11" r="8"></circle>` +
+    `<line x1="21" y1="21" x2="16.65" y2="16.65"></line>` +
+    `</svg>` +
+    `</span>`;
+  return `<span style="display:inline-flex;align-items:center;">${icon}${inputHtml}</span>`;
+}
+
 function helpTextStyleAttr(slice: InputTextStyleSlice | undefined): string {
   const decls = [
     "display:block",
@@ -110,7 +146,13 @@ function helpTextStyleAttr(slice: InputTextStyleSlice | undefined): string {
 
 export function renderInput(props?: Partial<InputProps>): RenderedFragment {
   const association = props?.labelAssociation ?? "for-id";
-  const labelText = escape(props?.label ?? "Email");
+  // Empty stays empty. The model's Field label is the single source
+  // of truth — when the user clears it, the rendered <label> /
+  // aria-label go empty too, and axe correctly fires the `label`
+  // rule. Filling in a phantom default would hide the "no accessible
+  // name" anti-pattern the user is probably trying to surface.
+  const rawLabel = typeof props?.label === "string" ? props.label : "";
+  const labelText = escape(rawLabel);
   const helpText = props?.helpText ? escape(props.helpText) : "";
 
   const baseAttrs: InputAttrs = {
@@ -120,14 +162,26 @@ export function renderInput(props?: Partial<InputProps>): RenderedFragment {
     placeholder: props?.placeholder ?? "",
     required: props?.required === true,
     disabled: props?.disabled === true,
+    // When the user opts in via the Attributes section's aria-label
+    // checkbox, the input gets `aria-label="<labelText>"` regardless
+    // of label-association mode. The aria-label mode below also sets
+    // this explicitly — that branch's value wins. An empty label
+    // intentionally falls through the inputTag's truthy guard and
+    // emits no aria-label attribute at all.
+    ariaLabel: props?.ariaLabel === true ? rawLabel : undefined,
     ariaDescribedby: helpText ? "al-input-help" : undefined,
+    ariaHidden: props?.ariaHidden === true,
     style: styleAttr(props ?? {}),
   };
 
+  // Build the input HTML once per branch, then optionally wrap it in
+  // the magnifying-glass icon if the user opted in. The icon attaches
+  // to the input element itself (not the label), so it appears next
+  // to the input in every label-association mode.
   let body: string;
   switch (association) {
     case "wrapping": {
-      const inner = inputTag(baseAttrs);
+      const inner = maybeWrapWithSearchIcon(inputTag(baseAttrs), props ?? {});
       const labelStyle = labelStyleAttr(props?.labelStyle, ["display:block"]);
       body = `<label${labelStyle}>${labelText} ${inner}</label>`;
       break;
@@ -136,33 +190,14 @@ export function renderInput(props?: Partial<InputProps>): RenderedFragment {
     case "aria-label": {
       const input = inputTag({
         ...baseAttrs,
-        ariaLabel: props?.label ?? "Email",
+        ariaLabel: rawLabel,
       });
-      // Render a sibling magnifying-glass icon when the user has
-      // opted into it on a search input. The icon is decorative
-      // (aria-hidden) — the input's aria-label remains the
-      // accessible name. The visual cue gives sighted users the
-      // "search field" signal that the missing visible label
-      // would otherwise provide.
-      const showIcon =
-        props?.renderAs === "search" && props?.showSearchIcon === true;
-      if (showIcon) {
-        const icon =
-          `<span aria-hidden="true" style="display:inline-flex;align-items:center;justify-content:center;width:1.2em;height:1.2em;margin-right:0.4em;color:#555;vertical-align:middle;">` +
-          `<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">` +
-          `<circle cx="11" cy="11" r="8"></circle>` +
-          `<line x1="21" y1="21" x2="16.65" y2="16.65"></line>` +
-          `</svg>` +
-          `</span>`;
-        body = `<span style="display:inline-flex;align-items:center;">${icon}${input}</span>`;
-      } else {
-        body = input;
-      }
+      body = maybeWrapWithSearchIcon(input, props ?? {});
       break;
     }
 
     case "none":
-      body = inputTag(baseAttrs);
+      body = maybeWrapWithSearchIcon(inputTag(baseAttrs), props ?? {});
       break;
 
     case "for-id":
@@ -173,7 +208,7 @@ export function renderInput(props?: Partial<InputProps>): RenderedFragment {
         "margin-right:8px",
       ]);
       const labelTag = `<label for="al-input"${labelStyle}>${labelText}</label>`;
-      body = `${labelTag}${inputTag(baseAttrs)}`;
+      body = `${labelTag}${maybeWrapWithSearchIcon(inputTag(baseAttrs), props ?? {})}`;
       break;
     }
   }

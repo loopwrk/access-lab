@@ -49,12 +49,16 @@ export interface InputProps {
   labelAssociation: InputLabelAssociation;
 
   /**
-   * When `renderAs === "search"` and `labelAssociation === "aria-label"`,
-   * an optional visible magnifying-glass icon to render alongside the
-   * input. Signals "this is a search field" to sighted users when no
-   * visible label is present.
+   * When `renderAs === "search"`, an optional visible magnifying-glass
+   * icon to render alongside the input. Signals "this is a search
+   * field" to sighted users and softens the
+   * `aria-label-without-visible-label` rule from serious to moderate
+   * when used together with the `aria-label` association mode.
    */
   showSearchIcon: boolean;
+
+  ariaHidden: boolean;
+  ariaLabel: boolean;
 
   // Optional surrounding context (e.g. <form>). Read by
   // ComponentStudio's applyContextWrappers chain.
@@ -90,6 +94,8 @@ export const inputDefinition: ComponentDefinition<InputProps> = {
     disabled: false,
     labelAssociation: "for-id",
     showSearchIcon: false,
+    ariaHidden: false,
+    ariaLabel: false,
     wrappers: [],
   },
   variants: [

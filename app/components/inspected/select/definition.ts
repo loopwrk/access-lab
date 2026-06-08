@@ -7,16 +7,16 @@ import { selectNotKeyboard } from "~/rules/select/select-not-keyboard";
 import type { ComponentDefinition } from "~/types/component";
 import type { CssLength } from "~/composables/useUnitConversion";
 
-export type SelectRenderAs =
-  | "select-native"
-  | "select-multiple"
-  | "div-combobox";
+export type SelectRenderAs
+  = | "select-native"
+    | "select-multiple"
+    | "div-combobox";
 
-export type SelectLabelAssociation =
-  | "for-id"
-  | "wrapping"
-  | "aria-label"
-  | "none";
+export type SelectLabelAssociation
+  = | "for-id"
+    | "wrapping"
+    | "aria-label"
+    | "none";
 
 export interface SelectProps {
   renderAs: SelectRenderAs;
@@ -86,7 +86,7 @@ export const selectDefinition: ComponentDefinition<SelectProps> = {
     },
     {
       key: "div-combobox",
-      label: '<div role="combobox">',
+      label: "<div role=\"combobox\">",
       description: "components.select.variants.div-combobox.description",
       status: "avoid",
       statusNote: "components.select.variants.div-combobox.statusNote",

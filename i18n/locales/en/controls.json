@@ -77,15 +77,18 @@
       "placeholder": "Placeholder",
       "placeholderHint": "Optional hint shown inside the field",
       "state": "State",
+      "attributes": "Attributes",
       "required": "Required",
       "disabled": "Disabled",
+      "ariaLabelAttr": "aria-label",
       "name": "Name attribute",
       "namePlaceholder": "e.g. email",
       "helpText": "Help text",
       "helpTextPlaceholder": "e.g. We'll never share this address",
       "styleAppliesTo": "Style applies to",
       "background": "Background",
-      "showSearchIcon": "Icon"
+      "showSearchIcon": "Icon",
+      "ariaHidden": "aria-hidden"
     },
     "checkbox": {
       "label": "Label",

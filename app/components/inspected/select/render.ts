@@ -53,9 +53,9 @@ function renderSelectAttrs(
   // change bridge forwards picks back to the host model. Without it,
   // selecting an option inside the preview had no effect — the next
   // re-render overwrote the user's choice.
-  const attrs: string[] = ['class="al-inspected-element"', ...extraAttrs];
+  const attrs: string[] = ["class=\"al-inspected-element\"", ...extraAttrs];
   if (props.name) attrs.push(`name="${escape(props.name)}"`);
-  if (props.labelAssociation === "for-id") attrs.push('id="al-select"');
+  if (props.labelAssociation === "for-id") attrs.push("id=\"al-select\"");
   if (props.required) attrs.push("required");
   if (props.disabled) attrs.push("disabled");
   if (props.labelAssociation === "aria-label" && props.label) {
@@ -103,8 +103,8 @@ function renderNativeSelect(
   const items = props.options?.length ? props.options : [];
   const selected = props.selectedOption ?? "";
   const attrs = renderSelectAttrs(props, extraAttrs);
-  const placeholderHtml =
-    options.allowPlaceholder && props.hasPlaceholder
+  const placeholderHtml
+    = options.allowPlaceholder && props.hasPlaceholder
       ? placeholderOptionHtml(selected)
       : "";
   const optionsHtml = renderOptions(items, selected);
@@ -114,13 +114,13 @@ function renderNativeSelect(
   );
 }
 
-const DIV_COMBOBOX_CSS =
-  `.al-div-combobox-trigger{display:inline-flex;align-items:center;justify-content:space-between;gap:0.4em;min-width:8em;padding:0.25em 0.5em;border:1px solid #888;background:#fff;cursor:pointer;font-family:Arial,Helvetica,sans-serif;user-select:none;}` +
-  `.al-div-combobox-trigger:focus-visible{outline:2px solid #1d4ed8;outline-offset:2px;}` +
-  `.al-div-combobox-popup{margin-top:2px;border:1px solid #888;background:#fff;padding:0.25em 0;display:inline-flex;flex-direction:column;min-width:8em;box-shadow:0 4px 12px rgb(0 0 0 / 0.12);font-family:Arial,Helvetica,sans-serif;}` +
-  `.al-div-combobox-popup[hidden]{display:none;}` +
-  `.al-div-combobox-popup [data-option]{padding:0.3em 0.6em;cursor:pointer;}` +
-  `.al-div-combobox-popup [data-option]:hover{background:#eef;}`;
+const DIV_COMBOBOX_CSS
+  = `.al-div-combobox-trigger{display:inline-flex;align-items:center;justify-content:space-between;gap:0.4em;min-width:8em;padding:0.25em 0.5em;border:1px solid #888;background:#fff;cursor:pointer;font-family:Arial,Helvetica,sans-serif;user-select:none;}`
+    + `.al-div-combobox-trigger:focus-visible{outline:2px solid #1d4ed8;outline-offset:2px;}`
+    + `.al-div-combobox-popup{margin-top:2px;border:1px solid #888;background:#fff;padding:0.25em 0;display:inline-flex;flex-direction:column;min-width:8em;box-shadow:0 4px 12px rgb(0 0 0 / 0.12);font-family:Arial,Helvetica,sans-serif;}`
+    + `.al-div-combobox-popup[hidden]{display:none;}`
+    + `.al-div-combobox-popup [data-option]{padding:0.3em 0.6em;cursor:pointer;}`
+    + `.al-div-combobox-popup [data-option]:hover{background:#eef;}`;
 
 const COMBOBOX_POPUP_ID = "al-combobox-popup";
 
@@ -145,11 +145,11 @@ function renderDivCombobox(props: Partial<SelectProps>): string {
   if (props.labelAssociation === "aria-label" && props.label) {
     triggerAttrs.push(`aria-label="${escape(props.label)}"`);
   }
-  const trigger =
-    `<div ${triggerAttrs.join(" ")}${style}>` +
-    `<span>${display}</span>` +
-    `<span aria-hidden="true">▾</span>` +
-    `</div>`;
+  const trigger
+    = `<div ${triggerAttrs.join(" ")}${style}>`
+      + `<span>${display}</span>`
+      + `<span aria-hidden="true">▾</span>`
+      + `</div>`;
 
   // role="listbox" + role="option" travel together — a listbox whose
   // children are not options is semantically empty to assistive

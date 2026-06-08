@@ -137,7 +137,7 @@ usePreviewMessage({
     const oldDerived = deriveParentState(current);
     const parentInSyncBefore
       = (model.value.checked === true) === oldDerived.checked
-      && (model.value.indeterminate === true) === oldDerived.indeterminate;
+        && (model.value.indeterminate === true) === oldDerived.indeterminate;
 
     if (parentInSyncBefore) {
       // One combined write — parent's checked + indeterminate and the
@@ -166,14 +166,25 @@ usePreviewMessage({
     <!-- Label / accessible name -->
     <UFormField class="flex flex-col">
       <template #label>
-        <a href="#topic-accessible-name" class="control-group-title control-label-link"
-          @click.prevent="focusLearnTopic('accessible-name')">
+        <a
+          href="#topic-accessible-name"
+          class="control-group-title control-label-link"
+          @click.prevent="focusLearnTopic('accessible-name')"
+        >
           {{ t('controls.checkbox.label') }}
-          <UIcon name="i-lucide-arrow-up-right" class="control-label-link-icon" aria-hidden="true" />
+          <UIcon
+            name="i-lucide-arrow-up-right"
+            class="control-label-link-icon"
+            aria-hidden="true"
+          />
         </a>
       </template>
-      <UInput :model-value="model.label ?? ''" :placeholder="t('controls.checkbox.labelPlaceholder')" class="w-full"
-        @update:model-value="update('label', String($event))" />
+      <UInput
+        :model-value="model.label ?? ''"
+        :placeholder="t('controls.checkbox.labelPlaceholder')"
+        class="w-full"
+        @update:model-value="update('label', String($event))"
+      />
     </UFormField>
 
     <USeparator />
@@ -181,15 +192,30 @@ usePreviewMessage({
     <!-- Label-association pattern -->
     <fieldset class="flex flex-col gap-3 border-0 p-0 m-0">
       <legend class="control-group-title mb-1.5">
-        <a href="#topic-checkbox" class="control-label-link" @click.prevent="focusLearnTopic('checkbox')">
+        <a
+          href="#topic-checkbox"
+          class="control-label-link"
+          @click.prevent="focusLearnTopic('checkbox')"
+        >
           {{ t('controls.checkbox.labelAssociation') }}
-          <UIcon name="i-lucide-arrow-up-right" class="control-label-link-icon" aria-hidden="true" />
+          <UIcon
+            name="i-lucide-arrow-up-right"
+            class="control-label-link-icon"
+            aria-hidden="true"
+          />
         </a>
       </legend>
-      <UFieldGroup size="sm" orientation="vertical">
-        <UButton v-for="opt in LABEL_OPTIONS" :key="opt.value"
+      <UFieldGroup
+        size="sm"
+        orientation="vertical"
+      >
+        <UButton
+          v-for="opt in LABEL_OPTIONS"
+          :key="opt.value"
           :color="labelAssociation === opt.value ? 'primary' : 'neutral'"
-          :variant="labelAssociation === opt.value ? 'solid' : 'ghost'" @click="update('labelAssociation', opt.value)">
+          :variant="labelAssociation === opt.value ? 'solid' : 'ghost'"
+          @click="update('labelAssociation', opt.value)"
+        >
           {{ t(opt.labelKey) }}
         </UButton>
       </UFieldGroup>
@@ -200,14 +226,30 @@ usePreviewMessage({
     <!-- Group rendering -->
     <fieldset class="flex flex-col gap-3 border-0 p-0 m-0">
       <legend class="control-group-title mb-1.5">
-        <a href="#topic-checkbox" class="control-label-link" @click.prevent="focusLearnTopic('checkbox')">
+        <a
+          href="#topic-checkbox"
+          class="control-label-link"
+          @click.prevent="focusLearnTopic('checkbox')"
+        >
           {{ t('controls.checkbox.groupMode') }}
-          <UIcon name="i-lucide-arrow-up-right" class="control-label-link-icon" aria-hidden="true" />
+          <UIcon
+            name="i-lucide-arrow-up-right"
+            class="control-label-link-icon"
+            aria-hidden="true"
+          />
         </a>
       </legend>
-      <UFieldGroup size="sm" orientation="vertical">
-        <UButton v-for="opt in GROUP_OPTIONS" :key="opt.value" :color="groupMode === opt.value ? 'primary' : 'neutral'"
-          :variant="groupMode === opt.value ? 'solid' : 'ghost'" @click="update('groupMode', opt.value)">
+      <UFieldGroup
+        size="sm"
+        orientation="vertical"
+      >
+        <UButton
+          v-for="opt in GROUP_OPTIONS"
+          :key="opt.value"
+          :color="groupMode === opt.value ? 'primary' : 'neutral'"
+          :variant="groupMode === opt.value ? 'solid' : 'ghost'"
+          @click="update('groupMode', opt.value)"
+        >
           {{ t(opt.labelKey) }}
         </UButton>
       </UFieldGroup>
@@ -220,15 +262,42 @@ usePreviewMessage({
         {{ t('controls.checkbox.state') }}
       </legend>
       <div class="grid grid-cols-2 gap-3">
-        <UCheckbox :model-value="model.checked === true" :label="t('controls.checkbox.checked')" variant="card"
-          color="primary" size="md" :ui="CARD_UI" @update:model-value="update('checked', $event === true)" />
-        <UCheckbox :model-value="model.indeterminate === true" :label="t('controls.checkbox.indeterminate')"
-          variant="card" color="primary" size="md" :ui="CARD_UI"
-          @update:model-value="update('indeterminate', $event === true)" />
-        <UCheckbox :model-value="model.required === true" :label="t('controls.checkbox.required')" variant="card"
-          color="primary" size="md" :ui="CARD_UI" @update:model-value="update('required', $event === true)" />
-        <UCheckbox :model-value="model.disabled === true" :label="t('controls.checkbox.disabled')" variant="card"
-          color="primary" size="md" :ui="CARD_UI" @update:model-value="update('disabled', $event === true)" />
+        <UCheckbox
+          :model-value="model.checked === true"
+          :label="t('controls.checkbox.checked')"
+          variant="card"
+          color="primary"
+          size="md"
+          :ui="CARD_UI"
+          @update:model-value="update('checked', $event === true)"
+        />
+        <UCheckbox
+          :model-value="model.indeterminate === true"
+          :label="t('controls.checkbox.indeterminate')"
+          variant="card"
+          color="primary"
+          size="md"
+          :ui="CARD_UI"
+          @update:model-value="update('indeterminate', $event === true)"
+        />
+        <UCheckbox
+          :model-value="model.required === true"
+          :label="t('controls.checkbox.required')"
+          variant="card"
+          color="primary"
+          size="md"
+          :ui="CARD_UI"
+          @update:model-value="update('required', $event === true)"
+        />
+        <UCheckbox
+          :model-value="model.disabled === true"
+          :label="t('controls.checkbox.disabled')"
+          variant="card"
+          color="primary"
+          size="md"
+          :ui="CARD_UI"
+          @update:model-value="update('disabled', $event === true)"
+        />
       </div>
     </fieldset>
 
@@ -243,8 +312,15 @@ usePreviewMessage({
       <legend class="control-group-title mb-1.5">
         {{ t('controls.checkbox.aria') }}
       </legend>
-      <UCheckbox :model-value="model.ariaChecked === true" :label="t('controls.checkbox.ariaChecked')" variant="card"
-        color="primary" size="md" :ui="CARD_UI" @update:model-value="update('ariaChecked', $event === true)" />
+      <UCheckbox
+        :model-value="model.ariaChecked === true"
+        :label="t('controls.checkbox.ariaChecked')"
+        variant="card"
+        color="primary"
+        size="md"
+        :ui="CARD_UI"
+        @update:model-value="update('ariaChecked', $event === true)"
+      />
     </fieldset>
 
     <USeparator />
@@ -254,16 +330,24 @@ usePreviewMessage({
       <template #label>
         <span class="control-group-title">{{ t('controls.checkbox.name') }}</span>
       </template>
-      <UInput :model-value="model.name ?? ''" :placeholder="t('controls.checkbox.namePlaceholder')" class="w-full"
-        @update:model-value="update('name', String($event))" />
+      <UInput
+        :model-value="model.name ?? ''"
+        :placeholder="t('controls.checkbox.namePlaceholder')"
+        class="w-full"
+        @update:model-value="update('name', String($event))"
+      />
     </UFormField>
 
     <UFormField class="flex flex-col">
       <template #label>
         <span class="control-group-title">{{ t('controls.checkbox.value') }}</span>
       </template>
-      <UInput :model-value="model.value ?? ''" :placeholder="t('controls.checkbox.valuePlaceholder')" class="w-full"
-        @update:model-value="update('value', String($event))" />
+      <UInput
+        :model-value="model.value ?? ''"
+        :placeholder="t('controls.checkbox.valuePlaceholder')"
+        class="w-full"
+        @update:model-value="update('value', String($event))"
+      />
     </UFormField>
   </div>
 </template>
