@@ -7,14 +7,14 @@ useHead({
     { name: "viewport", content: "width=device-width, initial-scale=1" },
   ],
   link: [
-    { rel: "icon", href: "/favicon.ico" },
+    { rel: "icon", type: "image/x-icon", href: "/favicon.svg" },
   ],
 });
 
 useSeoMeta({
   title: t("app.title"),
   description: t("app.description"),
-  ogTitle: t("app.title"),
+  ogTitle: 't("app.title")',
   ogDescription: t("app.description"),
   twitterCard: "summary_large_image",
 });

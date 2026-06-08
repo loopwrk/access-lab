@@ -15,6 +15,8 @@
     "Figtree Variable", "Atkinson Hyperlegible", "Helvetica Neue", Helvetica,
     Arial, sans-serif;
   --al-font-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  --al-font-monogram:
+    "Josefin Slab Variable", "Helvetica Neue", Helvetica, serif;
   --al-base-size: 16px;
 
   /* Typographic scale — relative to the baseline (16px) */
