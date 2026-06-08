@@ -55,19 +55,16 @@ const OPTIONS: { value: DisclosureBehaviour; labelKey: string }[] = [
       </UButton>
     </UFieldGroup>
 
-    <UFormField
+    <UCheckbox
       v-if="behaviour !== 'none'"
-      class="flex flex-col mt-2"
-    >
-      <template #label>
-        <span class="control-group-title">{{ t('controls.disclosureShowControls') }}</span>
-      </template>
-      <USwitch
-        :model-value="model.disclosureShowControls === true"
-        size="sm"
-        color="primary"
-        @update:model-value="update('disclosureShowControls', $event === true)"
-      />
-    </UFormField>
+      :model-value="model.disclosureShowControls === true"
+      :label="t('controls.disclosureShowControls')"
+      variant="card"
+      color="primary"
+      size="md"
+      class="mt-2"
+      :ui="CONTROL_CARD_UI"
+      @update:model-value="update('disclosureShowControls', $event === true)"
+    />
   </fieldset>
 </template>

@@ -30,16 +30,16 @@ interface InputAttrs {
 // `[aria-checked="true"]` drives the ticked visual; `[aria-checked="mixed"]`
 // drives the indeterminate dash. The inspected element class lets the
 // iframe shell post `demo:click` when the box is clicked.
-const DIV_CHECKBOX_CSS
-  = `.al-div-checkbox{display:inline-flex;align-items:center;gap:0.5em;cursor:pointer;user-select:none;font-family:Arial,Helvetica,sans-serif;outline:none;padding:0.2em 0.3em;}`
-    + `.al-div-checkbox::before{content:'';display:inline-block;width:1em;height:1em;border:2px solid #444;border-radius:2px;background:#fff;flex-shrink:0;box-sizing:border-box;}`
-    + `.al-div-checkbox[aria-checked="true"]::before{background:#1d4ed8 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='white'%3E%3Cpath d='M6.5 12.1 3.2 8.8l1.4-1.4 1.9 1.9 4.9-4.9 1.4 1.4z'/%3E%3C/svg%3E") center/contain no-repeat;border-color:#1d4ed8;}`
-    + `.al-div-checkbox[aria-checked="mixed"]::before{background:#1d4ed8 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='white'%3E%3Crect x='3' y='7' width='10' height='2' rx='0.5'/%3E%3C/svg%3E") center/contain no-repeat;border-color:#1d4ed8;}`
-    + `.al-div-checkbox:focus-visible{outline:2px solid #1d4ed8;outline-offset:2px;}`
-    + `.al-div-checkbox[aria-disabled="true"]{opacity:0.5;cursor:not-allowed;}`
-    + `.al-parent-children{display:inline-flex;flex-direction:column;align-items:flex-start;gap:0.4em;font-family:Arial,Helvetica,sans-serif;}`
-    + `.al-parent-children fieldset{border:1px dashed #999;border-radius:4px;margin:0 0 0 1.2em;padding:0.4em 0.8em;display:flex;flex-direction:column;gap:0.3em;}`
-    + `.al-parent-children legend{padding:0 0.3em;color:#555;font-size:0.85em;}`;
+const DIV_CHECKBOX_CSS =
+  `.al-div-checkbox{display:inline-flex;align-items:center;gap:0.5em;cursor:pointer;user-select:none;font-family:Arial,Helvetica,sans-serif;outline:none;padding:0.2em 0.3em;}` +
+  `.al-div-checkbox::before{content:'';display:inline-block;width:1em;height:1em;border:2px solid #444;border-radius:2px;background:#fff;flex-shrink:0;box-sizing:border-box;}` +
+  `.al-div-checkbox[aria-checked="true"]::before{background:#1d4ed8 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='white'%3E%3Cpath d='M6.5 12.1 3.2 8.8l1.4-1.4 1.9 1.9 4.9-4.9 1.4 1.4z'/%3E%3C/svg%3E") center/contain no-repeat;border-color:#1d4ed8;}` +
+  `.al-div-checkbox[aria-checked="mixed"]::before{background:#1d4ed8 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='white'%3E%3Crect x='3' y='7' width='10' height='2' rx='0.5'/%3E%3C/svg%3E") center/contain no-repeat;border-color:#1d4ed8;}` +
+  `.al-div-checkbox:focus-visible{outline:2px solid #1d4ed8;outline-offset:2px;}` +
+  `.al-div-checkbox[aria-disabled="true"]{opacity:0.5;cursor:not-allowed;}` +
+  `.al-parent-children{display:inline-flex;flex-direction:column;align-items:flex-start;gap:0.4em;font-family:Arial,Helvetica,sans-serif;}` +
+  `.al-parent-children fieldset{border:1px dashed #999;border-radius:4px;margin:0 0 0 1.2em;padding:0.4em 0.8em;display:flex;flex-direction:column;gap:0.3em;}` +
+  `.al-parent-children legend{padding:0 0.3em;color:#555;font-size:0.85em;}`;
 
 function inputTag(
   attrs: InputAttrs,
@@ -49,7 +49,7 @@ function inputTag(
   childIndex: number | null,
 ): string {
   const parts: string[] = [
-    "type=\"checkbox\"",
+    'type="checkbox"',
     `id="${attrs.id}"`,
     `name="${escape(attrs.name)}"`,
     `value="${escape(attrs.value)}"`,
@@ -124,7 +124,7 @@ function renderNativeCheckboxRow(
   switch (association) {
     case "wrapping": {
       const wrappedAttrs: string[] = [
-        "type=\"checkbox\"",
+        'type="checkbox"',
         `id="${id}"`,
         `name="${escape(baseAttrs.name)}"`,
         `value="${escape(baseAttrs.value)}"`,
@@ -255,10 +255,7 @@ function renderRow(
  * (first child checked) when the array is missing or short, so the
  * default demo state still demonstrates an "indeterminate" parent.
  */
-function isChildChecked(
-  props: Partial<CheckboxProps>,
-  index: number,
-): boolean {
+function isChildChecked(props: Partial<CheckboxProps>, index: number): boolean {
   const arr = props.childChecked;
   if (Array.isArray(arr) && index < arr.length) return arr[index] === true;
   return index === 0;
@@ -384,7 +381,7 @@ for (const box of [parent, ...children]) {
 export function renderCheckbox(
   props?: Partial<CheckboxProps>,
 ): RenderedFragment {
-  if (!props) return { html: "<input type=\"checkbox\" />" };
+  if (!props) return { html: '<input type="checkbox" />' };
 
   const groupMode = props.groupMode ?? "single";
   const isDiv = props.renderAs === "div-checkbox";
@@ -413,33 +410,42 @@ export function renderCheckbox(
       // self-labelling regardless of what the parent uses.
       labelAssociation: "for-id",
     };
-    const childRows = items.map((itemLabel, index) =>
-      `<div>${renderRow(
-        childProps,
-        `al-checkbox-child-${index}`,
-        itemLabel,
-        {
-          checked: isChildChecked(props, index),
-          indeterminate: false,
-          forceInspected: false,
-          childIndex: index,
-        },
-      )}</div>`,
-    ).join("");
+    const childRows = items
+      .map(
+        (itemLabel, index) =>
+          `<div>${renderRow(
+            childProps,
+            `al-checkbox-child-${index}`,
+            itemLabel,
+            {
+              checked: isChildChecked(props, index),
+              indeterminate: false,
+              forceInspected: false,
+              childIndex: index,
+            },
+          )}</div>`,
+      )
+      .join("");
 
     const parent = renderRow(props, "al-checkbox", props.label ?? "");
     const childrenLegend = escape(props.value ?? "Options");
 
-    html
-      = `<div class="al-parent-children">`
-        + parent
-        + `<fieldset><legend>${childrenLegend}</legend>${childRows}</fieldset>`
-        + `</div>`;
+    html =
+      `<div class="al-parent-children">` +
+      parent +
+      `<fieldset><legend>${childrenLegend}</legend>${childRows}</fieldset>` +
+      `</div>`;
   } else {
     const items = props.groupItems?.length ? props.groupItems : [];
-    const rows = items.map((itemLabel, index) =>
-      `<div>${renderRow(props, `al-checkbox-${index}`, itemLabel)}</div>`,
-    ).join("");
+    const rows = items
+      .map(
+        (itemLabel, index) =>
+          `<div>${renderRow(props, `al-checkbox-${index}`, itemLabel, {
+            checked: isChildChecked(props, index),
+            childIndex: index,
+          })}</div>`,
+      )
+      .join("");
 
     if (groupMode === "group-with-fieldset") {
       const legend = escape(props.label ?? "");
@@ -460,12 +466,17 @@ export function renderCheckbox(
   // (no extra JS needed beyond what the browser does for free) or a
   // sibling group (no parent state to derive). When set, the code
   // drawer auto-shows the JS pane.
-  const js = groupMode === "parent-with-children"
-    ? (isDiv ? PARENT_CHILDREN_DIV_JS : PARENT_CHILDREN_NATIVE_JS)
-    : undefined;
+  const js =
+    groupMode === "parent-with-children"
+      ? isDiv
+        ? PARENT_CHILDREN_DIV_JS
+        : PARENT_CHILDREN_NATIVE_JS
+      : undefined;
 
   if (isDiv) {
-    return js ? { html, css: DIV_CHECKBOX_CSS, js } : { html, css: DIV_CHECKBOX_CSS };
+    return js
+      ? { html, css: DIV_CHECKBOX_CSS, js }
+      : { html, css: DIV_CHECKBOX_CSS };
   }
   return js ? { html, js } : { html };
 }

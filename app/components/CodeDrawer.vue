@@ -214,7 +214,7 @@ async function copyContent(mode: "inline" | "class" | "css" | "js") {
           </UFieldGroup>
 
           <div
-            class="overflow-auto rounded bg-(--surface-2) focus-visible:outline-[3px] focus-visible:outline-(--focus-ring) focus-visible:outline-offset-[-3px]"
+            class="overflow-auto focus-visible:outline-[3px] focus-visible:outline-(--focus-ring) focus-visible:outline-offset-[-3px]"
             :style="{ height: `${effectiveHeight}px` }"
             tabindex="0"
             role="region"
@@ -229,6 +229,7 @@ async function copyContent(mode: "inline" | "class" | "css" | "js") {
             <ProsePre
               v-if="renderedHtml && codeView === 'html'"
               language="html"
+              class="-my-5"
               :code="prettifiedHtml"
             >
               {{ prettifiedHtml }}
@@ -236,6 +237,7 @@ async function copyContent(mode: "inline" | "class" | "css" | "js") {
             <ProsePre
               v-else-if="hasCss && codeView === 'css'"
               language="css"
+              class="-my-5"
               :code="prettifiedCss"
             >
               {{ prettifiedCss }}
@@ -243,13 +245,14 @@ async function copyContent(mode: "inline" | "class" | "css" | "js") {
             <ProsePre
               v-else-if="hasJs && codeView === 'js'"
               language="javascript"
+              class="-my-5"
               :code="prettifiedJs"
             >
               {{ prettifiedJs }}
             </ProsePre>
             <p
               v-else
-              class="text-(length:--al-font-size-body) text-(--text-muted) m-0 py-2 px-3"
+              class="text-(length:--al-font-size-body) text-(--text-muted) m-0 py-2 px-3 -my-5"
             >
               {{ t('codeDrawer.empty') }}
             </p>

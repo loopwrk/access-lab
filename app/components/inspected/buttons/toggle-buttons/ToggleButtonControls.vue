@@ -46,35 +46,22 @@ usePreviewMessage({
     <ContentSection v-model="model" />
     <USeparator />
 
-    <AriaSection v-model="model" />
+    <AriaSection v-model="model" hide-disabled />
     <USeparator />
 
     <ToggleStateSection v-model="model" />
     <USeparator />
 
-    <TextSection
-      v-model="model"
-      :defaults="defaults"
-    />
+    <TextSection v-model="model" :defaults="defaults" />
     <USeparator />
 
-    <DimensionsSection
-      v-model="model"
-      :defaults="defaults"
-      :natural-size="naturalSize"
-    />
+    <DimensionsSection v-model="model" :defaults="defaults" :natural-size="naturalSize" />
     <USeparator />
 
-    <BorderSection
-      v-model="model"
-      :defaults="defaults"
-    />
+    <BorderSection v-model="model" :defaults="defaults" />
     <USeparator />
 
-    <ColoursSection
-      v-model="model"
-      :defaults="defaults"
-    />
+    <ColoursSection v-model="model" :defaults="defaults" />
     <USeparator />
 
     <FocusSection v-model="model" />

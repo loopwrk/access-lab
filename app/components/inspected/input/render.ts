@@ -133,9 +133,33 @@ export function renderInput(props?: Partial<InputProps>): RenderedFragment {
       break;
     }
 
-    case "aria-label":
-      body = inputTag({ ...baseAttrs, ariaLabel: props?.label ?? "Email" });
+    case "aria-label": {
+      const input = inputTag({
+        ...baseAttrs,
+        ariaLabel: props?.label ?? "Email",
+      });
+      // Render a sibling magnifying-glass icon when the user has
+      // opted into it on a search input. The icon is decorative
+      // (aria-hidden) — the input's aria-label remains the
+      // accessible name. The visual cue gives sighted users the
+      // "search field" signal that the missing visible label
+      // would otherwise provide.
+      const showIcon =
+        props?.renderAs === "search" && props?.showSearchIcon === true;
+      if (showIcon) {
+        const icon =
+          `<span aria-hidden="true" style="display:inline-flex;align-items:center;justify-content:center;width:1.2em;height:1.2em;margin-right:0.4em;color:#555;vertical-align:middle;">` +
+          `<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">` +
+          `<circle cx="11" cy="11" r="8"></circle>` +
+          `<line x1="21" y1="21" x2="16.65" y2="16.65"></line>` +
+          `</svg>` +
+          `</span>`;
+        body = `<span style="display:inline-flex;align-items:center;">${icon}${input}</span>`;
+      } else {
+        body = input;
+      }
       break;
+    }
 
     case "none":
       body = inputTag(baseAttrs);
@@ -148,7 +172,7 @@ export function renderInput(props?: Partial<InputProps>): RenderedFragment {
         "margin-bottom:4px",
         "margin-right:8px",
       ]);
-      const labelTag = `<label for="al-input"${labelStyle}>${labelText}:</label>`;
+      const labelTag = `<label for="al-input"${labelStyle}>${labelText}</label>`;
       body = `${labelTag}${inputTag(baseAttrs)}`;
       break;
     }
@@ -158,6 +182,8 @@ export function renderInput(props?: Partial<InputProps>): RenderedFragment {
     body += `<small id="al-input-help"${helpTextStyleAttr(props?.helpTextStyle)}>${helpText}</small>`;
   }
 
+  const html = `<div>${body}</div>`;
+
   const css = placeholderCss(props?.placeholderStyle);
-  return css ? { html: body, css } : { html: body };
+  return css ? { html, css } : { html };
 }

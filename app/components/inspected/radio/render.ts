@@ -25,6 +25,7 @@ interface InputAttrs {
   required: boolean;
   disabled: boolean;
   ariaLabel?: string;
+  childIndex: number;
   style: string;
 }
 
@@ -34,6 +35,10 @@ function inputTag(attrs: InputAttrs): string {
     `id="${attrs.id}"`,
     `name="${escape(attrs.name)}"`,
     `value="${escape(attrs.value)}"`,
+    // `data-al-child-index` routes the change event through the
+    // iframe's `demo:click-child` bridge so the host knows which
+    // option the user picked and can update `selectedItem` to match.
+    `data-al-child-index="${attrs.childIndex}"`,
   ];
   if (attrs.checked) parts.push("checked");
   if (attrs.required) parts.push("required");
@@ -55,6 +60,7 @@ function renderSingleRadio(
   id: string,
   labelText: string,
   isSelected: boolean,
+  childIndex: number,
 ): string {
   const association = props.labelAssociation ?? "for-id";
   const style = styleAttr(props);
@@ -67,6 +73,7 @@ function renderSingleRadio(
     checked: isSelected,
     required: props.required === true,
     disabled: props.disabled === true,
+    childIndex,
     style,
   };
 
@@ -77,6 +84,7 @@ function renderSingleRadio(
         `id="${id}"`,
         `name="${escape(baseAttrs.name)}"`,
         `value="${escape(baseAttrs.value)}"`,
+        `data-al-child-index="${childIndex}"`,
       ];
       if (baseAttrs.checked) wrappedAttrs.push("checked");
       if (baseAttrs.required) wrappedAttrs.push("required");
@@ -119,6 +127,7 @@ export function renderRadio(props?: Partial<RadioProps>): string {
         `al-radio-${index}`,
         itemLabel,
         itemLabel === selected,
+        index,
       )}</div>`;
     })
     .join("");

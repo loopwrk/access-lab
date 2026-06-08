@@ -42,6 +42,30 @@ const selectedModel = computed({
   get: () => model.value.selectedOption || NONE_VALUE,
   set: (value: string) => update("selectedOption", value === NONE_VALUE ? "" : value),
 });
+
+/**
+ * Set `selectedOption` from a label posted by the iframe. The label
+ * is matched against the current options so anything stale (a user
+ * picking an option that was just removed from the Options textarea
+ * in the same frame) is ignored.
+ */
+function applyIframePick(payload: unknown) {
+  if (typeof payload !== "object" || payload === null) return;
+  const label = (payload as { label?: unknown }).label;
+  if (typeof label !== "string" || label.length === 0) return;
+  const items = model.value.options ?? [];
+  if (!items.includes(label)) return;
+  update("selectedOption", label);
+}
+
+// Iframe bridge — without these, picking an option inside the
+// rendered <select> (or the <div role="combobox"> popup) had no
+// effect on the host model and the next re-render overwrote the
+// user's pick.
+usePreviewMessage({
+  "select:change": applyIframePick,
+  "combobox:select": applyIframePick,
+});
 </script>
 
 <template>
@@ -108,7 +132,23 @@ const selectedModel = computed({
       />
     </UFormField>
 
-    <USeparator />
+    <!--
+      Placeholder option lives in the options-related stack, above the
+      Default selection dropdown. Only shown for `select-native` —
+      `<select multiple>` displays every option simultaneously (so a
+      "please choose" entry is meaningless) and `<div role="combobox">`
+      already uses its trigger text as the placeholder hint.
+    -->
+    <UCheckbox
+      v-if="model.renderAs === 'select-native' || model.renderAs == null"
+      :model-value="model.hasPlaceholder === true"
+      :label="t('controls.select.hasPlaceholder')"
+      variant="card"
+      color="primary"
+      size="md"
+      :ui="CONTROL_CARD_UI"
+      @update:model-value="update('hasPlaceholder', $event === true)"
+    />
 
     <UFormField class="flex flex-col">
       <template #label>
@@ -124,34 +164,66 @@ const selectedModel = computed({
 
     <USeparator />
 
+    <!--
+      Attributes section only appears for the `<div role="combobox">`
+      variant — the two flags inside drive ARIA properties that don't
+      apply to the native `<select>` element. Each flag is a card-
+      checkbox so the State + Attributes sections read as a pair.
+    -->
+    <template v-if="model.renderAs === 'div-combobox'">
+      <fieldset class="flex flex-col gap-2 border-0 p-0 m-0">
+        <legend class="control-group-title mb-1.5">
+          {{ t('controls.select.attributes') }}
+        </legend>
+        <div class="grid grid-cols-2 gap-3">
+          <UCheckbox
+            :model-value="model.comboboxAriaControls === true"
+            :label="t('controls.select.comboboxAriaControls')"
+            variant="card"
+            color="primary"
+            size="md"
+            :ui="CONTROL_CARD_UI"
+            @update:model-value="update('comboboxAriaControls', $event === true)"
+          />
+          <UCheckbox
+            :model-value="model.comboboxListboxRole === true"
+            :label="t('controls.select.comboboxListboxRole')"
+            variant="card"
+            color="primary"
+            size="md"
+            :ui="CONTROL_CARD_UI"
+            @update:model-value="update('comboboxListboxRole', $event === true)"
+          />
+        </div>
+      </fieldset>
+
+      <USeparator />
+    </template>
+
     <fieldset class="flex flex-col gap-2 border-0 p-0 m-0">
       <legend class="control-group-title mb-1.5">
         {{ t('controls.select.state') }}
       </legend>
-
-      <UFormField>
-        <template #label>
-          <span class="control-group-title">{{ t('controls.select.required') }}</span>
-        </template>
-        <USwitch
+      <div class="grid grid-cols-2 gap-3">
+        <UCheckbox
           :model-value="model.required === true"
-          size="sm"
+          :label="t('controls.select.required')"
+          variant="card"
           color="primary"
+          size="md"
+          :ui="CONTROL_CARD_UI"
           @update:model-value="update('required', $event === true)"
         />
-      </UFormField>
-
-      <UFormField>
-        <template #label>
-          <span class="control-group-title">{{ t('controls.select.disabled') }}</span>
-        </template>
-        <USwitch
+        <UCheckbox
           :model-value="model.disabled === true"
-          size="sm"
+          :label="t('controls.select.disabled')"
+          variant="card"
           color="primary"
+          size="md"
+          :ui="CONTROL_CARD_UI"
           @update:model-value="update('disabled', $event === true)"
         />
-      </UFormField>
+      </div>
     </fieldset>
 
     <USeparator />

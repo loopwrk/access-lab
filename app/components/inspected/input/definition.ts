@@ -2,6 +2,7 @@ import { renderInput } from "./render";
 import { formSubmitWrapper } from "./wrappers";
 import { inputManualChecklist } from "~/rules/input/manual-checklist";
 import { placeholderContrast } from "~/rules/input/placeholder-contrast";
+import { ariaLabelWithoutVisibleLabel } from "~/rules/input/aria-label-without-visible-label";
 import type { ComponentDefinition } from "~/types/component";
 import type { CssLength } from "~/composables/useUnitConversion";
 
@@ -47,6 +48,14 @@ export interface InputProps {
   disabled: boolean;
   labelAssociation: InputLabelAssociation;
 
+  /**
+   * When `renderAs === "search"` and `labelAssociation === "aria-label"`,
+   * an optional visible magnifying-glass icon to render alongside the
+   * input. Signals "this is a search field" to sighted users when no
+   * visible label is present.
+   */
+  showSearchIcon: boolean;
+
   // Optional surrounding context (e.g. <form>). Read by
   // ComponentStudio's applyContextWrappers chain.
   wrappers: string[];
@@ -80,6 +89,7 @@ export const inputDefinition: ComponentDefinition<InputProps> = {
     required: false,
     disabled: false,
     labelAssociation: "for-id",
+    showSearchIcon: false,
     wrappers: [],
   },
   variants: [
@@ -135,7 +145,7 @@ export const inputDefinition: ComponentDefinition<InputProps> = {
   ],
   contextWrappers: [formSubmitWrapper],
   controls: [],
-  rules: [placeholderContrast],
+  rules: [placeholderContrast, ariaLabelWithoutVisibleLabel],
   manualChecklist: inputManualChecklist,
   render: renderInput,
   controlsComponent: defineAsyncComponent(() => import("./InputControls.vue")),

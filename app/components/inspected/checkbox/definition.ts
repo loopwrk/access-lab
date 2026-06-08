@@ -8,22 +8,22 @@ import { checkboxParentChildMismatch } from "~/rules/checkbox/parent-child-misma
 import type { ComponentDefinition } from "~/types/component";
 import type { CssLength } from "~/composables/useUnitConversion";
 
-export type CheckboxLabelAssociation =
-  | "for-id" // <label for="x"><input id="x"> + label sibling
-  | "wrapping" // <label><input> Text </label>
-  | "aria-label" // <input aria-label="..."> (no visible text label)
-  | "none"; // <input> with no accessible name — anti-pattern
+export type CheckboxLabelAssociation
+  = | "for-id" // <label for="x"><input id="x"> + label sibling
+    | "wrapping" // <label><input> Text </label>
+    | "aria-label" // <input aria-label="..."> (no visible text label)
+    | "none"; // <input> with no accessible name — anti-pattern
 
 /**
  * How many checkboxes to render and whether they sit inside a
  * <fieldset>/<legend>. Groups without a fieldset are an anti-pattern
  * that axe-core does not flag — that's our custom rule's job.
  */
-export type CheckboxGroupMode =
-  | "single" // one checkbox + label
-  | "group-with-fieldset" // multiple checkboxes inside <fieldset><legend>
-  | "group-no-fieldset" // multiple checkboxes, no fieldset (anti-pattern)
-  | "parent-with-children"; // "select all" parent summarising a child group
+export type CheckboxGroupMode
+  = | "single" // one checkbox + label
+    | "group-with-fieldset" // multiple checkboxes inside <fieldset><legend>
+    | "group-no-fieldset" // multiple checkboxes, no fieldset (anti-pattern)
+    | "parent-with-children"; // "select all" parent summarising a child group
 
 export interface CheckboxProps {
   renderAs: string;
@@ -100,14 +100,14 @@ export const checkboxDefinition: ComponentDefinition<CheckboxProps> = {
   variants: [
     {
       key: "input-checkbox",
-      label: '<input type="checkbox">',
+      label: "<input type=\"checkbox\">",
       status: "recommended",
       statusNote: "components.checkbox.variants.input-checkbox.statusNote",
       section: "<input> Element",
     },
     {
       key: "div-checkbox",
-      label: '<div role="checkbox">',
+      label: "<div role=\"checkbox\">",
       status: "info",
       statusNote: "components.checkbox.variants.div-checkbox.statusNote",
       section: "Custom Element",

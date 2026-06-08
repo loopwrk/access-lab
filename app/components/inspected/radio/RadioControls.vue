@@ -59,6 +59,23 @@ const selectModel = computed({
   get: () => model.value.selectedItem || NONE_VALUE,
   set: (value: string) => update("selectedItem", value === NONE_VALUE ? "" : value),
 });
+
+// Iframe click bridge: when the user picks a radio inside the
+// rendered group, preview-shell forwards the change as
+// `demo:click-child` with the index. Map that back to the label so
+// the model's `selectedItem` matches what the user just chose —
+// otherwise the next host-side re-render would overwrite the
+// in-iframe selection.
+usePreviewMessage({
+  "demo:click-child": (payload: unknown) => {
+    if (typeof payload !== "object" || payload === null) return;
+    const index = (payload as { index?: unknown }).index;
+    if (typeof index !== "number") return;
+    const items = model.value.groupItems ?? [];
+    if (index < 0 || index >= items.length) return;
+    update("selectedItem", items[index]);
+  },
+});
 </script>
 
 <template>
@@ -178,30 +195,26 @@ const selectModel = computed({
       <legend class="control-group-title mb-1.5">
         {{ t('controls.radio.state') }}
       </legend>
-
-      <UFormField>
-        <template #label>
-          <span class="control-group-title">{{ t('controls.radio.required') }}</span>
-        </template>
-        <USwitch
+      <div class="grid grid-cols-2 gap-3">
+        <UCheckbox
           :model-value="model.required === true"
-          size="sm"
+          :label="t('controls.radio.required')"
+          variant="card"
           color="primary"
+          size="md"
+          :ui="CONTROL_CARD_UI"
           @update:model-value="update('required', $event === true)"
         />
-      </UFormField>
-
-      <UFormField>
-        <template #label>
-          <span class="control-group-title">{{ t('controls.radio.disabled') }}</span>
-        </template>
-        <USwitch
+        <UCheckbox
           :model-value="model.disabled === true"
-          size="sm"
+          :label="t('controls.radio.disabled')"
+          variant="card"
           color="primary"
+          size="md"
+          :ui="CONTROL_CARD_UI"
           @update:model-value="update('disabled', $event === true)"
         />
-      </UFormField>
+      </div>
     </fieldset>
 
     <USeparator />

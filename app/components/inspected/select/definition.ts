@@ -7,16 +7,16 @@ import { selectNotKeyboard } from "~/rules/select/select-not-keyboard";
 import type { ComponentDefinition } from "~/types/component";
 import type { CssLength } from "~/composables/useUnitConversion";
 
-export type SelectRenderAs
-  = | "select-native"
-    | "select-multiple"
-    | "div-combobox";
+export type SelectRenderAs =
+  | "select-native"
+  | "select-multiple"
+  | "div-combobox";
 
-export type SelectLabelAssociation
-  = | "for-id"
-    | "wrapping"
-    | "aria-label"
-    | "none";
+export type SelectLabelAssociation =
+  | "for-id"
+  | "wrapping"
+  | "aria-label"
+  | "none";
 
 export interface SelectProps {
   renderAs: SelectRenderAs;
@@ -35,6 +35,9 @@ export interface SelectProps {
 
   required: boolean;
   disabled: boolean;
+  hasPlaceholder: boolean;
+  comboboxAriaControls: boolean;
+  comboboxListboxRole: boolean;
 
   fontSize: CssLength;
   bg: string;
@@ -49,14 +52,17 @@ export const selectDefinition: ComponentDefinition<SelectProps> = {
 
   defaultProps: {
     renderAs: "select-native",
-    name: "plan",
+    name: "ocean",
     wrappers: [],
-    label: "Choose a plan",
-    options: ["Free", "Pro", "Enterprise"],
+    label: "Choose an ocean: ",
+    options: ["Antarctic", "Arctic", "Atlantic", "Indian", "Pacific"],
     selectedOption: "",
     labelAssociation: "for-id",
     required: false,
     disabled: false,
+    hasPlaceholder: false,
+    comboboxAriaControls: false,
+    comboboxListboxRole: false,
   },
 
   variants: [
@@ -80,7 +86,7 @@ export const selectDefinition: ComponentDefinition<SelectProps> = {
     },
     {
       key: "div-combobox",
-      label: "<div role=\"combobox\">",
+      label: '<div role="combobox">',
       description: "components.select.variants.div-combobox.description",
       status: "avoid",
       statusNote: "components.select.variants.div-combobox.statusNote",

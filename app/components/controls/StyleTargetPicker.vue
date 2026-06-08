@@ -21,12 +21,22 @@ const groupName = useId();
       {{ legend }}
     </legend>
     <div class="grid grid-cols-2 gap-1.5">
-      <label v-for="opt in props.options" :key="opt.value" :class="[
-        'style-target-pill',
-        opt.value === props.modelValue && 'style-target-pill--selected',
-      ]">
-        <input type="radio" :name="groupName" :value="opt.value" :checked="opt.value === props.modelValue"
-          class="sr-only" @change="emit('update:modelValue', opt.value)">
+      <label
+        v-for="opt in props.options"
+        :key="opt.value"
+        :class="[
+          'style-target-pill',
+          opt.value === props.modelValue && 'style-target-pill--selected',
+        ]"
+      >
+        <input
+          type="radio"
+          :name="groupName"
+          :value="opt.value"
+          :checked="opt.value === props.modelValue"
+          class="sr-only"
+          @change="emit('update:modelValue', opt.value)"
+        >
         <span>{{ opt.label }}</span>
       </label>
     </div>

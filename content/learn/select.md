@@ -33,13 +33,17 @@ The native element is one of the most accessibility-rich controls in HTML. The b
 - **Accessible role and name** - `combobox` role announced automatically; a properly-associated `<label>` provides the accessible name.
 - **Required validation** - the browser blocks form submission with a native message if the field is required and unselected.
 
+  options: ["Antarctic", "Arctic", "Atlantic", "Indian", "Pacific"],
+
 ```html
-<label for="plan">Choose a plan</label>
+<label for="plan">Choose an ocean:</label>
 <select id="plan" name="plan" required>
   <option value="">Pick one…</option>
-  <option value="free">Free</option>
-  <option value="pro">Pro</option>
-  <option value="enterprise">Enterprise</option>
+  <option value="antarctic">Antarctic</option>
+  <option value="arctic">Arctic</option>
+  <option value="atlantic">Atlantic</option>
+  <option value="indian">Indian</option>
+  <option value="pacific">Pacific</option>
 </select>
 ```
 

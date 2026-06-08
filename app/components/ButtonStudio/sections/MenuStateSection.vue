@@ -56,19 +56,16 @@ const OPTIONS: { value: MenuBehaviour; labelKey: string }[] = [
       </UButton>
     </UFieldGroup>
 
-    <UFormField
+    <UCheckbox
       v-if="behaviour !== 'none'"
-      class="flex flex-col mt-2"
-    >
-      <template #label>
-        <span class="control-group-title">{{ t('controls.menuShowControls') }}</span>
-      </template>
-      <USwitch
-        :model-value="model.menuShowControls === true"
-        size="sm"
-        color="primary"
-        @update:model-value="update('menuShowControls', $event === true)"
-      />
-    </UFormField>
+      :model-value="model.menuShowControls === true"
+      :label="t('controls.menuShowControls')"
+      variant="card"
+      color="primary"
+      size="md"
+      class="mt-2"
+      :ui="CONTROL_CARD_UI"
+      @update:model-value="update('menuShowControls', $event === true)"
+    />
   </fieldset>
 </template>

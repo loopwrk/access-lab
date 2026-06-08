@@ -25,10 +25,7 @@ const GROUP_OPTIONS: { value: CheckboxGroupMode; labelKey: string }[] = [
   { value: "parent-with-children", labelKey: "controls.checkbox.groupParentWithChildren" },
 ];
 
-const CARD_UI = {
-  root: "has-data-[state=checked]:bg-(--brand-soft)",
-  label: "font-semibold text-(--text-primary)",
-};
+const CARD_UI = CONTROL_CARD_UI;
 
 const labelAssociation = computed(() => model.value.labelAssociation ?? "for-id");
 const groupMode = computed(() => model.value.groupMode ?? "single");
@@ -120,15 +117,23 @@ usePreviewMessage({
     const next = [...current];
     next[index] = !(next[index] === true);
 
-    // Only auto-sync the parent when its state was already in sync
-    // with the children *before* this click. If the user has manually
-    // toggled a State card into a mismatch, that override represents
-    // exactly the production bug they want to demonstrate (e.g. code
-    // that forgets to clear `indeterminate` when children settle).
-    // Overwriting their override on the next child click would erase
-    // the very anti-pattern the demo is meant to surface. The
-    // `checkbox-parent-child-mismatch` rule keeps flagging the
-    // disagreement so the lesson stays visible.
+    if (model.value.groupMode !== "parent-with-children") {
+      // group-with-fieldset / group-no-fieldset: every child is an
+      // independent boolean. No parent to derive, no auto-sync —
+      // just update the one entry the user clicked.
+      model.value = { ...model.value, childChecked: next };
+      return;
+    }
+
+    // parent-with-children: auto-sync the parent only when its state
+    // was already in sync with the children *before* this click. If
+    // the user has manually toggled a State card into a mismatch,
+    // that override represents exactly the production bug they want
+    // to demonstrate (e.g. code that forgets to clear `indeterminate`
+    // when children settle). Overwriting their override on the next
+    // child click would erase the very anti-pattern the demo is meant
+    // to surface. The `checkbox-parent-child-mismatch` rule keeps
+    // flagging the disagreement so the lesson stays visible.
     const oldDerived = deriveParentState(current);
     const parentInSyncBefore
       = (model.value.checked === true) === oldDerived.checked

@@ -60,34 +60,29 @@ const OPTIONS: { value: SwitchBehaviour; labelKey: string }[] = [
       </UButton>
     </UFieldGroup>
 
-    <UFormField
-      v-if="behaviour !== 'none' && supportsPillStyling"
-      class="flex flex-col mt-2"
+    <div
+      v-if="behaviour !== 'none'"
+      class="grid grid-cols-2 gap-3 mt-2"
     >
-      <template #label>
-        <span class="control-group-title">{{ t('controls.switchPillStyling') }}</span>
-      </template>
-      <USwitch
+      <UCheckbox
+        v-if="supportsPillStyling"
         :model-value="model.switchPillStyling !== false"
-        size="sm"
+        :label="t('controls.switchPillStyling')"
+        variant="card"
         color="primary"
+        size="md"
+        :ui="CONTROL_CARD_UI"
         @update:model-value="update('switchPillStyling', $event === true)"
       />
-    </UFormField>
-
-    <UFormField
-      v-if="behaviour !== 'none'"
-      class="flex flex-col mt-2"
-    >
-      <template #label>
-        <span class="control-group-title">{{ t('controls.switchChecked') }}</span>
-      </template>
-      <USwitch
+      <UCheckbox
         :model-value="model.switchChecked === true"
-        size="sm"
+        :label="t('controls.switchChecked')"
+        variant="card"
         color="primary"
+        size="md"
+        :ui="CONTROL_CARD_UI"
         @update:model-value="update('switchChecked', $event === true)"
       />
-    </UFormField>
+    </div>
   </fieldset>
 </template>

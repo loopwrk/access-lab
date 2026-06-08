@@ -47,7 +47,7 @@
     "switchBehaviourNone": "None (plain button)",
     "switchBehaviourRoleSwitch": "role=\"switch\" + aria-checked (correct)",
     "switchBehaviourAriaPressed": "aria-pressed (toggle, not switch)",
-    "switchPillStyling": "Switch styling (pill + thumb)",
+    "switchPillStyling": "Styled",
     "switchChecked": "Checked",
     "disclosureBehaviour": "Disclosure behaviour",
     "disclosureBehaviourNone": "None (no aria-expanded)",
@@ -75,7 +75,7 @@
       "labelAriaLabel": "aria-label only (no visible label)",
       "labelNone": "No label at all (anti-pattern)",
       "placeholder": "Placeholder",
-      "placeholderHint": "Optional hint shown inside the empty field",
+      "placeholderHint": "Optional hint shown inside the field",
       "state": "State",
       "required": "Required",
       "disabled": "Disabled",
@@ -84,7 +84,8 @@
       "helpText": "Help text",
       "helpTextPlaceholder": "e.g. We'll never share this address",
       "styleAppliesTo": "Style applies to",
-      "background": "Background"
+      "background": "Background",
+      "showSearchIcon": "Icon"
     },
     "checkbox": {
       "label": "Label",
@@ -127,28 +128,32 @@
       "selectedItem": "Default selection",
       "selectedNone": "(none — no radio checked on load)",
       "state": "State",
-      "required": "Required (group must have a selection)",
+      "required": "Required",
       "disabled": "Disabled",
       "name": "Shared name attribute",
-      "namePlaceholder": "e.g. plan"
+      "namePlaceholder": "e.g. ocean"
     },
     "select": {
       "label": "Label text",
-      "labelPlaceholder": "e.g. Choose a plan",
+      "labelPlaceholder": "e.g. Choose an ocean:",
       "labelAssociation": "Label association",
       "labelForId": "label for/id (recommended)",
       "labelWrapping": "Wrapping label",
       "labelAriaLabel": "aria-label only (no visible label)",
       "labelNone": "No label at all (anti-pattern)",
       "options": "Options (one per line)",
-      "optionsPlaceholder": "Free\nPro\nEnterprise",
+      "optionsPlaceholder": "Antarctic\nArctic\nAtlantic\nIndian\nPacific",
+      "hasPlaceholder": "Placeholder option",
       "selectedOption": "Default selection",
       "selectedNone": "(none — first option shown, no value submitted)",
+      "attributes": "Attributes",
+      "comboboxAriaControls": "aria-controls",
+      "comboboxListboxRole": "role=\"listbox\"",
       "state": "State",
-      "required": "Required (form will not submit without a choice)",
+      "required": "Required",
       "disabled": "Disabled",
       "name": "Name attribute (form submission key)",
-      "namePlaceholder": "e.g. plan"
+      "namePlaceholder": "e.g. ocean"
     }
   }
 }

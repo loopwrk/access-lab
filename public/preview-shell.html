@@ -215,24 +215,50 @@
         parent.postMessage({ type: "demo:click" }, window.location.origin);
       });
 
-      // Native checkboxes (including the input-checkbox-switch variant)
-      // change state via the browser. The click delegate above fires
-      // before the checked state flips, and pattern listeners read the
-      // post-toggle state from the next render — so we forward `change`
-      // as demo:click so the same flip-state listener picks it up.
+      // Native form-control changes route back to the host so the
+      // model stays in sync with what the user just did in the iframe.
       //
-      // Children of a `parent-with-children` group carry a
-      // `data-al-child-index` marker and forward as `demo:click-child`
-      // with that index, so the host can flip the matching entry in
-      // `childChecked` and let the parent auto-sync.
+      //   <input type="checkbox"|"radio"> with data-al-child-index
+      //     → demo:click-child {index} (a child of a checkbox group,
+      //       radio group, or checkbox parent-with-children layout)
+      //   <input type="checkbox"> with al-inspected-element
+      //     → demo:click (the single inspected checkbox/switch)
+      //   <select> with al-inspected-element
+      //     → select:change {value, label, values}
       mount.addEventListener("change", function (event) {
         var el = event.target;
+        if (!(el instanceof Element)) return;
+
+        // <select> — post the picked value + label so the host can
+        // resolve back to the original option in its model.
         if (
-          !(el instanceof HTMLInputElement)
-          || el.type !== "checkbox"
+          el.tagName === "SELECT"
+          && el.classList.contains("al-inspected-element")
         ) {
+          var selectEl = /** @type {HTMLSelectElement} */ (el);
+          var picked = selectEl.selectedOptions[0];
+          parent.postMessage(
+            {
+              type: "select:change",
+              value: selectEl.value,
+              label: picked ? (picked.textContent || "").trim() : "",
+              values: Array.prototype.map.call(
+                selectEl.selectedOptions,
+                function (o) { return o.value; },
+              ),
+              labels: Array.prototype.map.call(
+                selectEl.selectedOptions,
+                function (o) { return (o.textContent || "").trim(); },
+              ),
+            },
+            window.location.origin,
+          );
           return;
         }
+
+        if (!(el instanceof HTMLInputElement)) return;
+        if (el.type !== "checkbox" && el.type !== "radio") return;
+
         var childIndex = el.getAttribute("data-al-child-index");
         if (childIndex !== null) {
           parent.postMessage(
@@ -243,6 +269,56 @@
         }
         if (el.classList.contains("al-inspected-element")) {
           parent.postMessage({ type: "demo:click" }, window.location.origin);
+        }
+      });
+
+      // <div role="combobox"> anti-pattern: clicking the trigger opens
+      // a sibling popup; clicking an option commits the value. Enter
+      // and Space open/close on the trigger so a keyboard user can at
+      // least surface the popup. Arrow navigation, type-ahead, Escape,
+      // and proper focus management are deliberately absent — those
+      // gaps are what makes the div pattern an anti-pattern (the
+      // `select-not-keyboard` rule explains the trade-offs).
+      mount.addEventListener("click", function (event) {
+        if (!(event.target instanceof Element)) return;
+
+        var option = event.target.closest(".al-div-combobox-popup [data-option]");
+        if (option) {
+          var popup = option.closest(".al-div-combobox-popup");
+          if (popup) popup.hidden = true;
+          var trigger = popup ? popup.previousElementSibling : null;
+          if (trigger) trigger.setAttribute("aria-expanded", "false");
+          parent.postMessage(
+            {
+              type: "combobox:select",
+              value: option.getAttribute("data-option") || "",
+              label: (option.textContent || "").trim(),
+            },
+            window.location.origin,
+          );
+          return;
+        }
+
+        var triggerEl = event.target.closest(".al-div-combobox-trigger");
+        if (triggerEl) {
+          var expanded = triggerEl.getAttribute("aria-expanded") === "true";
+          triggerEl.setAttribute("aria-expanded", String(!expanded));
+          var popupEl = triggerEl.nextElementSibling;
+          if (popupEl && popupEl.classList.contains("al-div-combobox-popup")) {
+            // `expanded` was the OLD state; the popup's new visibility
+            // is the opposite (hide when old=open, show when old=closed).
+            popupEl.hidden = expanded;
+          }
+        }
+      });
+
+      mount.addEventListener("keydown", function (event) {
+        if (!(event.target instanceof Element)) return;
+        var trigger = event.target.closest(".al-div-combobox-trigger");
+        if (!trigger) return;
+        if (event.key === " " || event.key === "Enter") {
+          event.preventDefault();
+          trigger.click();
         }
       });
 
