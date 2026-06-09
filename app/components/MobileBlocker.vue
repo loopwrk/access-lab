@@ -7,34 +7,34 @@ const { t } = useI18n();
 </script>
 
 <template>
-  <aside
-    class="fixed inset-0 z-[1000] bg-(--bg) flex items-center justify-center p-6 overflow-y-auto lg:hidden"
-    role="region"
-    :aria-label="t('mobileBlocker.ariaLabel')"
-  >
-    <UCard
-      class="w-full max-w-md"
-      variant="outline"
-    >
+  <aside class="fixed inset-0 z-[1000] bg-(--bg) flex items-center justify-center p-6 overflow-y-auto lg:hidden"
+    role="region" :aria-label="t('mobileBlocker.ariaLabel')">
+    <UCard class="w-full max-w-md" variant="outline">
       <div class="flex flex-col gap-5 items-center text-center">
-        <UIcon
-          name="i-lucide-monitor"
-          class="text-(length:--al-font-size-display) text-(--brand) shrink-0"
-          aria-hidden="true"
-        />
+        <UIcon name="i-lucide-monitor" class="text-(length:--al-font-size-display) text-(--brand) shrink-0"
+          aria-hidden="true" />
         <h1
-          class="m-0 text-balance text-(length:--al-font-size-heading) font-semibold text-(--text-primary) leading-tight"
-        >
+          class="m-0 text-balance text-(length:--al-font-size-heading) font-semibold text-(--text-primary) leading-tight">
           {{ t('mobileBlocker.title') }}
         </h1>
-        <p
-          class="m-0 text-balance text-left text-(length:--al-font-size-body) text-(--text-secondary) leading-normal"
-        >
+        <p class="m-0 text-balance text-left text-(length:--al-font-size-body) text-(--text-secondary) leading-normal">
           {{ t('mobileBlocker.p1') }}
         </p>
         <p class="m-0 text-balance text-(length:--al-font-size-detail) text-(--text-muted) font-medium">
           {{ t('mobileBlocker.footer') }}
         </p>
+        <p class="m-0 text-balance text-(length:--al-font-size-detail) text-(--text-primary) font-medium">
+          <NuxtLink to="/learn">
+            <span> {{ t('mobileBlocker.learnLink') }}</span>
+            <UIcon name="i-lucide-arrow-up-right" class="text-(length:--al-font-size-detail) opacity-70"
+              aria-hidden="true" />
+          </NuxtLink>
+        </p>
+        <!-- <NuxtLink to="/"
+          class="inline-flex items-center gap-1 font-medium text-(length:--al-font-size-brand) text-(--text-primary) tracking-[-0.01em] no-underline">
+          <UIcon name="i-lucide-message-square-dot" class="size-4" aria-hidden="true" />
+          <span>or view our mobile-friendly accessibility statement articles.</span>
+        </NuxtLink> -->
       </div>
     </UCard>
   </aside>
