@@ -11,12 +11,32 @@ function update<K extends keyof CheckboxProps>(key: K, value: CheckboxProps[K]) 
 const { t } = useI18n();
 const { focusLearnTopic } = useInspectorTab();
 
-const LABEL_OPTIONS: { value: CheckboxLabelAssociation; labelKey: string }[] = [
+// Label-association picker labels vary by variant. The native
+// `<input type="checkbox">` uses `<label for>` and `<label>`-wrapping
+// idiomatically; a `<div role="checkbox">` cannot use either —
+// `<label for>` doesn't bind to non-form-controls and a wrapping
+// `<label>` doesn't extend click activation to a div. The four enum
+// values stay the same; only the user-facing labels change so the
+// picker reads as ARIA-appropriate when the div variant is active.
+const LABEL_OPTIONS_NATIVE: { value: CheckboxLabelAssociation; labelKey: string }[] = [
   { value: "for-id", labelKey: "controls.checkbox.labelForId" },
   { value: "wrapping", labelKey: "controls.checkbox.labelWrapping" },
   { value: "aria-label", labelKey: "controls.checkbox.labelAriaLabel" },
   { value: "none", labelKey: "controls.checkbox.labelNone" },
 ];
+
+const LABEL_OPTIONS_DIV: { value: CheckboxLabelAssociation; labelKey: string }[] = [
+  { value: "for-id", labelKey: "controls.checkbox.labelAriaLabelledby" },
+  { value: "wrapping", labelKey: "controls.checkbox.labelNameFromContent" },
+  { value: "aria-label", labelKey: "controls.checkbox.labelAriaLabel" },
+  { value: "none", labelKey: "controls.checkbox.labelNone" },
+];
+
+const labelOptions = computed(() =>
+  model.value.renderAs === "div-checkbox"
+    ? LABEL_OPTIONS_DIV
+    : LABEL_OPTIONS_NATIVE,
+);
 
 const GROUP_OPTIONS: { value: CheckboxGroupMode; labelKey: string }[] = [
   { value: "single", labelKey: "controls.checkbox.groupSingle" },
@@ -30,15 +50,28 @@ const CARD_UI = CONTROL_CARD_UI;
 const labelAssociation = computed(() => model.value.labelAssociation ?? "for-id");
 const groupMode = computed(() => model.value.groupMode ?? "single");
 
-// Auto-enable `aria-checked` when the user switches to the div-checkbox
-// variant - the div has no other state mechanism, so the demo would be
-// broken without it. The user can still manually disable it to see
-// what that looks like.
+// Keep `aria-checked` aligned with whichever variant *needs* it.
+//
+//   - Switching to `div-checkbox` → enable. The div has no other
+//     state mechanism, so without it the demo starts broken and
+//     axe-core fires a misleading critical violation that has more
+//     to do with the studio's defaults than the user's choices.
+//   - Switching back to `input-checkbox` → disable. Without this
+//     symmetric clear, a leftover `aria-checked` from a previous
+//     div visit makes the native variant fire the
+//     `checkbox-aria-checked-redundant` rule even though the user
+//     never opted in to that attribute on the native control.
+//
+// The user can still manually flip the "Add aria-checked" card on
+// either variant to demonstrate the corresponding anti-pattern.
 watch(
   () => model.value.renderAs,
   (next, prev) => {
-    if (next === "div-checkbox" && prev !== "div-checkbox") {
+    if (next === prev) return;
+    if (next === "div-checkbox") {
       update("ariaChecked", true);
+    } else if (prev === "div-checkbox") {
+      update("ariaChecked", false);
     }
   },
 );
@@ -210,7 +243,7 @@ usePreviewMessage({
         orientation="vertical"
       >
         <UButton
-          v-for="opt in LABEL_OPTIONS"
+          v-for="opt in labelOptions"
           :key="opt.value"
           :color="labelAssociation === opt.value ? 'primary' : 'neutral'"
           :variant="labelAssociation === opt.value ? 'solid' : 'ghost'"

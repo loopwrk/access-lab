@@ -98,6 +98,8 @@
       "labelWrapping": "Wrapping label",
       "labelAriaLabel": "aria-label only (no visible label)",
       "labelNone": "No label at all (anti-pattern)",
+      "labelAriaLabelledby": "aria-labelledby (recommended)",
+      "labelNameFromContent": "Name from text content",
       "groupMode": "Group rendering",
       "groupSingle": "Single checkbox",
       "groupWithFieldset": "Group with fieldset + legend (correct)",

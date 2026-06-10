@@ -202,6 +202,7 @@ function renderDivCheckboxRow(
   const safeLabel = escape(labelText);
   const inspected = options.forceInspected ?? true;
   const childIndex = options.childIndex ?? null;
+  const association = props.labelAssociation ?? "for-id";
 
   const classes = inspected
     ? "al-div-checkbox al-inspected-element"
@@ -221,7 +222,46 @@ function renderDivCheckboxRow(
   }
   if (disabled) attrs.push(`aria-disabled="true"`);
   if (childIndex !== null) attrs.push(`data-al-child-index="${childIndex}"`);
-  return `<div ${attrs.join(" ")}>${safeLabel}</div>`;
+
+  // The four label-association modes map onto `<div role="checkbox">`
+  // via the equivalent ARIA naming patterns:
+  //   - for-id          → external <label id="…"> + aria-labelledby
+  //   - wrapping        → name from text content (text inside the div)
+  //   - aria-label      → aria-label attribute, no inner text
+  //   - none            → no name at all (anti-pattern)
+  // The picker labels are also renamed per-variant in CheckboxControls
+  // so the user sees the ARIA-appropriate names when div-checkbox is
+  // active (e.g. "aria-labelledby (recommended)" instead of "label
+  // for/id (recommended)").
+  switch (association) {
+    case "for-id": {
+      // `<label for="x">` doesn't associate with a div, so the
+      // external-label pattern uses `aria-labelledby` instead. Click
+      // the label is decorative — only the div itself toggles state
+      // (the iframe bridge fires `demo:click` on the inspected div).
+      const labelId
+        = childIndex !== null
+          ? `al-div-checkbox-label-${childIndex}`
+          : "al-div-checkbox-label";
+      attrs.push(`aria-labelledby="${labelId}"`);
+      return `<div ${attrs.join(" ")}></div> <label id="${labelId}">${safeLabel}</label>`;
+    }
+
+    case "aria-label":
+      attrs.push(`aria-label="${escape(labelText)}"`);
+      return `<div ${attrs.join(" ")}></div>`;
+
+    case "none":
+      return `<div ${attrs.join(" ")}></div>`;
+
+    case "wrapping":
+    default:
+      // Name-from-content pattern: the text sits inside the div and
+      // ARIA's name-calculation algorithm picks it up via the
+      // role=checkbox subtree. The current default; mirrors what the
+      // old render did before this fix.
+      return `<div ${attrs.join(" ")}>${safeLabel}</div>`;
+  }
 }
 
 /**

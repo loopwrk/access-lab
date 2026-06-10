@@ -8,7 +8,6 @@ export default defineNuxtConfig({
     "@nuxt/image",
     "@nuxt/test-utils",
     "@nuxtjs/color-mode",
-    "@nuxtjs/google-fonts",
     "@nuxtjs/i18n",
     "@vueuse/nuxt",
     "nuxt-color-picker",

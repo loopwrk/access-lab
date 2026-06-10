@@ -26,7 +26,6 @@
     "@nuxt/image": "^2.0.0",
     "@nuxt/test-utils": "4.0.3",
     "@nuxt/ui": "^4.7.1",
-    "@nuxtjs/google-fonts": "3.2.0",
     "@nuxtjs/i18n": "10.3.0",
     "@vueuse/core": "^14.3.0",
     "@vueuse/nuxt": "^14.3.0",
@@ -44,6 +43,7 @@
     "@vitest/coverage-v8": "^4.1.6",
     "@vue/test-utils": "^2.4.10",
     "eslint": "^10.4.0",
+    "happy-dom": "^20.10.2",
     "typescript": "^6.0.3",
     "vitest": "^4.1.6",
     "vue-tsc": "^3.3.0"
