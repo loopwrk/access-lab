@@ -1,18 +1,7 @@
 import type { CheckboxProps } from "./definition";
-import type { CssLength } from "~/composables/useUnitConversion";
 import type { RenderedFragment } from "~/types/component";
-
-function escape(value: string): string {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
-}
-
-function fmt(length: CssLength): string {
-  return `${length.value}${length.unit}`;
-}
+import { escapeHtml } from "~/utils/escapeHtml";
+import { formatCssLength } from "~/utils/formatCssLength";
 
 interface InputAttrs {
   id: string;
@@ -51,8 +40,8 @@ function inputTag(
   const parts: string[] = [
     "type=\"checkbox\"",
     `id="${attrs.id}"`,
-    `name="${escape(attrs.name)}"`,
-    `value="${escape(attrs.value)}"`,
+    `name="${escapeHtml(attrs.name)}"`,
+    `value="${escapeHtml(attrs.value)}"`,
   ];
   if (inspected) parts.push(`class="al-inspected-element"`);
   if (attrs.checked) parts.push("checked");
@@ -62,7 +51,8 @@ function inputTag(
   // `checkbox-aria-checked-redundant` rule warns about. The render
   // still honours the prop so the user can see the resulting markup.
   if (ariaChecked) parts.push(`aria-checked="${attrs.checked}"`);
-  if (attrs.ariaLabel) parts.push(`aria-label="${escape(attrs.ariaLabel)}"`);
+  if (attrs.ariaLabel)
+    parts.push(`aria-label="${escapeHtml(attrs.ariaLabel)}"`);
   // `indeterminate` is JS-only — see preview-shell.html for the
   // post-render hook that reads this marker.
   if (indeterminate) parts.push("data-al-indeterminate");
@@ -80,7 +70,8 @@ function inputTag(
  */
 function styleAttr(props: Partial<CheckboxProps>): string {
   const decls: string[] = [];
-  if (props.fontSize) decls.push(`font-size:${fmt(props.fontSize)}`);
+  if (props.fontSize)
+    decls.push(`font-size:${formatCssLength(props.fontSize)}`);
   if (props.bg) decls.push(`background:${props.bg}`);
   if (props.fgText) decls.push(`color:${props.fgText}`);
   if (props.borderColor) decls.push(`border-color:${props.borderColor}`);
@@ -105,7 +96,7 @@ function renderNativeCheckboxRow(
 ): string {
   const association = props.labelAssociation ?? "for-id";
   const style = styleAttr(props);
-  const safeLabel = escape(labelText);
+  const safeLabel = escapeHtml(labelText);
   const ariaChecked = props.ariaChecked === true;
   const inspected = options.forceInspected ?? true;
   const childIndex = options.childIndex ?? null;
@@ -126,8 +117,8 @@ function renderNativeCheckboxRow(
       const wrappedAttrs: string[] = [
         "type=\"checkbox\"",
         `id="${id}"`,
-        `name="${escape(baseAttrs.name)}"`,
-        `value="${escape(baseAttrs.value)}"`,
+        `name="${escapeHtml(baseAttrs.name)}"`,
+        `value="${escapeHtml(baseAttrs.value)}"`,
       ];
       if (inspected) wrappedAttrs.push(`class="al-inspected-element"`);
       if (baseAttrs.checked) wrappedAttrs.push("checked");
@@ -199,7 +190,7 @@ function renderDivCheckboxRow(
   const indeterminate = options.indeterminate ?? props.indeterminate === true;
   const disabled = props.disabled === true;
   const ariaChecked = props.ariaChecked !== false; // div needs aria-checked
-  const safeLabel = escape(labelText);
+  const safeLabel = escapeHtml(labelText);
   const inspected = options.forceInspected ?? true;
   const childIndex = options.childIndex ?? null;
   const association = props.labelAssociation ?? "for-id";
@@ -248,7 +239,7 @@ function renderDivCheckboxRow(
     }
 
     case "aria-label":
-      attrs.push(`aria-label="${escape(labelText)}"`);
+      attrs.push(`aria-label="${escapeHtml(labelText)}"`);
       return `<div ${attrs.join(" ")}></div>`;
 
     case "none":
@@ -468,7 +459,7 @@ export function renderCheckbox(
       .join("");
 
     const parent = renderRow(props, "al-checkbox", props.label ?? "");
-    const childrenLegend = escape(props.value ?? "Options");
+    const childrenLegend = escapeHtml(props.value ?? "Options");
 
     html
       = `<div class="al-parent-children">`
@@ -488,7 +479,7 @@ export function renderCheckbox(
       .join("");
 
     if (groupMode === "group-with-fieldset") {
-      const legend = escape(props.label ?? "");
+      const legend = escapeHtml(props.label ?? "");
       html = `<fieldset><legend>${legend}</legend>${rows}</fieldset>`;
     } else {
       // group-no-fieldset: no surrounding fieldset/legend.
@@ -496,7 +487,7 @@ export function renderCheckbox(
       // the checkboxes so sighted users see the same UI as the
       // correct pattern — that's the whole point of the anti-pattern
       // demo.
-      const heading = escape(props.label ?? "");
+      const heading = escapeHtml(props.label ?? "");
       html = `<p style="font-weight:600;margin:0 0 0.4em;">${heading}</p>${rows}`;
     }
   }

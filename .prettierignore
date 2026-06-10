@@ -1,0 +1,7 @@
+# Generated and vendored files only — Prettier owns all source formatting.
+.nuxt
+.output
+dist
+coverage
+public/vendor
+pnpm-lock.yaml

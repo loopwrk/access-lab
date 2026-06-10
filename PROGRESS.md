@@ -179,7 +179,7 @@ Every `<style scoped>` block that the AGENTS.md rule permits is gone. The two le
 
 ### Lint configuration
 
-`nuxt.config.ts → eslint.config.stylistic` now enforces double quotes, semicolons, trailing-multiline commas, always-parens arrow functions, and 1tbs brace style. A `pnpm lint --fix` pass normalises the codebase. The `eslint.config.mjs` adds a project-level override disabling `vue/no-multiple-template-root` (a Vue-2-era rule that misfires on Vue 3 fragments).
+Superseded 10 June 2026: **Prettier now owns formatting; ESLint checks correctness only.** The earlier ESLint-stylistic formatting rules (double quotes, semicolons, trailing commas, etc.) fought the editor's Prettier format-on-save — every save re-broke the lint baseline. The stylistic block is removed from `nuxt.config.ts`; `eslint-config-prettier` is appended last in `eslint.config.mjs` so no formatting rule survives; Prettier config lives in `.prettierrc.json` (printWidth 100, one attribute per line in Vue templates, otherwise defaults that match the existing style). The codebase migrates to Prettier formatting piecemeal as files are touched — no project-wide reformat. `eslint.config.mjs` still disables `vue/no-multiple-template-root` (a Vue-2-era rule that misfires on Vue 3 fragments).
 
 ### Console-warning sweep
 
@@ -192,6 +192,16 @@ Every `<style scoped>` block that the AGENTS.md rule permits is gone. The two le
 ### Layout fix
 
 The outer container is `h-dvh` (not `min-h-dvh`). Combined with `min-h-0` on the inspector aside, the studio is bounded to viewport height by construction; the inspector content scrolls internally, not the whole page.
+
+### Baseline repair + commit gate (10 June 2026)
+
+A codebase audit found the baseline broken on a clean working tree (one type error, 29 lint errors) — changes had been committed without running the checks AGENTS.md requires. Fixes applied:
+
+- Type error in `RadioControls.vue` (indexed access doesn't narrow; the picked item is now null-checked directly).
+- `lint --fix` sweep, which also exposed a real bug: `app.vue`'s `ogTitle` was the literal string `'t("app.title")'` instead of the translated value. Fixed.
+- New committed pre-commit hook at `.githooks/pre-commit` runs `lint` + `typecheck` before every commit. `postinstall` points `core.hooksPath` at the directory so every contributor gets it after `corepack pnpm install`. Emergency bypass: `git commit --no-verify`.
+- CI now also runs the test suite (`.github/workflows/ci.yml`).
+- First shared render utilities extracted: `app/utils/escapeHtml.ts`, `app/utils/formatCssLength.ts`, `app/utils/valueFromLabel.ts` replace per-file private copies in the four form-input `render.ts` files. `useUnitConversion().formatLength` now delegates to `formatCssLength`, removing a keep-in-sync comment obligation.
 
 ---
 
@@ -228,6 +238,21 @@ Identified during the most recent end-to-end pass, in priority order:
 2. Bundle audit (`pnpm build` + check static output sizes) — never run after the VueUse sweep; want to confirm tree-shaking.
 3. System-mode toggle in the AppBar (color-mode supports it; UI only exposes Light/Dark).
 4. Draft a structured user-testing script so feedback across testers is comparable.
+
+### Refactoring backlog (codebase audit, 10 June 2026)
+
+A full audit for duplication, modularity, and convention drift. The button family and studio shell follow the documented plan; the form-input family (input, checkbox, radio, select) was built in parallel by different sessions and forked several conventions. In priority order:
+
+1. **Form-input controls forked the model-update convention.** All four controls components define a local `update` that replaces the model with a spread (`model.value = { ...model.value, [key]: value }`) instead of using `useButtonControlsModel`'s direct mutation. The "two back-to-back writes race" worked around in `CheckboxControls.vue` exists _because_ of the replacement-write pattern; direct mutation does not race. Migrate all four, then rename the composable `useControlsModel` — it was never button-specific.
+2. **Renderer duplication.** The shared `escapeHtml` / `formatCssLength` / `valueFromLabel` utilities now exist (see above), but `styleAttr` is still copied in all four form-input `render.ts` files, and the label-association switch (`for-id` / `wrapping` / `aria-label` / `none`) is re-implemented in input, checkbox, and radio — inside `checkbox/render.ts` the `wrapping` case even rebuilds by hand what its own `inputTag` helper does. Extract a shared style-attribute builder (over a shared style-slice type, see item 8) and a shared label-association helper.
+3. **Hardcoded English content in `IssueSection.vue`.** The `TAG_WHY` and `PRINCIPLE_WHY` maps (~30 user-facing strings) violate the i18n-first rule; the pure helpers (`formatRuleId`, `classificationFromTags`, `parseFailureSummary`, `tagWhy`) belong in `app/utils/` where they are testable. The component is 347 lines because it holds content, parsing, and presentation at once.
+4. **`InputControls.vue` (512 lines) hand-rolls section atoms.** Two fieldsets share the identical legend `t('controls.input.attributes')` — confusing, and a duplicate accessible name in an app held to AAA. The font-size block hand-rolls switch + slider + `LengthValueInput` instead of using `LengthControl` / `useToggleableSection`. Extract form-input section components (label association, attributes, style) the way the button family has `ButtonStudio/sections/`.
+5. **Repeated control boilerplate.** The card checkbox incantation (`variant="card" color="primary" size="md" :ui="CONTROL_CARD_UI"`) appears ~20 times; the Learn-link legend block (anchor + `i-lucide-arrow-up-right` + `focusLearnTopic`) ~35 times. Extract `ControlCardCheckbox` and `SectionLegend` atoms under `app/components/controls/`.
+6. **`ButtonStudio/sections/` is misnamed.** All four form-input controls import `ResetDefaultsSection` from it; it has become the studio-wide section library. Rename (e.g. `app/components/studio/sections/`) and update AGENTS.md.
+7. **Inconsistent render contract.** `renderRadio` returns a plain string; its three siblings return `RenderedFragment`. Normalise to `RenderedFragment` and return optional fields as `undefined` instead of building conditional object shapes.
+8. **Shared prop slices re-declared per definition.** `fontSize` / `bg` / `fgText` / `borderColor` and the label-association union are repeated in all four form-input definitions. Extract shared types in `app/types/`.
+9. **`preview-shell.html` accumulates per-component branches** (switch-label forwarding, checkbox `indeterminate`, child-index routing, the combobox open/close/pick logic). Before starting modal/menu/tabs/accordion, design a declarative protocol (behaviour modules keyed off `data-al-*` markers) so new components ship their iframe behaviour alongside their renderer instead of editing the global shell. Treat this as a blocking design decision for the next component.
+10. **`VariantPicker.vue` still uses `defineProps` + `defineEmits("update:modelValue")`** — the last straggler from the `defineModel` migration.
 
 ### Known dev-console noise (accepted)
 

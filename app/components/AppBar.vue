@@ -50,13 +50,22 @@ const sizes: SizeOption[] = [
 </script>
 
 <template>
-  <header role="banner" :aria-label="t('appBar.ariaLabel')"
-    class="flex items-center justify-between flex-wrap gap-4 py-3 px-5 border-b border-(--border) bg-(--bg)">
+  <header
+    role="banner"
+    :aria-label="t('appBar.ariaLabel')"
+    class="flex items-center justify-between flex-wrap gap-4 py-3 px-5 border-b border-(--border) bg-(--bg)"
+  >
     <div class="flex items-center gap-4">
-      <NuxtLink to="/"
+      <NuxtLink
+        to="/"
         class="inline-flex items-center gap-1 font-medium text-(length:--al-font-size-brand) text-(--text-primary) tracking-[-0.01em] no-underline"
-        @click="onLogoClick">
-        <UIcon name="i-lucide-message-square-dot" class="size-4" aria-hidden="true" />
+        @click="onLogoClick"
+      >
+        <UIcon
+          name="i-lucide-message-square-dot"
+          class="size-4"
+          aria-hidden="true"
+        />
         <span>{{ t('appBar.brand') }}</span>
       </NuxtLink>
     </div>
@@ -64,38 +73,62 @@ const sizes: SizeOption[] = [
     <div class="flex items-center gap-4">
       <!-- Font family picker -->
       <UFieldGroup size="sm">
-        <UButton v-for="option in fonts" :key="option.value"
+        <UButton
+          v-for="option in fonts"
+          :key="option.value"
           :color="fontFamily === option.value ? 'primary' : 'neutral'"
-          :variant="fontFamily === option.value ? 'solid' : 'ghost'" :style="{ fontFamily: option.family }"
-          @click="setFont(option.value)">
+          :variant="fontFamily === option.value ? 'solid' : 'ghost'"
+          :style="{ fontFamily: option.family }"
+          @click="setFont(option.value)"
+        >
           {{ option.label }}
         </UButton>
       </UFieldGroup>
 
       <!-- Font size picker -->
       <UFieldGroup size="sm">
-        <UButton v-for="option in sizes" :key="option.value" :color="fontSize === option.value ? 'primary' : 'neutral'"
-          :variant="fontSize === option.value ? 'solid' : 'ghost'" @click="setSize(option.value)">
+        <UButton
+          v-for="option in sizes"
+          :key="option.value"
+          :color="fontSize === option.value ? 'primary' : 'neutral'"
+          :variant="fontSize === option.value ? 'solid' : 'ghost'"
+          @click="setSize(option.value)"
+        >
           {{ option.label }}
         </UButton>
       </UFieldGroup>
 
       <!-- High-contrast toggle -->
       <UFieldGroup size="sm">
-        <UButton :color="isHighContrast ? 'primary' : 'neutral'" :variant="isHighContrast ? 'solid' : 'ghost'"
-          icon="i-lucide-contrast" :aria-pressed="isHighContrast" @click="toggleContrast()">
+        <UButton
+          :color="isHighContrast ? 'primary' : 'neutral'"
+          :variant="isHighContrast ? 'solid' : 'ghost'"
+          icon="i-lucide-contrast"
+          :aria-pressed="isHighContrast"
+          @click="toggleContrast()"
+        >
           {{ t('theme.highContrast') }}
         </UButton>
       </UFieldGroup>
 
       <!-- Light / Dark toggle -->
       <UFieldGroup size="sm">
-        <UButton :color="!isDark ? 'primary' : 'neutral'" :variant="!isDark ? 'solid' : 'ghost'" icon="i-lucide-sun"
-          :aria-pressed="!isDark" @click="setMode('light')">
+        <UButton
+          :color="!isDark ? 'primary' : 'neutral'"
+          :variant="!isDark ? 'solid' : 'ghost'"
+          icon="i-lucide-sun"
+          :aria-pressed="!isDark"
+          @click="setMode('light')"
+        >
           {{ t('theme.light') }}
         </UButton>
-        <UButton :color="isDark ? 'primary' : 'neutral'" :variant="isDark ? 'solid' : 'ghost'" icon="i-lucide-moon"
-          :aria-pressed="isDark" @click="setMode('dark')">
+        <UButton
+          :color="isDark ? 'primary' : 'neutral'"
+          :variant="isDark ? 'solid' : 'ghost'"
+          icon="i-lucide-moon"
+          :aria-pressed="isDark"
+          @click="setMode('dark')"
+        >
           {{ t('theme.dark') }}
         </UButton>
       </UFieldGroup>

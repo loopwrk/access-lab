@@ -14,7 +14,7 @@ useHead({
 useSeoMeta({
   title: t("app.title"),
   description: t("app.description"),
-  ogTitle: 't("app.title")',
+  ogTitle: t("app.title"),
   ogDescription: t("app.description"),
   twitterCard: "summary_large_image",
 });

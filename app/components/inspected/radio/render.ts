@@ -1,21 +1,7 @@
 import type { RadioProps } from "./definition";
-import type { CssLength } from "~/composables/useUnitConversion";
-
-function escape(value: string): string {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
-}
-
-function fmt(length: CssLength): string {
-  return `${length.value}${length.unit}`;
-}
-
-function valueFromLabel(label: string): string {
-  return label.trim().toLowerCase().replace(/\s+/g, "-");
-}
+import { escapeHtml } from "~/utils/escapeHtml";
+import { formatCssLength } from "~/utils/formatCssLength";
+import { valueFromLabel } from "~/utils/valueFromLabel";
 
 interface InputAttrs {
   id: string;
@@ -33,8 +19,8 @@ function inputTag(attrs: InputAttrs): string {
   const parts: string[] = [
     "type=\"radio\"",
     `id="${attrs.id}"`,
-    `name="${escape(attrs.name)}"`,
-    `value="${escape(attrs.value)}"`,
+    `name="${escapeHtml(attrs.name)}"`,
+    `value="${escapeHtml(attrs.value)}"`,
     // `data-al-child-index` routes the change event through the
     // iframe's `demo:click-child` bridge so the host knows which
     // option the user picked and can update `selectedItem` to match.
@@ -43,13 +29,15 @@ function inputTag(attrs: InputAttrs): string {
   if (attrs.checked) parts.push("checked");
   if (attrs.required) parts.push("required");
   if (attrs.disabled) parts.push("disabled");
-  if (attrs.ariaLabel) parts.push(`aria-label="${escape(attrs.ariaLabel)}"`);
+  if (attrs.ariaLabel)
+    parts.push(`aria-label="${escapeHtml(attrs.ariaLabel)}"`);
   return `<input ${parts.join(" ")}${attrs.style} />`;
 }
 
 function styleAttr(props: Partial<RadioProps>): string {
   const decls: string[] = [];
-  if (props.fontSize) decls.push(`font-size:${fmt(props.fontSize)}`);
+  if (props.fontSize)
+    decls.push(`font-size:${formatCssLength(props.fontSize)}`);
   if (props.bg) decls.push(`background:${props.bg}`);
   if (props.fgText) decls.push(`color:${props.fgText}`);
   if (props.borderColor) decls.push(`border-color:${props.borderColor}`);
@@ -64,7 +52,7 @@ function renderSingleRadio(
 ): string {
   const association = props.labelAssociation ?? "for-id";
   const style = styleAttr(props);
-  const safeLabel = escape(labelText);
+  const safeLabel = escapeHtml(labelText);
 
   const baseAttrs: InputAttrs = {
     id,
@@ -82,8 +70,8 @@ function renderSingleRadio(
       const wrappedAttrs: string[] = [
         "type=\"radio\"",
         `id="${id}"`,
-        `name="${escape(baseAttrs.name)}"`,
-        `value="${escape(baseAttrs.value)}"`,
+        `name="${escapeHtml(baseAttrs.name)}"`,
+        `value="${escapeHtml(baseAttrs.value)}"`,
         `data-al-child-index="${childIndex}"`,
       ];
       if (baseAttrs.checked) wrappedAttrs.push("checked");
@@ -133,10 +121,10 @@ export function renderRadio(props?: Partial<RadioProps>): string {
     .join("");
 
   if (groupMode === "group-with-fieldset") {
-    const legend = escape(props.label ?? "");
+    const legend = escapeHtml(props.label ?? "");
     return `<fieldset><legend>${legend}</legend>${rows}</fieldset>`;
   }
 
-  const heading = escape(props.label ?? "");
+  const heading = escapeHtml(props.label ?? "");
   return `<p style="font-weight:600;margin:0 0 0.4em;">${heading}</p>${rows}`;
 }

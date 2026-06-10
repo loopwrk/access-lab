@@ -75,17 +75,9 @@ export default defineNuxtConfig({
     },
   },
 
-  eslint: {
-    config: {
-      stylistic: {
-        arrowParens: true,
-        quotes: "double",
-        semi: true,
-        commaDangle: "always-multiline",
-        braceStyle: "1tbs",
-      },
-    },
-  },
+  // Formatting is owned by Prettier (see .prettierrc.json); ESLint
+  // handles correctness only. eslint-config-prettier (applied in
+  // eslint.config.mjs) turns off any formatting rules the presets ship.
 
   i18n: {
     locales: [

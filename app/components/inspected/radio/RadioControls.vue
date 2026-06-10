@@ -71,9 +71,9 @@ usePreviewMessage({
     if (typeof payload !== "object" || payload === null) return;
     const index = (payload as { index?: unknown }).index;
     if (typeof index !== "number") return;
-    const items = model.value.groupItems ?? [];
-    if (index < 0 || index >= items.length) return;
-    update("selectedItem", items[index]);
+    const pickedItem = (model.value.groupItems ?? [])[index];
+    if (pickedItem === undefined) return;
+    update("selectedItem", pickedItem);
   },
 });
 </script>

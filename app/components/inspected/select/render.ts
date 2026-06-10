@@ -1,36 +1,24 @@
 import type { SelectProps } from "./definition";
-import type { CssLength } from "~/composables/useUnitConversion";
 import type { RenderedFragment } from "~/types/component";
-
-function escape(value: string): string {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
-}
-
-function fmt(length: CssLength): string {
-  return `${length.value}${length.unit}`;
-}
+import { escapeHtml } from "~/utils/escapeHtml";
+import { formatCssLength } from "~/utils/formatCssLength";
+import { valueFromLabel } from "~/utils/valueFromLabel";
 
 function styleAttr(props: Partial<SelectProps>): string {
   const decls: string[] = [];
-  if (props.fontSize) decls.push(`font-size:${fmt(props.fontSize)}`);
+  if (props.fontSize)
+    decls.push(`font-size:${formatCssLength(props.fontSize)}`);
   if (props.bg) decls.push(`background:${props.bg}`);
   if (props.fgText) decls.push(`color:${props.fgText}`);
   if (props.borderColor) decls.push(`border-color:${props.borderColor}`);
   return decls.length ? ` style="${decls.join(";")}"` : "";
 }
 
-function valueFromLabel(label: string): string {
-  return label.trim().toLowerCase().replace(/\s+/g, "-");
-}
 const PLACEHOLDER_LABEL = "--Please choose an option--";
 
 function placeholderOptionHtml(selected: string): string {
   const isSelected = selected === "";
-  return `<option value="" disabled${isSelected ? " selected" : ""}>${escape(PLACEHOLDER_LABEL)}</option>`;
+  return `<option value="" disabled${isSelected ? " selected" : ""}>${escapeHtml(PLACEHOLDER_LABEL)}</option>`;
 }
 
 function renderOptions(options: string[], selected: string): string {
@@ -38,9 +26,9 @@ function renderOptions(options: string[], selected: string): string {
     .map((label) => {
       const value = valueFromLabel(label);
       const isSelected = label === selected;
-      return `<option value="${escape(value)}"${
+      return `<option value="${escapeHtml(value)}"${
         isSelected ? " selected" : ""
-      }>${escape(label)}</option>`;
+      }>${escapeHtml(label)}</option>`;
     })
     .join("");
 }
@@ -54,12 +42,12 @@ function renderSelectAttrs(
   // selecting an option inside the preview had no effect — the next
   // re-render overwrote the user's choice.
   const attrs: string[] = ["class=\"al-inspected-element\"", ...extraAttrs];
-  if (props.name) attrs.push(`name="${escape(props.name)}"`);
+  if (props.name) attrs.push(`name="${escapeHtml(props.name)}"`);
   if (props.labelAssociation === "for-id") attrs.push("id=\"al-select\"");
   if (props.required) attrs.push("required");
   if (props.disabled) attrs.push("disabled");
   if (props.labelAssociation === "aria-label" && props.label) {
-    attrs.push(`aria-label="${escape(props.label)}"`);
+    attrs.push(`aria-label="${escapeHtml(props.label)}"`);
   }
   return attrs.join(" ");
 }
@@ -77,7 +65,7 @@ function wrapWithLabel(
   selectMarkup: string,
 ): string {
   const association = props.labelAssociation ?? "for-id";
-  const safeLabel = escape(props.label ?? "");
+  const safeLabel = escapeHtml(props.label ?? "");
 
   switch (association) {
     case "wrapping":
@@ -126,9 +114,9 @@ const COMBOBOX_POPUP_ID = "al-combobox-popup";
 
 function renderDivCombobox(props: Partial<SelectProps>): string {
   const style = styleAttr(props);
-  const safeLabel = escape(props.label ?? "");
+  const safeLabel = escapeHtml(props.label ?? "");
   const selected = props.selectedOption ?? "";
-  const display = selected ? escape(selected) : "Choose an option";
+  const display = selected ? escapeHtml(selected) : "Choose an option";
   const options = props.options?.length ? props.options : [];
   const wantsAriaControls = props.comboboxAriaControls === true;
   const wantsListboxRole = props.comboboxListboxRole === true;
@@ -143,7 +131,7 @@ function renderDivCombobox(props: Partial<SelectProps>): string {
     triggerAttrs.push(`aria-controls="${COMBOBOX_POPUP_ID}"`);
   }
   if (props.labelAssociation === "aria-label" && props.label) {
-    triggerAttrs.push(`aria-label="${escape(props.label)}"`);
+    triggerAttrs.push(`aria-label="${escapeHtml(props.label)}"`);
   }
   const trigger
     = `<div ${triggerAttrs.join(" ")}${style}>`
@@ -160,7 +148,7 @@ function renderDivCombobox(props: Partial<SelectProps>): string {
   const optionRows = options
     .map((label) => {
       const value = valueFromLabel(label);
-      return `<div data-option="${escape(value)}"${optionRoleAttr}>${escape(label)}</div>`;
+      return `<div data-option="${escapeHtml(value)}"${optionRoleAttr}>${escapeHtml(label)}</div>`;
     })
     .join("");
   // Popup sits as the trigger's NEXT sibling so the iframe click

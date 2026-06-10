@@ -41,11 +41,6 @@ export function useUnitConversion() {
     return length.value;
   }
 
-  /** Format a CssLength as CSS-ready string (e.g. `"1.5rem"`, `"24px"`). */
-  function formatLength(length: CssLength): string {
-    return `${length.value}${length.unit}`;
-  }
-
   function fromPx(pxValue: number, unit: CssUnit): CssLength {
     if (unit === "rem") {
       return {
@@ -115,7 +110,7 @@ export function useUnitConversion() {
     unitOptions,
     lengthToPx,
     lengthToSliderPx,
-    formatLength,
+    formatLength: formatCssLength,
     fromPx,
     fromSliderPx,
     convertLength,

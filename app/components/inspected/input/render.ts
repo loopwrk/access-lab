@@ -1,20 +1,7 @@
 import type { InputProps, InputTextStyleSlice } from "./definition";
-import type { CssLength } from "~/composables/useUnitConversion";
 import type { RenderedFragment } from "~/types/component";
-
-function escape(str: string): string {
-  return str
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
-}
-
-/** Keep in sync with useUnitConversion.formatLength. Local because
- *  render.ts can't call composables. */
-function fmt(length: CssLength): string {
-  return `${length.value}${length.unit}`;
-}
+import { escapeHtml } from "~/utils/escapeHtml";
+import { formatCssLength } from "~/utils/formatCssLength";
 
 /**
  * Build the inline `style` attribute string (with leading space) so it
@@ -23,7 +10,8 @@ function fmt(length: CssLength): string {
  */
 function styleAttr(props: Partial<InputProps>): string {
   const decls: string[] = [];
-  if (props.fontSize) decls.push(`font-size:${fmt(props.fontSize)}`);
+  if (props.fontSize)
+    decls.push(`font-size:${formatCssLength(props.fontSize)}`);
   if (props.bg) decls.push(`background:${props.bg}`);
   if (props.fgText) decls.push(`color:${props.fgText}`);
   if (props.borderColor) decls.push(`border-color:${props.borderColor}`);
@@ -36,7 +24,8 @@ function styleAttr(props: Partial<InputProps>): string {
  * elements where only those two properties are user-controllable.
  */
 function appendTextStyle(decls: string[], slice?: InputTextStyleSlice): void {
-  if (slice?.fontSize) decls.push(`font-size:${fmt(slice.fontSize)}`);
+  if (slice?.fontSize)
+    decls.push(`font-size:${formatCssLength(slice.fontSize)}`);
   if (slice?.fgText) decls.push(`color:${slice.fgText}`);
 }
 
@@ -55,16 +44,17 @@ interface InputAttrs {
 
 function inputTag(attrs: InputAttrs): string {
   const parts: string[] = [
-    `type="${escape(attrs.type)}"`,
+    `type="${escapeHtml(attrs.type)}"`,
     `id="${attrs.id}"`,
-    `name="${escape(attrs.name)}"`,
+    `name="${escapeHtml(attrs.name)}"`,
   ];
   if (attrs.placeholder) {
-    parts.push(`placeholder="${escape(attrs.placeholder)}"`);
+    parts.push(`placeholder="${escapeHtml(attrs.placeholder)}"`);
   }
   if (attrs.required) parts.push("required");
   if (attrs.disabled) parts.push("disabled");
-  if (attrs.ariaLabel) parts.push(`aria-label="${escape(attrs.ariaLabel)}"`);
+  if (attrs.ariaLabel)
+    parts.push(`aria-label="${escapeHtml(attrs.ariaLabel)}"`);
   if (attrs.ariaDescribedby) {
     parts.push(`aria-describedby="${attrs.ariaDescribedby}"`);
   }
@@ -94,7 +84,8 @@ function labelStyleAttr(
  */
 function placeholderCss(slice: InputTextStyleSlice | undefined): string {
   const decls: string[] = [];
-  if (slice?.fontSize) decls.push(`font-size:${fmt(slice.fontSize)}`);
+  if (slice?.fontSize)
+    decls.push(`font-size:${formatCssLength(slice.fontSize)}`);
   if (slice?.fgText) decls.push(`color:${slice.fgText}`);
   if (decls.length === 0) return "";
   return `#al-input::placeholder{${decls.join(";")};}`;
@@ -120,13 +111,13 @@ function maybeWrapWithSearchIcon(
 ): string {
   const showIcon = props.renderAs === "search" && props.showSearchIcon === true;
   if (!showIcon) return inputHtml;
-  const icon =
-    `<span style="display:inline-flex;align-items:center;justify-content:center;width:1.2em;height:1.2em;margin-right:0.4em;color:#555;vertical-align:middle;">` +
-    `<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">` +
-    `<circle cx="11" cy="11" r="8"></circle>` +
-    `<line x1="21" y1="21" x2="16.65" y2="16.65"></line>` +
-    `</svg>` +
-    `</span>`;
+  const icon
+    = `<span style="display:inline-flex;align-items:center;justify-content:center;width:1.2em;height:1.2em;margin-right:0.4em;color:#555;vertical-align:middle;">`
+      + `<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">`
+      + `<circle cx="11" cy="11" r="8"></circle>`
+      + `<line x1="21" y1="21" x2="16.65" y2="16.65"></line>`
+      + `</svg>`
+      + `</span>`;
   return `<span style="display:inline-flex;align-items:center;">${icon}${inputHtml}</span>`;
 }
 
@@ -139,7 +130,8 @@ function helpTextStyleAttr(slice: InputTextStyleSlice | undefined): string {
   ];
   // The slice's values override the defaults if set (fontSize replaces
   // the 0.85em default; fgText replaces #666).
-  if (slice?.fontSize) decls[2] = `font-size:${fmt(slice.fontSize)}`;
+  if (slice?.fontSize)
+    decls[2] = `font-size:${formatCssLength(slice.fontSize)}`;
   if (slice?.fgText) decls[3] = `color:${slice.fgText}`;
   return ` style="${decls.join(";")}"`;
 }
@@ -152,8 +144,8 @@ export function renderInput(props?: Partial<InputProps>): RenderedFragment {
   // rule. Filling in a phantom default would hide the "no accessible
   // name" anti-pattern the user is probably trying to surface.
   const rawLabel = typeof props?.label === "string" ? props.label : "";
-  const labelText = escape(rawLabel);
-  const helpText = props?.helpText ? escape(props.helpText) : "";
+  const labelText = escapeHtml(rawLabel);
+  const helpText = props?.helpText ? escapeHtml(props.helpText) : "";
 
   const baseAttrs: InputAttrs = {
     id: "al-input",

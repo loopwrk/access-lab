@@ -11,25 +11,25 @@ import type { CssLength } from "~/composables/useUnitConversion";
  * checkbox and radio components — each mode renders differently and
  * produces a different screen-reader announcement.
  */
-export type InputLabelAssociation =
-  | "for-id" // <label for="x"><input id="x"> + label sibling
-  | "wrapping" // <label><input> Text </label>
-  | "aria-label" // <input aria-label="..."> (no visible text label)
-  | "none"; // <input> with no accessible name — anti-pattern
+export type InputLabelAssociation
+  = | "for-id" // <label for="x"><input id="x"> + label sibling
+    | "wrapping" // <label><input> Text </label>
+    | "aria-label" // <input aria-label="..."> (no visible text label)
+    | "none"; // <input> with no accessible name — anti-pattern
 
 /**
  * Set of `type=` values the studio surfaces in the variant picker.
  * Drives the variant chip; the active value lives in `props.renderAs`
  * matching the pattern used by every other inspected component.
  */
-export type InputType =
-  | "text"
-  | "email"
-  | "tel"
-  | "url"
-  | "password"
-  | "number"
-  | "search";
+export type InputType
+  = | "text"
+    | "email"
+    | "tel"
+    | "url"
+    | "password"
+    | "number"
+    | "search";
 
 export type InputStyleTarget = "label" | "input" | "placeholder" | "helpText";
 
@@ -101,49 +101,49 @@ export const inputDefinition: ComponentDefinition<InputProps> = {
   variants: [
     {
       key: "text",
-      label: '<input type="text">',
+      label: "<input type=\"text\">",
       status: "info",
       statusNote: "components.input.variants.text.statusNote",
       section: "<input> Type",
     },
     {
       key: "email",
-      label: '<input type="email">',
+      label: "<input type=\"email\">",
       status: "info",
       statusNote: "components.input.variants.email.statusNote",
       section: "<input> Type",
     },
     {
       key: "tel",
-      label: '<input type="tel">',
+      label: "<input type=\"tel\">",
       status: "info",
       statusNote: "components.input.variants.tel.statusNote",
       section: "<input> Type",
     },
     {
       key: "url",
-      label: '<input type="url">',
+      label: "<input type=\"url\">",
       status: "info",
       statusNote: "components.input.variants.url.statusNote",
       section: "<input> Type",
     },
     {
       key: "password",
-      label: '<input type="password">',
+      label: "<input type=\"password\">",
       status: "info",
       statusNote: "components.input.variants.password.statusNote",
       section: "<input> Type",
     },
     {
       key: "number",
-      label: '<input type="number">',
+      label: "<input type=\"number\">",
       status: "info",
       statusNote: "components.input.variants.number.statusNote",
       section: "<input> Type",
     },
     {
       key: "search",
-      label: '<input type="search">',
+      label: "<input type=\"search\">",
       status: "info",
       statusNote: "components.input.variants.search.statusNote",
       section: "<input> Type",
