@@ -6,6 +6,13 @@ export default defineConfig({
   test: {
     projects: [
       {
+        // `~` resolves like Nuxt's srcDir alias so unit tests can load
+        // app modules that import shared utils via `~/utils/*`.
+        resolve: {
+          alias: {
+            "~": fileURLToPath(new URL("./app", import.meta.url)),
+          },
+        },
         test: {
           name: "unit",
           include: ["test/unit/*.{test,spec}.ts"],

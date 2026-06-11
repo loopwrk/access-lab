@@ -107,7 +107,28 @@
     "passingSection": "Passing ({count})",
     "noCritical": "No critical issues detected",
     "noWarnings": "No warnings detected",
-    "noPassing": "No passing checks"
+    "noPassing": "No passing checks",
+    "why": {
+      "catColor": "Affects users with low vision, color blindness, or anyone in bright or dim lighting conditions.",
+      "catAria": "Affects screen reader users — ARIA communicates role, state, and properties to assistive technology.",
+      "catForms": "Affects all users filling out forms, especially screen reader users and people with cognitive disabilities.",
+      "catKeyboard": "Affects keyboard-only users and people using switches, head wands, or eye-tracking input.",
+      "catLanguage": "Affects screen reader users — incorrect language settings cause mispronunciation.",
+      "catNameRoleValue": "Affects screen reader users — elements need proper names, roles, and values to be understood by assistive technology.",
+      "catSemantics": "Affects screen reader users navigating by landmarks, headings, and element types.",
+      "catSensoryVisualCues": "Affects low-vision and color-blind users who cannot rely on visual cues alone.",
+      "catStructure": "Affects screen reader users relying on heading hierarchy and landmark regions to navigate the page.",
+      "catTextAlternatives": "Affects blind and low-vision users who rely on text descriptions of images, icons, and non-text content.",
+      "catTimeMedia": "Affects users with cognitive disabilities, people who are deaf or hard-of-hearing, and anyone who needs more time to consume content.",
+      "wcagLevelA": "WCAG Level A — the most basic web accessibility features. Failure means some users cannot use the page at all.",
+      "wcagLevelAA": "WCAG Level AA — addresses the most common barriers for users with disabilities. Required by most accessibility regulations.",
+      "wcagLevelAAA": "WCAG Level AAA — the highest standard, ensuring the best possible experience for all users.",
+      "bestPractice": "Not a formal WCAG requirement, but a strongly recommended practice for an inclusive user experience.",
+      "principle1": "WCAG Principle 1 — Perceivable. Content must be presented in ways all users can perceive. Affects blind, low-vision, deaf, and hard-of-hearing users.",
+      "principle2": "WCAG Principle 2 — Operable. Interface components must be usable by everyone. Affects keyboard-only users, motor-impaired users, and people using alternative input devices.",
+      "principle3": "WCAG Principle 3 — Understandable. Content and operation must be clear. Affects people with cognitive disabilities, learning difficulties, and non-native speakers.",
+      "principle4": "WCAG Principle 4 — Robust. Content must work with current and future assistive technologies."
+    }
   },
   "counter": {
     "critical": "{count} critical",

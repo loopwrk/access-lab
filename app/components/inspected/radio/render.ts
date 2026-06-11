@@ -1,6 +1,7 @@
 import type { RadioProps } from "./definition";
+import { associateLabel } from "~/utils/associateLabel";
 import { escapeHtml } from "~/utils/escapeHtml";
-import { formatCssLength } from "~/utils/formatCssLength";
+import { inlineStyleAttribute } from "~/utils/inlineStyleAttribute";
 import { valueFromLabel } from "~/utils/valueFromLabel";
 
 interface InputAttrs {
@@ -34,15 +35,6 @@ function inputTag(attrs: InputAttrs): string {
   return `<input ${parts.join(" ")}${attrs.style} />`;
 }
 
-function styleAttr(props: Partial<RadioProps>): string {
-  const decls: string[] = [];
-  if (props.fontSize)
-    decls.push(`font-size:${formatCssLength(props.fontSize)}`);
-  if (props.bg) decls.push(`background:${props.bg}`);
-  if (props.fgText) decls.push(`color:${props.fgText}`);
-  if (props.borderColor) decls.push(`border-color:${props.borderColor}`);
-  return decls.length ? ` style="${decls.join(";")}"` : "";
-}
 function renderSingleRadio(
   props: Partial<RadioProps>,
   id: string,
@@ -50,10 +42,6 @@ function renderSingleRadio(
   isSelected: boolean,
   childIndex: number,
 ): string {
-  const association = props.labelAssociation ?? "for-id";
-  const style = styleAttr(props);
-  const safeLabel = escapeHtml(labelText);
-
   const baseAttrs: InputAttrs = {
     id,
     name: props.name ?? "",
@@ -62,37 +50,18 @@ function renderSingleRadio(
     required: props.required === true,
     disabled: props.disabled === true,
     childIndex,
-    style,
+    style: inlineStyleAttribute(props),
   };
 
-  switch (association) {
-    case "wrapping": {
-      const wrappedAttrs: string[] = [
-        "type=\"radio\"",
-        `id="${id}"`,
-        `name="${escapeHtml(baseAttrs.name)}"`,
-        `value="${escapeHtml(baseAttrs.value)}"`,
-        `data-al-child-index="${childIndex}"`,
-      ];
-      if (baseAttrs.checked) wrappedAttrs.push("checked");
-      if (baseAttrs.required) wrappedAttrs.push("required");
-      if (baseAttrs.disabled) wrappedAttrs.push("disabled");
-      return `<label><input ${wrappedAttrs.join(" ")}${style} /> ${safeLabel}</label>`;
-    }
-
-    case "aria-label":
-      return inputTag({ ...baseAttrs, ariaLabel: labelText });
-
-    case "none":
-      return inputTag(baseAttrs);
-
-    case "for-id":
-    default:
-      return [
-        inputTag(baseAttrs),
-        ` <label for="${id}">${safeLabel}</label>`,
-      ].join("");
-  }
+  return associateLabel({
+    association: props.labelAssociation,
+    controlId: id,
+    labelText,
+    renderControl: (ariaLabelText) =>
+      inputTag(
+        ariaLabelText === undefined ? baseAttrs : { ...baseAttrs, ariaLabel: ariaLabelText },
+      ),
+  });
 }
 
 export function renderRadio(props?: Partial<RadioProps>): string {

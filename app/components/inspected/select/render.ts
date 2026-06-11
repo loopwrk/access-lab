@@ -1,18 +1,8 @@
 import type { SelectProps } from "./definition";
 import type { RenderedFragment } from "~/types/component";
 import { escapeHtml } from "~/utils/escapeHtml";
-import { formatCssLength } from "~/utils/formatCssLength";
+import { inlineStyleAttribute } from "~/utils/inlineStyleAttribute";
 import { valueFromLabel } from "~/utils/valueFromLabel";
-
-function styleAttr(props: Partial<SelectProps>): string {
-  const decls: string[] = [];
-  if (props.fontSize)
-    decls.push(`font-size:${formatCssLength(props.fontSize)}`);
-  if (props.bg) decls.push(`background:${props.bg}`);
-  if (props.fgText) decls.push(`color:${props.fgText}`);
-  if (props.borderColor) decls.push(`border-color:${props.borderColor}`);
-  return decls.length ? ` style="${decls.join(";")}"` : "";
-}
 
 const PLACEHOLDER_LABEL = "--Please choose an option--";
 
@@ -87,7 +77,7 @@ function renderNativeSelect(
   extraAttrs: string[] = [],
   options: { allowPlaceholder?: boolean } = {},
 ): string {
-  const style = styleAttr(props);
+  const style = inlineStyleAttribute(props);
   const items = props.options?.length ? props.options : [];
   const selected = props.selectedOption ?? "";
   const attrs = renderSelectAttrs(props, extraAttrs);
@@ -113,7 +103,7 @@ const DIV_COMBOBOX_CSS
 const COMBOBOX_POPUP_ID = "al-combobox-popup";
 
 function renderDivCombobox(props: Partial<SelectProps>): string {
-  const style = styleAttr(props);
+  const style = inlineStyleAttribute(props);
   const safeLabel = escapeHtml(props.label ?? "");
   const selected = props.selectedOption ?? "";
   const display = selected ? escapeHtml(selected) : "Choose an option";

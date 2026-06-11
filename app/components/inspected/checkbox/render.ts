@@ -1,7 +1,8 @@
 import type { CheckboxProps } from "./definition";
 import type { RenderedFragment } from "~/types/component";
+import { associateLabel } from "~/utils/associateLabel";
 import { escapeHtml } from "~/utils/escapeHtml";
-import { formatCssLength } from "~/utils/formatCssLength";
+import { inlineStyleAttribute } from "~/utils/inlineStyleAttribute";
 
 interface InputAttrs {
   id: string;
@@ -64,21 +65,6 @@ function inputTag(
 }
 
 /**
- * Build the inline `style` attribute string (with leading space) so it
- * can be concatenated into the open tag. Returns an empty string when
- * no styling props are set, so the rendered HTML stays clean.
- */
-function styleAttr(props: Partial<CheckboxProps>): string {
-  const decls: string[] = [];
-  if (props.fontSize)
-    decls.push(`font-size:${formatCssLength(props.fontSize)}`);
-  if (props.bg) decls.push(`background:${props.bg}`);
-  if (props.fgText) decls.push(`color:${props.fgText}`);
-  if (props.borderColor) decls.push(`border-color:${props.borderColor}`);
-  return decls.length ? ` style="${decls.join(";")}"` : "";
-}
-
-/**
  * Render the native input-checkbox variant using the chosen label-
  * association strategy. `id` lets group rendering pass distinct ids
  * to each row.
@@ -94,9 +80,6 @@ function renderNativeCheckboxRow(
     childIndex?: number;
   } = {},
 ): string {
-  const association = props.labelAssociation ?? "for-id";
-  const style = styleAttr(props);
-  const safeLabel = escapeHtml(labelText);
   const ariaChecked = props.ariaChecked === true;
   const inspected = options.forceInspected ?? true;
   const childIndex = options.childIndex ?? null;
@@ -108,55 +91,23 @@ function renderNativeCheckboxRow(
     checked: options.checked ?? props.checked === true,
     required: props.required === true,
     disabled: props.disabled === true,
-    style,
+    style: inlineStyleAttribute(props),
   };
   const indeterminate = options.indeterminate ?? props.indeterminate === true;
 
-  switch (association) {
-    case "wrapping": {
-      const wrappedAttrs: string[] = [
-        "type=\"checkbox\"",
-        `id="${id}"`,
-        `name="${escapeHtml(baseAttrs.name)}"`,
-        `value="${escapeHtml(baseAttrs.value)}"`,
-      ];
-      if (inspected) wrappedAttrs.push(`class="al-inspected-element"`);
-      if (baseAttrs.checked) wrappedAttrs.push("checked");
-      if (baseAttrs.required) wrappedAttrs.push("required");
-      if (baseAttrs.disabled) wrappedAttrs.push("disabled");
-      if (ariaChecked) wrappedAttrs.push(`aria-checked="${baseAttrs.checked}"`);
-      if (indeterminate) wrappedAttrs.push("data-al-indeterminate");
-      if (childIndex !== null) {
-        wrappedAttrs.push(`data-al-child-index="${childIndex}"`);
-      }
-      return `<label><input ${wrappedAttrs.join(" ")}${style} /> ${safeLabel}</label>`;
-    }
-
-    case "aria-label":
-      return inputTag(
-        { ...baseAttrs, ariaLabel: labelText },
+  return associateLabel({
+    association: props.labelAssociation,
+    controlId: id,
+    labelText,
+    renderControl: (ariaLabelText) =>
+      inputTag(
+        ariaLabelText === undefined ? baseAttrs : { ...baseAttrs, ariaLabel: ariaLabelText },
         indeterminate,
         ariaChecked,
         inspected,
         childIndex,
-      );
-
-    case "none":
-      return inputTag(
-        baseAttrs,
-        indeterminate,
-        ariaChecked,
-        inspected,
-        childIndex,
-      );
-
-    case "for-id":
-    default:
-      return [
-        inputTag(baseAttrs, indeterminate, ariaChecked, inspected, childIndex),
-        ` <label for="${id}">${safeLabel}</label>`,
-      ].join("");
-  }
+      ),
+  });
 }
 
 /**

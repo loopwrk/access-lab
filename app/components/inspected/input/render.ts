@@ -1,22 +1,9 @@
 import type { InputProps, InputTextStyleSlice } from "./definition";
 import type { RenderedFragment } from "~/types/component";
+import { associateLabel } from "~/utils/associateLabel";
 import { escapeHtml } from "~/utils/escapeHtml";
 import { formatCssLength } from "~/utils/formatCssLength";
-
-/**
- * Build the inline `style` attribute string (with leading space) so it
- * can be concatenated into the open tag. Returns an empty string when
- * no styling props are set, so the rendered HTML stays clean.
- */
-function styleAttr(props: Partial<InputProps>): string {
-  const decls: string[] = [];
-  if (props.fontSize)
-    decls.push(`font-size:${formatCssLength(props.fontSize)}`);
-  if (props.bg) decls.push(`background:${props.bg}`);
-  if (props.fgText) decls.push(`color:${props.fgText}`);
-  if (props.borderColor) decls.push(`border-color:${props.borderColor}`);
-  return decls.length ? ` style="${decls.join(";")}"` : "";
-}
+import { inlineStyleAttribute } from "~/utils/inlineStyleAttribute";
 
 /**
  * Append font-size / colour declarations from a target's style slice
@@ -144,7 +131,6 @@ export function renderInput(props?: Partial<InputProps>): RenderedFragment {
   // rule. Filling in a phantom default would hide the "no accessible
   // name" anti-pattern the user is probably trying to surface.
   const rawLabel = typeof props?.label === "string" ? props.label : "";
-  const labelText = escapeHtml(rawLabel);
   const helpText = props?.helpText ? escapeHtml(props.helpText) : "";
 
   const baseAttrs: InputAttrs = {
@@ -163,47 +149,30 @@ export function renderInput(props?: Partial<InputProps>): RenderedFragment {
     ariaLabel: props?.ariaLabel === true ? rawLabel : undefined,
     ariaDescribedby: helpText ? "al-input-help" : undefined,
     ariaHidden: props?.ariaHidden === true,
-    style: styleAttr(props ?? {}),
+    style: inlineStyleAttribute(props ?? {}),
   };
 
-  // Build the input HTML once per branch, then optionally wrap it in
-  // the magnifying-glass icon if the user opted in. The icon attaches
-  // to the input element itself (not the label), so it appears next
-  // to the input in every label-association mode.
-  let body: string;
-  switch (association) {
-    case "wrapping": {
-      const inner = maybeWrapWithSearchIcon(inputTag(baseAttrs), props ?? {});
-      const labelStyle = labelStyleAttr(props?.labelStyle, ["display:block"]);
-      body = `<label${labelStyle}>${labelText} ${inner}</label>`;
-      break;
-    }
+  // The wrapping label is plain block; the for-id label adds spacing
+  // because it sits outside the control as a sibling.
+  const labelStyle =
+    association === "wrapping"
+      ? labelStyleAttr(props?.labelStyle, ["display:block"])
+      : labelStyleAttr(props?.labelStyle, ["display:block", "margin-bottom:4px", "margin-right:8px"]);
 
-    case "aria-label": {
-      const input = inputTag({
-        ...baseAttrs,
-        ariaLabel: rawLabel,
-      });
-      body = maybeWrapWithSearchIcon(input, props ?? {});
-      break;
-    }
-
-    case "none":
-      body = maybeWrapWithSearchIcon(inputTag(baseAttrs), props ?? {});
-      break;
-
-    case "for-id":
-    default: {
-      const labelStyle = labelStyleAttr(props?.labelStyle, [
-        "display:block",
-        "margin-bottom:4px",
-        "margin-right:8px",
-      ]);
-      const labelTag = `<label for="al-input"${labelStyle}>${labelText}</label>`;
-      body = `${labelTag}${maybeWrapWithSearchIcon(inputTag(baseAttrs), props ?? {})}`;
-      break;
-    }
-  }
+  let body = associateLabel({
+    association,
+    controlId: "al-input",
+    labelText: rawLabel,
+    labelStyle,
+    labelPosition: "before",
+    // The magnifying-glass icon wraps the input element itself (not
+    // the label), so it appears next to the input in every mode.
+    renderControl: (ariaLabelText) =>
+      maybeWrapWithSearchIcon(
+        inputTag(ariaLabelText === undefined ? baseAttrs : { ...baseAttrs, ariaLabel: ariaLabelText }),
+        props ?? {},
+      ),
+  });
 
   if (helpText) {
     body += `<small id="al-input-help"${helpTextStyleAttr(props?.helpTextStyle)}>${helpText}</small>`;
