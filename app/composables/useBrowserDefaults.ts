@@ -8,6 +8,13 @@ export function useBrowserDefaults(tagName: string) {
     el.style.position = "absolute";
     el.style.visibility = "hidden";
     el.style.all = "revert";
+    // Resolve UA system colours (e.g. a button's ButtonFace background) in the
+    // light color-scheme, matching the always-light preview iframe. The probe
+    // is appended to the host <body>, so without this it inherits the studio's
+    // dark color-scheme in dark mode and reports a dark default (#6b6b6b) that
+    // the rendered element never actually uses — only the host theme is dark,
+    // the iframe is not.
+    el.style.colorScheme = "light";
     el.textContent = "x";
     document.body.appendChild(el);
 
@@ -32,12 +39,7 @@ export function useBrowserDefaults(tagName: string) {
     const probed: Record<string, string> = {};
 
     targetedProperties.forEach((prop) => {
-      let value = computed.getPropertyValue(prop);
-
-      // Fix the Browser System Color Bug:
-      if (value === "buttontext") value = "rgb(0, 0, 0)";
-      if (value === "buttonface") value = "rgb(239, 239, 239)";
-
+      const value = computed.getPropertyValue(prop);
       // Convert kebab-case (padding-top) to camelCase (paddingTop) to match state keys
       const camelKey = prop.replace(/-([a-z])/g, (g) => g[1]!.toUpperCase());
       probed[camelKey] = value;
@@ -66,7 +68,7 @@ export function useBrowserDefaults(tagName: string) {
 
     const el = document.createElement(tagName);
     el.style.cssText
-      = `all: revert; position: absolute; visibility: hidden; left: -9999px; top: -9999px;`
+      = `all: revert; color-scheme: light; position: absolute; visibility: hidden; left: -9999px; top: -9999px;`
         + (cssText ? ` ${cssText}` : "");
 
     if (asHtml) el.innerHTML = content;
