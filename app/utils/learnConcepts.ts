@@ -8,12 +8,6 @@
  * panel pins any article whose concept set intersects with the
  * active component's, sorted by overlap count.
  *
- * **Why closed:** keeping the vocabulary small and code-defined
- * means typos and drift are caught at compile time (the union type
- * `LearnConceptId` rejects anything not on this list). It also gives
- * authors a fixed menu to choose from, which is easier than
- * inventing tags ad hoc and hoping the matching still works.
- *
  * **Adding a new concept:** add it here and to the Zod enum in
  * `content.config.ts` (both must agree). The Nuxt Content schema
  * validates article frontmatter at build time, so the two lists
@@ -22,26 +16,25 @@
  *
  * Keep the vocabulary tight. If a single article makes you want to
  * add a concept, prefer leaving it untagged over inventing a tag
- * that only matches one article — that's vocabulary creep, and it
- * weakens the signal-to-noise ratio of the whole system.
+ * that only matches one article.
  */
 
-export type LearnConceptId
-  = | "accessible-name"
-    | "button-element"
-    | "form-control"
-    | "form-context"
-    | "disabled-state"
-    | "aria-state"
-    | "disclosure-pattern"
-    | "menu-pattern"
-    | "native-elements";
+export type LearnConceptId =
+  | "accessible-name"
+  | "button-element"
+  | "form-control"
+  | "form-context"
+  | "disabled-state"
+  | "aria-state"
+  | "disclosure-pattern"
+  | "menu-pattern"
+  | "native-elements";
 
 export interface LearnConcept {
   id: LearnConceptId;
   /**
    * Short description of what this concept covers. Not surfaced in
-   * the UI today — purely for authors deciding which concepts to
+   * the UI today - purely for authors deciding which concepts to
    * tag an article or component with.
    */
   description: string;

@@ -26,6 +26,17 @@ describe("formatRuleId", () => {
     expect(formatRuleId("aria-hidden-focus")).toBe("ARIA Hidden Focus");
     expect(formatRuleId("svg-img-alt")).toBe("SVG Img Alt");
   });
+
+  it("upper-cases the 'id' acronym", () => {
+    expect(formatRuleId("duplicate-id")).toBe("Duplicate ID");
+  });
+
+  // Only a trailing `-aa` / `-aaa` is stripped — that's what merges the AA
+  // and AAA target-size rules under one heading. An id with no level suffix
+  // must pass through with no truncation.
+  it("leaves an id without a level suffix unchanged", () => {
+    expect(formatRuleId("focus-not-visible")).toBe("Focus Not Visible");
+  });
 });
 
 describe("classificationFromTags", () => {
@@ -42,6 +53,7 @@ describe("classificationFromTags", () => {
   it("falls back to Best Practice, then null", () => {
     expect(classificationFromTags(["best-practice"])).toBe("Best Practice");
     expect(classificationFromTags(["cat.forms"])).toBeNull();
+    expect(classificationFromTags([])).toBeNull();
     expect(classificationFromTags(undefined)).toBeNull();
   });
 });
@@ -73,6 +85,25 @@ describe("parseFailureSummary", () => {
       { directive: "Fix any of the following:", items: ["item"] },
     ]);
   });
+
+  it("strips bullet-dot markers as well as hyphens", () => {
+    expect(parseFailureSummary("Fix all of the following:\n  • First\n  • Second")).toEqual([
+      { directive: "Fix all of the following:", items: ["First", "Second"] },
+    ]);
+  });
+
+  // A bullet line that strips down to nothing (just the marker) must not add
+  // an empty item — that's the `if (item)` guard the panel relies on so it
+  // never renders an empty bullet.
+  it("drops a bullet line that has no text after the marker", () => {
+    expect(parseFailureSummary("Fix any of the following:\n  -\n  Real item")).toEqual([
+      { directive: "Fix any of the following:", items: ["Real item"] },
+    ]);
+  });
+
+  it("returns an empty array when there is no directive", () => {
+    expect(parseFailureSummary("just some text\nwith no directive")).toEqual([]);
+  });
 });
 
 describe("issueWhyKey", () => {
@@ -89,6 +120,13 @@ describe("issueWhyKey", () => {
   it("falls back to the WCAG principle from a success-criterion tag", () => {
     expect(issueWhyKey(["wcag412"])).toBe("issues.why.principle4");
     expect(issueWhyKey(["wcag111"])).toBe("issues.why.principle1");
+  });
+
+  // A criterion tag whose leading principle digit is outside 1–4 matches the
+  // regex but has no principle key, so the lookup falls through. Covers the
+  // guard on the principle-key branch.
+  it("returns null for a criterion tag with an out-of-range principle digit", () => {
+    expect(issueWhyKey(["wcag555"])).toBeNull();
   });
 
   it("returns null when nothing matches", () => {

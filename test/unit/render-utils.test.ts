@@ -219,4 +219,50 @@ describe("associateLabel", () => {
       }),
     ).toBe('<input /> <label for="x">Fish &amp; chips</label>');
   });
+
+  // Split escaping responsibility: associateLabel escapes the VISIBLE label
+  // (for-id / wrapping), but in aria-label mode it hands the RAW text to
+  // renderControl and trusts it to escape — which the real renderers do via
+  // escapeHtml when building `aria-label="..."` (see radio/render.ts). The
+  // stub renderControl here does not escape, so the raw `&` proves the text
+  // passes through associateLabel untouched.
+  it("passes aria-label text to renderControl unescaped (the renderer escapes it)", () => {
+    expect(
+      associateLabel({
+        association: "aria-label",
+        controlId: "x",
+        labelText: "Fish & chips",
+        renderControl,
+      }),
+    ).toBe('<input aria-label="Fish & chips" />');
+  });
+
+  // labelStyle is applied to the <label> in both label-bearing modes and in
+  // both positions. Pin one "before" and one "after" case so a regression in
+  // either branch is caught.
+  it("applies labelStyle to a wrapping label in the before position", () => {
+    expect(
+      associateLabel({
+        association: "wrapping",
+        controlId: "x",
+        labelText: "Name",
+        labelStyle: ' style="display:block"',
+        labelPosition: "before",
+        renderControl,
+      }),
+    ).toBe('<label style="display:block">Name <input /></label>');
+  });
+
+  it("applies labelStyle to a for-id label in the after position", () => {
+    expect(
+      associateLabel({
+        association: "for-id",
+        controlId: "x",
+        labelText: "Name",
+        labelStyle: ' style="margin-left:4px"',
+        labelPosition: "after",
+        renderControl,
+      }),
+    ).toBe('<input /> <label for="x" style="margin-left:4px">Name</label>');
+  });
 });

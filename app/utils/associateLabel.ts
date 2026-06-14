@@ -16,7 +16,11 @@ interface AssociateLabelOptions {
    * every other mode it is called with no argument.
    */
   renderControl: (ariaLabelText?: string) => string;
-  /** Inline style attribute for the `<label>` (with leading space). */
+  /**
+   * Inline style attribute for the `<label>` (with leading space). Applied to
+   * the `<label>` in both label-bearing modes (for-id and wrapping) and in
+   * both positions (before / after).
+   */
   labelStyle?: string;
   /**
    * Where the visible label text sits relative to the control.
@@ -43,7 +47,7 @@ export function associateLabel(options: AssociateLabelOptions): string {
     case "wrapping":
       return labelFirst
         ? `<label${labelStyle}>${safeLabel} ${options.renderControl()}</label>`
-        : `<label>${options.renderControl()} ${safeLabel}</label>`;
+        : `<label${labelStyle}>${options.renderControl()} ${safeLabel}</label>`;
 
     case "aria-label":
       return options.renderControl(options.labelText);
@@ -55,6 +59,6 @@ export function associateLabel(options: AssociateLabelOptions): string {
     default:
       return labelFirst
         ? `<label for="${options.controlId}"${labelStyle}>${safeLabel}</label>${options.renderControl()}`
-        : `${options.renderControl()} <label for="${options.controlId}">${safeLabel}</label>`;
+        : `${options.renderControl()} <label for="${options.controlId}"${labelStyle}>${safeLabel}</label>`;
   }
 }
