@@ -1,6 +1,7 @@
 import type { ButtonProps, ButtonRenderAs } from "./types";
 import type { CssLength } from "~/composables/useUnitConversion";
 import type { RenderedFragment } from "~/types/component";
+import { joinStyleDeclarations } from "~/utils/joinStyleDeclarations";
 
 const DEFAULT_LABEL = "Button Label";
 
@@ -317,7 +318,7 @@ function buildInlineStyle(
     declarations.push(`border-color:${props.borderColor}`);
   }
 
-  return declarations.join(";");
+  return joinStyleDeclarations(declarations);
 }
 
 function renderNativeButton(
@@ -416,7 +417,7 @@ export function renderButton(props?: Partial<ButtonProps>): RenderedFragment {
   const labelOutsideHost = pilled || renderAs === "input-checkbox-switch";
   const style = buildInlineStyle(props, { excludeFontSize: labelOutsideHost });
   const labelStyle =
-    labelOutsideHost && props.fontSize ? `font-size:${formatLength(props.fontSize)}` : "";
+    labelOutsideHost && props.fontSize ? `font-size: ${formatLength(props.fontSize)}` : "";
   const css = buildCss(props);
 
   let element: string;

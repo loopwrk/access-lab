@@ -48,7 +48,7 @@ function renderSelectAttrs(
 // dropping onto the next. The preview shell's flex `#mount` then
 // receives a single wrapping <div> so the children stack as normal
 // block layout rather than becoming side-by-side flex items.
-const LABEL_BLOCK_STYLE = "display:block;margin-bottom:4px";
+const LABEL_BLOCK_STYLE = "display: block; margin-bottom: 4px";
 
 function wrapWithLabel(
   props: Partial<SelectProps>,

@@ -120,12 +120,28 @@ const { start: scheduleCopyReset } = useTimeoutFn(
   { immediate: false },
 );
 
+// Indent each non-empty line by two spaces, for nesting prettified CSS
+// inside the exported <style> block.
+function indentBlock(text: string): string {
+  return text
+    .split("\n")
+    .map((line) => (line ? `  ${line}` : line))
+    .join("\n");
+}
+
 async function copyContent(mode: "inline" | "class" | "css" | "js") {
   let text = "";
   if (mode === "inline") {
     text = prettifiedHtml.value;
   } else if (mode === "class") {
-    text = prettifyHtml(converted.value?.html ?? renderedHtml.value);
+    // Self-contained snippet: the studio CSS plus the class extracted from the
+    // inline styles in a <style> block, then the markup that references them.
+    // No <html>/<head>/<body> — this is meant to drop into an existing page.
+    const markup = prettifyHtml(converted.value?.html ?? renderedHtml.value);
+    const studioCss = prettifyCss(renderedCss.value);
+    const classCss = converted.value ? prettifyCss(converted.value.css) : "";
+    const styleBody = [studioCss, classCss].filter((block) => block.trim()).join("\n\n");
+    text = styleBody ? `<style>\n${indentBlock(styleBody)}\n</style>\n\n${markup}` : markup;
   } else if (mode === "css") {
     text = prettifiedCss.value;
   } else if (mode === "js") {
@@ -214,7 +230,7 @@ async function copyContent(mode: "inline" | "class" | "css" | "js") {
           </UFieldGroup>
 
           <div
-            class="overflow-auto focus-visible:outline-[3px] focus-visible:outline-(--focus-ring) focus-visible:outline-offset-[-3px]"
+            class="al-code-region overflow-auto focus-visible:outline-[3px] focus-visible:outline-(--focus-ring) focus-visible:outline-offset-[-3px]"
             :style="{ height: `${effectiveHeight}px` }"
             tabindex="0"
             role="region"
@@ -336,3 +352,16 @@ async function copyContent(mode: "inline" | "class" | "css" | "js") {
     </UCollapsible>
   </div>
 </template>
+
+<style scoped>
+/*
+  ProsePre emits a <pre><code> we cannot class directly, so reach it with
+  :deep(). Soft-wrap long lines — e.g. a long inline `style` value — at the
+  spaces between declarations instead of overflowing the drawer horizontally.
+*/
+.al-code-region :deep(pre),
+.al-code-region :deep(code) {
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+}
+</style>

@@ -439,7 +439,7 @@ export function renderCheckbox(
       // correct pattern — that's the whole point of the anti-pattern
       // demo.
       const heading = escapeHtml(props.label ?? "");
-      html = `<p style="font-weight:600;margin:0 0 0.4em;">${heading}</p>${rows}`;
+      html = `<p style="font-weight: 600; margin: 0 0 0.4em;">${heading}</p>${rows}`;
     }
   }
 

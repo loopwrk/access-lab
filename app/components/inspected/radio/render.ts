@@ -95,5 +95,5 @@ export function renderRadio(props?: Partial<RadioProps>): string {
   }
 
   const heading = escapeHtml(props.label ?? "");
-  return `<p style="font-weight:600;margin:0 0 0.4em;">${heading}</p>${rows}`;
+  return `<p style="font-weight: 600; margin: 0 0 0.4em;">${heading}</p>${rows}`;
 }

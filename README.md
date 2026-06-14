@@ -161,6 +161,10 @@ corepack pnpm test:coverage   # with v8 coverage
 
 ## Future considerations / TODO
 
+### Code export ("Copy with classes")
+
+- **`al-inspected-element` leaks into the exported snippet.** "Copy with classes" emits the studio-internal `al-inspected-element` class (the hook for studio-injected CSS and the iframe click bridge) alongside the generated `my-component` class. It works, but that internal name is meaningless to a developer pasting the snippet into their project. Consider consolidating all styling into a single user-facing class - i.e. rewrite the studio CSS selectors (`.al-inspected-element:focus-visible` to `.my-component:focus-visible`, plus the compound `.al-inspected-element.al-pressed` / `.al-switch` selectors on stateful components) so the export references one clean class.
+
 ### UX polish
 
 - **Manual review checklist audit for Button.** Review `app/rules/buttons/shared/manual-checklist.ts` to confirm it covers the new affordances (variant picker, value/name attributes, form wrapper, src/alt for image inputs). Add items where the studio has grown past the checklist.

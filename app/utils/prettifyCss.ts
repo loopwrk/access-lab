@@ -22,7 +22,9 @@ export function prettifyCss(css: string): string {
 
     out.push(`${selector} {`);
     for (const decl of declarations) {
-      out.push(`  ${decl};`);
+      // Normalise to a single space after the property colon, matching the
+      // inline-style spacing from joinStyleDeclarations.
+      out.push(`  ${decl.replace(/:\s*/, ": ")};`);
     }
     out.push("}");
     out.push("");

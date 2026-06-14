@@ -75,9 +75,9 @@ function renderToggleButton(props?: Partial<ButtonProps>): RenderedFragment {
   const pressed = props?.togglePressed === true;
   const formatted = pressed ? `<strong>${SAMPLE_TEXT}</strong>` : SAMPLE_TEXT;
   const wrapped
-    = `<div style="display:flex;flex-direction:column;gap:0.85em;align-items:flex-start;font-family:Arial, Helvetica, sans-serif;">`
+    = `<div style="display: flex; flex-direction: column; gap: 0.85em; align-items: flex-start; font-family: Arial, Helvetica, sans-serif;">`
       + htmlWithHandler
-      + `<p style="margin:0;max-width:32ch;color:#000;">${formatted}</p>`
+      + `<p style="margin: 0; max-width: 32ch; color: #000;">${formatted}</p>`
       + `</div>`;
   const js = jsForBehaviour(props);
   return css ? { html: wrapped, css, js } : { html: wrapped, js };

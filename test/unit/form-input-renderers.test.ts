@@ -65,7 +65,7 @@ describe("renderRadio", () => {
 
   it("renders a heading paragraph instead of a fieldset for group-no-fieldset", () => {
     const html = renderRadio({ ...baseProps, groupMode: "group-no-fieldset" });
-    expect(html.startsWith('<p style="font-weight:600;margin:0 0 0.4em;">Choose</p>')).toBe(true);
+    expect(html.startsWith('<p style="font-weight: 600; margin: 0 0 0.4em;">Choose</p>')).toBe(true);
     expect(html).not.toContain("<fieldset>");
   });
 
@@ -77,7 +77,9 @@ describe("renderRadio", () => {
       fgText: "#000",
       borderColor: "#888",
     });
-    expect(html).toContain(' style="font-size:1.5rem;background:#fff;color:#000;border-color:#888"');
+    expect(html).toContain(
+      ' style="font-size: 1.5rem; background: #fff; color: #000; border-color: #888"',
+    );
   });
 });
 
@@ -166,7 +168,7 @@ describe("renderInput", () => {
   it("renders a block label before the input for the for-id mode", () => {
     const { html } = renderInput({ label: "Name", name: "n" });
     expect(html).toBe(
-      '<div><label for="al-input" style="display:block;margin-bottom:4px;margin-right:8px">Name</label>' +
+      '<div><label for="al-input" style="display: block; margin-bottom: 4px; margin-right: 8px">Name</label>' +
         '<input type="text" id="al-input" name="n" /></div>',
     );
   });
@@ -174,7 +176,7 @@ describe("renderInput", () => {
   it("wraps the input with the label text leading for the wrapping mode", () => {
     const { html } = renderInput({ label: "Name", name: "n", labelAssociation: "wrapping" });
     expect(html).toBe(
-      '<div><label style="display:block">Name <input type="text" id="al-input" name="n" /></label></div>',
+      '<div><label style="display: block">Name <input type="text" id="al-input" name="n" /></label></div>',
     );
   });
 
@@ -213,8 +215,8 @@ describe("renderSelect", () => {
       fontSize: { value: 16, unit: "px" },
     });
     expect(html).toBe(
-      '<div><label for="al-select" style="display:block;margin-bottom:4px">Pet</label>' +
-        '<select class="al-inspected-element" name="pet" id="al-select" style="font-size:16px">' +
+      '<div><label for="al-select" style="display: block; margin-bottom: 4px">Pet</label>' +
+        '<select class="al-inspected-element" name="pet" id="al-select" style="font-size: 16px">' +
         '<option value="cat">Cat</option><option value="dog" selected>Dog</option>' +
         "</select></div>",
     );

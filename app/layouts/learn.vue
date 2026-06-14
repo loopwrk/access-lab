@@ -38,15 +38,8 @@ function onTreeSelect() {
       -->
       <div class="shrink-0 flex items-center justify-between gap-3 px-5 py-3 border-b border-(--border)">
         <div class="flex items-center gap-2 min-w-0">
-          <UButton
-            class="md:hidden"
-            color="neutral"
-            variant="ghost"
-            size="sm"
-            icon="i-lucide-list"
-            :aria-label="t('learn.readMode.openTree')"
-            @click="treeOpen = true"
-          />
+          <UButton class="md:hidden" color="neutral" variant="ghost" size="sm" icon="i-lucide-list"
+            :aria-label="t('learn.readMode.openTree')" @click="treeOpen = true" />
           <span class="font-semibold text-(--text-primary) read-mode-shell-title truncate">
             {{ t('learn.readMode.title') }}
           </span>
@@ -59,15 +52,8 @@ function onTreeSelect() {
           clients would unmount it on mount. `hidden lg:flex` lines
           up with the 1024px threshold used by `useIsBelowDesktop`.
         -->
-        <UButton
-          class="hidden lg:flex"
-          color="neutral"
-          variant="ghost"
-          size="xl"
-          icon="i-lucide-x"
-          :aria-label="t('learn.readMode.close')"
-          @click="close"
-        >
+        <UButton class="hidden lg:flex" color="neutral" variant="ghost" size="xl" icon="i-lucide-x"
+          :aria-label="t('learn.readMode.close')" @click="close">
           {{ t('learn.readMode.close') }}
         </UButton>
       </div>
@@ -79,14 +65,9 @@ function onTreeSelect() {
         because they rely on the document being the scroll root.
       -->
       <div class="flex-1 flex min-h-0 overflow-hidden">
-        <aside
-          class="hidden md:block w-[320px] shrink-0 overflow-y-auto border-r border-(--border) p-3"
-          :aria-label="t('learn.index.title')"
-        >
-          <LearnTree
-            :active-id="activeTopicId"
-            @select="onTreeSelect"
-          />
+        <aside class="hidden md:block w-[320px] shrink-0 overflow-y-auto border-r border-(--border) p-3"
+          :aria-label="t('learn.index.title')">
+          <LearnTree :active-id="activeTopicId" @select="onTreeSelect" />
         </aside>
 
         <div class="flex-1 min-w-0 overflow-y-auto">
@@ -99,16 +80,9 @@ function onTreeSelect() {
         selection (via @select) so the user lands cleanly in the new
         article instead of having to dismiss the tree first.
       -->
-      <USlideover
-        v-model:open="treeOpen"
-        side="left"
-        :title="t('learn.index.title')"
-      >
+      <USlideover v-model:open="treeOpen" side="left" :title="t('learn.index.title')">
         <template #body>
-          <LearnTree
-            :active-id="activeTopicId"
-            @select="onTreeSelect"
-          />
+          <LearnTree :active-id="activeTopicId" @select="onTreeSelect" />
         </template>
       </USlideover>
     </div>

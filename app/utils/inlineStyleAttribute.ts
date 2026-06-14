@@ -2,6 +2,7 @@
 
 import type { CssLength } from "~/composables/useUnitConversion";
 import { formatCssLength } from "~/utils/formatCssLength";
+import { joinStyleDeclarations } from "~/utils/joinStyleDeclarations";
 
 /**
  * The style props every form-input renderer exposes to the studio's
@@ -27,5 +28,5 @@ export function inlineStyleAttribute(props: FormControlStyleProps): string {
   if (props.bg) declarations.push(`background:${props.bg}`);
   if (props.fgText) declarations.push(`color:${props.fgText}`);
   if (props.borderColor) declarations.push(`border-color:${props.borderColor}`);
-  return declarations.length ? ` style="${declarations.join(";")}"` : "";
+  return declarations.length ? ` style="${joinStyleDeclarations(declarations)}"` : "";
 }

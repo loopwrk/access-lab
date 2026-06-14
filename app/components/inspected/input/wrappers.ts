@@ -5,5 +5,5 @@ export const formSubmitWrapper: ContextWrapper = {
   label: "<form>",
   learnTopicId: "form-wrapping",
   wrap: (html: string) =>
-    `<form>${html}<div style="margin-top:0.8em;"><button type="submit">Submit</button></div></form>`,
+    `<form>${html}<div style="margin-top: 0.8em;"><button type="submit">Submit</button></div></form>`,
 };

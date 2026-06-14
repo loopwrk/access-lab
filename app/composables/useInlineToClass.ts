@@ -23,13 +23,25 @@ export function useInlineToClass() {
     const className = "my-component";
     const css = [`.${className} {`, ...properties, "}"].join("\n");
 
-    const openTagAttrs = [beforeStyle.trim(), afterStyle.trim()]
+    const otherAttrs = [beforeStyle.trim(), afterStyle.trim()]
       .filter(Boolean)
       .join(" ");
 
-    const openTag = openTagAttrs
-      ? `<${tagName} ${openTagAttrs} class="${className}">`
-      : `<${tagName} class="${className}">`;
+    // Merge into an existing class attribute rather than appending a second
+    // one. A duplicate `class` is invalid HTML: the parser keeps the first
+    // and silently drops the rest, which previously meant the extracted
+    // `my-component` class (and with it every style) vanished on paste.
+    const classMatch = otherAttrs.match(/class="([^"]*)"/);
+    let mergedAttrs: string;
+    if (classMatch) {
+      const existing = classMatch[1] ?? "";
+      const mergedClass = existing ? `${existing} ${className}` : className;
+      mergedAttrs = otherAttrs.replace(/class="[^"]*"/, `class="${mergedClass}"`);
+    } else {
+      mergedAttrs = otherAttrs ? `${otherAttrs} class="${className}"` : `class="${className}"`;
+    }
+
+    const openTag = `<${tagName} ${mergedAttrs}>`;
 
     const newHtml = html.replace(
       /<(\w+)\b[^>]*?\s+style="[^"]*"[^>]*?>/,

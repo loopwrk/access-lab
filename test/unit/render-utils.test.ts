@@ -117,11 +117,11 @@ describe("inlineStyleAttribute", () => {
         fgText: "#000",
         borderColor: "#888",
       }),
-    ).toBe(' style="font-size:16px;background:#fff;color:#000;border-color:#888"');
+    ).toBe(' style="font-size: 16px; background: #fff; color: #000; border-color: #888"');
   });
 
   it("skips unset properties", () => {
-    expect(inlineStyleAttribute({ fgText: "#333" })).toBe(' style="color:#333"');
+    expect(inlineStyleAttribute({ fgText: "#333" })).toBe(' style="color: #333"');
   });
 
   // Declaration order is fixed in the function body, so the order the keys
@@ -135,7 +135,7 @@ describe("inlineStyleAttribute", () => {
         bg: "#fff",
         fontSize: { value: 16, unit: "px" },
       }),
-    ).toBe(' style="font-size:16px;background:#fff;color:#000;border-color:#888"');
+    ).toBe(' style="font-size: 16px; background: #fff; color: #000; border-color: #888"');
   });
 
   // Empty-string colours are treated as unset (the truthy guard), so the
@@ -148,7 +148,7 @@ describe("inlineStyleAttribute", () => {
   // unlike an empty colour string, it is not dropped.
   it("emits a zero font-size", () => {
     expect(inlineStyleAttribute({ fontSize: { value: 0, unit: "px" } })).toBe(
-      ' style="font-size:0px"',
+      ' style="font-size: 0px"',
     );
   });
 
@@ -158,7 +158,7 @@ describe("inlineStyleAttribute", () => {
   // must survive untouched.
   it("inserts colour values verbatim, preserving rgb() syntax", () => {
     expect(inlineStyleAttribute({ bg: "rgb(0 0 0 / 0.5)" })).toBe(
-      ' style="background:rgb(0 0 0 / 0.5)"',
+      ' style="background: rgb(0 0 0 / 0.5)"',
     );
   });
 });

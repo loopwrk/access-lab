@@ -32,9 +32,7 @@ describe("prettifyHtml (DOM formatting)", () => {
   });
 
   it("re-encodes entities that DOMParser decoded on parse", () => {
-    expect(prettifyHtml("<button>Fish & chips</button>")).toBe(
-      "<button>Fish &amp; chips</button>",
-    );
+    expect(prettifyHtml("<button>Yin & yang</button>")).toBe("<button>Yin &amp; Yang</button>");
   });
 
   it("renders an empty element with an explicit closing tag on one line", () => {
