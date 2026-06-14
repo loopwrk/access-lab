@@ -36,10 +36,7 @@
   "theme": {
     "light": "Light",
     "dark": "Dark",
-    "highContrast": "High contrast",
-    "switchToLight": "Switch to light mode",
-    "switchToDark": "Switch to dark mode",
-    "toggleHighContrast": "Toggle high contrast"
+    "highContrast": "High contrast"
   },
   "sidebar": {
     "toggleOpen": "Open sidebar",
@@ -49,7 +46,6 @@
   "nav": {
     "components": "Elements",
     "forms": "Form Inputs",
-    "frameworkStyle": "Framework style",
     "buttons": "Buttons",
     "buttonsActionTriggers": "Action buttons",
     "buttonsFormButtons": "Form buttons",
@@ -66,18 +62,13 @@
     "input": "Input",
     "checkbox": "Checkbox",
     "radio": "Radio",
-    "select": "Select",
-    "none": "None (bare HTML)"
+    "select": "Select"
   },
   "preview": {
     "title": "Preview",
     "titleLearnLink": "Open the Learn topic for {name}",
-    "noFramework": "No framework",
     "focusContent": "Focus content",
-    "focusContentAria": "Focus the inspected element inside the preview",
-    "toolbar": {
-      "ariaLabel": "Preview toolbar"
-    }
+    "focusContentAria": "Focus the inspected element inside the preview"
   },
   "inspector": {
     "ariaLabel": "Inspection panel",
@@ -86,20 +77,11 @@
     "manual": "Manual",
     "learn": "Learn"
   },
-  "panel": {
-    "controlsPlaceholder": "Controls panel placeholder",
-    "issuesPlaceholder": "Issues panel placeholder",
-    "manualPlaceholder": "Manual review panel placeholder",
-    "learnPlaceholder": "Learn panel placeholder"
-  },
   "issues": {
-    "empty": "No accessibility violations detected.",
-    "passSummary": "{count} checks passed",
     "whyItMatters": "Why it matters & how to fix",
     "whyItMattersOnly": "Why it matters",
     "whySection": "Why it matters",
     "howToFixSection": "How to fix",
-    "nextSteps": "Review the WCAG criterion for this rule. Check the affected element in your HTML and apply the recommended fix. Re-run the audit to verify the issue is resolved.",
     "learnMore": "Learn more about this rule",
     "learnMoreInApp": "Read more in the Learn tab",
     "criticalSection": "Critical ({count})",
@@ -137,10 +119,6 @@
     "criticalNoun": "critical",
     "warningsNoun": "warning | warnings",
     "passingNoun": "passing"
-  },
-  "home": {
-    "welcome": "Welcome to AccessLab",
-    "instruction": "Select a component from the sidebar to begin auditing."
   },
   "codeDrawer": {
     "toggleAria": "Toggle generated code drawer",
@@ -183,12 +161,8 @@
     "seeAlso": "Learn more about this"
   },
   "wrapperToggles": {
-    "panelLabel": "Context",
-    "wrapIn": "Wrap in",
-    "toggleAria": "Toggle {label} wrapper",
     "containerLabel": "wrapped inside",
     "containerNone": "None",
-    "containerPlaceholder": "None",
     "containerAria": "Wrap this {name} inside another element",
     "containerLearnPrefix": "About"
   },
