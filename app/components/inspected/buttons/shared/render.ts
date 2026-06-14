@@ -312,9 +312,11 @@ function buildInlineStyle(
     declarations.push(`border-width:${formatLength(props.borderWidth)}`, "border-style:solid");
   }
 
-  const hasAnyBorder =
-    hasIndividualBorder || (props.borderWidth != null && props.borderWidth.value > 0);
-  if (props.borderColor && hasAnyBorder) {
+  // Emit border-color whenever the user has set one, regardless of whether a
+  // border WIDTH override is active. A bare <button> already has a user-agent
+  // border, so the colour must be able to recolour it — otherwise changing the
+  // border colour with no width override does nothing visible in the preview.
+  if (props.borderColor) {
     declarations.push(`border-color:${props.borderColor}`);
   }
 

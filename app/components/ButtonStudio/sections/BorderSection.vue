@@ -11,13 +11,16 @@ const unitConv = useUnitConversion();
 const { t } = useI18n();
 
 const { enabled, toggle } = useToggleableSection(model, {
+  // Border WIDTH only. `borderColor` is owned by ColoursSection (its control
+  // lives there). Listing it here too made toggling either section flip the
+  // other on, because both seed/clear the same key and a section reads as
+  // "enabled" when any of its keys is non-null.
   keys: [
     "borderWidth",
     "borderTopWidth",
     "borderRightWidth",
     "borderBottomWidth",
     "borderLeftWidth",
-    "borderColor",
   ],
   enable: () => {
     const length = unitConv.fromPx(props.defaults.borderWidth, "px");
@@ -27,7 +30,6 @@ const { enabled, toggle } = useToggleableSection(model, {
       borderRightWidth: length,
       borderBottomWidth: length,
       borderLeftWidth: length,
-      borderColor: props.defaults.borderColor,
     };
   },
   disable: () => ({
@@ -36,7 +38,6 @@ const { enabled, toggle } = useToggleableSection(model, {
     borderRightWidth: undefined,
     borderBottomWidth: undefined,
     borderLeftWidth: undefined,
-    borderColor: undefined,
   }),
 });
 
