@@ -17,10 +17,7 @@ const INPUT_TYPE_BY_RENDER_AS: Partial<Record<ButtonRenderAs, string>> = {
 };
 
 function escapeHtml(value: string): string {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
+  return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
 function escapeAttribute(value: string): string {
@@ -46,13 +43,9 @@ function buildCss(props: Partial<ButtonProps>): string {
   const rules: string[] = [];
 
   if (props.focusRingEnabled) {
-    const width = props.focusRingWidth
-      ? formatLength(props.focusRingWidth)
-      : "2px";
+    const width = props.focusRingWidth ? formatLength(props.focusRingWidth) : "2px";
     const color = props.focusRingColor ?? "#1d4ed8";
-    const offset = props.focusRingOffset
-      ? formatLength(props.focusRingOffset)
-      : "2px";
+    const offset = props.focusRingOffset ? formatLength(props.focusRingOffset) : "2px";
     rules.push(
       `.${INSPECTED_CLASS}:focus-visible{outline:${width} solid ${color};outline-offset:${offset};}`,
     );
@@ -101,23 +94,23 @@ function buildCss(props: Partial<ButtonProps>): string {
     rules.push(
       `.${SWITCH_WRAP_CLASS}{display:inline-flex;flex-direction:column;align-items:flex-start;gap:0.8em;font-family:Arial, Helvetica, sans-serif;}`,
       `.${INSPECTED_CLASS}.${SWITCH_CLASS}{${hostDecls.join("")}}`,
-      `.${INSPECTED_CLASS}.${SWITCH_CLASS}::before{`
-      + `content:'';`
-      + `position:absolute;`
-      + `left:0.2em;`
-      + `top:50%;`
-      + `width:1.2em;`
-      + `height:1.2em;`
-      + `margin-top:-0.6em;`
-      + `border-radius:50%;`
-      + `background:#fff;`
-      + `box-shadow:0 1px 3px rgb(0 0 0 / 0.3);`
-      + `transition:left 220ms cubic-bezier(0.4, 0, 0.2, 1);`
-      + `pointer-events:none;`
-      + `}`,
-      `.${INSPECTED_CLASS}.${SWITCH_CLASS}.${PRESSED_CLASS}::before{`
-      + `left:calc(100% - 1.2em - 0.2em);`
-      + `}`,
+      `.${INSPECTED_CLASS}.${SWITCH_CLASS}::before{` +
+        `content:'';` +
+        `position:absolute;` +
+        `left:0.2em;` +
+        `top:50%;` +
+        `width:1.2em;` +
+        `height:1.2em;` +
+        `margin-top:-0.6em;` +
+        `border-radius:50%;` +
+        `background:#fff;` +
+        `box-shadow:0 1px 3px rgb(0 0 0 / 0.3);` +
+        `transition:left 220ms cubic-bezier(0.4, 0, 0.2, 1);` +
+        `pointer-events:none;` +
+        `}`,
+      `.${INSPECTED_CLASS}.${SWITCH_CLASS}.${PRESSED_CLASS}::before{` +
+        `left:calc(100% - 1.2em - 0.2em);` +
+        `}`,
     );
   }
 
@@ -126,11 +119,11 @@ function buildCss(props: Partial<ButtonProps>): string {
 
 function hasUserPadding(props: Partial<ButtonProps>): boolean {
   return (
-    props.padding != null
-    || props.paddingTop != null
-    || props.paddingRight != null
-    || props.paddingBottom != null
-    || props.paddingLeft != null
+    props.padding != null ||
+    props.paddingTop != null ||
+    props.paddingRight != null ||
+    props.paddingBottom != null ||
+    props.paddingLeft != null
   );
 }
 
@@ -155,9 +148,7 @@ function isPilledSwitch(props: Partial<ButtonProps>): boolean {
   // <input> can't host. Restrict to <button>-tag variants.
   const renderAs = props.renderAs ?? "button";
   const isButtonTag = !renderAs.startsWith("input-");
-  return (
-    isSwitchable(props) && props.switchPillStyling !== false && isButtonTag
-  );
+  return isSwitchable(props) && props.switchPillStyling !== false && isButtonTag;
 }
 
 function isInputCheckboxSwitch(props: Partial<ButtonProps>): boolean {
@@ -166,27 +157,20 @@ function isInputCheckboxSwitch(props: Partial<ButtonProps>): boolean {
 
 function buildElementClass(props: Partial<ButtonProps>): string | null {
   const tokens: string[] = [];
-  const pressed
-    = (isToggleable(props) && props.togglePressed)
-      || (isSwitchable(props) && props.switchChecked);
+  const pressed =
+    (isToggleable(props) && props.togglePressed) || (isSwitchable(props) && props.switchChecked);
   // The inspected-class marker also gates the iframe shell's change-event
   // bridge, so input-checkbox-switch needs it unconditionally — otherwise
   // a click on the rendered checkbox can't flip switchChecked back here.
-  const needsInspected
-    = props.focusRingEnabled
-      || isPilledSwitch(props)
-      || pressed
-      || isInputCheckboxSwitch(props);
+  const needsInspected =
+    props.focusRingEnabled || isPilledSwitch(props) || pressed || isInputCheckboxSwitch(props);
   if (needsInspected) tokens.push(INSPECTED_CLASS);
   if (isPilledSwitch(props)) tokens.push(SWITCH_CLASS);
   if (pressed) tokens.push(PRESSED_CLASS);
   return tokens.length ? tokens.join(" ") : null;
 }
 
-function withInspectedClass(
-  extraAttrs: string[],
-  props: Partial<ButtonProps>,
-): string[] {
+function withInspectedClass(extraAttrs: string[], props: Partial<ButtonProps>): string[] {
   const cls = buildElementClass(props);
   if (!cls) return extraAttrs;
   return [`class="${cls}"`, ...extraAttrs];
@@ -269,10 +253,7 @@ function formatLength(length: CssLength): string {
   return `${length.value}${length.unit}`;
 }
 
-function resolveSide(
-  explicit: CssLength | undefined,
-  shorthand: CssLength | undefined,
-): CssLength {
+function resolveSide(explicit: CssLength | undefined, shorthand: CssLength | undefined): CssLength {
   return explicit ?? shorthand ?? { value: 0, unit: "px" };
 }
 
@@ -290,11 +271,11 @@ function buildInlineStyle(
     declarations.push(`font-size:${formatLength(props.fontSize)}`);
   }
 
-  const hasIndividualPadding
-    = props.paddingTop != null
-      || props.paddingRight != null
-      || props.paddingBottom != null
-      || props.paddingLeft != null;
+  const hasIndividualPadding =
+    props.paddingTop != null ||
+    props.paddingRight != null ||
+    props.paddingBottom != null ||
+    props.paddingLeft != null;
 
   if (hasIndividualPadding) {
     const top = resolveSide(props.paddingTop, props.padding);
@@ -308,11 +289,11 @@ function buildInlineStyle(
     declarations.push(`padding:${formatLength(props.padding)}`);
   }
 
-  const hasIndividualBorder
-    = props.borderTopWidth != null
-      || props.borderRightWidth != null
-      || props.borderBottomWidth != null
-      || props.borderLeftWidth != null;
+  const hasIndividualBorder =
+    props.borderTopWidth != null ||
+    props.borderRightWidth != null ||
+    props.borderBottomWidth != null ||
+    props.borderLeftWidth != null;
 
   if (hasIndividualBorder) {
     const top = resolveSide(props.borderTopWidth, props.borderWidth);
@@ -327,15 +308,11 @@ function buildInlineStyle(
       `border-style:solid`,
     );
   } else if (props.borderWidth != null && props.borderWidth.value > 0) {
-    declarations.push(
-      `border-width:${formatLength(props.borderWidth)}`,
-      "border-style:solid",
-    );
+    declarations.push(`border-width:${formatLength(props.borderWidth)}`, "border-style:solid");
   }
 
-  const hasAnyBorder
-    = hasIndividualBorder
-      || (props.borderWidth != null && props.borderWidth.value > 0);
+  const hasAnyBorder =
+    hasIndividualBorder || (props.borderWidth != null && props.borderWidth.value > 0);
   if (props.borderColor && hasAnyBorder) {
     declarations.push(`border-color:${props.borderColor}`);
   }
@@ -349,14 +326,14 @@ function renderNativeButton(
   explicitType: string | undefined,
   externalLabelId?: string,
 ): string {
-  const label = escapeHtml(props.label ?? DEFAULT_LABEL);
+  const label = props.label ?? DEFAULT_LABEL;
   // When the label lives outside the button (pilled switch), the
   // accessible name is provided by aria-labelledby and the button's
   // text content is empty.
   const content = externalLabelId
     ? ""
     : props.contentType === "icon"
-      ? "<span aria-hidden=\"true\">&#128269;</span>"
+      ? '<span aria-hidden="true">&#128269;</span>'
       : label;
 
   const attrs: string[] = [];
@@ -378,11 +355,7 @@ function renderNativeButton(
   return `<button ${withInspectedClass(attrs, props).join(" ")}>${content}</button>`;
 }
 
-function renderInputButton(
-  type: string,
-  props: Partial<ButtonProps>,
-  style: string,
-): string {
+function renderInputButton(type: string, props: Partial<ButtonProps>, style: string): string {
   const value = props.label ?? "";
 
   const attrs: string[] = [`type="${type}"`];
@@ -403,11 +376,7 @@ function renderInputCheckboxSwitch(
   labelStyle: string,
 ): string {
   const label = escapeHtml(props.label ?? DEFAULT_LABEL);
-  const attrs: string[] = [
-    `id="${SWITCH_INPUT_ID}"`,
-    `type="checkbox"`,
-    `role="switch"`,
-  ];
+  const attrs: string[] = [`id="${SWITCH_INPUT_ID}"`, `type="checkbox"`, `role="switch"`];
   if (props.name) attrs.push(`name="${escapeAttribute(props.name)}"`);
   if (props.value) attrs.push(`value="${escapeAttribute(props.value)}"`);
   if (props.switchChecked) attrs.push("checked");
@@ -446,9 +415,8 @@ export function renderButton(props?: Partial<ButtonProps>): RenderedFragment {
   // thumb is em-based, and a checkbox ignores font-size entirely).
   const labelOutsideHost = pilled || renderAs === "input-checkbox-switch";
   const style = buildInlineStyle(props, { excludeFontSize: labelOutsideHost });
-  const labelStyle = labelOutsideHost && props.fontSize
-    ? `font-size:${formatLength(props.fontSize)}`
-    : "";
+  const labelStyle =
+    labelOutsideHost && props.fontSize ? `font-size:${formatLength(props.fontSize)}` : "";
   const css = buildCss(props);
 
   let element: string;
@@ -478,11 +446,11 @@ export function renderButton(props?: Partial<ButtonProps>): RenderedFragment {
   if (pilled) {
     const labelText = escapeHtml(props.label ?? DEFAULT_LABEL);
     const labelStyleAttr = labelStyle ? ` style="${labelStyle}"` : "";
-    element
-      = `<div class="${SWITCH_WRAP_CLASS}">`
-        + `<span id="${SWITCH_LABEL_ID}"${labelStyleAttr}>${labelText}</span>`
-        + element
-        + `</div>`;
+    element =
+      `<div class="${SWITCH_WRAP_CLASS}">` +
+      `<span id="${SWITCH_LABEL_ID}"${labelStyleAttr}>${labelText}</span>` +
+      element +
+      `</div>`;
   }
 
   // Disclosure pattern: the trigger sits above a reveal panel that
@@ -491,9 +459,7 @@ export function renderButton(props?: Partial<ButtonProps>): RenderedFragment {
   // the panel as absent when hidden, matching axe's accordion test.
   if (isDisclosure(props)) {
     // 1. Get and escape the text as normal
-    const rawText = escapeHtml(
-      props.disclosurePanelText ?? DEFAULT_DISCLOSURE_PANEL_TEXT,
-    );
+    const rawText = escapeHtml(props.disclosurePanelText ?? DEFAULT_DISCLOSURE_PANEL_TEXT);
 
     // 2. Split the text, wrap each sentence in <p> tags, and join it into a single HTML string
     const paragraphsHtml = rawText
@@ -506,34 +472,29 @@ export function renderButton(props?: Partial<ButtonProps>): RenderedFragment {
     const hiddenAttr = expanded ? "" : " hidden";
 
     // 3. Inject paragraphsHtml instead of `<p>${panelText}</p>`
-    element
-      = `<div class="${DISCLOSURE_WRAP_CLASS}">`
-        + element
-        + `<div id="${DISCLOSURE_PANEL_ID}" class="${DISCLOSURE_PANEL_CLASS}"${hiddenAttr}>`
-        + paragraphsHtml
-        + `</div>`
-        + `</div>`;
+    element =
+      `<div class="${DISCLOSURE_WRAP_CLASS}">` +
+      element +
+      `<div id="${DISCLOSURE_PANEL_ID}" class="${DISCLOSURE_PANEL_CLASS}"${hiddenAttr}>` +
+      paragraphsHtml +
+      `</div>` +
+      `</div>`;
   }
 
   if (isMenu(props)) {
-    const itemLabels = props.menuItems?.length
-      ? props.menuItems
-      : DEFAULT_MENU_ITEMS;
+    const itemLabels = props.menuItems?.length ? props.menuItems : DEFAULT_MENU_ITEMS;
     const itemsHtml = itemLabels
-      .map(
-        (label) =>
-          `<li role="menuitem" tabindex="-1">${escapeHtml(label)}</li>`,
-      )
+      .map((label) => `<li role="menuitem" tabindex="-1">${escapeHtml(label)}</li>`)
       .join("");
     const open = props.menuOpen === true;
     const hiddenAttr = open ? "" : " hidden";
-    element
-      = `<div class="${MENU_WRAP_CLASS}">`
-        + element
-        + `<ul id="${MENU_POPUP_ID}" class="${MENU_POPUP_CLASS}" role="menu"${hiddenAttr}>`
-        + itemsHtml
-        + `</ul>`
-        + `</div>`;
+    element =
+      `<div class="${MENU_WRAP_CLASS}">` +
+      element +
+      `<ul id="${MENU_POPUP_ID}" class="${MENU_POPUP_CLASS}" role="menu"${hiddenAttr}>` +
+      itemsHtml +
+      `</ul>` +
+      `</div>`;
   }
 
   return css ? { html: element, css } : { html: element };

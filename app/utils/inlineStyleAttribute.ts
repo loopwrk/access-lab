@@ -1,3 +1,5 @@
+//  Colours only ever come from the constrained colour pickers (hex/rgb(). Needs updating to handle escape chars if free-text colour entry is ever added.
+
 import type { CssLength } from "~/composables/useUnitConversion";
 import { formatCssLength } from "~/utils/formatCssLength";
 
