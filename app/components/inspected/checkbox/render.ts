@@ -410,7 +410,11 @@ export function renderCheckbox(
       .join("");
 
     const parent = renderRow(props, "al-checkbox", props.label ?? "");
-    const childrenLegend = escapeHtml(props.value ?? "Options");
+    // Fixed group title. The children's <legend> is incidental scaffolding,
+    // not form data — so it stays out of the way. (It used to borrow the
+    // `value` attribute, which confusingly renamed the group whenever the
+    // user edited the submitted value.)
+    const childrenLegend = "Options";
 
     html
       = `<div class="al-parent-children">`

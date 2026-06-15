@@ -30,12 +30,17 @@ const groupItemsText = computed({
   get: () => (model.value.groupItems ?? []).join("\n"),
   set: (value: string) => {
     const items = value.split("\n").map((s) => s.trim()).filter(Boolean);
-    update("groupItems", items);
-    // If the previously-selected item disappeared from the list,
-    // clear the selection so the rendered HTML stays consistent.
+    // Single combined write. Two back-to-back `update()` calls race through
+    // defineModel — the second reads `model.value` before the first emit has
+    // committed, so it spreads a stale copy and drops the `groupItems` change.
+    // That only bit when the cleared-selection branch ran (removing the
+    // currently-selected item), which silently reverted the list edit. Same
+    // fix CheckboxControls uses for its parent-sync writes.
+    const next: Partial<RadioProps> = { ...model.value, groupItems: items };
     if (model.value.selectedItem && !items.includes(model.value.selectedItem)) {
-      update("selectedItem", "");
+      next.selectedItem = "";
     }
+    model.value = next;
   },
 });
 

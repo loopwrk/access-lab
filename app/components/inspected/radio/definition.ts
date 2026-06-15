@@ -47,11 +47,11 @@ export const radioDefinition: ComponentDefinition<RadioProps> = {
 
   defaultProps: {
     renderAs: "input-radio",
-    name: "plan",
+    name: "habitat",
     wrappers: [],
-    label: "Which plan would you like?",
-    groupItems: ["Free", "Pro", "Enterprise"],
-    selectedItem: "Free",
+    label: "What's your favourite habitat?",
+    groupItems: ["Forest", "Wetland", "Grassland"],
+    selectedItem: "Forest",
     labelAssociation: "for-id",
     groupMode: "group-with-fieldset",
     required: false,
