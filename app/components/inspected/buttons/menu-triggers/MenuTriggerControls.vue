@@ -25,13 +25,16 @@ const tagName = menuTriggerDefinition.tagName;
 const { naturalSize } = useNaturalSize(model, tagName);
 const defaults = useButtonStudioDefaults(tagName);
 
-// Iframe click bridge: a trigger click flips menuOpen, which re-renders
-// the iframe with or without the `hidden` attribute on the popup. The
-// studio deliberately does not wire arrow-key navigation, Escape, or
-// outside-click — those belong in the production keyboard contract and
-// are covered by the manual checklist.
+// Iframe interaction bridge: the shell reports each trigger activation as a
+// `demo:activate` fact (see the data-al-interaction marker on the rendered
+// wrapper). We decide what it means here — flip menuOpen, which re-renders the
+// iframe with or without the `hidden` attribute on the popup. Listening for the
+// fact rather than `demo:click` means a type-less <button> (which the shell
+// treats as a submit elsewhere) still opens the popup. The studio deliberately
+// does not wire arrow-key navigation, Escape, or outside-click — those belong
+// in the production keyboard contract and are covered by the manual checklist.
 usePreviewMessage({
-  "demo:click": () => {
+  "demo:activate": () => {
     model.value.menuOpen = !model.value.menuOpen;
   },
 });

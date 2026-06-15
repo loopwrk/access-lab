@@ -1,0 +1,90 @@
+/**
+ * Architectural role: the iframe shell reports a trigger activation as a plain
+ * `demo:activate` fact (it no longer decides what the activation MEANS). This
+ * watcher is where the disclosure assigns meaning — flip disclosureExpanded,
+ * which re-renders the preview with the new ARIA state and reveals/hides the
+ * panel. Listening for the fact (not `demo:click`) is what lets a type-less
+ * <button> — which the shell treats as a submit elsewhere — still toggle.
+ *
+ * Nuxt env: DisclosureTriggerControls uses defineModel, usePreviewMessage, and
+ * real section components — only a live mount exercises the watcher honestly.
+ */
+
+import { afterEach, describe, expect, it } from "vitest";
+import { mountSuspended } from "@nuxt/test-utils/runtime";
+import { defineComponent, nextTick, ref } from "vue";
+import DisclosureTriggerControls from "~/components/inspected/buttons/disclosure-triggers/DisclosureTriggerControls.vue";
+import type { ButtonProps } from "~/components/inspected/buttons/shared/types";
+
+type Model = Partial<ButtonProps>;
+
+// Unmount between tests so each component's window "message" listener is torn
+// down (useEventListener cleans up on unmount) — otherwise a stale listener
+// from a previous test would also react to the dispatched message.
+let wrapper: { unmount: () => void } | null = null;
+afterEach(() => {
+  wrapper?.unmount();
+  wrapper = null;
+});
+
+function makeWrapper(initial: Model) {
+  const model = ref<Model>({ ...initial });
+  const Wrapper = defineComponent({
+    components: { DisclosureTriggerControls },
+    setup() {
+      return { model };
+    },
+    template: `<DisclosureTriggerControls v-model="model" />`,
+  });
+  return { model, Wrapper };
+}
+
+async function dispatch(type: string) {
+  // Mirrors what preview-shell.html posts; usePreviewMessage listens on window.
+  window.dispatchEvent(new MessageEvent("message", { data: { type } }));
+  await nextTick();
+  await nextTick();
+}
+
+describe("DisclosureTriggerControls — interprets the activation fact", () => {
+  it("flips disclosureExpanded on each demo:activate", async () => {
+    const { model, Wrapper } = makeWrapper({
+      renderAs: "button-button",
+      disclosureBehaviour: "aria-expanded",
+      disclosureExpanded: false,
+    });
+    wrapper = await mountSuspended(Wrapper);
+
+    await dispatch("demo:activate");
+    expect(model.value.disclosureExpanded).toBe(true); // panel reveals, aria flips
+
+    await dispatch("demo:activate");
+    expect(model.value.disclosureExpanded).toBe(false); // and hides again
+  });
+
+  it("toggles even for the none behaviour — the panel still reveals; only the ARIA differs", async () => {
+    const { model, Wrapper } = makeWrapper({
+      renderAs: "button-button",
+      disclosureBehaviour: "none",
+      disclosureExpanded: false,
+    });
+    wrapper = await mountSuspended(Wrapper);
+
+    await dispatch("demo:activate");
+    expect(model.value.disclosureExpanded).toBe(true);
+  });
+
+  it("ignores the legacy demo:click — disclosure has moved to the activation fact", async () => {
+    // Pins the migration: the shell now intercepts the disclosure trigger and
+    // posts demo:activate, so a stray demo:click must NOT move the panel.
+    const { model, Wrapper } = makeWrapper({
+      renderAs: "button-button",
+      disclosureBehaviour: "aria-expanded",
+      disclosureExpanded: false,
+    });
+    wrapper = await mountSuspended(Wrapper);
+
+    await dispatch("demo:click");
+    expect(model.value.disclosureExpanded).toBe(false);
+  });
+});

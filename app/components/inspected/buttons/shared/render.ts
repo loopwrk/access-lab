@@ -66,7 +66,7 @@ function buildCss(props: Partial<ButtonProps>): string {
   if (isDisclosure(props)) {
     rules.push(
       `.${DISCLOSURE_WRAP_CLASS}{display:inline-flex;flex-direction:column;align-items:flex-start;gap:0.6em;}`,
-      `.${DISCLOSURE_PANEL_CLASS}{border:1px solid #888;padding:0.6em 0.8em;border-radius:4px;font-family:inherit;}`,
+      `.${DISCLOSURE_PANEL_CLASS}{border:1px solid #888;padding:0.6em 0.8em;border-radius:4px;font-family:inherit;max-width:60ch;}`,
       `.${DISCLOSURE_PANEL_CLASS} p{margin:0;}`,
       `.${DISCLOSURE_PANEL_CLASS}[hidden]{display:none;}`,
     );
@@ -136,6 +136,11 @@ function isSwitchable(props: Partial<ButtonProps>): boolean {
   return props.switchBehaviour != null && props.switchBehaviour !== "none";
 }
 
+// Unlike isToggleable / isSwitchable above, these treat the "none" behaviour as
+// still being a disclosure / menu. The panel (or popup) is shown and hidden on
+// click regardless of behaviour — only the ARIA differs between behaviours. A
+// "none" toggle or switch, by contrast, is just a plain button with no state and
+// nothing extra to render, so those two exclude "none".
 function isDisclosure(props: Partial<ButtonProps>): boolean {
   return props.disclosureBehaviour != null;
 }
@@ -461,22 +466,26 @@ export function renderButton(props?: Partial<ButtonProps>): RenderedFragment {
   // native `hidden` attribute handles visibility — assistive tech treats
   // the panel as absent when hidden, matching axe's accordion test.
   if (isDisclosure(props)) {
-    // 1. Get and escape the text as normal
-    const rawText = escapeHtml(props.disclosurePanelText ?? DEFAULT_DISCLOSURE_PANEL_TEXT);
-
-    // 2. Split the text, wrap each sentence in <p> tags, and join it into a single HTML string
-    const paragraphsHtml = rawText
-      .split(/(?<=\.)\s+/) // Split on any spaces that come directly after a period
-      .filter((sentence) => sentence.trim().length > 0) // Filter out any empty strings
-      .map((sentence) => `<p>${sentence.trim()}</p>`) // Wrap each sentence
-      .join(""); // Join the array back into one continuous string
+    // A blank line starts a new paragraph — the plain-text convention authors
+    // already know (Markdown, email, every text box). Text with no blank line
+    // stays a single paragraph. We deliberately do not guess sentence
+    // boundaries: that mis-breaks on "e.g." and ignores "?" and "!".
+    const paragraphsHtml = escapeHtml(props.disclosurePanelText ?? DEFAULT_DISCLOSURE_PANEL_TEXT)
+      .split(/\n\s*\n/)
+      .map((paragraph) => paragraph.trim())
+      .filter((paragraph) => paragraph.length > 0)
+      .map((paragraph) => `<p>${paragraph}</p>`)
+      .join("");
 
     const expanded = props.disclosureExpanded === true;
     const hiddenAttr = expanded ? "" : " hidden";
 
-    // 3. Inject paragraphsHtml instead of `<p>${panelText}</p>`
+    // data-al-interaction marks this as a host-interpreted interaction: the
+    // shell reports the trigger activation as a plain fact and the disclosure
+    // controls decide what it means (flip disclosureExpanded). The marker sits
+    // on the studio wrapper, not the trigger, so the copied button stays clean.
     element =
-      `<div class="${DISCLOSURE_WRAP_CLASS}">` +
+      `<div class="${DISCLOSURE_WRAP_CLASS}" data-al-interaction="toggle">` +
       element +
       `<div id="${DISCLOSURE_PANEL_ID}" class="${DISCLOSURE_PANEL_CLASS}"${hiddenAttr}>` +
       paragraphsHtml +
@@ -491,8 +500,12 @@ export function renderButton(props?: Partial<ButtonProps>): RenderedFragment {
       .join("");
     const open = props.menuOpen === true;
     const hiddenAttr = open ? "" : " hidden";
+    // data-al-interaction marks this as a host-interpreted interaction (see the
+    // disclosure block above): the shell reports the trigger activation and the
+    // menu controls flip menuOpen. The marker sits on the studio wrapper, not
+    // the trigger, so the copied button stays clean.
     element =
-      `<div class="${MENU_WRAP_CLASS}">` +
+      `<div class="${MENU_WRAP_CLASS}" data-al-interaction="toggle">` +
       element +
       `<ul id="${MENU_POPUP_ID}" class="${MENU_POPUP_CLASS}" role="menu"${hiddenAttr}>` +
       itemsHtml +

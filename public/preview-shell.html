@@ -181,6 +181,26 @@
         var trigger = event.target.closest(TRIGGER_SELECTOR);
         if (!trigger) return;
 
+        // Declarative, host-interpreted interaction. When the trigger sits
+        // inside an element marked data-al-interaction, report the activation
+        // as a plain fact (demo:activate) and let the host assign meaning
+        // (e.g. a disclosure flips its panel). We then FALL THROUGH to the
+        // submit/reset heuristic below rather than returning: "the trigger was
+        // activated" and "this is a submit-typed button with no form" are
+        // independent facts, and both are worth teaching. So a type-less
+        // disclosure <button> both toggles its panel AND surfaces the same
+        // "no form to submit to" lesson as every other type-less button.
+        var interactionRoot = trigger.closest("[data-al-interaction]");
+        if (interactionRoot) {
+          parent.postMessage(
+            {
+              type: "demo:activate",
+              interaction: interactionRoot.getAttribute("data-al-interaction"),
+            },
+            window.location.origin,
+          );
+        }
+
         var form = trigger.closest("form");
         var triggerType = trigger.type || "submit";
         // <input type="image"> is a submit button per HTML spec.
@@ -204,7 +224,12 @@
           return;
         }
 
-        parent.postMessage({ type: "demo:click" }, window.location.origin);
+        // Generic activation for un-migrated components. Migrated ones (with a
+        // data-al-interaction marker) already reported demo:activate above, so
+        // they do not also need the generic click signal.
+        if (!interactionRoot) {
+          parent.postMessage({ type: "demo:click" }, window.location.origin);
+        }
       });
 
       // Native form-control changes route back to the host so the

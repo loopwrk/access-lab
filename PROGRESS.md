@@ -157,6 +157,16 @@ The codebase no longer hand-rolls lifecycle bookkeeping for events, timers, or d
 
 `usePreviewMessage(handlerMap)` is the single composable for parent-side iframe-message dispatch. Each pattern-specific controls component declares its handler map (e.g. `'demo:click': () => { … }`) instead of repeating the listener boilerplate. `useAxeAudit` is the one exception — it uses `useEventListener` directly because it filters on `event.source !== iframe.contentWindow`, which `usePreviewMessage` deliberately doesn't enforce.
 
+### Declarative iframe-interaction protocol (facts up, meaning on the host)
+
+The fix for "preview-shell.html accumulates per-component branches" (refactoring backlog item 9). The shell now reports a trigger activation as a plain **`demo:activate` fact** when the trigger sits inside an element marked **`data-al-interaction`**; the component's own controls decide what it means (e.g. flip `disclosureExpanded` / `menuOpen`). The marker lives on the studio **wrapper**, not the trigger, so the copied button stays clean semantic markup.
+
+Why it matters: a **new** component needing a host-driven interaction (the common case — disclosure, menu, and the upcoming modal/tabs/accordion are all open/close/active-state driven) adds the marker in its renderer plus a `usePreviewMessage({ "demo:activate": ... })` listener, and **never edits the shell**. The per-component logic grows on the host, where it is unit-testable, instead of in the shared static file.
+
+The shell posts `demo:activate` then **falls through** to the submit/reset heuristic rather than returning, so "the trigger was activated" and "this is a submit-typed button with no form" stay independent facts — a type-less `<button>` both toggles its panel and surfaces the same "no form to submit to" lesson as everywhere else. `demo:click` is now posted only for un-migrated triggers.
+
+Migrated so far: `buttons-disclosure-triggers`, `buttons-menu-triggers`. The remaining shell branches (switch-label forwarding, the div-combobox open/close/pick, the div-checkbox click forwarding) are existing in-iframe special cases — deliberately left for now and folded into the checkbox/select test batches (B8/B10), since migrating them is optional cleanup that changes behaviour on under-tested components.
+
 ### Type extraction for axe results
 
 `~/types/axe.ts` owns `AxeResult`, `NodeResult`, `CheckResult`, `ImpactValue`, `AxeState`. `useAxeResults()` is the single state-initializer. `useAxeAudit` no longer redeclares the same `useState` key. Same shape across writer and readers by construction.
@@ -251,7 +261,7 @@ A full audit for duplication, modularity, and convention drift. The button famil
 6. **`ButtonStudio/sections/` is misnamed.** All four form-input controls import `ResetDefaultsSection` from it; it has become the studio-wide section library. Rename (e.g. `app/components/studio/sections/`) and update AGENTS.md.
 7. **Inconsistent render contract.** `renderRadio` returns a plain string; its three siblings return `RenderedFragment`. Normalise to `RenderedFragment` and return optional fields as `undefined` instead of building conditional object shapes.
 8. **Shared prop slices re-declared per definition.** `fontSize` / `bg` / `fgText` / `borderColor` and the label-association union are repeated in all four form-input definitions. Extract shared types in `app/types/`.
-9. **`preview-shell.html` accumulates per-component branches** (switch-label forwarding, checkbox `indeterminate`, child-index routing, the combobox open/close/pick logic). Before starting modal/menu/tabs/accordion, design a declarative protocol (behaviour modules keyed off `data-al-*` markers) so new components ship their iframe behaviour alongside their renderer instead of editing the global shell. Treat this as a blocking design decision for the next component.
+9. **`preview-shell.html` accumulates per-component branches** (switch-label forwarding, checkbox `indeterminate`, child-index routing, the combobox open/close/pick logic). **Partially resolved** — the declarative `data-al-interaction` → `demo:activate` protocol is in place (see "Declarative iframe-interaction protocol" above), so new host-driven components (the common case, incl. modal/tabs/accordion) ship their behaviour via a marker + host listener and never edit the shell. The forward-looking goal — no shell growth for new components — is met. The **existing** in-iframe branches (switch-label forwarding, div-combobox open/close/pick, div-checkbox forwarding) remain and are deliberately deferred: migrating them is optional cleanup that changes behaviour on under-tested components, so it's folded into the checkbox/select test batches (B8/B10) to land under a net.
 10. **`VariantPicker.vue` still uses `defineProps` + `defineEmits("update:modelValue")`** — the last straggler from the `defineModel` migration.
 
 ### Known dev-console noise (accepted)
