@@ -45,9 +45,9 @@ export const disclosureTriggerDefinition: ComponentDefinition<ButtonProps> = {
 
   controls: [],
 
+  domRules: [targetSizeAA, targetSizeAAA],
+
   rules: [
-    targetSizeAA,
-    targetSizeAAA,
     focusableInAnchor,
     focusNotVisible,
     focusLowContrast,

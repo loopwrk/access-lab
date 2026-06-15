@@ -65,6 +65,7 @@ interface FormSubmittedMessage {
   type: "form:submitted";
   entries: FormSubmittedEntry[];
   wasImplicitSubmit: boolean;
+  wasImageSubmit: boolean;
 }
 
 /**
@@ -81,6 +82,13 @@ function buildSubmittedDescription(entries: FormSubmittedEntry[]): string {
 const formSubmittedAction = computed(() => [{
   label: t("studio.toasts.formSubmittedLink"),
   onClick: () => focusLearnTopic("form-wrapping"),
+  color: "neutral" as const,
+  variant: "link" as const,
+}]);
+
+const imageSubmitAction = computed(() => [{
+  label: t("studio.toasts.imageSubmitLink"),
+  onClick: () => focusLearnTopic("image-button-coordinates"),
   color: "neutral" as const,
   variant: "link" as const,
 }]);
@@ -108,12 +116,18 @@ usePreviewMessage({
       description: buildSubmittedDescription(submitted.entries),
       icon: "i-lucide-send",
       color: "info",
-      // The "Why did the button send a form submission?" prompt only
-      // makes sense when the submitter was a <button> with no type
-      // attribute — that's the implicit-submit pitfall the link
-      // explains. An explicit type="submit" button is doing exactly
-      // what the developer wrote, so the question is misleading.
-      actions: submitted.wasImplicitSubmit ? formSubmittedAction.value : undefined,
+      // Two optional follow-up links, mutually exclusive by construction:
+      //  - a type-less <button> defaulted to submit (the implicit-submit
+      //    pitfall) → "Why did the button send a form submission?"
+      //  - an <input type="image"> submit that also posts click
+      //    coordinates → "Why is the button attempting to submit coordinates?"
+      // An explicit type="submit" button is doing exactly what the
+      // developer wrote, so neither prompt applies.
+      actions: submitted.wasImplicitSubmit
+        ? formSubmittedAction.value
+        : submitted.wasImageSubmit
+          ? imageSubmitAction.value
+          : undefined,
     });
   },
   "form:reset": () => {

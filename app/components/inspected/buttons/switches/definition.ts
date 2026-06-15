@@ -105,9 +105,9 @@ export const switchDefinition: ComponentDefinition<ButtonProps> = {
 
   controls: [],
 
+  domRules: [targetSizeAA, targetSizeAAA],
+
   rules: [
-    targetSizeAA,
-    targetSizeAAA,
     focusableInAnchor,
     focusNotVisible,
     focusLowContrast,

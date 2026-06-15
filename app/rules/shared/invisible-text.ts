@@ -1,20 +1,28 @@
 import type { Rule } from "../types";
+import { _internal } from "~/composables/useContrast";
 
 /**
  * Detect when an element's text colour exactly matches its background.
  *
  * Why this rule exists: axe-core deliberately skips its `color-contrast`
- * check when foreground and background match exactly — the reasoning is
- * that an identical-colour pair is one of the legitimate techniques used
- * for screen-reader-only content (visually hidden labels, ARIA-described
- * context, etc.). Defensive behaviour for production audits, but it leaves
- * a gap in an exploratory tool where the user has deliberately picked both
- * colours from the same picker.
+ * check when foreground and background resolve to the same colour — an
+ * identical-colour pair is a legitimate screen-reader-only technique
+ * (visually hidden labels, ARIA-described context, etc.). That leaves a gap
+ * in an exploratory tool where the user has deliberately set both the same.
  *
+ * Colours are compared by PARSED value, not by string, so `#fff`, `#ffffff`
+ * and `rgb(255 255 255)` all count as the same colour — which is exactly the
+ * set axe skips, so a string-only check would leave that same gap. Falls back
+ * to a trimmed, case-insensitive string match for values the parser doesn't
+ * understand (e.g. named colours).
  */
-function normalizeColor(value: unknown): string | null {
-  if (typeof value !== "string") return null;
-  return value.trim().toLowerCase();
+function colorsMatch(a: string, b: string): boolean {
+  const pa = _internal.parseColor(a);
+  const pb = _internal.parseColor(b);
+  if (pa && pb) {
+    return pa.r === pb.r && pa.g === pb.g && pa.b === pb.b && pa.a === pb.a;
+  }
+  return a.toLowerCase() === b.toLowerCase();
 }
 
 export const invisibleText: Rule = {
@@ -28,9 +36,9 @@ export const invisibleText: Rule = {
   helpUrl: "https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html",
   learnTopicId: "invisible-text",
   evaluate(props) {
-    const bg = normalizeColor(props.bg);
-    const fg = normalizeColor(props.fgText);
-    if (!bg || !fg || bg !== fg) return null;
+    const fg = typeof props.fgText === "string" ? props.fgText.trim() : "";
+    const bg = typeof props.bg === "string" ? props.bg.trim() : "";
+    if (!fg || !bg || !colorsMatch(fg, bg)) return null;
     return {
       severity: "critical",
       measurement: `Text colour ${props.fgText} matches background ${props.bg} — content is invisible to sighted users.`,

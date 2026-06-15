@@ -1,5 +1,5 @@
 import type { Component } from "vue";
-import type { ManualChecklistItem, Rule } from "~/rules/types";
+import type { DomRule, ManualChecklistItem, Rule } from "~/rules/types";
 import type { LearnConceptId } from "~/utils/learnConcepts";
 
 /**
@@ -74,6 +74,13 @@ export interface ComponentDefinition<P = Record<string, unknown>> {
   controls: ControlSchema[];
   /** Component-specific prop-based rules. */
   rules: Rule[];
+  /**
+   * Component-specific DOM-measurement rules — evaluated against the rendered
+   * element's box (DomMeasurement), not its props. Use for checks that depend
+   * on runtime layout, e.g. target size. The shared content-overflow DomRule is
+   * applied universally by useInspectedComponent, so it need not be listed here.
+   */
+  domRules?: DomRule[];
   /** Manual review items shown in the Manual tab. */
   manualChecklist: ManualChecklistItem[];
   /**

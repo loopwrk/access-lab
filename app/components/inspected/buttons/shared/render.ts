@@ -337,7 +337,7 @@ function renderNativeButton(
     ? ""
     : props.contentType === "icon"
       ? '<span aria-hidden="true">&#128269;</span>'
-      : label;
+      : escapeHtml(label);
 
   const attrs: string[] = [];
   if (explicitType) attrs.push(`type="${explicitType}"`);

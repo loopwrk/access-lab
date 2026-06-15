@@ -50,7 +50,7 @@ export function useInspectedComponent(
     definition.tagName,
   );
 
-  useDomRules([contentOverflow]);
+  useDomRules([contentOverflow, ...(definition.domRules ?? [])]);
 
   const { setOutput } = useRenderedHtml();
   const unitConv = useUnitConversion();

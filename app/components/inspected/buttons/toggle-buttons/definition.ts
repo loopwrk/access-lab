@@ -109,9 +109,9 @@ export const toggleButtonDefinition: ComponentDefinition<ButtonProps> = {
 
   controls: [],
 
+  domRules: [targetSizeAA, targetSizeAAA],
+
   rules: [
-    targetSizeAA,
-    targetSizeAAA,
     focusableInAnchor,
     focusNotVisible,
     focusLowContrast,

@@ -241,11 +241,11 @@ chrome**.
 |------|------|:-----------:|:-------------:|-------|
 | A1 | Pure utils & formatting | ◑ | ◑ | Done: escapeHtml, formatCssLength, valueFromLabel, inlineStyleAttribute, associateLabel, issueFormatting, prettifyCss, prettifyHtml (unit fallback + nuxt DOM path), domIds. **Remaining:** Learn-vocab drift guard (learnConcepts/learnCategories vs content.config.ts) |
 | A2 | Contrast (math + badge) | ☑ | ☑ | `useContrast._internal` math + round-then-compare fix (`roundRatio`) + removed dead `passes`; `ContrastBadge` verdict→label + 2-dp ratio test (icon is `aria-hidden`/decorative, so the text label is the pinned cue). |
-| A3 | Unit conversion | ☐ | ☐ | |
-| A4 | Shared rules | ☐ | ☐ | |
-| A5 | Audit pipeline & shared composables | ☐ | ☐ | |
-| B1 | buttons-action-triggers | ☐ | ☐ | |
-| B2 | buttons-form-buttons | ☐ | ☐ | |
+| A3 | Unit conversion | ☑ | ☑ | `useUnitConversion` (nuxt): px↔rem, the **dual reference** (simulated-root vs fixed-16 slider), `convertLength`, `resolveProps` (rem demo → rules), `hasRem`/`isCssLength`, 2-dp round-trip contract. No bug — code confirmed correct. |
+| A4 | Shared rules | ☑ | ☑ | `vague-label` (effective-name/aria-override/icon), `content-overflow` (X/Y/both), `invisible-text` — **fixed** to compare parsed colours (catches `#fff`==`#ffffff`, the gap axe also skips), browser-verified end-to-end. |
+| A5 | Audit pipeline & shared composables | ☑ | ☑ | `useCustomRules`/`useDomRules` translation + replace/clear, `useAllViolations` merge order, `useAxeCounts` bucketing (serious+critical/moderate+minor, axe-only passes), `useButtonControlsModel` direct-mutation, `useToggleableSection`, `useManualReview` progress (`useInlineToClass` already covered). No bugs found. |
+| B1 | buttons-action-triggers | ☐ | ☑ | `button-render.test.ts` (render: button vs button-button, name/icon/escaping, clean-markup-by-default, focus-ring CSS, border-color) + `button-shared-rules.test.ts` (target-size AA/AAA + no-double-report, focus-visible ×2, focusable-in-anchor; shared with B2). Controls panel is pure section composition — no watcher to unit-test. target-size converted to a DOM-measurement rule (`DomRule` reading `DomMeasurement.targetWidth/Height`, the control's offsetWidth/Height measured in the iframe) so an unsized button grades its real rendered size, not a phantom `0 × 0`; DOM rules are now declarable per-definition via `ComponentDefinition.domRules`. |
+| B2 | buttons-form-buttons | ☐ | ☑ | `form-button-render.test.ts` (naming by element: `<button>` content vs `<input>` value vs `<input type=image>` alt; value-prop ignored; image form data) + `form-button-controls.test.ts` (nuxt: contentType-clear, label-restore-vs-bespoke, form-wrap-by-default + non-form-wrapper-survives watchers). |
 | B3 | buttons-toggle-buttons | ☐ | ☐ | |
 | B4 | buttons-switches | ☐ | ☐ | |
 | B5 | buttons-disclosure-triggers | ☐ | ☐ | |

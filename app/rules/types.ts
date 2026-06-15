@@ -34,6 +34,14 @@ export interface DomMeasurement {
   clientWidth: number;
   scrollHeight: number;
   clientHeight: number;
+  /**
+   * The interactive control's rendered border-box (offsetWidth/offsetHeight of
+   * the button/input inside the mount, not the outer wrapper). Lets the
+   * target-size rules grade the size the user actually sees, rather than a
+   * declared width/height prop that is usually unset.
+   */
+  targetWidth: number;
+  targetHeight: number;
 }
 
 /**
