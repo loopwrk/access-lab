@@ -240,7 +240,7 @@ chrome**.
 | Batch | Area | Manual pass | Tests written | Notes |
 |------|------|:-----------:|:-------------:|-------|
 | A1 | Pure utils & formatting | ◑ | ◑ | Done: escapeHtml, formatCssLength, valueFromLabel, inlineStyleAttribute, associateLabel, issueFormatting, prettifyCss, prettifyHtml (unit fallback + nuxt DOM path), domIds. **Remaining:** Learn-vocab drift guard (learnConcepts/learnCategories vs content.config.ts) |
-| A2 | Contrast (math + badge) | ☐ | ☐ | |
+| A2 | Contrast (math + badge) | ☑ | ☑ | `useContrast._internal` math + round-then-compare fix (`roundRatio`) + removed dead `passes`; `ContrastBadge` verdict→label + 2-dp ratio test (icon is `aria-hidden`/decorative, so the text label is the pinned cue). |
 | A3 | Unit conversion | ☐ | ☐ | |
 | A4 | Shared rules | ☐ | ☐ | |
 | A5 | Audit pipeline & shared composables | ☐ | ☐ | |

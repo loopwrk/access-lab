@@ -14,7 +14,6 @@ export interface ContrastOptions {
 export interface ContrastResult {
   ratio: ComputedRef<number>;
   verdict: ComputedRef<ContrastVerdict>;
-  passes: ComputedRef<{ AA: boolean; AAA: boolean }>;
 }
 
 interface Rgba {
@@ -115,6 +114,17 @@ function wcag2ContrastRatio(fg: Rgb, bg: Rgb): number {
   return (lighter + 0.05) / (darker + 0.05);
 }
 
+/**
+ * Round a contrast ratio to 2 decimal places — the WCAG-tooling convention
+ * (axe-core, WebAIM). The badge displays this value AND every threshold
+ * comparison (the verdict here, the custom rules via computeRatio) uses it, so
+ * the number shown can never contradict the verdict — e.g. a raw 4.497 becomes
+ * 4.50 and reads as AA, not "4.50 · AA (large text only)".
+ */
+function roundRatio(ratio: number): number {
+  return Math.round(ratio * 100) / 100;
+}
+
 /* ----------------------------------------------------------------------
  * Verdict bucketing
  * -------------------------------------------------------------------- */
@@ -178,7 +188,7 @@ function computeRatio(
 
   switch (options.algorithm) {
     case "wcag2":
-      return wcag2ContrastRatio(flatFg, flatBg);
+      return roundRatio(wcag2ContrastRatio(flatFg, flatBg));
     default: {
       // Exhaustiveness — TS will error here when a new algorithm is added.
       const _exhaustive: never = options.algorithm;
@@ -196,7 +206,7 @@ function computeRatio(
  * Reactive WCAG contrast calculation.
  *
  * @example
- * const { ratio, verdict, passes } = useContrast(
+ * const { ratio, verdict } = useContrast(
  *   () => modelValue.fgText,
  *   () => modelValue.bg,
  *   { fontSizePx: () => modelValue.fontSize, bold: false }
@@ -227,19 +237,7 @@ export function useContrast(
     ),
   );
 
-  const passes = computed(() => {
-    const r = ratio.value;
-    const large = isLargeText(
-      toValue(options.fontSizePx) ?? 16,
-      toValue(options.bold) ?? false,
-    );
-    return {
-      AA: r >= (large ? 3 : 4.5),
-      AAA: r >= (large ? 4.5 : 7),
-    };
-  });
-
-  return { ratio, verdict, passes };
+  return { ratio, verdict };
 }
 
 export const _internal = {
@@ -247,6 +245,7 @@ export const _internal = {
   flatten,
   relativeLuminance,
   wcag2ContrastRatio,
+  roundRatio,
   isLargeText,
   bucketVerdict,
   computeRatio,
