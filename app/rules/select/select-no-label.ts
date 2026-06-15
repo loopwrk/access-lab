@@ -11,6 +11,12 @@ export const selectNoLabel: Rule = {
     "Add a `<label>` associated to the select via `for`/`id`, wrap the select in a `<label>`, or set `aria-label` for cases where a visible label genuinely cannot be shown.",
   helpUrl: "https://www.w3.org/WAI/WCAG22/Understanding/name-role-value.html",
   learnTopicId: "select",
+  // axe already reports a missing accessible name for both render paths this
+  // rule covers — `select-name` for the native `<select>`, `aria-input-field-name`
+  // for the `<div role="combobox">`. Defer to axe so the problem surfaces once,
+  // not twice (see useAllViolations); this select-specific card only shows as a
+  // fallback if axe hasn't run or errored. The sibling inputs rely on axe alone.
+  supersededByAxe: ["select-name", "aria-input-field-name"],
   evaluate(props) {
     const labelText = typeof props.label === "string" ? props.label.trim() : "";
     if (props.labelAssociation === "none") {

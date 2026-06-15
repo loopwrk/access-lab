@@ -24,10 +24,17 @@ const optionsText = computed({
   get: () => (model.value.options ?? []).join("\n"),
   set: (value: string) => {
     const items = value.split("\n").map((s) => s.trim()).filter(Boolean);
-    update("options", items);
+    // Single combined write. Two back-to-back `update()` calls race through
+    // defineModel — the second reads `model.value` before the first emit has
+    // committed, so it spreads a stale copy and drops the `options` change.
+    // That only bit when the cleared-selection branch ran (removing the
+    // currently-selected option), which silently reverted the list edit. Same
+    // fix RadioControls uses for its group-items writes.
+    const next: Partial<SelectProps> = { ...model.value, options: items };
     if (model.value.selectedOption && !items.includes(model.value.selectedOption)) {
-      update("selectedOption", "");
+      next.selectedOption = "";
     }
+    model.value = next;
   },
 });
 

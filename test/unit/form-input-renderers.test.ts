@@ -13,6 +13,7 @@ import { renderCheckbox } from "../../app/components/inspected/checkbox/render";
 import { renderInput } from "../../app/components/inspected/input/render";
 import { renderRadio } from "../../app/components/inspected/radio/render";
 import { renderSelect } from "../../app/components/inspected/select/render";
+import type { SelectProps } from "../../app/components/inspected/select/definition";
 
 describe("renderRadio", () => {
   const baseProps = {
@@ -222,6 +223,23 @@ describe("renderInput", () => {
 });
 
 describe("renderSelect", () => {
+  // The decorative caret (U+25BE) the combobox trigger emits, factored out so
+  // the byte-exact assertions below read cleanly.
+  const ARROW = "▾";
+
+  // The wrapping <div> the renderer always adds (layout-only, so the preview
+  // shell's flex #mount doesn't make label + control side-by-side flex items).
+  const nativeBase: Partial<SelectProps> = {
+    renderAs: "select-native",
+    label: "Pet",
+    options: ["Cat", "Dog"],
+    name: "pet",
+  };
+
+  it("renders a bare select for the no-props reset path (no wrapping div, no css)", () => {
+    expect(renderSelect()).toEqual({ html: "<select></select>" });
+  });
+
   it("renders a native select with a for-id label, options, and styles", () => {
     const { html } = renderSelect({
       label: "Pet",
@@ -236,6 +254,179 @@ describe("renderSelect", () => {
         '<select class="al-inspected-element" name="pet" id="al-select" style="font-size: 16px">' +
         '<option value="cat">Cat</option><option value="dog" selected>Dog</option>' +
         "</select></div>",
+    );
+  });
+
+  it("associates the label four ways for the native select", () => {
+    expect(renderSelect({ ...nativeBase, labelAssociation: "wrapping" }).html).toBe(
+      '<div><label><span style="display: block; margin-bottom: 4px">Pet</span>' +
+        '<select class="al-inspected-element" name="pet">' +
+        '<option value="cat">Cat</option><option value="dog">Dog</option></select></label></div>',
+    );
+    expect(renderSelect({ ...nativeBase, labelAssociation: "aria-label" }).html).toBe(
+      '<div><select class="al-inspected-element" name="pet" aria-label="Pet">' +
+        '<option value="cat">Cat</option><option value="dog">Dog</option></select></div>',
+    );
+    expect(renderSelect({ ...nativeBase, labelAssociation: "none" }).html).toBe(
+      '<div><select class="al-inspected-element" name="pet">' +
+        '<option value="cat">Cat</option><option value="dog">Dog</option></select></div>',
+    );
+  });
+
+  it("appends required and disabled after the identity attributes", () => {
+    const { html } = renderSelect({
+      ...nativeBase,
+      labelAssociation: "for-id",
+      options: ["Cat"],
+      required: true,
+      disabled: true,
+    });
+    expect(html).toContain(
+      '<select class="al-inspected-element" name="pet" id="al-select" required disabled>',
+    );
+  });
+
+  it("emits the placeholder row as disabled+selected only while no real option is chosen", () => {
+    const noChoice = renderSelect({
+      ...nativeBase,
+      labelAssociation: "for-id",
+      hasPlaceholder: true,
+    }).html;
+    expect(noChoice).toContain(
+      '<select class="al-inspected-element" name="pet" id="al-select">' +
+        '<option value="" disabled selected>--Please choose an option--</option>' +
+        '<option value="cat">Cat</option><option value="dog">Dog</option></select>',
+    );
+
+    // With a real option chosen, the placeholder stays present but loses
+    // `selected` — the chosen option takes it instead.
+    const withChoice = renderSelect({
+      ...nativeBase,
+      labelAssociation: "for-id",
+      hasPlaceholder: true,
+      selectedOption: "Dog",
+    }).html;
+    expect(withChoice).toContain('<option value="" disabled>--Please choose an option--</option>');
+    expect(withChoice).toContain('<option value="dog" selected>Dog</option>');
+  });
+
+  it("renders an empty select (no option elements) when the options list is empty", () => {
+    const { html } = renderSelect({ ...nativeBase, labelAssociation: "for-id", options: [] });
+    expect(html).toBe(
+      '<div><label for="al-select" style="display: block; margin-bottom: 4px">Pet</label>' +
+        '<select class="al-inspected-element" name="pet" id="al-select"></select></div>',
+    );
+  });
+
+  it("renders select-multiple with the multiple attribute and never a placeholder row", () => {
+    const { html, css } = renderSelect({
+      ...nativeBase,
+      renderAs: "select-multiple",
+      labelAssociation: "for-id",
+      hasPlaceholder: true, // ignored — every option of a multi-select is visible
+    });
+    expect(html).toBe(
+      '<div><label for="al-select" style="display: block; margin-bottom: 4px">Pet</label>' +
+        '<select class="al-inspected-element" multiple name="pet" id="al-select">' +
+        '<option value="cat">Cat</option><option value="dog">Dog</option></select></div>',
+    );
+    expect(html).not.toContain("--Please choose an option--");
+    expect(css).toBeUndefined();
+  });
+
+  it("renders the div-combobox anti-pattern without listbox/option roles by default", () => {
+    const { html, css } = renderSelect({
+      ...nativeBase,
+      renderAs: "div-combobox",
+      labelAssociation: "for-id",
+    });
+    expect(html).toBe(
+      "<div>" +
+        '<label style="display: block; margin-bottom: 4px">Pet</label>' +
+        '<div class="al-div-combobox-trigger al-inspected-element" role="combobox"'
+        + ' aria-expanded="false" tabindex="0">'
+        + `<span>Choose an option</span><span aria-hidden="true">${ARROW}</span></div>`
+        + '<div class="al-div-combobox-popup" id="al-combobox-popup" hidden>'
+        + '<div data-option="cat">Cat</div><div data-option="dog">Dog</div></div>'
+        + "</div>",
+    );
+    // The combobox is the one select variant that ships its own CSS.
+    expect(css).toContain(".al-div-combobox-trigger{");
+  });
+
+  it("opts the combobox into aria-controls + role=listbox/option together when both flags are set", () => {
+    const { html } = renderSelect({
+      ...nativeBase,
+      renderAs: "div-combobox",
+      labelAssociation: "aria-label",
+      comboboxAriaControls: true,
+      comboboxListboxRole: true,
+    });
+    expect(html).toBe(
+      "<div>"
+        + '<div class="al-div-combobox-trigger al-inspected-element" role="combobox"'
+        + ' aria-expanded="false" tabindex="0" aria-controls="al-combobox-popup" aria-label="Pet">'
+        + `<span>Choose an option</span><span aria-hidden="true">${ARROW}</span></div>`
+        + '<div class="al-div-combobox-popup" id="al-combobox-popup" role="listbox" hidden>'
+        + '<div data-option="cat" role="option">Cat</div>'
+        + '<div data-option="dog" role="option">Dog</div></div>'
+        + "</div>",
+    );
+  });
+
+  it("ties the listbox role to the option roles, independent of aria-controls", () => {
+    const onlyControls = renderSelect({
+      ...nativeBase,
+      renderAs: "div-combobox",
+      labelAssociation: "none",
+      options: ["Cat"],
+      comboboxAriaControls: true,
+    }).html;
+    expect(onlyControls).toContain('aria-controls="al-combobox-popup"');
+    expect(onlyControls).not.toContain('role="listbox"');
+    expect(onlyControls).not.toContain('role="option"');
+
+    const onlyListbox = renderSelect({
+      ...nativeBase,
+      renderAs: "div-combobox",
+      labelAssociation: "none",
+      options: ["Cat"],
+      comboboxListboxRole: true,
+    }).html;
+    expect(onlyListbox).not.toContain("aria-controls");
+    expect(onlyListbox).toContain(
+      '<div class="al-div-combobox-popup" id="al-combobox-popup" role="listbox" hidden>',
+    );
+    expect(onlyListbox).toContain('<div data-option="cat" role="option">Cat</div>');
+  });
+
+  it("shows the selected option text in the combobox trigger instead of the placeholder hint", () => {
+    const { html } = renderSelect({
+      ...nativeBase,
+      renderAs: "div-combobox",
+      labelAssociation: "none",
+      selectedOption: "Dog",
+    });
+    expect(html).toContain("<span>Dog</span>");
+    expect(html).not.toContain("Choose an option");
+  });
+
+  it("wraps the combobox trigger+popup inside the label for the wrapping mode", () => {
+    const { html } = renderSelect({
+      ...nativeBase,
+      renderAs: "div-combobox",
+      labelAssociation: "wrapping",
+      options: ["Cat"],
+    });
+    expect(html).toBe(
+      "<div>"
+        + '<label><span style="display: block; margin-bottom: 4px">Pet</span>'
+        + '<div class="al-div-combobox-trigger al-inspected-element" role="combobox"'
+        + ' aria-expanded="false" tabindex="0">'
+        + `<span>Choose an option</span><span aria-hidden="true">${ARROW}</span></div>`
+        + '<div class="al-div-combobox-popup" id="al-combobox-popup" hidden>'
+        + '<div data-option="cat">Cat</div></div></label>'
+        + "</div>",
     );
   });
 });
