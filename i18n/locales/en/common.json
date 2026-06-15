@@ -175,11 +175,8 @@
       "submitNoForm": "This button has no form to submit to. Wrap it in a form element to see the submission captured.",
       "resetNoForm": "This button has no form to reset. Wrap it in a form element to see the reset captured.",
       "submitNoFormLink": "Why is the button attempting to submit a form?",
-      "formSubmittedLink": "Why did the button send a form submission?"
+      "formSubmittedLink": "Why did the button send a form submission?",
+      "imageSubmitLink": "Why is the button attempting to submit coordinates?"
     }
-  },
-  "switches": {
-    "toastTitle": "Notification",
-    "toastDescription": "This is the notification the switch controls. Toggle the switch off to dismiss it."
   }
 }

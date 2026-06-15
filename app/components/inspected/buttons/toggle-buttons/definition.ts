@@ -62,6 +62,25 @@ function injectOnclickHandler(html: string): string {
   return html.replace("<button ", `<button onclick="toggleBold()" `);
 }
 
+// The shared renderer emits a generic magnifying-glass glyph for any icon-
+// content button. Toggle buttons specifically demonstrate Bold, so when the
+// user turns on icon content we swap in the Lucide "bold" icon instead. Scoped
+// to this component only — every other button keeps the shared magnifier.
+// SHARED_ICON is the exact markup renderNativeButton emits in shared/render.ts;
+// the replace is a no-op for text content (the string isn't present). The icon
+// is sized in em and strokes in currentColor so it tracks the button's font
+// size and text colour like the magnifier it replaces.
+const SHARED_ICON = "<span aria-hidden=\"true\">&#128269;</span>";
+const BOLD_ICON
+  = "<span aria-hidden=\"true\" style=\"display: inline-flex; vertical-align: middle;\">"
+    + "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"1em\" height=\"1em\" viewBox=\"0 0 24 24\">"
+    + "<path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M6 12h9a4 4 0 0 1 0 8H7a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h7a4 4 0 0 1 0 8\"/>"
+    + "</svg></span>";
+
+function swapInBoldIcon(html: string): string {
+  return html.replace(SHARED_ICON, BOLD_ICON);
+}
+
 // Toggle buttons always render with a paragraph of sample text below
 // the inspected button. When the toggle is pressed, the text is wrapped
 // in `<strong>` so the user sees the toggle's effect happen on real
@@ -71,7 +90,7 @@ function injectOnclickHandler(html: string): string {
 // that surrounds the button — it's a sibling that demonstrates state.
 function renderToggleButton(props?: Partial<ButtonProps>): RenderedFragment {
   const { html, css } = renderButton(props);
-  const htmlWithHandler = injectOnclickHandler(html);
+  const htmlWithHandler = swapInBoldIcon(injectOnclickHandler(html));
   const pressed = props?.togglePressed === true;
   const formatted = pressed ? `<strong>${SAMPLE_TEXT}</strong>` : SAMPLE_TEXT;
   const wrapped
@@ -109,9 +128,9 @@ export const toggleButtonDefinition: ComponentDefinition<ButtonProps> = {
 
   controls: [],
 
+  domRules: [targetSizeAA, targetSizeAAA],
+
   rules: [
-    targetSizeAA,
-    targetSizeAAA,
     focusableInAnchor,
     focusNotVisible,
     focusLowContrast,

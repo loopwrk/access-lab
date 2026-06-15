@@ -11,6 +11,7 @@ import {
   focusNotVisible,
   focusLowContrast,
 } from "~/rules/buttons/shared/focus-visible";
+import { ariaLabelWithoutVisibleContent } from "~/rules/buttons/shared/aria-label-without-visible-content";
 import { buttonManualChecklist } from "~/rules/buttons/shared/manual-checklist";
 import type { ComponentDefinition } from "~/types/component";
 
@@ -38,12 +39,13 @@ export const actionTriggerDefinition: ComponentDefinition<ButtonProps> = {
 
   controls: [],
 
+  domRules: [targetSizeAA, targetSizeAAA],
+
   rules: [
-    targetSizeAA,
-    targetSizeAAA,
     focusableInAnchor,
     focusNotVisible,
     focusLowContrast,
+    ariaLabelWithoutVisibleContent,
   ],
   manualChecklist: buttonManualChecklist,
   render: renderButton,

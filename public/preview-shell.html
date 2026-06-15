@@ -51,19 +51,13 @@
         var text = document.querySelector("p");
         if (!text) return;
         var isBold = text.querySelector("strong") !== null;
-        text.innerHTML = isBold
-          ? text.textContent
-          : "<strong>" + text.textContent + "</strong>";
+        text.innerHTML = isBold ? text.textContent : "<strong>" + text.textContent + "</strong>";
       };
 
       window.addEventListener("message", function (e) {
         if (e.data && e.data.type === "preview:render") {
-          if (
-            typeof e.data.rootFontSize === "number" &&
-            e.data.rootFontSize > 0
-          ) {
-            document.documentElement.style.fontSize =
-              e.data.rootFontSize + "px";
+          if (typeof e.data.rootFontSize === "number" && e.data.rootFontSize > 0) {
+            document.documentElement.style.fontSize = e.data.rootFontSize + "px";
           }
           frameworkCss.textContent = e.data.css || "";
           mount.innerHTML = e.data.html;
@@ -87,6 +81,11 @@
             // independently of axe (and so axe failures don't block this).
             var target = mount.firstElementChild;
             if (target) {
+              // Overflow grades the outer rendered element; target-size grades
+              // the interactive control's border-box (the button/input itself,
+              // which may sit inside a form/anchor/wrapper). Fall back to the
+              // outer element when there is no control (non-button components).
+              var control = mount.querySelector("button, input") || target;
               parent.postMessage(
                 {
                   type: "overflow:result",
@@ -96,6 +95,8 @@
                     clientWidth: target.clientWidth,
                     scrollHeight: target.scrollHeight,
                     clientHeight: target.clientHeight,
+                    targetWidth: control.offsetWidth,
+                    targetHeight: control.offsetHeight,
                   },
                 },
                 window.location.origin,
@@ -150,10 +151,7 @@
       document.addEventListener(
         "pointerdown",
         function () {
-          parent.postMessage(
-            { type: "preview:pointerdown" },
-            window.location.origin,
-          );
+          parent.postMessage({ type: "preview:pointerdown" }, window.location.origin);
         },
         true,
       );
@@ -183,6 +181,26 @@
         var trigger = event.target.closest(TRIGGER_SELECTOR);
         if (!trigger) return;
 
+        // Declarative, host-interpreted interaction. When the trigger sits
+        // inside an element marked data-al-interaction, report the activation
+        // as a plain fact (demo:activate) and let the host assign meaning
+        // (e.g. a disclosure flips its panel). We then FALL THROUGH to the
+        // submit/reset heuristic below rather than returning: "the trigger was
+        // activated" and "this is a submit-typed button with no form" are
+        // independent facts, and both are worth teaching. So a type-less
+        // disclosure <button> both toggles its panel AND surfaces the same
+        // "no form to submit to" lesson as every other type-less button.
+        var interactionRoot = trigger.closest("[data-al-interaction]");
+        if (interactionRoot) {
+          parent.postMessage(
+            {
+              type: "demo:activate",
+              interaction: interactionRoot.getAttribute("data-al-interaction"),
+            },
+            window.location.origin,
+          );
+        }
+
         var form = trigger.closest("form");
         var triggerType = trigger.type || "submit";
         // <input type="image"> is a submit button per HTML spec.
@@ -198,21 +216,20 @@
         // is no form to act on. Surface the misuse via an error toast so
         // the user understands why nothing visible happened.
         if (!form && isSubmit) {
-          parent.postMessage(
-            { type: "form:submitMissingForm" },
-            window.location.origin,
-          );
+          parent.postMessage({ type: "form:submitMissingForm" }, window.location.origin);
           return;
         }
         if (!form && isReset) {
-          parent.postMessage(
-            { type: "form:resetMissingForm" },
-            window.location.origin,
-          );
+          parent.postMessage({ type: "form:resetMissingForm" }, window.location.origin);
           return;
         }
 
-        parent.postMessage({ type: "demo:click" }, window.location.origin);
+        // Generic activation for un-migrated components. Migrated ones (with a
+        // data-al-interaction marker) already reported demo:activate above, so
+        // they do not also need the generic click signal.
+        if (!interactionRoot) {
+          parent.postMessage({ type: "demo:click" }, window.location.origin);
+        }
       });
 
       // Native form-control changes route back to the host so the
@@ -231,10 +248,7 @@
 
         // <select> — post the picked value + label so the host can
         // resolve back to the original option in its model.
-        if (
-          el.tagName === "SELECT"
-          && el.classList.contains("al-inspected-element")
-        ) {
+        if (el.tagName === "SELECT" && el.classList.contains("al-inspected-element")) {
           var selectEl = /** @type {HTMLSelectElement} */ (el);
           var picked = selectEl.selectedOptions[0];
           parent.postMessage(
@@ -242,14 +256,12 @@
               type: "select:change",
               value: selectEl.value,
               label: picked ? (picked.textContent || "").trim() : "",
-              values: Array.prototype.map.call(
-                selectEl.selectedOptions,
-                function (o) { return o.value; },
-              ),
-              labels: Array.prototype.map.call(
-                selectEl.selectedOptions,
-                function (o) { return (o.textContent || "").trim(); },
-              ),
+              values: Array.prototype.map.call(selectEl.selectedOptions, function (o) {
+                return o.value;
+              }),
+              labels: Array.prototype.map.call(selectEl.selectedOptions, function (o) {
+                return (o.textContent || "").trim();
+              }),
             },
             window.location.origin,
           );
@@ -364,15 +376,21 @@
           });
         }
         var wasImplicitSubmit = !!(
-          submitter
-          && submitter.tagName === "BUTTON"
-          && !submitter.hasAttribute("type")
+          submitter &&
+          submitter.tagName === "BUTTON" &&
+          !submitter.hasAttribute("type")
+        );
+        var wasImageSubmit = !!(
+          submitter &&
+          submitter.tagName === "INPUT" &&
+          submitter.type === "image"
         );
         parent.postMessage(
           {
             type: "form:submitted",
             entries: entries,
             wasImplicitSubmit: wasImplicitSubmit,
+            wasImageSubmit: wasImageSubmit,
           },
           window.location.origin,
         );

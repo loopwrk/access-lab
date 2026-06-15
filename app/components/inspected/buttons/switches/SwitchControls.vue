@@ -32,9 +32,13 @@ const defaults = useButtonStudioDefaults(tagName);
 // and a real screen reader announces it. The input-checkbox-switch
 // variant is always an active switch regardless of `switchBehaviour`
 // (the markup hardcodes role="switch"), so we skip the behaviour gate
-// for that variant. The dark-mode background flip is driven from the
-// render output's CSS (a :has() rule reads aria-checked), so no extra
-// side-effect is needed here.
+// for that variant. The dark-mode background itself is flipped by the
+// rendered element's inline `onclick="toggleDarkMode()"` (defined in
+// preview-shell.html, paired with the `body.dark-mode { … }` rule the
+// render emits) — the production-style hook shown in the HTML / JS panes.
+// That visual toggle is deliberately decoupled from the ARIA state: it is
+// what lets the `none` behaviour flip dark mode for mouse users while
+// exposing nothing to assistive tech — the anti-pattern this demo teaches.
 usePreviewMessage({
   "demo:click": () => {
     if (model.value.renderAs !== "input-checkbox-switch") {

@@ -13,7 +13,7 @@ import {
 } from "~/rules/buttons/shared/focus-visible";
 import { disclosureNoState } from "~/rules/buttons/disclosure-triggers/disclosure-no-state";
 import { disclosureStateOutOfSync } from "~/rules/buttons/disclosure-triggers/disclosure-state-out-of-sync";
-import { buttonManualChecklist } from "~/rules/buttons/shared/manual-checklist";
+import { disclosureTriggerManualChecklist } from "~/rules/buttons/disclosure-triggers/manual-checklist";
 import type { ComponentDefinition } from "~/types/component";
 
 export const disclosureTriggerDefinition: ComponentDefinition<ButtonProps> = {
@@ -45,9 +45,9 @@ export const disclosureTriggerDefinition: ComponentDefinition<ButtonProps> = {
 
   controls: [],
 
+  domRules: [targetSizeAA, targetSizeAAA],
+
   rules: [
-    targetSizeAA,
-    targetSizeAAA,
     focusableInAnchor,
     focusNotVisible,
     focusLowContrast,
@@ -62,10 +62,10 @@ export const disclosureTriggerDefinition: ComponentDefinition<ButtonProps> = {
     "native-rendering",
   ],
   relevantConcepts: ["button-element", "aria-state", "disclosure-pattern", "accessible-name"],
-  manualChecklist: buttonManualChecklist,
+  manualChecklist: disclosureTriggerManualChecklist,
   render: renderButton,
   controlsComponent: defineAsyncComponent(
-    () => import("./DisclosureControls.vue"),
+    () => import("./DisclosureTriggerControls.vue"),
   ),
   // The panel reveal IS the feedback — a generic "Click event fired"
   // toast on top of that would be noise.

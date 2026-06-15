@@ -39,9 +39,9 @@ export const formButtonDefinition: ComponentDefinition<ButtonProps> = {
 
   controls: [],
 
+  domRules: [targetSizeAA, targetSizeAAA],
+
   rules: [
-    targetSizeAA,
-    targetSizeAAA,
     focusableInAnchor,
     focusNotVisible,
     focusLowContrast,
@@ -52,6 +52,7 @@ export const formButtonDefinition: ComponentDefinition<ButtonProps> = {
     "button-value-attribute",
     "accessible-name",
     "vague-label",
+    "image-button-coordinates",
   ],
   relevantConcepts: ["button-element", "form-context", "accessible-name", "disabled-state"],
   manualChecklist: buttonManualChecklist,

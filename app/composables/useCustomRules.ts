@@ -12,6 +12,7 @@ function violationToAxeResult(
     help: rule.help,
     helpUrl: rule.helpUrl ?? "",
     learnTopicId: rule.learnTopicId,
+    supersededByAxe: rule.supersededByAxe,
     impact: result.severity,
     tags: rule.tags ?? [],
     nodes: [

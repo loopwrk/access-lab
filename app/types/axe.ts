@@ -35,6 +35,13 @@ export interface AxeResult {
   tags: string[];
   nodes: NodeResult[];
   learnTopicId?: string;
+  /**
+   * Custom/DOM rules only: axe rule ids that already report this same finding.
+   * When any is present in the axe results, this violation is suppressed in
+   * favour of axe's own (see useAllViolations). Never set on results that come
+   * straight from axe.
+   */
+  supersededByAxe?: string[];
 }
 
 export interface AxeState {
