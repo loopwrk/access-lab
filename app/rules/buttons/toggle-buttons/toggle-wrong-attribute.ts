@@ -13,6 +13,12 @@ export const toggleWrongAttribute: Rule = {
     "`aria-checked` is only valid on widgets whose role expects it — checkbox, radio, switch. On a plain `<button>` the attribute isn't part of the role's supported state set, so assistive tech may ignore it or announce inconsistently.",
   help: "For a button toggle, use `aria-pressed` instead. If you genuinely want switch semantics (an on/off setting), give the element `role=\"switch\"` and use `aria-checked`.",
   helpUrl: "https://www.w3.org/TR/wai-aria-1.2/#button",
+  // axe-core's `aria-allowed-attr` already reports aria-checked on a plain
+  // button (it is not a permitted attribute on role=button), so defer to axe:
+  // this rule is suppressed whenever axe reports it (see useAllViolations) and
+  // only surfaces as a fallback if axe is unavailable. The "use aria-pressed,
+  // or role=switch" guidance lives in the toggle-buttons Learn topic.
+  supersededByAxe: ["aria-allowed-attr"],
   evaluate(props) {
     if (props.toggleBehaviour !== "aria-checked") return null;
     return {

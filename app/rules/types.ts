@@ -18,6 +18,14 @@ export interface Rule {
    * `helpUrl`, which switches tabs and moves focus to the matching topic.
    */
   learnTopicId?: string;
+  /**
+   * axe-core rule ids that already report this same problem. When any is
+   * present in the axe results, this custom rule's violation is suppressed so
+   * axe's own finding wins (see useAllViolations). Use only for the rare
+   * custom rule that overlaps a real axe rule rather than filling a gap axe
+   * misses — most custom rules exist precisely because axe is silent.
+   */
+  supersededByAxe?: string[];
   evaluate: (props: Record<string, unknown>) => ViolationResult | null;
 }
 

@@ -298,8 +298,18 @@ rules that go beyond what axe checks:
 - **content-overflow** (shared DOM rule): warns when text is clipped
   or visually truncated, supporting SC 1.4.10 Reflow and SC 1.4.4
   Resize Text.
-- **target-size** (button-specific): mirrors axe's WCAG 2.2 rule but
-  surfaces it in the prop-based pipeline so the user sees it react
-  live as they change padding and font-size.
+- **target-size** (button-specific, DOM-measurement rule): reproduces axe's
+  WCAG 2.2 target-size check against the control's measured border-box
+  (`DomMeasurement.targetWidth/Height`), so the user sees it react live as they
+  change width / padding / font-size. It is intentionally stricter than axe's
+  own rule, which exempts spacing / inline / user-agent-default targets —
+  AccessLab teaches the raw 24×24 (AA) and 44×44 (AAA) sizes directly.
 
 These are documented in the source files alongside each rule.
+
+When a custom rule overlaps a real axe rule rather than filling a gap, it
+declares `supersededByAxe: [axeRuleId]` and the merge layer
+(`useAllViolations` / `useAxeCounts`) drops it in favour of axe's own finding,
+so one mistake surfaces as one issue. The only current example is
+**toggle-wrong-attribute**, which defers to axe's `aria-allowed-attr` for
+`aria-checked` on a plain button.

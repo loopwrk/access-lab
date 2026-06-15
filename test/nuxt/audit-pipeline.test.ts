@@ -52,6 +52,16 @@ const ruleNever: Rule = {
   tags: [],
   evaluate: () => null,
 };
+const ruleSupersedable: Rule = {
+  id: "custom-dup",
+  title: "",
+  wcag: "",
+  description: "",
+  help: "",
+  tags: [],
+  supersededByAxe: ["axe-dup"],
+  evaluate: (p) => (p.fireDup ? { severity: "serious", measurement: "dup msg" } : null),
+};
 const domRuleCritical: DomRule = {
   id: "dom-crit",
   title: "",
@@ -87,7 +97,7 @@ let api: Api;
 beforeAll(async () => {
   const Wrapper = defineComponent({
     setup() {
-      const custom = useCustomRules([ruleSerious, ruleModerate, ruleNever], "button");
+      const custom = useCustomRules([ruleSerious, ruleModerate, ruleNever, ruleSupersedable], "button");
       useDomRules([domRuleCritical]);
       const axe = useAxeResults();
       const measurement = useState<DomMeasurement | null>("dom-measurement", () => null);
@@ -170,5 +180,28 @@ describe("useAllViolations + useDomRules", () => {
     await nextTick();
     expect(api.allViolations.value.some((v) => v.id === "dom-crit")).toBe(false);
     expect(api.criticalCount.value).toBe(0);
+  });
+});
+
+describe("axe-wins suppression (supersededByAxe)", () => {
+  it("drops a custom violation and stops counting it when its superseding axe rule is present", async () => {
+    api.axe.value.violations = [axeRes("axe-dup", "critical")];
+    api.custom.evaluate({ fireDup: true });
+    await nextTick();
+    // custom-dup declares supersededByAxe: ["axe-dup"]; axe reported axe-dup,
+    // so axe wins — the custom duplicate is neither listed nor counted, so one
+    // mistake is one critical, not two.
+    expect(api.allViolations.value.map((v) => v.id)).toEqual(["axe-dup"]);
+    expect(api.criticalCount.value).toBe(1);
+  });
+
+  it("keeps the custom violation when axe has not reported the superseding rule (graceful fallback)", async () => {
+    api.axe.value.violations = [];
+    api.custom.evaluate({ fireDup: true });
+    await nextTick();
+    // axe is silent here (e.g. it errored or hasn't run), so the custom rule
+    // still provides coverage rather than the issue going unreported.
+    expect(api.allViolations.value.map((v) => v.id)).toEqual(["custom-dup"]);
+    expect(api.criticalCount.value).toBe(1);
   });
 });

@@ -1,8 +1,4 @@
 /**
- * Characterisation of the shared button renderer for the form-button paths -
- * batch B2: submit / reset / button across `<button>` and `<input>`, plus the
- * `<input type="image">` coordinate-submit button.
- *
  * The lesson this component teaches is WHERE a control's accessible name comes
  * from, and that source differs by element. So these tests are organised
  * around naming, and each pins the byte-exact markup (the artefact axe audits

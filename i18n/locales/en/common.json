@@ -204,9 +204,5 @@
       "formSubmittedLink": "Why did the button send a form submission?",
       "imageSubmitLink": "Why is the button attempting to submit coordinates?"
     }
-  },
-  "switches": {
-    "toastTitle": "Notification",
-    "toastDescription": "This is the notification the switch controls. Toggle the switch off to dismiss it."
   }
 }

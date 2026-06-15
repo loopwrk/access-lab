@@ -1,8 +1,3 @@
-/**
- * Focused regression test, not the full button-render characterisation — that
- * is batch B1 in UNITTESTS.md.
- */
-
 import { describe, expect, it } from "vitest";
 import { renderButton } from "../../app/components/inspected/buttons/shared/render";
 
