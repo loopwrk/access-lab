@@ -3,6 +3,8 @@ import { formSubmitWrapper } from "./wrappers";
 import { inputManualChecklist } from "~/rules/input/manual-checklist";
 import { placeholderContrast } from "~/rules/input/placeholder-contrast";
 import { ariaLabelWithoutVisibleLabel } from "~/rules/input/aria-label-without-visible-label";
+import { numberInputForFormattedValue } from "~/rules/input/number-for-formatted-value";
+import { missingAutocomplete } from "~/rules/input/missing-autocomplete";
 import type { ComponentDefinition } from "~/types/component";
 import type { CssLength } from "~/composables/useUnitConversion";
 
@@ -15,7 +17,8 @@ export type InputLabelAssociation
   = | "for-id" // <label for="x"><input id="x"> + label sibling
     | "wrapping" // <label><input> Text </label>
     | "aria-label" // <input aria-label="..."> (no visible text label)
-    | "none"; // <input> with no accessible name — anti-pattern
+    | "none" // <input> with no accessible name — anti-pattern
+    | "title"; // <input title="..."> — named only by a tooltip (anti-pattern; trips axe label-title-only)
 
 /**
  * Set of `type=` values the studio surfaces in the variant picker.
@@ -44,6 +47,13 @@ export interface InputProps {
   placeholder: string;
   helpText: string;
   name: string;
+  /**
+   * The `autocomplete` token (e.g. "email", "tel", "postal-code"). When set,
+   * the renderer emits it on the input. An invalid value trips axe's own
+   * `autocomplete-valid`; a missing value on an identifiable field trips the
+   * `input-missing-autocomplete` custom rule.
+   */
+  autocomplete?: string;
   required: boolean;
   disabled: boolean;
   labelAssociation: InputLabelAssociation;
@@ -151,7 +161,12 @@ export const inputDefinition: ComponentDefinition<InputProps> = {
   ],
   contextWrappers: [formSubmitWrapper],
   controls: [],
-  rules: [placeholderContrast, ariaLabelWithoutVisibleLabel],
+  rules: [
+    placeholderContrast,
+    ariaLabelWithoutVisibleLabel,
+    numberInputForFormattedValue,
+    missingAutocomplete,
+  ],
   manualChecklist: inputManualChecklist,
   render: renderInput,
   controlsComponent: defineAsyncComponent(() => import("./InputControls.vue")),

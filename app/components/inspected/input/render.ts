@@ -21,9 +21,14 @@ interface InputAttrs {
   id: string;
   type: string;
   name: string;
+  autocomplete?: string;
   placeholder: string;
   required: boolean;
   disabled: boolean;
+  // Title-only naming (the `labelAssociation: "title"` anti-pattern): the
+  // label text goes into the title attribute and nowhere else, so the field's
+  // only accessible name is a tooltip. axe flags it via `label-title-only`.
+  title?: string;
   ariaLabel?: string;
   ariaDescribedby?: string;
   ariaHidden: boolean;
@@ -36,11 +41,15 @@ function inputTag(attrs: InputAttrs): string {
     `id="${attrs.id}"`,
     `name="${escapeHtml(attrs.name)}"`,
   ];
+  if (attrs.autocomplete) {
+    parts.push(`autocomplete="${escapeHtml(attrs.autocomplete)}"`);
+  }
   if (attrs.placeholder) {
     parts.push(`placeholder="${escapeHtml(attrs.placeholder)}"`);
   }
   if (attrs.required) parts.push("required");
   if (attrs.disabled) parts.push("disabled");
+  if (attrs.title) parts.push(`title="${escapeHtml(attrs.title)}"`);
   if (attrs.ariaLabel)
     parts.push(`aria-label="${escapeHtml(attrs.ariaLabel)}"`);
   if (attrs.ariaDescribedby) {
@@ -138,9 +147,12 @@ export function renderInput(props?: Partial<InputProps>): RenderedFragment {
     id: "al-input",
     type: props?.renderAs ?? "text",
     name: props?.name ?? "",
+    autocomplete: props?.autocomplete || undefined,
     placeholder: props?.placeholder ?? "",
     required: props?.required === true,
     disabled: props?.disabled === true,
+    // Title-only mode names the field through the title attribute alone.
+    title: association === "title" ? rawLabel : undefined,
     // When the user opts in via the Attributes section's aria-label
     // checkbox, the input gets `aria-label="<labelText>"` regardless
     // of label-association mode. The aria-label mode below also sets
@@ -161,7 +173,9 @@ export function renderInput(props?: Partial<InputProps>): RenderedFragment {
       : labelStyleAttr(props?.labelStyle, ["display:block", "margin-bottom:4px", "margin-right:8px"]);
 
   let body = associateLabel({
-    association,
+    // Title-only renders a bare control (named by the title attribute set
+    // above); axe's label-title-only flags it. Other modes pass through.
+    association: association === "title" ? "none" : association,
     controlId: "al-input",
     labelText: rawLabel,
     labelStyle,

@@ -49,7 +49,7 @@
           "statusNote": "Triggers the email keyboard on mobile devices. Pair with autocomplete=\"email\" for autofill."
         },
         "tel": {
-          "statusNote": "Triggers the phone keyboard on mobile devices. Does not validate format — use the pattern attribute or JavaScript for that."
+          "statusNote": "Triggers the phone keyboard on mobile devices. Does not validate format - use the pattern attribute or JavaScript for that."
         },
         "url": {
           "statusNote": "Triggers a URL keyboard with a .com key on mobile devices."
@@ -58,7 +58,7 @@
           "statusNote": "Masks the input visually. Browsers offer password manager integration; do not disable it."
         },
         "number": {
-          "statusNote": "Restricts input to digits and strips leading zeros — avoid for credit card numbers, phone numbers, and postal codes; use inputmode=\"numeric\" on a text input instead."
+          "statusNote": "Restricts input to digits and strips leading zeros - avoid for credit card numbers, phone numbers, and postal codes; use inputmode=\"numeric\" on a text input instead."
         },
         "search": {
           "statusNote": "Triggers the search keyboard on mobile devices and may add a clear button to the input."
@@ -85,15 +85,15 @@
     "select": {
       "variants": {
         "select-native": {
-          "description": "The native single-choice select element. Renders as the platform picker — a wheel on iOS, a list on Android, an OS dropdown on desktop.",
+          "description": "The native single-choice select element. Renders as the platform picker - a wheel on iOS, a list on Android, an OS dropdown on desktop.",
           "statusNote": "Browsers handle keyboard activation, type-ahead, focus management, and accessible role for free."
         },
         "select-multiple": {
           "description": "Native multi-select with the multiple attribute. Renders as a visible list-box; users hold Cmd/Ctrl to select more than one.",
-          "statusNote": "The multi-select interaction is not visually discoverable — pair it with a usage hint near the field."
+          "statusNote": "The multi-select interaction is not visually discoverable - pair it with a usage hint near the field."
         },
         "div-combobox": {
-          "description": "A div with role=\"combobox\" — no listbox, no aria-controls, no keyboard handling. The canonical broken-custom-select pattern.",
+          "description": "A div with role=\"combobox\" - no listbox, no aria-controls, no keyboard handling. The canonical broken-custom-select pattern.",
           "statusNote": "Avoid. Sighted mouse users see a dropdown; keyboard and screen reader users cannot operate the control."
         }
       }

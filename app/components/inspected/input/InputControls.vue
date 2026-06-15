@@ -170,6 +170,7 @@ const LABEL_OPTIONS: { value: InputLabelAssociation; labelKey: string }[] = [
   { value: "wrapping", labelKey: "controls.input.labelWrapping" },
   { value: "aria-label", labelKey: "controls.input.labelAriaLabel" },
   { value: "none", labelKey: "controls.input.labelNone" },
+  { value: "title", labelKey: "controls.input.labelTitleOnly" },
 ];
 
 const labelAssociation = computed(() => model.value.labelAssociation ?? "for-id");
@@ -357,6 +358,18 @@ useVariantLabelSync(model, {
           :placeholder="t('controls.input.namePlaceholder')"
           class="w-full"
           @update:model-value="update('name', $event)"
+        />
+      </UFormField>
+
+      <UFormField class="flex flex-col">
+        <template #label>
+          <span class="control-group-title">{{ t('controls.input.autocomplete') }}</span>
+        </template>
+        <UInput
+          :model-value="model.autocomplete ?? ''"
+          :placeholder="t('controls.input.autocompletePlaceholder')"
+          class="w-full"
+          @update:model-value="update('autocomplete', $event)"
         />
       </UFormField>
 

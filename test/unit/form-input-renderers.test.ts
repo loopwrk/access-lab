@@ -202,6 +202,23 @@ describe("renderInput", () => {
     expect(css).toBe("#al-input::placeholder{color:#999;}");
     expect(html).not.toContain("#999");
   });
+
+  it("emits the autocomplete attribute when set (valid or invalid — axe judges validity), omits it otherwise", () => {
+    expect(renderInput({ label: "Email", name: "email", autocomplete: "email" }).html).toContain(
+      'autocomplete="email"',
+    );
+    expect(renderInput({ label: "Email", name: "email", autocomplete: "emial" }).html).toContain(
+      'autocomplete="emial"',
+    );
+    expect(renderInput({ label: "Email", name: "email" }).html).not.toContain("autocomplete");
+  });
+
+  it("renders the title-only anti-pattern: named only by title, with no label or aria-label", () => {
+    const { html } = renderInput({ label: "Email", name: "email", labelAssociation: "title" });
+    expect(html).toBe('<div><input type="text" id="al-input" name="email" title="Email" /></div>');
+    expect(html).not.toContain("<label");
+    expect(html).not.toContain("aria-label");
+  });
 });
 
 describe("renderSelect", () => {
