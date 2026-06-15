@@ -28,12 +28,8 @@ if (!definition && !isLegacyButton) {
 </script>
 
 <template>
-  <ComingSoon
-    v-if="definition?.placeholder"
-    :name="definition.name"
-  />
   <ComponentStudio
-    v-else-if="definition"
+    v-if="definition"
     :definition="definition"
   />
 </template>

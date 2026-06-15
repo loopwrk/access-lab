@@ -1,6 +1,6 @@
 # AccessLab
 
-AccessLab is a browser-based accessibility laboratory for developers. Users tune the properties of common UI components - buttons, accordions, carousels, modals, menus, tooltips, tabs, form fields etc, in real time. AccessLab instantly surfaces accessibility violations against WCAG&nbsp;2.2 and offers a structured manual review for the issues automated tools can't see.
+AccessLab is a browser-based accessibility laboratory for developers. Users tune the properties of common UI components - buttons and form fields - in real time. AccessLab instantly surfaces accessibility violations against WCAG&nbsp;2.2 and offers a structured manual review for the issues automated tools can't see.
 
 Two things differentiate it from a generic accessibility checker:
 

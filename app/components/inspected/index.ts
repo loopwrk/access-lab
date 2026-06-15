@@ -9,17 +9,15 @@ import { inputDefinition } from "./input/definition";
 import { checkboxDefinition } from "./checkbox/definition";
 import { radioDefinition } from "./radio/definition";
 import { selectDefinition } from "./select/definition";
-import { placeholderDefinitions } from "./placeholders";
 
 /**
  * Registry of every inspected component the studio can render. Keyed
- * by ComponentId; real definitions override the placeholder spread.
+ * by ComponentId.
  */
 export const inspectedComponents: Record<
   ComponentId,
   ComponentDefinition<Record<string, unknown>>
 > = {
-  ...placeholderDefinitions,
   "buttons-action-triggers": actionTriggerDefinition as unknown as ComponentDefinition<
     Record<string, unknown>
   >,

@@ -12,11 +12,6 @@
     "brand": "AccessLab",
     "ariaLabel": "Application bar"
   },
-  "comingSoon": {
-    "ariaLabel": "Coming soon notice",
-    "title": "{name} is coming soon",
-    "body": "We're still building support for this component. In the meantime, pick another component from the sidebar to start auditing. Button is ready to go."
-  },
   "errorPage": {
     "ariaLabel": "Error notice",
     "title404": "404: page not found",

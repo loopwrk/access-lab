@@ -10,7 +10,7 @@ Current snapshot of what is built, what is in flight, and what remains. Update t
 
 **What runs today:** the full Studio shell, all four inspector tabs (Controls, Issues, Manual, Learn), the three-engine audit pipeline (axe-core + prop-based custom rules + DOM-based rules), the Read Mode reader at `/learn/<topicId>`, and ten inspected components — six in the button family plus four form inputs.
 
-**What's not done:** six placeholder components (accordion, carousel, modal, menu, tooltip, tabs), the test suite (vitest scaffolding only), and the axe-playwright CI accessibility gate.
+**What's not done:** the test suite (vitest scaffolding only) and the axe-playwright CI accessibility gate.
 
 ---
 
@@ -161,7 +161,7 @@ The codebase no longer hand-rolls lifecycle bookkeeping for events, timers, or d
 
 The fix for "preview-shell.html accumulates per-component branches" (refactoring backlog item 9). The shell now reports a trigger activation as a plain **`demo:activate` fact** when the trigger sits inside an element marked **`data-al-interaction`**; the component's own controls decide what it means (e.g. flip `disclosureExpanded` / `menuOpen`). The marker lives on the studio **wrapper**, not the trigger, so the copied button stays clean semantic markup.
 
-Why it matters: a **new** component needing a host-driven interaction (the common case — disclosure, menu, and the upcoming modal/tabs/accordion are all open/close/active-state driven) adds the marker in its renderer plus a `usePreviewMessage({ "demo:activate": ... })` listener, and **never edits the shell**. The per-component logic grows on the host, where it is unit-testable, instead of in the shared static file.
+Why it matters: a **new** component needing a host-driven interaction (the common case — disclosure and menu triggers are open/close/active-state driven) adds the marker in its renderer plus a `usePreviewMessage({ "demo:activate": ... })` listener, and **never edits the shell**. The per-component logic grows on the host, where it is unit-testable, instead of in the shared static file.
 
 The shell posts `demo:activate` then **falls through** to the submit/reset heuristic rather than returning, so "the trigger was activated" and "this is a submit-typed button with no form" stay independent facts — a type-less `<button>` both toggles its panel and surfaces the same "no form to submit to" lesson as everywhere else. `demo:click` is now posted only for un-migrated triggers.
 
@@ -217,18 +217,9 @@ A codebase audit found the baseline broken on a clean working tree (one type err
 
 ## Remaining work
 
-### Components (6)
+### Components
 
-Six placeholders in `app/components/inspected/placeholders.ts`:
-
-- `accordion`
-- `carousel`
-- `modal`
-- `menu`
-- `tooltip`
-- `tabs`
-
-Each needs the full New Component Checklist: definition.ts + render.ts + XControls.vue + custom rules folder + manual checklist + Learn topic markdown + a registry entry in `inspected/index.ts` and a nav entry in `AppSidebar.vue`. The order of building is product-driven; modal probably wins for accessibility density (focus trap, return-focus, role=dialog vs alertdialog), menu wins for cross-pollination with `buttons-menu-triggers`.
+The studio covers a fixed set of ten inspected components (six button-family patterns + four form inputs). The earlier placeholder stubs (accordion, carousel, modal, menu, tooltip, tabs), the `placeholders.ts` registry spread, and the `ComingSoon` page were removed — there is no longer a placeholder mechanism, and those slugs now 404 like any unknown component.
 
 The file picker (`<input type="file">` + label-wrap pattern) was scoped for the button family but parked — the trigger is a `<label>`, not a `<button>`, so it would need a new render branch and `'label-file'` renderAs.
 
@@ -261,7 +252,7 @@ A full audit for duplication, modularity, and convention drift. The button famil
 6. **`ButtonStudio/sections/` is misnamed.** All four form-input controls import `ResetDefaultsSection` from it; it has become the studio-wide section library. Rename (e.g. `app/components/studio/sections/`) and update AGENTS.md.
 7. **Inconsistent render contract.** `renderRadio` returns a plain string; its three siblings return `RenderedFragment`. Normalise to `RenderedFragment` and return optional fields as `undefined` instead of building conditional object shapes.
 8. **Shared prop slices re-declared per definition.** `fontSize` / `bg` / `fgText` / `borderColor` and the label-association union are repeated in all four form-input definitions. Extract shared types in `app/types/`.
-9. **`preview-shell.html` accumulates per-component branches** (switch-label forwarding, checkbox `indeterminate`, child-index routing, the combobox open/close/pick logic). **Partially resolved** — the declarative `data-al-interaction` → `demo:activate` protocol is in place (see "Declarative iframe-interaction protocol" above), so new host-driven components (the common case, incl. modal/tabs/accordion) ship their behaviour via a marker + host listener and never edit the shell. The forward-looking goal — no shell growth for new components — is met. The **existing** in-iframe branches (switch-label forwarding, div-combobox open/close/pick, div-checkbox forwarding) remain and are deliberately deferred: migrating them is optional cleanup that changes behaviour on under-tested components, so it's folded into the checkbox/select test batches (B8/B10) to land under a net.
+9. **`preview-shell.html` accumulates per-component branches** (switch-label forwarding, checkbox `indeterminate`, child-index routing, the combobox open/close/pick logic). **Partially resolved** — the declarative `data-al-interaction` → `demo:activate` protocol is in place (see "Declarative iframe-interaction protocol" above), so new host-driven components (the common case) ship their behaviour via a marker + host listener and never edit the shell. The forward-looking goal — no shell growth for new components — is met. The **existing** in-iframe branches (switch-label forwarding, div-combobox open/close/pick, div-checkbox forwarding) remain and are deliberately deferred: migrating them is optional cleanup that changes behaviour on under-tested components, so it's folded into the checkbox/select test batches (B8/B10) to land under a net.
 10. **`VariantPicker.vue` still uses `defineProps` + `defineEmits("update:modelValue")`** — the last straggler from the `defineModel` migration.
 
 ### Known dev-console noise (accepted)
@@ -335,7 +326,6 @@ access-lab/
     │   ├── ManualReviewPanel.vue   # UCheckbox checklist + progress badge.
     │   ├── LearnPanel.vue          # Inspector picker (pinned + categorised).
     │   ├── LearnTree.vue           # Read-mode tree (UContentNavigation).
-    │   ├── ComingSoon.vue          # Placeholder-component page.
     │   ├── MobileBlocker.vue       # Below-lg overlay.
     │   ├── RootEmSlider.vue        # Simulated rem-baseline slider.
     │   ├── LengthValueInput.vue    # Number + unit input (px / rem).
@@ -349,7 +339,6 @@ access-lab/
     │   │                           # ToggleState, SwitchState, DisclosureState, MenuState.
     │   └── inspected/
     │       ├── index.ts            # ComponentId → ComponentDefinition registry.
-    │       ├── placeholders.ts     # 6 placeholder definitions.
     │       ├── buttons/            # shared/ + 6 pattern dirs.
     │       ├── input/              # definition + render + InputControls.vue.
     │       ├── checkbox/           # definition + render + wrappers + CheckboxControls.vue.

@@ -17,12 +17,6 @@ export type ComponentId
     | "buttons-switches"
     | "buttons-disclosure-triggers"
     | "buttons-menu-triggers"
-    | "accordion"
-    | "carousel"
-    | "modal"
-    | "menu"
-    | "tooltip"
-    | "tabs"
     | "input"
     | "checkbox"
     | "radio"
@@ -97,16 +91,11 @@ export interface ComponentDefinition<P = Record<string, unknown>> {
    *
    * Wire this with `defineAsyncComponent(() => import('./XControls.vue'))`
    * so the static import doesn't form a cycle with the panel's import
-   * of the definition. Optional because placeholder definitions don't
-   * have a panel.
+   * of the definition.
    */
   controlsComponent?: Component;
   variants?: ComponentVariant[];
   contextWrappers?: ContextWrapper[];
-  /**
-   * Marks the entry as a "coming soon" placeholder.
-   */
-  placeholder?: boolean;
   /**
    * Suppress the generic "Click event fired" toast from ComponentStudio
    * for this definition. Use on pages whose controls component drives
