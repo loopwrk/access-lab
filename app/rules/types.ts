@@ -23,7 +23,7 @@ export interface Rule {
    * present in the axe results, this custom rule's violation is suppressed so
    * axe's own finding wins (see useAllViolations). Use only for the rare
    * custom rule that overlaps a real axe rule rather than filling a gap axe
-   * misses — most custom rules exist precisely because axe is silent.
+   * misses - most custom rules exist precisely because axe is silent.
    */
   supersededByAxe?: string[];
   evaluate: (props: Record<string, unknown>) => ViolationResult | null;
@@ -53,7 +53,7 @@ export interface DomMeasurement {
 }
 
 /**
- * A rule that evaluates against the rendered element's box dimensions —
+ * A rule that evaluates against the rendered element's box dimensions -
  * needed when the violation depends on runtime layout rather than declared
  * props (e.g. text overflow, which depends on font metrics + content +
  * container together). Measurement is captured inside the iframe; the rule's

@@ -2,7 +2,7 @@ import type { Rule } from "~/rules/types";
 import { _internal } from "~/composables/useContrast";
 
 /**
- * Catches low-contrast placeholder text — the case axe-core misses.
+ * Catches low-contrast placeholder text - the case axe-core misses.
  *
  * axe-core's color-contrast rule only checks elements whose text is in
  * the DOM. Placeholders are HTML attributes rendered via the
@@ -28,10 +28,10 @@ import { _internal } from "~/composables/useContrast";
 export const placeholderContrast: Rule = {
   id: "input-placeholder-contrast",
   title: "Placeholder text contrast is too low",
-  wcag: "SC 1.4.3 Contrast (Minimum) — Level AA",
+  wcag: "SC 1.4.3 Contrast (Minimum) - Level AA",
   tags: ["wcag2aa", "wcag143"],
   description:
-    "Placeholder text must reach a contrast ratio of at least 4.5:1 against the input's background. Automated tools like axe-core do not check the `::placeholder` colour — the placeholder is rendered via a CSS pseudo-element with no DOM text content, so the standard contrast pass cannot see it. The result: low-contrast placeholders typically ship unnoticed. They are unreadable for users with low vision, users in bright environments, and users with custom themes that the colour was not tested against.",
+    "Placeholder text must reach a contrast ratio of at least 4.5:1 against the input's background. Automated tools like axe-core do not check the `::placeholder` colour - the placeholder is rendered via a CSS pseudo-element with no DOM text content, so the standard contrast pass cannot see it. The result: low-contrast placeholders typically ship unnoticed. They are unreadable for users with low vision, users in bright environments, and users with custom themes that the colour was not tested against.",
   help: "Increase the contrast between the placeholder text colour and the input background to at least 4.5:1.",
   helpUrl: "https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html",
   learnTopicId: "accessible-name",
@@ -39,17 +39,13 @@ export const placeholderContrast: Rule = {
     const placeholder = typeof props.placeholder === "string" ? props.placeholder : "";
     if (placeholder.length === 0) return null;
 
-    const placeholderStyle = props.placeholderStyle as
-      | { fgText?: string }
-      | undefined;
+    const placeholderStyle = props.placeholderStyle as { fgText?: string } | undefined;
     const fgText = placeholderStyle?.fgText;
     if (typeof fgText !== "string" || fgText.length === 0) return null;
 
-    // Input background — defaults to white when the user has not set
+    // Input background - defaults to white when the user has not set
     // a custom background colour (which matches the browser default).
-    const bg = typeof props.bg === "string" && props.bg.length > 0
-      ? props.bg
-      : "#ffffff";
+    const bg = typeof props.bg === "string" && props.bg.length > 0 ? props.bg : "#ffffff";
 
     const ratio = _internal.computeRatio(fgText, bg, {
       fontSizePx: 16,
@@ -62,8 +58,7 @@ export const placeholderContrast: Rule = {
 
     return {
       severity: "serious",
-      measurement:
-        `Placeholder colour ${fgText} on background ${bg} measures ${ratio.toFixed(2)}:1 — fails WCAG AA minimum of 4.5:1 for normal text.`,
+      measurement: `Placeholder colour ${fgText} on background ${bg} measures ${ratio.toFixed(2)}:1 - fails WCAG AA minimum of 4.5:1 for normal text.`,
     };
   },
 };

@@ -5,6 +5,8 @@ import { placeholderContrast } from "~/rules/input/placeholder-contrast";
 import { ariaLabelWithoutVisibleLabel } from "~/rules/input/aria-label-without-visible-label";
 import { numberInputForFormattedValue } from "~/rules/input/number-for-formatted-value";
 import { missingAutocomplete } from "~/rules/input/missing-autocomplete";
+import { autocompleteMismatch } from "~/rules/input/autocomplete-mismatch";
+import { passwordNoToggle } from "~/rules/input/password-no-toggle";
 import type { ComponentDefinition } from "~/types/component";
 import type { CssLength } from "~/composables/useUnitConversion";
 
@@ -67,6 +69,13 @@ export interface InputProps {
    */
   showSearchIcon: boolean;
 
+  /**
+   * When `renderAs === "password"`, render a best-practice accessible
+   * show-password toggle button next to the field (and surface the production
+   * handler in the JS pane). Ignored for every other input type.
+   */
+  showPasswordToggle: boolean;
+
   ariaHidden: boolean;
   ariaLabel: boolean;
 
@@ -104,6 +113,7 @@ export const inputDefinition: ComponentDefinition<InputProps> = {
     disabled: false,
     labelAssociation: "for-id",
     showSearchIcon: false,
+    showPasswordToggle: false,
     ariaHidden: false,
     ariaLabel: false,
     wrappers: [],
@@ -129,6 +139,7 @@ export const inputDefinition: ComponentDefinition<InputProps> = {
       status: "info",
       statusNote: "components.input.variants.tel.statusNote",
       section: "<input> Type",
+      seeAlsoTopicId: "tel-input",
     },
     {
       key: "url",
@@ -143,6 +154,7 @@ export const inputDefinition: ComponentDefinition<InputProps> = {
       status: "info",
       statusNote: "components.input.variants.password.statusNote",
       section: "<input> Type",
+      seeAlsoTopicId: "password-input",
     },
     {
       key: "number",
@@ -150,6 +162,7 @@ export const inputDefinition: ComponentDefinition<InputProps> = {
       status: "info",
       statusNote: "components.input.variants.number.statusNote",
       section: "<input> Type",
+      seeAlsoTopicId: "number-input",
     },
     {
       key: "search",
@@ -166,6 +179,8 @@ export const inputDefinition: ComponentDefinition<InputProps> = {
     ariaLabelWithoutVisibleLabel,
     numberInputForFormattedValue,
     missingAutocomplete,
+    autocompleteMismatch,
+    passwordNoToggle,
   ],
   manualChecklist: inputManualChecklist,
   render: renderInput,
@@ -176,6 +191,9 @@ export const inputDefinition: ComponentDefinition<InputProps> = {
     "invisible-text",
     "form-wrapping",
     "native-rendering",
+    "number-input",
+    "tel-input",
+    "password-input",
   ],
   relevantConcepts: [
     "form-control",
@@ -183,4 +201,10 @@ export const inputDefinition: ComponentDefinition<InputProps> = {
     "form-context",
     "native-elements",
   ],
+  // The only trigger-shaped element the input ever renders is the
+  // show-password toggle (a <button>); a real form field is not a click
+  // trigger. Its click is a UI action (reveal/hide), not a "click event"
+  // worth a generic toast, so suppress the demo:click toast for this
+  // component. Form submits still surface their own form:submitted toast.
+  suppressDemoClickToast: true,
 };

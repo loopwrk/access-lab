@@ -4,14 +4,14 @@ import { buttonManualChecklist } from "~/rules/buttons/shared/manual-checklist";
 // Disclosure-specific review points from the WAI-ARIA Authoring Practices for
 // the Disclosure pattern. The studio renders bare markup and drives state from
 // the controls panel, so confirming these on a real screen reader and by
-// keyboard is something only a person can do — hence the manual checklist.
+// keyboard is something only a person can do - hence the manual checklist.
 const disclosureReviewChecklist: ManualChecklistItem[] = [
   {
     id: "disclosure-state-announced",
     title: "A screen reader announces the panel opening and closing",
     wcagSc: "4.1.2 Name, Role, Value",
     description:
-      "Turn on a screen reader, activate the trigger, and listen. It should announce the change from collapsed to expanded and back again on every activation — not stay silent or read the same thing each time. This is what aria-expanded provides.",
+      "Turn on a screen reader, activate the trigger, and listen. It should announce the change from collapsed to expanded and back again on every activation - not stay silent or read the same thing each time. This is what aria-expanded provides.",
     url: "https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/",
   },
   {

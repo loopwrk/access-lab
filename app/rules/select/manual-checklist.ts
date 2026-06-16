@@ -14,7 +14,7 @@ export const selectManualChecklist: ManualChecklistItem[] = [
     title: "Arrow keys move between options once open",
     wcagSc: "2.1.1 Keyboard",
     description:
-      "With the dropdown open, Up and Down Arrows should move between options without committing the choice (some browsers commit on each move — both behaviours are acceptable). Home jumps to the first option, End to the last.",
+      "With the dropdown open, Up and Down Arrows should move between options without committing the choice (some browsers commit on each move - both behaviours are acceptable). Home jumps to the first option, End to the last.",
     url: "https://www.w3.org/WAI/WCAG22/Understanding/keyboard.html",
   },
   {
@@ -38,7 +38,7 @@ export const selectManualChecklist: ManualChecklistItem[] = [
     title: "Clicking the label focuses the select and opens the picker",
     wcagSc: "2.5.5 Target Size (Enhanced)",
     description:
-      "If the label is correctly associated, clicking it should focus the select (and on most browsers, open the dropdown). A bare `<div>` labelling the field has no programmatic association — only the small select arrow itself is clickable.",
+      "If the label is correctly associated, clicking it should focus the select (and on most browsers, open the dropdown). A bare `<div>` labelling the field has no programmatic association - only the small select arrow itself is clickable.",
     url: "https://www.w3.org/WAI/WCAG22/Understanding/target-size-enhanced.html",
   },
   {
@@ -46,7 +46,7 @@ export const selectManualChecklist: ManualChecklistItem[] = [
     title: "`required` is paired with a visible cue",
     wcagSc: "3.3.2 Labels or Instructions",
     description:
-      "Setting `required` makes the browser block form submission when no choice is made, but it adds no visible indicator on its own. The label or surrounding text must explicitly state the field is required (e.g. \"Plan (required)\" or a visible asterisk with a key explaining it).",
+      'Setting `required` makes the browser block form submission when no choice is made, but it adds no visible indicator on its own. The label or surrounding text must explicitly state the field is required (e.g. "Plan (required)" or a visible asterisk with a key explaining it).',
     url: "https://www.w3.org/WAI/WCAG22/Understanding/labels-or-instructions.html",
   },
   {
@@ -54,7 +54,7 @@ export const selectManualChecklist: ManualChecklistItem[] = [
     title: "The mobile browser uses its native picker",
     wcagSc: "4.1.2 Name, Role, Value",
     description:
-      "On phones and tablets, the native `<select>` opens the platform's accessible picker — a wheel on iOS, a list on Android. Custom comboboxes break this entirely, forcing mobile users into a fiddly DOM-based picker that often misses touch-target and screen-reader contracts.",
+      "On phones and tablets, the native `<select>` opens the platform's accessible picker - a wheel on iOS, a list on Android. Custom comboboxes break this entirely, forcing mobile users into a fiddly DOM-based picker that often misses touch-target and screen-reader contracts.",
     url: "https://www.w3.org/WAI/WCAG22/Understanding/name-role-value.html",
   },
   {
@@ -62,7 +62,7 @@ export const selectManualChecklist: ManualChecklistItem[] = [
     title: "Multiple selection is paired with a usage hint",
     wcagSc: "3.3.2 Labels or Instructions",
     description:
-      "If the select uses `multiple`, the label or helper text should explain how to select more than one (e.g. \"Hold Cmd / Ctrl to pick more than one\"). The visual rendering changes from a dropdown to a list-box, but the multi-select interaction is not discoverable from the visual alone.",
+      'If the select uses `multiple`, the label or helper text should explain how to select more than one (e.g. "Hold Cmd / Ctrl to pick more than one"). The visual rendering changes from a dropdown to a list-box, but the multi-select interaction is not discoverable from the visual alone.',
     url: "https://www.w3.org/WAI/WCAG22/Understanding/labels-or-instructions.html",
   },
 ];

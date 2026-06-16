@@ -54,6 +54,21 @@
         text.innerHTML = isBold ? text.textContent : "<strong>" + text.textContent + "</strong>";
       };
 
+      // Pre-defined for the input show-password toggle's
+      // `onclick="togglePasswordVisibility(this)"`. Flips the controlled
+      // password field between masked and visible, keeps the button's
+      // aria-pressed state in sync, and swaps its visible label - the same
+      // production-style handler shown in the code drawer's JS tab. See
+      // `inspected/input/render.ts`.
+      window.togglePasswordVisibility = function (button) {
+        var input = document.getElementById(button.getAttribute("aria-controls"));
+        if (!input) return;
+        var showing = input.type === "text";
+        input.type = showing ? "password" : "text";
+        button.setAttribute("aria-pressed", String(!showing));
+        button.textContent = showing ? "Show password" : "Hide password";
+      };
+
       window.addEventListener("message", function (e) {
         if (e.data && e.data.type === "preview:render") {
           if (typeof e.data.rootFontSize === "number" && e.data.rootFontSize > 0) {

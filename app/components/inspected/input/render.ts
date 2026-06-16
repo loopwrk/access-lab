@@ -133,6 +133,24 @@ function helpTextStyleAttr(slice: InputTextStyleSlice | undefined): string {
   return ` style="${joinStyleDeclarations(decls)}"`;
 }
 
+// Best-practice show-password toggle. A real <button type="button"> sitting
+// next to the password field, with an accessible text label and an aria-pressed
+// state kept in sync. The inline onclick calls a handler the iframe shell
+// pre-defines (window.togglePasswordVisibility), so the toggle works live in
+// the preview; the same handler is shown as production code in the JS pane.
+const SHOW_PASSWORD_TOGGLE_HTML =
+  `<button type="button" id="al-password-toggle" aria-controls="al-input" `
+  + `aria-pressed="false" onclick="togglePasswordVisibility(this)" `
+  + `style="margin-left:8px;padding:4px 8px;">Show password</button>`;
+
+const SHOW_PASSWORD_JS = `function togglePasswordVisibility(button) {
+  const input = document.getElementById(button.getAttribute("aria-controls"));
+  const showing = input.type === "text";
+  input.type = showing ? "password" : "text";
+  button.setAttribute("aria-pressed", String(!showing));
+  button.textContent = showing ? "Show password" : "Hide password";
+}`;
+
 export function renderInput(props?: Partial<InputProps>): RenderedFragment {
   const association = props?.labelAssociation ?? "for-id";
   // Empty stays empty. The model's Field label is the single source
@@ -189,6 +207,13 @@ export function renderInput(props?: Partial<InputProps>): RenderedFragment {
       ),
   });
 
+  // The show-password toggle sits next to the password field, before any help
+  // text. Only a password field can have one; other types ignore the prop.
+  const hasPasswordToggle = props?.renderAs === "password" && props?.showPasswordToggle === true;
+  if (hasPasswordToggle) {
+    body += SHOW_PASSWORD_TOGGLE_HTML;
+  }
+
   if (helpText) {
     body += `<small id="al-input-help"${helpTextStyleAttr(props?.helpTextStyle)}>${helpText}</small>`;
   }
@@ -196,5 +221,9 @@ export function renderInput(props?: Partial<InputProps>): RenderedFragment {
   const html = `<div>${body}</div>`;
 
   const css = placeholderCss(props?.placeholderStyle);
-  return css ? { html, css } : { html };
+  return {
+    html,
+    ...(css ? { css } : {}),
+    ...(hasPasswordToggle ? { js: SHOW_PASSWORD_JS } : {}),
+  };
 }

@@ -49,16 +49,16 @@
           "statusNote": "Triggers the email keyboard on mobile devices. Pair with autocomplete=\"email\" for autofill."
         },
         "tel": {
-          "statusNote": "Triggers the phone keyboard on mobile devices. Does not validate format - use the pattern attribute or JavaScript for that."
+          "statusNote": "Triggers the phone keyboard on mobile devices. Does not validate format by default."
         },
         "url": {
-          "statusNote": "Triggers a URL keyboard with a .com key on mobile devices."
+          "statusNote": "Triggers a URL keyboard with a URL suffix key on mobile devices."
         },
         "password": {
           "statusNote": "Masks the input visually. Browsers offer password manager integration; do not disable it."
         },
         "number": {
-          "statusNote": "Restricts input to digits and strips leading zeros - avoid for credit card numbers, phone numbers, and postal codes; use inputmode=\"numeric\" on a text input instead."
+          "statusNote": "Use for quantities. Avoid for credit card numbers, phone numbers, and postal codes."
         },
         "search": {
           "statusNote": "Triggers the search keyboard on mobile devices and may add a clear button to the input."
@@ -68,10 +68,10 @@
     "checkbox": {
       "variants": {
         "input-checkbox": {
-          "statusNote": "The native checkbox. Browsers handle keyboard activation, label-click forwarding, and accessible role for free."
+          "statusNote": "The native checkbox. Browsers handle accessibility natively."
         },
         "div-checkbox": {
-          "statusNote": "A styled div with role=\"checkbox\". You must add aria-checked yourself to expose the state."
+          "statusNote": "A styled div with role=\"checkbox\". You must add aria-checked yourself."
         }
       }
     },

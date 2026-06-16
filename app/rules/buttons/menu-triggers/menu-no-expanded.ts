@@ -8,11 +8,11 @@ import type { Rule } from "~/rules/types";
 export const menuNoExpanded: Rule = {
   id: "menu-no-expanded",
   title: "Menu trigger has no aria-expanded",
-  wcag: "SC 4.1.2 Name, Role, Value — Level A",
+  wcag: "SC 4.1.2 Name, Role, Value - Level A",
   tags: ["wcag2a", "wcag412"],
   description:
     "`aria-expanded` carries the current open or closed state of the menu. Without it, assistive technology announces the button identically whether the menu is open or shut, contradicting what sighted users see.",
-  help: "Add `aria-expanded=\"true|false\"` to the trigger and flip it in the same handler that opens or closes the menu. Pair it with `aria-haspopup=\"menu\"` so the announcement reads as \"menu, expanded\" rather than a generic disclosure.",
+  help: 'Add `aria-expanded="true|false"` to the trigger and flip it in the same handler that opens or closes the menu. Pair it with `aria-haspopup="menu"` so the announcement reads as "menu, expanded" rather than a generic disclosure.',
   helpUrl: "https://www.w3.org/WAI/ARIA/apg/patterns/menu-button/",
   evaluate(props) {
     const behaviour = props.menuBehaviour;
@@ -20,7 +20,7 @@ export const menuNoExpanded: Rule = {
     return {
       severity: "serious",
       measurement:
-        "Menu behaviour is set without `aria-expanded` — the open/closed state is not exposed.",
+        "Menu behaviour is set without `aria-expanded` - the open/closed state is not exposed.",
     };
   },
 };

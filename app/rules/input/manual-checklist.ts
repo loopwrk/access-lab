@@ -6,7 +6,7 @@ export const inputManualChecklist: ManualChecklistItem[] = [
     title: "Make sure the label is visible and clearly associated with the input",
     wcagSc: "1.3.1 Info and Relationships, 3.3.2 Labels or Instructions",
     description:
-      "Every input needs a visible label that is programmatically associated with it — either through `<label for>` matching the input's id, or by wrapping the input inside the label. Placeholder text is not a label; it disappears the moment the user starts typing and is not announced reliably by assistive technology.",
+      "Every input needs a visible label that is programmatically associated with it - either through `<label for>` matching the input's id, or by wrapping the input inside the label. Placeholder text is not a label; it disappears the moment the user starts typing and is not announced reliably by assistive technology.",
     url: "https://www.w3.org/WAI/WCAG22/Understanding/labels-or-instructions.html",
   },
   {
@@ -22,7 +22,7 @@ export const inputManualChecklist: ManualChecklistItem[] = [
     title: "Make sure error messages are visible and announced",
     wcagSc: "3.3.1 Error Identification, 3.3.3 Error Suggestion",
     description:
-      "If validation fails, the error message should be visible near the input AND associated with it via `aria-describedby` pointing at the error element's id. Combined with `aria-invalid=\"true\"` on the input, assistive technology announces the error as soon as the field is focused.",
+      'If validation fails, the error message should be visible near the input AND associated with it via `aria-describedby` pointing at the error element\'s id. Combined with `aria-invalid="true"` on the input, assistive technology announces the error as soon as the field is focused.',
     url: "https://www.w3.org/WAI/WCAG22/Understanding/error-identification.html",
   },
   {
@@ -38,7 +38,7 @@ export const inputManualChecklist: ManualChecklistItem[] = [
     title: "Add the autocomplete attribute for personal information fields",
     wcagSc: "1.3.5 Identify Input Purpose",
     description:
-      "Inputs that collect personal information — name, email, phone, address, payment details — should declare the autocomplete attribute with the appropriate value (e.g. autocomplete=\"email\"). This enables browser autofill, supports users with cognitive disabilities who benefit from not retyping information, and helps people using motor-assistive input devices.",
+      'Inputs that collect personal information - name, email, phone, address, payment details - should declare the autocomplete attribute with the appropriate value (e.g. autocomplete="email"). This enables browser autofill, supports users with cognitive disabilities who benefit from not retyping information, and helps people using motor-assistive input devices.',
     url: "https://www.w3.org/WAI/WCAG22/Understanding/identify-input-purpose.html",
   },
   {

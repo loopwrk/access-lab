@@ -1,7 +1,7 @@
 {
   "controls": {
     "resetDefaults": {
-      "label": "Reset CSS styles to browser defaults ({learnMoreLink})",
+      "label": "Reset CSS styles to browser defaults {learnMoreLink}",
       "learnMore": "learn more",
       "action": "Reset"
     },
@@ -91,6 +91,7 @@
       "styleAppliesTo": "Style applies to",
       "background": "Background",
       "showSearchIcon": "Icon",
+      "showPasswordToggle": "Add show-password toggle",
       "ariaHidden": "aria-hidden"
     },
     "checkbox": {

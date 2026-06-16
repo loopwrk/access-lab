@@ -199,6 +199,15 @@ const showSearchIcon = computed({
   set: (value: boolean) => update("showSearchIcon", value),
 });
 
+const showPasswordToggleControl = computed(() =>
+  model.value.renderAs === "password",
+);
+
+const showPasswordToggle = computed({
+  get: () => model.value.showPasswordToggle === true,
+  set: (value: boolean) => update("showPasswordToggle", value),
+});
+
 const ariaHidden = computed({
   get: () => model.value.ariaHidden === true,
   set: (value: boolean) => update("ariaHidden", value),
@@ -293,6 +302,17 @@ useVariantLabelSync(model, {
         v-if="showSearchIconToggle"
         v-model="showSearchIcon"
         :label="t('controls.input.showSearchIcon')"
+        variant="card"
+        color="primary"
+        size="md"
+        :ui="CONTROL_CARD_UI"
+        class="mt-2"
+      />
+
+      <UCheckbox
+        v-if="showPasswordToggleControl"
+        v-model="showPasswordToggle"
+        :label="t('controls.input.showPasswordToggle')"
         variant="card"
         color="primary"
         size="md"

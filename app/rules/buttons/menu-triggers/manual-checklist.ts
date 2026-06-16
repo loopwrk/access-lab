@@ -4,7 +4,7 @@ import { buttonManualChecklist } from "~/rules/buttons/shared/manual-checklist";
 // Menu-specific keyboard and focus-management contract from the WAI-ARIA
 // Authoring Practices for the Menu Button pattern. The studio renders
 // bare markup with no keyboard handlers attached, so these are review-
-// only items — students must verify the behaviour exists in their own
+// only items - students must verify the behaviour exists in their own
 // implementation.
 const menuKeyboardChecklist: ManualChecklistItem[] = [
   {

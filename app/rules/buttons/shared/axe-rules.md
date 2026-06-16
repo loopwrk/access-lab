@@ -302,7 +302,7 @@ rules that go beyond what axe checks:
   WCAG 2.2 target-size check against the control's measured border-box
   (`DomMeasurement.targetWidth/Height`), so the user sees it react live as they
   change width / padding / font-size. It is intentionally stricter than axe's
-  own rule, which exempts spacing / inline / user-agent-default targets —
+  own rule, which exempts spacing / inline / user-agent-default targets -
   AccessLab teaches the raw 24×24 (AA) and 44×44 (AAA) sizes directly.
 
 These are documented in the source files alongside each rule.

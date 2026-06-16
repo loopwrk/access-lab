@@ -6,7 +6,7 @@ export const buttonManualChecklist: ManualChecklistItem[] = [
     title: "Use the <button> element for buttons",
     wcagSc: "1.3.1 Info and Relationships",
     description:
-      "Buttons are used to submit data or perform an on-screen action. Use the native <button> element rather than <div> or <span> with click handlers — it gives you keyboard activation, focusability, and correct screen reader role for free.",
+      "Buttons are used to submit data or perform an on-screen action. Use the native <button> element rather than <div> or <span> with click handlers - it gives you keyboard activation, focusability, and correct screen reader role for free.",
     url: "https://www.w3.org/WAI/WCAG22/Understanding/info-and-relationships.html",
   },
   {
@@ -14,7 +14,7 @@ export const buttonManualChecklist: ManualChecklistItem[] = [
     title: "Make sure the button label is unique and descriptive",
     wcagSc: "1.3.1 Info and Relationships",
     description:
-      "Terms like \"click here\" and \"read more\" provide no context. Some people navigate using a list of all buttons on a page. Labels should describe what the button does, not how to interact with it.",
+      'Terms like "click here" and "read more" provide no context. Some people navigate using a list of all buttons on a page. Labels should describe what the button does, not how to interact with it.',
     url: "https://www.w3.org/WAI/WCAG22/Understanding/info-and-relationships.html",
   },
   {
