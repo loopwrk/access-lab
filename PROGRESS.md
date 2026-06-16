@@ -33,7 +33,7 @@ Current snapshot of what is built, what is in flight, and what remains. Update t
 ### Inspector
 
 - `app/components/AppInspector.vue` — `UTabs` (`:content="false"`) plus four teleport-target panels (`controls-panel`, `issues-panel`, `manual-panel`, `learn-panel`). Aside is `flex flex-col min-h-0`; inner div is `flex-1 min-h-0 overflow-y-auto`. Tab strip stays pinned; content scrolls within.
-- `app/components/AppSidebar.vue` — flat `UNavigationMenu` (no accordion). Two groups: Buttons (6 items) and Form Inputs (4 items). Each item links to its component route.
+- `app/components/AppSidebar.vue` — nested-accordion `UNavigationMenu` (vertical, `:highlight`). Two `type: "trigger"` groups: Buttons (6 items) and Form Inputs (4 items), each component a child link. Accepts a known axe `aria-allowed-attr` violation in exchange for the highlight line — see AGENTS.md "Sidebar nav".
 - `app/components/AppBar.vue` — font family picker (4 options), size picker (4 options), high-contrast toggle, light/dark toggle. Reads composable refs via destructure so Vue auto-unwraps in the template; `setMode('light')` / `setMode('dark')` for direct mode switches.
 
 ### Preview pipeline
@@ -195,7 +195,7 @@ Superseded 10 June 2026: **Prettier now owns formatting; ESLint checks correctne
 
 - `<html lang="en">` set via `useHead({ htmlAttrs })`.
 - Code-drawer scrollable region: `tabindex="0"` + `role="region"` + locale-driven `aria-label`.
-- Sidebar flattened (was the source of the `<span aria-controls>` Nuxt UI bug).
+- Sidebar flattened (was the source of the `<span aria-controls>` Nuxt UI bug). **Later reverted** to a nested accordion for the vertical highlight line, accepting that axe `aria-allowed-attr` violation — see AGENTS.md "Sidebar nav".
 - `@nuxt/hints` removed (eliminated the `__nuxt_hints/lazy-load` 404 + lazy-load info noise).
 - Iframe sandbox attributes documented inline — we accept `allow-scripts allow-same-origin` because axe needs DOM access; we control the iframe source.
 
@@ -315,7 +315,7 @@ access-lab/
     │   ├── PreviewToolbar.vue      # Title + variant + wrapper + count badges.
     │   ├── CodeDrawer.vue          # HTML/CSS panes + copy buttons + drag-resize.
     │   ├── AppBar.vue              # Font, size, contrast, light/dark.
-    │   ├── AppSidebar.vue          # Flat nav (buttons + form-inputs).
+    │   ├── AppSidebar.vue          # Nested-accordion nav (buttons + form-inputs).
     │   ├── AppInspector.vue        # UTabs + 4 teleport-target panels.
     │   ├── VariantPicker.vue       # UPopover variant chip.
     │   ├── WrapperToggles.vue      # UPopover wrapper chip.
@@ -380,7 +380,7 @@ Read for context first, then trace a single user interaction end-to-end.
 
 4. `app/layouts/default.vue` — outer grid, skip links, teleport targets.
 5. `app/components/AppInspector.vue` — `UTabs` + 4 teleport panels.
-6. `app/components/AppSidebar.vue` — flat nav.
+6. `app/components/AppSidebar.vue` — nested-accordion nav.
 
 **Design system**
 

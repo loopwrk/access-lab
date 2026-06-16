@@ -50,17 +50,9 @@
   --color-accesslab-neutral-500: var(--text-muted);
   --color-accesslab-neutral-600: var(--text-secondary);
   --color-accesslab-neutral-700: var(--text-secondary);
-  --color-accesslab-neutral-800: color-mix(
-    in oklch,
-    var(--text-secondary) 50%,
-    black
-  );
+  --color-accesslab-neutral-800: color-mix(in oklch, var(--text-secondary) 50%, black);
   --color-accesslab-neutral-900: var(--text-primary);
-  --color-accesslab-neutral-950: color-mix(
-    in oklch,
-    var(--text-primary) 50%,
-    black
-  );
+  --color-accesslab-neutral-950: color-mix(in oklch, var(--text-primary) 50%, black);
 
   /* Flat tokens for direct Tailwind usage (e.g. bg-brand, text-muted) */
   --color-brand: var(--brand);
@@ -78,6 +70,7 @@
   /* Text */
   --color-text-primary: var(--text-primary);
   --color-text-secondary: var(--text-secondary);
+  --color-text-brand: var(--brand);
   --color-text-muted: var(--text-muted);
 
   /* Borders */
@@ -148,6 +141,9 @@
   --color-tip-bg: var(--tip-bg);
   --color-tip-fg: var(--tip-fg);
   --color-scrim: var(--scrim);
+
+  /* Code blocks */
+  --color-pre-bg: var(--surface-3);
 }
 
 /* Override Nuxt UI v4's hardcoded light/dark values with our tokens. */

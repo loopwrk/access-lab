@@ -27,7 +27,8 @@ export default defineAppConfig({
         // span by default, so a long question like "Why is the button
         // attempting to submit coordinates?" otherwise runs to the toast's
         // right edge on a single line; whitespace-normal lets it break to two.
-        actions: "[&_button]:pl-0 [&_button]:text-sm [&_button]:text-left [&_span]:whitespace-normal",
+        actions:
+          "[&_button]:pl-0 [&_button]:text-sm [&_button]:text-left [&_span]:whitespace-normal",
       },
     },
     fieldGroup: {
@@ -49,10 +50,10 @@ export default defineAppConfig({
           variant: "ghost",
           fieldGroup: "horizontal",
           class:
-            "bg-[var(--surface)] text-[var(--text-primary)] "
-            + "hover:bg-[var(--brand-soft)] "
-            + "active:bg-[var(--brand-soft)] "
-            + "focus-visible:bg-[var(--brand-soft)]",
+            "bg-[var(--surface)] text-[var(--text-primary)] " +
+            "hover:bg-[var(--brand-soft)] " +
+            "active:bg-[var(--brand-soft)] " +
+            "focus-visible:bg-[var(--brand-soft)]",
         },
       ],
     },

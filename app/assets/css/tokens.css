@@ -12,11 +12,9 @@
 
 :root {
   --al-font:
-    "Figtree Variable", "Atkinson Hyperlegible", "Helvetica Neue", Helvetica,
-    Arial, sans-serif;
+    "Figtree Variable", "Atkinson Hyperlegible", "Helvetica Neue", Helvetica, Arial, sans-serif;
   --al-font-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
-  --al-font-monogram:
-    "Josefin Slab Variable", "Helvetica Neue", Helvetica, serif;
+  --al-font-monogram: "Josefin Slab Variable", "Helvetica Neue", Helvetica, serif;
   --al-base-size: 16px;
 
   /* Typographic scale — relative to the baseline (16px) */
@@ -143,6 +141,7 @@
   --bg: #f6f5f1;
   --surface: #fbfaf6;
   --surface-2: #ece7db;
+  --surface-3: oklch(0.9644 0.0029 84.56);
   --border: #d8d2c5;
   --border-strong: #6e5f8e;
   --text-primary: #3b00a1;
@@ -172,13 +171,14 @@
 .theme-dark {
   --bg: #0f1114;
   --surface: #1a1b22;
-  --surface-2: #08090b;
+  --surface-2: oklch(0.1598 0.0434 268.14);
+  --surface-3: oklch(0.1395 0.0048 262.8);
   --border: #2a2532;
   --border-strong: #6e5f8e;
   --text-primary: #ece7ff;
   --text-secondary: #a6b4cc;
-  --text-muted: #a89bc4;
-  --brand: #b79cff;
+  --text-muted: oklch(0.817 0.0605 299.38);
+  --brand: oklch(0.8941 0.0649 298.21);
   --brand-hover: #c8b4ff;
   --brand-press: #a380ff;
   --brand-soft: #1f1730;
@@ -204,6 +204,7 @@
   --bg: #ffffff;
   --surface: #ffffff;
   --surface-2: #f0f0f0;
+  --surface-3: #f0f0f0;
   --border: #000000;
   --border-strong: #000000;
   --text-primary: #000000;
@@ -234,6 +235,7 @@
   --bg: #000000;
   --surface: #000000;
   --surface-2: #111111;
+  --surface-3: #oklch(0.252 0 0);
   --border: #ffffff;
   --border-strong: #ffffff;
   --text-primary: #ffffff;

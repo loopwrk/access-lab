@@ -84,7 +84,7 @@ function onPointerDown(event: PointerEvent) {
   isDragging.value = true;
   dragStartY = event.clientY;
   dragStartHeight = effectiveHeight.value
-  ; (event.currentTarget as Element).setPointerCapture(event.pointerId);
+    ; (event.currentTarget as Element).setPointerCapture(event.pointerId);
   document.body.style.userSelect = "none";
 }
 
@@ -160,116 +160,65 @@ async function copyContent(mode: "inline" | "class" | "css" | "js") {
 
 <template>
   <div>
-    <div
-      v-if="isOpen"
-      role="separator"
-      aria-orientation="horizontal"
-      :aria-label="t('codeDrawer.resizeLabel')"
-      :aria-valuenow="effectiveHeight"
-      :aria-valuemin="MIN_HEIGHT"
-      :aria-valuemax="maxHeightPx"
-      tabindex="0"
-      :class="[
+    <div v-if="isOpen" role="separator" aria-orientation="horizontal" :aria-label="t('codeDrawer.resizeLabel')"
+      :aria-valuenow="effectiveHeight" :aria-valuemin="MIN_HEIGHT" :aria-valuemax="maxHeightPx" tabindex="0" :class="[
         'relative h-1.5 cursor-row-resize outline-none transition-colors',
         `before:content-[''] before:absolute before:inset-x-0 before:-inset-y-2`,
         isDragging
           ? 'bg-(--brand)'
           : 'bg-(--border) hover:bg-(--brand) focus-visible:bg-(--brand)',
-      ]"
-      @pointerdown="onPointerDown"
-      @keydown="onKeydown"
-    />
-    <UCollapsible
-      v-model:open="isOpen"
-      :class="[
-        'bg-(--surface)',
-        isOpen ? '' : 'border-t border-(--border)',
-      ]"
-    >
-      <UButton
-        :aria-label="t('codeDrawer.toggleAria')"
-        color="neutral"
-        variant="ghost"
-        block
-        trailing-icon="i-lucide-chevron-down"
-        size="sm"
-        class="group justify-end"
-        :ui="{
+      ]" @pointerdown="onPointerDown" @keydown="onKeydown" />
+    <UCollapsible v-model:open="isOpen" :class="[
+      'bg-(--surface)',
+      isOpen ? '' : 'border-t border-(--border)',
+    ]">
+      <UButton :aria-label="t('codeDrawer.toggleAria')" color="neutral" variant="ghost" block
+        trailing-icon="i-lucide-chevron-down" size="sm" class="group justify-end" :ui="{
           trailingIcon:
             'group-data-[state=open]:rotate-180 transition-transform duration-200',
-        }"
-      />
+        }" />
       <template #content>
         <div class="flex flex-col gap-3 px-5 pb-4">
           <UFieldGroup size="xs">
-            <UButton
-              :color="codeView === 'html' ? 'primary' : 'neutral'"
-              :variant="codeView === 'html' ? 'solid' : 'ghost'"
-              @click="codeView = 'html'"
-            >
+            <UButton :color="codeView === 'html' ? 'primary' : 'neutral'"
+              :variant="codeView === 'html' ? 'solid' : 'ghost'" @click="codeView = 'html'">
               HTML
             </UButton>
             <UTooltip :text="!hasCss ? t('codeDrawer.cssDisabledTooltip') : undefined">
-              <UButton
-                :color="codeView === 'css' ? 'primary' : 'neutral'"
-                :variant="codeView === 'css' ? 'solid' : 'ghost'"
-                :disabled="!hasCss"
-                @click="codeView = 'css'"
-              >
+              <UButton :color="codeView === 'css' ? 'primary' : 'neutral'"
+                :variant="codeView === 'css' ? 'solid' : 'ghost'" :disabled="!hasCss" @click="codeView = 'css'">
                 CSS
               </UButton>
             </UTooltip>
-            <UButton
-              v-if="hasJs"
-              :color="codeView === 'js' ? 'primary' : 'neutral'"
-              :variant="codeView === 'js' ? 'solid' : 'ghost'"
-              @click="codeView = 'js'"
-            >
+            <UButton v-if="hasJs" :color="codeView === 'js' ? 'primary' : 'neutral'"
+              :variant="codeView === 'js' ? 'solid' : 'ghost'" @click="codeView = 'js'">
               JS
             </UButton>
           </UFieldGroup>
 
           <div
             class="al-code-region overflow-auto focus-visible:outline-[3px] focus-visible:outline-(--focus-ring) focus-visible:outline-offset-[-3px]"
-            :style="{ height: `${effectiveHeight}px` }"
-            tabindex="0"
-            role="region"
-            :aria-label="t(
+            :style="{ height: `${effectiveHeight}px` }" tabindex="0" role="region" :aria-label="t(
               codeView === 'css'
                 ? 'codeDrawer.cssRegionLabel'
                 : codeView === 'js'
                   ? 'codeDrawer.jsRegionLabel'
                   : 'codeDrawer.htmlRegionLabel',
-            )"
-          >
-            <ProsePre
-              v-if="renderedHtml && codeView === 'html'"
-              language="html"
-              class="-my-5"
-              :code="prettifiedHtml"
-            >
+            )">
+            <!-- <ProsePre v-if="renderedHtml && codeView === 'html'" language="html" class="-my-5" :code="prettifiedHtml">
+              {{ prettifiedHtml }}
+            </ProsePre> -->
+            <ProsePre v-if="renderedHtml && codeView === 'html'" language="html"
+              class="-my-5 text-(--color-text-brand) bg-color-pre-bg" :code="prettifiedHtml">
               {{ prettifiedHtml }}
             </ProsePre>
-            <ProsePre
-              v-else-if="hasCss && codeView === 'css'"
-              language="css"
-              class="-my-5"
-              :code="prettifiedCss"
-            >
+            <ProsePre v-else-if="hasCss && codeView === 'css'" language="css" class="-my-5" :code="prettifiedCss">
               {{ prettifiedCss }}
             </ProsePre>
-            <ProsePre
-              v-else-if="hasJs && codeView === 'js'"
-              language="javascript"
-              class="-my-5"
-              :code="prettifiedJs"
-            >
+            <ProsePre v-else-if="hasJs && codeView === 'js'" language="javascript" class="-my-5" :code="prettifiedJs">
               {{ prettifiedJs }}
             </ProsePre>
-            <p
-              v-else
-              class="text-(length:--al-font-size-body) text-(--text-muted) m-0 py-2 px-3 -my-5"
-            >
+            <p v-else class="text-(length:--al-font-size-body) text-(--text-muted) m-0 py-2 px-3 -my-5">
               {{ t('codeDrawer.empty') }}
             </p>
           </div>
@@ -278,70 +227,35 @@ async function copyContent(mode: "inline" | "class" | "css" | "js") {
             Copy actions are contextual to the active tab. HTML gets
             the inline-vs-classes split; CSS gets a single Copy CSS.
           -->
-          <div
-            v-if="codeView === 'html'"
-            class="flex gap-2 justify-start"
-          >
-            <UButton
-              class="min-w-[110px] flex justify-center"
-              size="md"
-              variant="ghost"
-              color="neutral"
-              :icon="copied === 'inline' ? 'i-lucide-check' : undefined"
-              :disabled="!renderedHtml"
-              @click="copyContent('inline')"
-            >
+          <div v-if="codeView === 'html'" class="flex gap-2 justify-start">
+            <UButton class="min-w-[110px] flex justify-center" size="md" variant="ghost" color="neutral"
+              :icon="copied === 'inline' ? 'i-lucide-check' : undefined" :disabled="!renderedHtml"
+              @click="copyContent('inline')">
               {{ copied === 'inline'
                 ? t('codeDrawer.copied')
                 : t('codeDrawer.copyInline') }}
             </UButton>
             <UTooltip :text="t('codeDrawer.copyClassesTooltip')">
-              <UButton
-                class="min-w-[150px] flex justify-center"
-                size="md"
-                variant="ghost"
-                color="neutral"
-                :icon="copied === 'class' ? 'i-lucide-check' : undefined"
-                :disabled="!renderedHtml"
-                @click="copyContent('class')"
-              >
+              <UButton class="min-w-[150px] flex justify-center" size="md" variant="ghost" color="neutral"
+                :icon="copied === 'class' ? 'i-lucide-check' : undefined" :disabled="!renderedHtml"
+                @click="copyContent('class')">
                 {{ copied === 'class'
                   ? t('codeDrawer.copied')
                   : t('codeDrawer.copyClasses') }}
               </UButton>
             </UTooltip>
           </div>
-          <div
-            v-else-if="codeView === 'css'"
-            class="flex gap-2 justify-start"
-          >
-            <UButton
-              class="min-w-[110px] flex justify-center"
-              size="md"
-              variant="ghost"
-              color="neutral"
-              :icon="copied === 'css' ? 'i-lucide-check' : undefined"
-              :disabled="!hasCss"
-              @click="copyContent('css')"
-            >
+          <div v-else-if="codeView === 'css'" class="flex gap-2 justify-start">
+            <UButton class="min-w-[110px] flex justify-center" size="md" variant="ghost" color="neutral"
+              :icon="copied === 'css' ? 'i-lucide-check' : undefined" :disabled="!hasCss" @click="copyContent('css')">
               {{ copied === 'css'
                 ? t('codeDrawer.copied')
                 : t('codeDrawer.copyCss') }}
             </UButton>
           </div>
-          <div
-            v-else-if="codeView === 'js'"
-            class="flex gap-2 justify-start"
-          >
-            <UButton
-              class="min-w-[140px] flex justify-center"
-              size="md"
-              variant="ghost"
-              color="neutral"
-              :icon="copied === 'js' ? 'i-lucide-check' : undefined"
-              :disabled="!hasJs"
-              @click="copyContent('js')"
-            >
+          <div v-else-if="codeView === 'js'" class="flex gap-2 justify-start">
+            <UButton class="min-w-[140px] flex justify-center" size="md" variant="ghost" color="neutral"
+              :icon="copied === 'js' ? 'i-lucide-check' : undefined" :disabled="!hasJs" @click="copyContent('js')">
               {{ copied === 'js'
                 ? t('codeDrawer.copied')
                 : t('codeDrawer.copyJs') }}
@@ -355,7 +269,7 @@ async function copyContent(mode: "inline" | "class" | "css" | "js") {
 
 <style scoped>
 /*
-  ProsePre emits a <pre><code> we cannot class directly, so reach it with
+  ProsePre emits a <pre><code> that can't be callsed directly, so reach it with
   :deep(). Soft-wrap long lines — e.g. a long inline `style` value — at the
   spaces between declarations instead of overflowing the drawer horizontally.
 */
