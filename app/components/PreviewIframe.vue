@@ -6,7 +6,7 @@ const {
   passes,
   incomplete,
   isReady,
-
+  errorMessage,
 } = useAxeAudit(iframeRef);
 
 const pendingRender = ref<{ html: string; css?: string; rootFontSize?: number } | null>(null);
@@ -46,6 +46,22 @@ watch(isReady, (ready) => {
 defineExpose({ render, violations, passes, incomplete });
 
 const { t } = useI18n();
+const toast = useToast();
+
+// Surface an axe-audit failure: a toast for the user, plus a dev-only console
+// error for debugging. Watching errorMessage (rather than toasting inside the
+// audit handler) dedupes repeated identical errors — the watch fires only when
+// the message changes.
+watch(errorMessage, (message) => {
+  if (!message) return;
+  if (import.meta.dev) console.error("[axe] audit failed:", message);
+  toast.add({
+    title: t("studio.toasts.axeError"),
+    description: message,
+    icon: "i-lucide-circle-alert",
+    color: "error",
+  });
+});
 
 function focusContent() {
   focusPreviewContent(iframeRef.value);
@@ -87,7 +103,7 @@ function focusContent() {
       class="absolute inset-0 flex items-center justify-center pointer-events-none"
     >
       <p class="text-muted">
-        Loading preview…
+        {{ t('preview.loading') }}
       </p>
     </div>
   </div>

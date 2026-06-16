@@ -63,7 +63,8 @@
     "title": "Preview",
     "titleLearnLink": "Open the Learn topic for {name}",
     "focusContent": "Focus content",
-    "focusContentAria": "Focus the inspected element inside the preview"
+    "focusContentAria": "Focus the inspected element inside the preview",
+    "loading": "Loading preview…"
   },
   "inspector": {
     "ariaLabel": "Inspection panel",
@@ -171,7 +172,8 @@
       "resetNoForm": "This button has no form to reset. Wrap it in a form element to see the reset captured.",
       "submitNoFormLink": "Why is the button attempting to submit a form?",
       "formSubmittedLink": "Why did the button send a form submission?",
-      "imageSubmitLink": "Why is the button attempting to submit coordinates?"
+      "imageSubmitLink": "Why is the button attempting to submit coordinates?",
+      "axeError": "Accessibility audit failed"
     }
   }
 }

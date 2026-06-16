@@ -16,7 +16,7 @@ export interface LearnTopicGroup {
 }
 
 export function useLearnTopics() {
-  const { data } = useAsyncData(
+  const { data, status } = useAsyncData(
     "learn-topics-index",
     () =>
       queryCollection("content")
@@ -37,11 +37,11 @@ export function useLearnTopics() {
     })),
   );
 
-  return { topics };
+  return { topics, status };
 }
 
 export function useLearnTopicTree() {
-  const { topics } = useLearnTopics();
+  const { topics, status } = useLearnTopics();
 
   const groups = computed<LearnTopicGroup[]>(() =>
     LEARN_CATEGORIES
@@ -54,5 +54,5 @@ export function useLearnTopicTree() {
       .filter((group) => group.topics.length > 0),
   );
 
-  return { groups };
+  return { groups, status };
 }
