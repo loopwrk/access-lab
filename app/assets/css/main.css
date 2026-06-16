@@ -33,7 +33,7 @@
   --color-accesslab-100: var(--brand-soft);
   --color-accesslab-200: color-mix(in oklch, var(--brand) 25%, white);
   --color-accesslab-300: color-mix(in oklch, var(--brand) 50%, white);
-  --color-accesslab-400: color-mix(in oklch, var(--brand) 75%, white);
+  --color-accesslab-400: var(--brand-active);
   --color-accesslab-500: var(--brand);
   --color-accesslab-600: var(--brand-hover);
   --color-accesslab-700: var(--brand-press);

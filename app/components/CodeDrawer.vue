@@ -212,10 +212,12 @@ async function copyContent(mode: "inline" | "class" | "css" | "js") {
               class="-my-5 text-(--color-text-brand) bg-color-pre-bg" :code="prettifiedHtml">
               {{ prettifiedHtml }}
             </ProsePre>
-            <ProsePre v-else-if="hasCss && codeView === 'css'" language="css" class="-my-5" :code="prettifiedCss">
+            <ProsePre v-else-if="hasCss && codeView === 'css'" language="css"
+              class="-my-5 text-(--color-text-brand) bg-color-pre-bg" :code="prettifiedCss">
               {{ prettifiedCss }}
             </ProsePre>
-            <ProsePre v-else-if="hasJs && codeView === 'js'" language="javascript" class="-my-5" :code="prettifiedJs">
+            <ProsePre v-else-if="hasJs && codeView === 'js'" language="javascript"
+              class="-my-5 text-(--color-text-brand) bg-color-pre-bg" :code="prettifiedJs">
               {{ prettifiedJs }}
             </ProsePre>
             <p v-else class="text-(length:--al-font-size-body) text-(--text-muted) m-0 py-2 px-3 -my-5">
@@ -228,7 +230,7 @@ async function copyContent(mode: "inline" | "class" | "css" | "js") {
             the inline-vs-classes split; CSS gets a single Copy CSS.
           -->
           <div v-if="codeView === 'html'" class="flex gap-2 justify-start">
-            <UButton class="min-w-[110px] flex justify-center" size="md" variant="ghost" color="neutral"
+            <UButton class="min-w-[110px] flex justify-center" size="md" variant="outline" color="neutral"
               :icon="copied === 'inline' ? 'i-lucide-check' : undefined" :disabled="!renderedHtml"
               @click="copyContent('inline')">
               {{ copied === 'inline'
@@ -236,7 +238,7 @@ async function copyContent(mode: "inline" | "class" | "css" | "js") {
                 : t('codeDrawer.copyInline') }}
             </UButton>
             <UTooltip :text="t('codeDrawer.copyClassesTooltip')">
-              <UButton class="min-w-[150px] flex justify-center" size="md" variant="ghost" color="neutral"
+              <UButton class="min-w-[150px] flex justify-center" size="md" variant="outline" color="neutral"
                 :icon="copied === 'class' ? 'i-lucide-check' : undefined" :disabled="!renderedHtml"
                 @click="copyContent('class')">
                 {{ copied === 'class'
@@ -246,7 +248,7 @@ async function copyContent(mode: "inline" | "class" | "css" | "js") {
             </UTooltip>
           </div>
           <div v-else-if="codeView === 'css'" class="flex gap-2 justify-start">
-            <UButton class="min-w-[110px] flex justify-center" size="md" variant="ghost" color="neutral"
+            <UButton class="min-w-[110px] flex justify-center" size="md" variant="outline" color="neutral"
               :icon="copied === 'css' ? 'i-lucide-check' : undefined" :disabled="!hasCss" @click="copyContent('css')">
               {{ copied === 'css'
                 ? t('codeDrawer.copied')
@@ -254,7 +256,7 @@ async function copyContent(mode: "inline" | "class" | "css" | "js") {
             </UButton>
           </div>
           <div v-else-if="codeView === 'js'" class="flex gap-2 justify-start">
-            <UButton class="min-w-[140px] flex justify-center" size="md" variant="ghost" color="neutral"
+            <UButton class="min-w-[140px] flex justify-center" size="md" variant="outline" color="neutral"
               :icon="copied === 'js' ? 'i-lucide-check' : undefined" :disabled="!hasJs" @click="copyContent('js')">
               {{ copied === 'js'
                 ? t('codeDrawer.copied')

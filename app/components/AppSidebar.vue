@@ -5,6 +5,46 @@ const { isOpen: open, open: expand, close: collapse } = useSidebar();
 
 const { t } = useI18n();
 
+const route = useRoute();
+
+// The active-item highlight is normally driven by the committed route, so it
+// could not move until the destination page mounted — and each component page
+// fully remounts, which takes up to ~1s. During that wait the clicked item
+// briefly showed a dim, mid-transition highlight before the real one landed.
+//
+// The highlight is optimistically moved instead: the moment a link is activated
+// we treat its path as the highlighted one, falling back to the real route once
+// navigation settles. `aria-current` is left to the underlying link (driven by
+// the committed route), so assistive technology is never told a page is current
+// before it has actually loaded.
+const pendingPath = ref<string | null>(null);
+const highlightPath = computed(() => pendingPath.value ?? route.path);
+watch(
+  () => route.path,
+  () => {
+    pendingPath.value = null;
+  },
+);
+
+// The line and text snap on/off (after:transition-none) rather than cross-fading,
+// so the highlight never passes through a dimmed intermediate colour.
+const activeLink = "text-primary after:bg-primary after:transition-none";
+const inactiveLink = "text-muted after:bg-transparent after:transition-none";
+
+function componentLink(label: string, to: string, icon: string): NavigationMenuItem {
+  const isActive = to === highlightPath.value;
+  return {
+    label,
+    to,
+    icon,
+    class: isActive ? activeLink : inactiveLink,
+    ui: { linkLeadingIcon: isActive ? "text-primary" : "text-dimmed" },
+    onSelect: () => {
+      pendingPath.value = to;
+    },
+  };
+}
+
 const navItems = computed<NavigationMenuItem[][]>(() => [
   [
     {
@@ -13,12 +53,12 @@ const navItems = computed<NavigationMenuItem[][]>(() => [
       class: "text-lg",
       defaultOpen: true,
       children: [
-        { label: t("nav.buttonsActionTriggers"), to: "/components/buttons/action-triggers", icon: "i-lucide-square-mouse-pointer" },
-        { label: t("nav.buttonsFormButtons"), to: "/components/buttons/form-buttons", icon: "i-lucide-send" },
-        { label: t("nav.buttonsToggleButtons"), to: "/components/buttons/toggle-buttons", icon: "i-lucide-toggle-left" },
-        { label: t("nav.buttonsSwitches"), to: "/components/buttons/switches", icon: "i-lucide-toggle-right" },
-        { label: t("nav.buttonsDisclosureTriggers"), to: "/components/buttons/disclosure-triggers", icon: "i-lucide-chevrons-down-up" },
-        { label: t("nav.buttonsMenuTriggers"), to: "/components/buttons/menu-triggers", icon: "i-lucide-menu" },
+        componentLink(t("nav.buttonsActionTriggers"), "/components/buttons/action-triggers", "i-lucide-square-mouse-pointer"),
+        componentLink(t("nav.buttonsFormButtons"), "/components/buttons/form-buttons", "i-lucide-send"),
+        componentLink(t("nav.buttonsToggleButtons"), "/components/buttons/toggle-buttons", "i-lucide-toggle-left"),
+        componentLink(t("nav.buttonsSwitches"), "/components/buttons/switches", "i-lucide-toggle-right"),
+        componentLink(t("nav.buttonsDisclosureTriggers"), "/components/buttons/disclosure-triggers", "i-lucide-chevrons-down-up"),
+        componentLink(t("nav.buttonsMenuTriggers"), "/components/buttons/menu-triggers", "i-lucide-menu"),
       ],
     },
   ],
@@ -29,10 +69,10 @@ const navItems = computed<NavigationMenuItem[][]>(() => [
       class: "text-lg",
       defaultOpen: true,
       children: [
-        { label: t("nav.input"), to: "/components/input", icon: "i-lucide-text-cursor-input" },
-        { label: t("nav.checkbox"), to: "/components/checkbox", icon: "i-lucide-square-check-big" },
-        { label: t("nav.radio"), to: "/components/radio", icon: "i-lucide-circle-dot" },
-        { label: t("nav.select"), to: "/components/select", icon: "i-lucide-chevron-down-square" },
+        componentLink(t("nav.input"), "/components/input", "i-lucide-text-cursor-input"),
+        componentLink(t("nav.checkbox"), "/components/checkbox", "i-lucide-square-check-big"),
+        componentLink(t("nav.radio"), "/components/radio", "i-lucide-circle-dot"),
+        componentLink(t("nav.select"), "/components/select", "i-lucide-chevron-down-square"),
       ],
     },
   ],
@@ -43,7 +83,7 @@ const navItems = computed<NavigationMenuItem[][]>(() => [
   <aside :aria-label="t('sidebar.ariaLabel')" class="border-r border-(--border) bg-(--bg) shrink-0">
     <div v-show="open" class="w-[260px] h-full overflow-y-auto">
       <div class="flex items-center justify-between pl-2 pr-2 pt-3">
-        <span class="text-lg font-medium text-red">
+        <span class="text-lg font-medium text-(--text-primary)">
           {{ t('nav.components') }}
         </span>
         <UButton color="neutral" variant="ghost" size="xs" icon="i-lucide-panel-left"
