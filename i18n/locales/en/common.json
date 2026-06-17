@@ -117,7 +117,8 @@
     "passingNoun": "passing"
   },
   "codeDrawer": {
-    "toggleAria": "Toggle generated code drawer",
+    "title": "Generated code",
+    "copy": "Copy",
     "copyInline": "Copy in-line",
     "copyClasses": "Copy with classes",
     "copyClassesTooltip": "Copies HTML that references the class names shown in the CSS tab.",
@@ -126,7 +127,6 @@
     "copied": "Copied",
     "empty": "No code generated yet.",
     "resizeLabel": "Resize code area. Use up and down arrows to adjust.",
-    "cssDisabledTooltip": "No CSS to display. Enable the focus ring, switch pill, or set inline styles to inject CSS here.",
     "htmlRegionLabel": "Generated HTML for the previewed component (scrollable)",
     "cssRegionLabel": "Generated CSS for the previewed component (scrollable)",
     "jsRegionLabel": "Production-style JavaScript for the previewed component (scrollable)"
@@ -253,7 +253,7 @@
         "summary": "A button with no type defaults to submit inside a form."
       },
       "code": {
-        "title": "Generated HTML"
+        "title": "Generated code"
       }
     }
   }

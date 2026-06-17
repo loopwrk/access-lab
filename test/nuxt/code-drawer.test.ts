@@ -1,13 +1,15 @@
 /**
  * CodeDrawer's behaviour worth pinning:
  *
- *   - pane availability: the CSS tab is DISABLED when there's no CSS and the JS
- *     tab is HIDDEN (v-if) when there's no JS; and if the active pane loses its
- *     content, the view falls back to HTML (the hasCss / hasJs watchers);
+ *   - pane availability: the CSS and JS tabs are HIDDEN (v-if) when there's no
+ *     CSS / JS; and if the active pane loses its content, the view falls back to
+ *     HTML (the hasCss / hasJs watchers);
  *   - clicking the tab buttons switches the visible pane (read off the code
  *     region's aria-label);
  *   - copy: the copy button writes the active pane's content to the clipboard,
- *     shows the "Copied" confirmation, then resets after the feedback delay;
+ *     shows the "Copied" confirmation, then resets after the feedback delay; the
+ *     HTML tab shows a single "Copy" with no CSS, splitting into in-line /
+ *     with-classes once CSS exists;
  *   - the resize handle is keyboard-operable: arrows step by 24px and Home/End
  *     jump to the clamped bounds, reflected in aria-valuenow.
  *
@@ -93,21 +95,21 @@ describe("CodeDrawer — pane availability", () => {
   it("hides the JS tab without JS, and shows it once JS arrives", async () => {
     rendered.setOutput("<button>Hi</button>", "", "");
     const w = await mountDrawer();
-    expect(btn(w, "JS")).toBeUndefined();
+    expect(btn(w, "JavaScript")).toBeUndefined();
 
     rendered.renderedJs.value = "console.log(1)";
     await flush();
-    expect(btn(w, "JS")).toBeDefined();
+    expect(btn(w, "JavaScript")).toBeDefined();
   });
 
-  it("disables the CSS tab without CSS, and enables it once CSS arrives", async () => {
+  it("hides the CSS tab without CSS, and shows it once CSS arrives", async () => {
     rendered.setOutput("<button>Hi</button>", "", ""); // no inline styles → no class-converted css
     const w = await mountDrawer();
-    expect(btn(w, "CSS")!.attributes("disabled")).toBeDefined();
+    expect(btn(w, "CSS")).toBeUndefined();
 
     rendered.renderedCss.value = ".x{color:red}";
     await flush();
-    expect(btn(w, "CSS")!.attributes("disabled")).toBeUndefined();
+    expect(btn(w, "CSS")).toBeDefined();
   });
 });
 
@@ -121,7 +123,7 @@ describe("CodeDrawer — pane switching", () => {
     await flush();
     expect(regionLabel(w)).toContain("CSS");
 
-    await btn(w, "JS")!.trigger("click");
+    await btn(w, "JavaScript")!.trigger("click");
     await flush();
     expect(regionLabel(w)).toContain("JavaScript");
 
@@ -145,7 +147,7 @@ describe("CodeDrawer — pane switching", () => {
   it("falls back to HTML when the active JS pane loses its content", async () => {
     rendered.setOutput("<button>Hi</button>", "", "console.log(1)");
     const w = await mountDrawer();
-    await btn(w, "JS")!.trigger("click");
+    await btn(w, "JavaScript")!.trigger("click");
     await flush();
     expect(regionLabel(w)).toContain("JavaScript");
 
@@ -156,20 +158,34 @@ describe("CodeDrawer — pane switching", () => {
 });
 
 describe("CodeDrawer — copy", () => {
-  it("copies the inline HTML, confirms, then resets after the feedback delay", async () => {
-    rendered.setOutput("<button>Hi</button>", "", "");
+  it("shows a single Copy on the HTML tab with no CSS, copies, confirms, then resets", async () => {
+    rendered.setOutput("<button>Hi</button>", "", ""); // no CSS → inline === classes, one button
     const w = await mountDrawer();
+    expect(btn(w, "Copy in-line")).toBeUndefined();
+    expect(btn(w, "Copy with classes")).toBeUndefined();
 
-    await btn(w, "Copy in-line")!.trigger("click");
+    await btn(w, "Copy")!.trigger("click");
     await flush();
     expect(writeText).toHaveBeenCalledTimes(1);
     expect(String(writeText.mock.lastCall?.[0])).toContain("button");
     expect(btn(w, "Copied")).toBeDefined(); // confirmation shown
-    expect(btn(w, "Copy in-line")).toBeUndefined(); // label swapped to "Copied"
+    expect(btn(w, "Copy")).toBeUndefined(); // label swapped to "Copied"
 
     await wait(900); // > COPY_FEEDBACK_MS (800)
     await flush();
-    expect(btn(w, "Copy in-line")).toBeDefined(); // reverted
+    expect(btn(w, "Copy")).toBeDefined(); // reverted
+  });
+
+  it("splits into in-line / with-classes on the HTML tab once CSS is present", async () => {
+    rendered.setOutput("<button>Hi</button>", ".x{color:red}", "");
+    const w = await mountDrawer();
+    expect(btn(w, "Copy")).toBeUndefined(); // single Copy gone
+    expect(btn(w, "Copy in-line")).toBeDefined();
+    expect(btn(w, "Copy with classes")).toBeDefined();
+
+    await btn(w, "Copy in-line")!.trigger("click");
+    await flush();
+    expect(String(writeText.mock.lastCall?.[0])).toContain("button");
   });
 
   it("copies the active pane's own content for the CSS and JS tabs", async () => {
@@ -182,7 +198,7 @@ describe("CodeDrawer — copy", () => {
     await flush();
     expect(String(writeText.mock.lastCall?.[0])).toContain("color");
 
-    await btn(w, "JS")!.trigger("click");
+    await btn(w, "JavaScript")!.trigger("click");
     await flush();
     await btn(w, "Copy JavaScript")!.trigger("click");
     await flush();
