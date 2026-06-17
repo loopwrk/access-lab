@@ -83,4 +83,8 @@ function skipToMain() {
     deliberately mobile-usable — see `layouts/learn.vue`.
   -->
   <MobileBlocker />
+
+  <!-- First-run guided tour. Scoped to the studio layout so it never
+       overlays the reader; auto-opens once on a desktop studio route. -->
+  <OnboardingModal />
 </template>

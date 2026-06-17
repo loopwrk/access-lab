@@ -4,6 +4,7 @@ import type { FontSize } from "~/types/typography";
 const { t } = useI18n();
 const { isDark, isHighContrast, setMode, toggleContrast } = useTheme();
 const { family: fontFamily, size: fontSize, setFont, setSize } = useFont();
+const { open: openOnboarding } = useOnboarding();
 
 // On mobile while the reader is open, the logo should not navigate —
 // "/" would close the reader and dump the user onto MobileBlocker,
@@ -32,7 +33,11 @@ const fonts: FontOption[] = [
   { label: "Figtree", value: "Figtree Variable", family: "Figtree Variable" },
   { label: "Dyslexic", value: "OpenDyslexicRegular", family: "OpenDyslexicRegular" },
   { label: "Atkinson", value: "Atkinson Hyperlegible", family: "Atkinson Hyperlegible" },
-  { label: "Comic Sans", value: "\"Comic Sans MS\", \"Comic Sans\", cursive", family: "\"Comic Sans MS\", \"Comic Sans\", cursive" },
+  {
+    label: "Comic Sans",
+    value: '"Comic Sans MS", "Comic Sans", cursive',
+    family: '"Comic Sans MS", "Comic Sans", cursive',
+  },
 ];
 
 interface SizeOption {
@@ -41,7 +46,6 @@ interface SizeOption {
 }
 
 const sizes: SizeOption[] = [
-
   { label: "S", value: "100%" },
   { label: "M", value: "112.5%" },
   { label: "L", value: "131.25%" },
@@ -66,11 +70,27 @@ const sizes: SizeOption[] = [
           class="size-4"
           aria-hidden="true"
         />
-        <span>{{ t('appBar.brand') }}</span>
+        <span>{{ t("appBar.brand") }}</span>
       </NuxtLink>
     </div>
 
     <div class="flex items-center gap-4">
+      <!-- Replay the onboarding. Studio-only: the modal lives in the
+           studio layout, hidden while the reader is open. -->
+      <UTooltip
+        v-if="!readModeOpen"
+        :text="t('onboarding.replay')"
+      >
+        <UButton
+          color="neutral"
+          variant="ghost"
+          size="sm"
+          icon="i-lucide-circle-help"
+          :aria-label="t('onboarding.replay')"
+          @click="openOnboarding"
+        />
+      </UTooltip>
+
       <!-- Font family picker -->
       <UFieldGroup size="sm">
         <UButton
@@ -107,7 +127,7 @@ const sizes: SizeOption[] = [
           :aria-pressed="isHighContrast"
           @click="toggleContrast()"
         >
-          {{ t('theme.highContrast') }}
+          {{ t("theme.highContrast") }}
         </UButton>
       </UFieldGroup>
 
@@ -120,7 +140,7 @@ const sizes: SizeOption[] = [
           :aria-pressed="!isDark"
           @click="setMode('light')"
         >
-          {{ t('theme.light') }}
+          {{ t("theme.light") }}
         </UButton>
         <UButton
           :color="isDark ? 'primary' : 'neutral'"
@@ -129,7 +149,7 @@ const sizes: SizeOption[] = [
           :aria-pressed="isDark"
           @click="setMode('dark')"
         >
-          {{ t('theme.dark') }}
+          {{ t("theme.dark") }}
         </UButton>
       </UFieldGroup>
     </div>

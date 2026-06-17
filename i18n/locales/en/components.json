@@ -68,10 +68,10 @@
     "checkbox": {
       "variants": {
         "input-checkbox": {
-          "statusNote": "The native checkbox. Browsers handle accessibility natively."
+          "statusNote": "The native checkbox. Browsers handle accessibility automatically."
         },
         "div-checkbox": {
-          "statusNote": "A styled div with role=\"checkbox\". You must add aria-checked yourself."
+          "statusNote": "A styled div with role=\"checkbox\". You must add accessibility attributes yourself."
         }
       }
     },

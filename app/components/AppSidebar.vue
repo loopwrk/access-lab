@@ -55,7 +55,7 @@ const navItems = computed<NavigationMenuItem[][]>(() => [
       children: [
         componentLink(t("nav.buttonsActionTriggers"), "/components/buttons/action-triggers", "i-lucide-square-mouse-pointer"),
         componentLink(t("nav.buttonsFormButtons"), "/components/buttons/form-buttons", "i-lucide-send"),
-        componentLink(t("nav.buttonsToggleButtons"), "/components/buttons/toggle-buttons", "i-lucide-toggle-left"),
+        componentLink(t("nav.buttonsToggleButtons"), "/components/buttons/toggle-buttons", "i-lucide-circle-power"),
         componentLink(t("nav.buttonsSwitches"), "/components/buttons/switches", "i-lucide-toggle-right"),
         componentLink(t("nav.buttonsDisclosureTriggers"), "/components/buttons/disclosure-triggers", "i-lucide-chevrons-down-up"),
         componentLink(t("nav.buttonsMenuTriggers"), "/components/buttons/menu-triggers", "i-lucide-menu"),
