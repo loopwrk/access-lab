@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import SectionLegend from "./SectionLegend.vue";
+
 export interface StyleTargetOption {
   value: string;
   label: string;
@@ -17,9 +19,7 @@ const groupName = useId();
 
 <template>
   <fieldset class="border-0 p-0 m-0 flex flex-col gap-1.5">
-    <legend class="control-group-title mb-1.5">
-      {{ legend }}
-    </legend>
+    <SectionLegend :label="legend" />
     <div class="grid grid-cols-2 gap-1.5">
       <label
         v-for="opt in props.options"
@@ -36,7 +36,7 @@ const groupName = useId();
           :checked="opt.value === props.modelValue"
           class="sr-only"
           @change="emit('update:modelValue', opt.value)"
-        >
+        />
         <span>{{ opt.label }}</span>
       </label>
     </div>
@@ -48,7 +48,7 @@ const groupName = useId();
  * Pill styling. Tokens come from `tokens.css` so light / dark / high-
  * contrast all inherit automatically.
  *
- * `:focus-within` is what shows the focus ring — the input itself is
+ * `:focus-within` is what shows the focus ring - the input itself is
  * sr-only so its native focus ring is invisible; the label's
  * focus-within picks up that the inside radio is focused.
  */
@@ -66,7 +66,9 @@ const groupName = useId();
   text-align: center;
   font-size: var(--al-font-size-body);
   line-height: 1.2;
-  transition: background-color 150ms, color 150ms;
+  transition:
+    background-color 150ms,
+    color 150ms;
 }
 
 .style-target-pill:hover {

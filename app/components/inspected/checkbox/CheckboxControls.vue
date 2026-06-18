@@ -1,19 +1,18 @@
 <script setup lang="ts">
 import type { CheckboxProps, CheckboxLabelAssociation, CheckboxGroupMode } from "./definition";
 import ResetDefaultsSection from "~/components/ButtonStudio/sections/ResetDefaultsSection.vue";
+import ControlCardCheckbox from "~/components/controls/ControlCardCheckbox.vue";
+import SectionLegend from "~/components/controls/SectionLegend.vue";
+import LearnLink from "~/components/controls/LearnLink.vue";
 
 const model = defineModel<Partial<CheckboxProps>>({ required: true });
-
-function update<K extends keyof CheckboxProps>(key: K, value: CheckboxProps[K]) {
-  model.value = { ...model.value, [key]: value };
-}
+const { update, updateMany } = useModelUpdater(model);
 
 const { t } = useI18n();
-const { focusLearnTopic } = useInspectorTab();
 
 // Label-association picker labels vary by variant. The native
 // `<input type="checkbox">` uses `<label for>` and `<label>`-wrapping
-// idiomatically; a `<div role="checkbox">` cannot use either —
+// idiomatically; a `<div role="checkbox">` cannot use either -
 // `<label for>` doesn't bind to non-form-controls and a wrapping
 // `<label>` doesn't extend click activation to a div. The four enum
 // values stay the same; only the user-facing labels change so the
@@ -33,9 +32,7 @@ const LABEL_OPTIONS_DIV: { value: CheckboxLabelAssociation; labelKey: string }[]
 ];
 
 const labelOptions = computed(() =>
-  model.value.renderAs === "div-checkbox"
-    ? LABEL_OPTIONS_DIV
-    : LABEL_OPTIONS_NATIVE,
+  model.value.renderAs === "div-checkbox" ? LABEL_OPTIONS_DIV : LABEL_OPTIONS_NATIVE,
 );
 
 const GROUP_OPTIONS: { value: CheckboxGroupMode; labelKey: string }[] = [
@@ -44,8 +41,6 @@ const GROUP_OPTIONS: { value: CheckboxGroupMode; labelKey: string }[] = [
   { value: "group-no-fieldset", labelKey: "controls.checkbox.groupNoFieldset" },
   { value: "parent-with-children", labelKey: "controls.checkbox.groupParentWithChildren" },
 ];
-
-const CARD_UI = CONTROL_CARD_UI;
 
 const labelAssociation = computed(() => model.value.labelAssociation ?? "for-id");
 const groupMode = computed(() => model.value.groupMode ?? "single");
@@ -88,7 +83,7 @@ watch(
 
 /**
  * Compute the parent's derived state from a children array. Pure
- * function — returns the `checked` and `indeterminate` pair the
+ * function - returns the `checked` and `indeterminate` pair the
  * canonical "select all" pattern requires:
  *
  *   - 0 children ticked  → unchecked
@@ -107,24 +102,21 @@ function deriveParentState(children: boolean[]): {
 }
 
 /**
- * Apply the parent's derived state. Single write to `model.value`
- * because two back-to-back writes through `defineModel` race: the
- * second write reads `model.value` from the prop which has not yet
- * been refreshed by the first emit's parent-side commit.
+ * Apply the parent's derived `checked` + `indeterminate` state. The two keys
+ * move together, so write them in a single `updateMany`.
  */
 function syncParentFromChildren(children: boolean[]) {
-  const next = deriveParentState(children);
-  model.value = { ...model.value, ...next };
+  updateMany(deriveParentState(children));
 }
 
 // Iframe click bridge:
-//   - `demo:click` — the inspected parent checkbox (or a standalone
+//   - `demo:click` - the inspected parent checkbox (or a standalone
 //     checkbox in any other group mode) was activated. In the
 //     `parent-with-children` mode, this cascades to all children
 //     and clears `indeterminate`, matching the canonical "select
 //     all" pattern in the Learn article. In every other mode it
 //     just flips `checked`.
-//   - `demo:click-child` — a child in the `parent-with-children`
+//   - `demo:click-child` - a child in the `parent-with-children`
 //     layout was activated. Flip the matching entry in
 //     `childChecked`, then auto-sync the parent.
 usePreviewMessage({
@@ -132,12 +124,7 @@ usePreviewMessage({
     const newChecked = !(model.value.checked === true);
     if (model.value.groupMode === "parent-with-children") {
       const children = (model.value.childChecked ?? []).map(() => newChecked);
-      model.value = {
-        ...model.value,
-        checked: newChecked,
-        indeterminate: false,
-        childChecked: children,
-      };
+      updateMany({ checked: newChecked, indeterminate: false, childChecked: children });
       return;
     }
     update("checked", newChecked);
@@ -152,9 +139,9 @@ usePreviewMessage({
 
     if (model.value.groupMode !== "parent-with-children") {
       // group-with-fieldset / group-no-fieldset: every child is an
-      // independent boolean. No parent to derive, no auto-sync —
+      // independent boolean. No parent to derive, no auto-sync -
       // just update the one entry the user clicked.
-      model.value = { ...model.value, childChecked: next };
+      update("childChecked", next);
       return;
     }
 
@@ -168,24 +155,17 @@ usePreviewMessage({
     // to surface. The `checkbox-parent-child-mismatch` rule keeps
     // flagging the disagreement so the lesson stays visible.
     const oldDerived = deriveParentState(current);
-    const parentInSyncBefore
-      = (model.value.checked === true) === oldDerived.checked
-        && (model.value.indeterminate === true) === oldDerived.indeterminate;
+    const parentInSyncBefore =
+      (model.value.checked === true) === oldDerived.checked &&
+      (model.value.indeterminate === true) === oldDerived.indeterminate;
 
     if (parentInSyncBefore) {
-      // One combined write — parent's checked + indeterminate and the
-      // child array all live in the same model object, so writing
-      // them together avoids the two-writes-race that drops the
-      // childChecked update on the floor.
-      const newDerived = deriveParentState(next);
-      model.value = {
-        ...model.value,
-        childChecked: next,
-        ...newDerived,
-      };
+      // Parent + children move together: re-derive the parent and write it
+      // alongside the child array in one mutation.
+      updateMany({ childChecked: next, ...deriveParentState(next) });
     } else {
-      // Parent already overridden — touch only the children.
-      model.value = { ...model.value, childChecked: next };
+      // Parent already overridden - touch only the children.
+      update("childChecked", next);
     }
   },
 });
@@ -199,18 +179,11 @@ usePreviewMessage({
     <!-- Label / accessible name -->
     <UFormField class="flex flex-col">
       <template #label>
-        <a
-          href="#topic-accessible-name"
-          class="control-group-title control-label-link"
-          @click.prevent="focusLearnTopic('accessible-name')"
-        >
-          {{ t('controls.checkbox.label') }}
-          <UIcon
-            name="i-lucide-arrow-up-right"
-            class="control-label-link-icon"
-            aria-hidden="true"
-          />
-        </a>
+        <LearnLink
+          class="control-group-title"
+          topic="accessible-name"
+          :label="t('controls.checkbox.label')"
+        />
       </template>
       <UInput
         :model-value="model.label ?? ''"
@@ -224,20 +197,10 @@ usePreviewMessage({
 
     <!-- Label-association pattern -->
     <fieldset class="flex flex-col gap-3 border-0 p-0 m-0">
-      <legend class="control-group-title mb-1.5">
-        <a
-          href="#topic-checkbox"
-          class="control-label-link"
-          @click.prevent="focusLearnTopic('checkbox')"
-        >
-          {{ t('controls.checkbox.labelAssociation') }}
-          <UIcon
-            name="i-lucide-arrow-up-right"
-            class="control-label-link-icon"
-            aria-hidden="true"
-          />
-        </a>
-      </legend>
+      <SectionLegend
+        :label="t('controls.checkbox.labelAssociation')"
+        learn-topic="checkbox"
+      />
       <UFieldGroup
         size="sm"
         orientation="vertical"
@@ -258,20 +221,10 @@ usePreviewMessage({
 
     <!-- Group rendering -->
     <fieldset class="flex flex-col gap-3 border-0 p-0 m-0">
-      <legend class="control-group-title mb-1.5">
-        <a
-          href="#topic-checkbox"
-          class="control-label-link"
-          @click.prevent="focusLearnTopic('checkbox')"
-        >
-          {{ t('controls.checkbox.groupMode') }}
-          <UIcon
-            name="i-lucide-arrow-up-right"
-            class="control-label-link-icon"
-            aria-hidden="true"
-          />
-        </a>
-      </legend>
+      <SectionLegend
+        :label="t('controls.checkbox.groupMode')"
+        learn-topic="checkbox"
+      />
       <UFieldGroup
         size="sm"
         orientation="vertical"
@@ -291,45 +244,27 @@ usePreviewMessage({
     <USeparator />
 
     <fieldset class="flex flex-col gap-2 border-0 p-0 m-0">
-      <legend class="control-group-title mb-1.5">
-        {{ t('controls.checkbox.state') }}
-      </legend>
+      <SectionLegend :label="t('controls.checkbox.state')" />
       <div class="grid grid-cols-2 gap-3">
-        <UCheckbox
+        <ControlCardCheckbox
           :model-value="model.checked === true"
           :label="t('controls.checkbox.checked')"
-          variant="card"
-          color="primary"
-          size="md"
-          :ui="CARD_UI"
-          @update:model-value="update('checked', $event === true)"
+          @update:model-value="update('checked', $event)"
         />
-        <UCheckbox
+        <ControlCardCheckbox
           :model-value="model.indeterminate === true"
           :label="t('controls.checkbox.indeterminate')"
-          variant="card"
-          color="primary"
-          size="md"
-          :ui="CARD_UI"
-          @update:model-value="update('indeterminate', $event === true)"
+          @update:model-value="update('indeterminate', $event)"
         />
-        <UCheckbox
+        <ControlCardCheckbox
           :model-value="model.required === true"
           :label="t('controls.checkbox.required')"
-          variant="card"
-          color="primary"
-          size="md"
-          :ui="CARD_UI"
-          @update:model-value="update('required', $event === true)"
+          @update:model-value="update('required', $event)"
         />
-        <UCheckbox
+        <ControlCardCheckbox
           :model-value="model.disabled === true"
           :label="t('controls.checkbox.disabled')"
-          variant="card"
-          color="primary"
-          size="md"
-          :ui="CARD_UI"
-          @update:model-value="update('disabled', $event === true)"
+          @update:model-value="update('disabled', $event)"
         />
       </div>
     </fieldset>
@@ -337,22 +272,16 @@ usePreviewMessage({
     <USeparator />
 
     <!--
-      ARIA. Single card spanning the full width — matches the State
+      ARIA. Single card spanning the full width - matches the State
       grid's visual language so the two sections read as a pair, but
       laid out 1-column because there is only one flag here today.
     -->
     <fieldset class="flex flex-col gap-2 border-0 p-0 m-0">
-      <legend class="control-group-title mb-1.5">
-        {{ t('controls.checkbox.aria') }}
-      </legend>
-      <UCheckbox
+      <SectionLegend :label="t('controls.checkbox.aria')" />
+      <ControlCardCheckbox
         :model-value="model.ariaChecked === true"
         :label="t('controls.checkbox.ariaChecked')"
-        variant="card"
-        color="primary"
-        size="md"
-        :ui="CARD_UI"
-        @update:model-value="update('ariaChecked', $event === true)"
+        @update:model-value="update('ariaChecked', $event)"
       />
     </fieldset>
 
@@ -361,7 +290,7 @@ usePreviewMessage({
     <!-- Form attributes -->
     <UFormField class="flex flex-col">
       <template #label>
-        <span class="control-group-title">{{ t('controls.checkbox.name') }}</span>
+        <span class="control-group-title">{{ t("controls.checkbox.name") }}</span>
       </template>
       <UInput
         :model-value="model.name ?? ''"
@@ -373,7 +302,7 @@ usePreviewMessage({
 
     <UFormField class="flex flex-col">
       <template #label>
-        <span class="control-group-title">{{ t('controls.checkbox.value') }}</span>
+        <span class="control-group-title">{{ t("controls.checkbox.value") }}</span>
       </template>
       <UInput
         :model-value="model.value ?? ''"

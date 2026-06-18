@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { BaseButtonProps } from "~/types/button";
 import type { ToggleBehaviour } from "~/components/inspected/buttons/shared/types";
+import ControlCardCheckbox from "~/components/controls/ControlCardCheckbox.vue";
+import SectionLegend from "~/components/controls/SectionLegend.vue";
 
 type ToggleProps = Partial<BaseButtonProps> & {
   toggleBehaviour?: ToggleBehaviour;
@@ -25,20 +27,10 @@ const OPTIONS: { value: ToggleBehaviour; labelKey: string }[] = [
 
 <template>
   <fieldset class="flex flex-col gap-3 border-0 p-0 m-0">
-    <legend class="control-group-title mb-1.5">
-      <a
-        href="#topic-toggle-buttons"
-        class="control-label-link"
-        @click.prevent="focusLearnTopic('toggle-buttons')"
-      >
-        {{ t("controls.toggleBehaviour") }}
-        <UIcon
-          name="i-lucide-arrow-up-right"
-          class="control-label-link-icon"
-          aria-hidden="true"
-        />
-      </a>
-    </legend>
+    <SectionLegend
+      :label="t('controls.toggleBehaviour')"
+      learn-topic="toggle-buttons"
+    />
 
     <UFieldGroup
       size="sm"
@@ -56,13 +48,9 @@ const OPTIONS: { value: ToggleBehaviour; labelKey: string }[] = [
     </UFieldGroup>
 
     <div class="grid grid-cols-2 gap-3 mt-2">
-      <UCheckbox
+      <ControlCardCheckbox
         :model-value="model.disabled === true"
-        variant="card"
-        color="primary"
-        size="md"
-        :ui="CONTROL_CARD_UI"
-        @update:model-value="update('disabled', $event === true)"
+        @update:model-value="update('disabled', $event)"
       >
         <template #label>
           <a
@@ -73,15 +61,11 @@ const OPTIONS: { value: ToggleBehaviour; labelKey: string }[] = [
             {{ t("controls.disabled") }}
           </a>
         </template>
-      </UCheckbox>
-      <UCheckbox
+      </ControlCardCheckbox>
+      <ControlCardCheckbox
         :model-value="model.togglePressed === true"
         :label="t('controls.togglePressed')"
-        variant="card"
-        color="primary"
-        size="md"
-        :ui="CONTROL_CARD_UI"
-        @update:model-value="update('togglePressed', $event === true)"
+        @update:model-value="update('togglePressed', $event)"
       />
     </div>
   </fieldset>

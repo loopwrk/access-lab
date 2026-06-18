@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { BaseButtonProps } from "~/types/button";
 import type { DisclosureBehaviour } from "~/components/inspected/buttons/shared/types";
+import ControlCardCheckbox from "~/components/controls/ControlCardCheckbox.vue";
+import SectionLegend from "~/components/controls/SectionLegend.vue";
 
 type DisclosureProps = Partial<BaseButtonProps> & {
   disclosureBehaviour?: DisclosureBehaviour;
@@ -12,7 +14,6 @@ const model = defineModel<DisclosureProps>({ required: true });
 const { update } = useModelUpdater(model);
 
 const { t } = useI18n();
-const { focusLearnTopic } = useInspectorTab();
 
 const behaviour = computed(() => model.value.disclosureBehaviour ?? "none");
 
@@ -25,20 +26,10 @@ const OPTIONS: { value: DisclosureBehaviour; labelKey: string }[] = [
 
 <template>
   <fieldset class="flex flex-col gap-3 border-0 p-0 m-0">
-    <legend class="control-group-title mb-1.5">
-      <a
-        href="#topic-disclosure-triggers"
-        class="control-label-link"
-        @click.prevent="focusLearnTopic('disclosure-triggers')"
-      >
-        {{ t("controls.disclosureBehaviour") }}
-        <UIcon
-          name="i-lucide-arrow-up-right"
-          class="control-label-link-icon"
-          aria-hidden="true"
-        />
-      </a>
-    </legend>
+    <SectionLegend
+      :label="t('controls.disclosureBehaviour')"
+      learn-topic="disclosure-triggers"
+    />
 
     <UFieldGroup
       size="sm"
@@ -55,16 +46,12 @@ const OPTIONS: { value: DisclosureBehaviour; labelKey: string }[] = [
       </UButton>
     </UFieldGroup>
 
-    <UCheckbox
+    <ControlCardCheckbox
       v-if="behaviour !== 'none'"
       :model-value="model.disclosureShowControls === true"
       :label="t('controls.disclosureShowControls')"
-      variant="card"
-      color="primary"
-      size="md"
       class="mt-2"
-      :ui="CONTROL_CARD_UI"
-      @update:model-value="update('disclosureShowControls', $event === true)"
+      @update:model-value="update('disclosureShowControls', $event)"
     />
   </fieldset>
 </template>

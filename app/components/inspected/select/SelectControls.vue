@@ -1,15 +1,13 @@
 <script setup lang="ts">
 import type { SelectProps, SelectLabelAssociation } from "./definition";
 import ResetDefaultsSection from "~/components/ButtonStudio/sections/ResetDefaultsSection.vue";
+import ControlCardCheckbox from "~/components/controls/ControlCardCheckbox.vue";
+import SectionLegend from "~/components/controls/SectionLegend.vue";
 
 const model = defineModel<Partial<SelectProps>>({ required: true });
-
-function update<K extends keyof SelectProps>(key: K, value: SelectProps[K]) {
-  model.value = { ...model.value, [key]: value };
-}
+const { update } = useModelUpdater(model);
 
 const { t } = useI18n();
-const { focusLearnTopic } = useInspectorTab();
 
 const LABEL_OPTIONS: { value: SelectLabelAssociation; labelKey: string }[] = [
   { value: "for-id", labelKey: "controls.select.labelForId" },
@@ -27,17 +25,11 @@ const optionsText = computed({
       .split("\n")
       .map((s) => s.trim())
       .filter(Boolean);
-    // Single combined write. Two back-to-back `update()` calls race through
-    // defineModel - the second reads `model.value` before the first emit has
-    // committed, so it spreads a stale copy and drops the `options` change.
-    // That only bit when the cleared-selection branch ran (removing the
-    // currently-selected option), which silently reverted the list edit. Same
-    // fix RadioControls uses for its group-items writes.
-    const next: Partial<SelectProps> = { ...model.value, options: items };
+    update("options", items);
+    // Clear the selection if the user just removed the option that was selected.
     if (model.value.selectedOption && !items.includes(model.value.selectedOption)) {
-      next.selectedOption = "";
+      update("selectedOption", "");
     }
-    model.value = next;
   },
 });
 
@@ -78,14 +70,12 @@ usePreviewMessage({
   "demo:pick": (message) => {
     // A click on an option always closes the popup; the chosen label is
     // adopted only if it is still a current option (a pick racing an option
-    // removal is ignored). Single combined write - two update() calls race
-    // through defineModel and drop one (the hazard the options setter documents).
+    // removal is ignored).
+    update("comboboxOpen", false);
     const items = model.value.options ?? [];
-    const next: Partial<SelectProps> = { ...model.value, comboboxOpen: false };
     if (items.includes(message.value)) {
-      next.selectedOption = message.value;
+      update("selectedOption", message.value);
     }
-    model.value = next;
   },
 });
 </script>
@@ -110,20 +100,10 @@ usePreviewMessage({
     <USeparator />
 
     <fieldset class="flex flex-col gap-3 border-0 p-0 m-0">
-      <legend class="control-group-title mb-1.5">
-        <a
-          href="#topic-select"
-          class="control-label-link"
-          @click.prevent="focusLearnTopic('select')"
-        >
-          {{ t("controls.select.labelAssociation") }}
-          <UIcon
-            name="i-lucide-arrow-up-right"
-            class="control-label-link-icon"
-            aria-hidden="true"
-          />
-        </a>
-      </legend>
+      <SectionLegend
+        :label="t('controls.select.labelAssociation')"
+        learn-topic="select"
+      />
       <UFieldGroup
         size="sm"
         orientation="vertical"
@@ -161,15 +141,11 @@ usePreviewMessage({
       "please choose" entry is meaningless) and `<div role="combobox">`
       already uses its trigger text as the placeholder hint.
     -->
-    <UCheckbox
+    <ControlCardCheckbox
       v-if="model.renderAs === 'select-native' || model.renderAs == null"
       :model-value="model.hasPlaceholder === true"
       :label="t('controls.select.hasPlaceholder')"
-      variant="card"
-      color="primary"
-      size="md"
-      :ui="CONTROL_CARD_UI"
-      @update:model-value="update('hasPlaceholder', $event === true)"
+      @update:model-value="update('hasPlaceholder', $event)"
     />
 
     <UFormField class="flex flex-col">
@@ -194,27 +170,17 @@ usePreviewMessage({
     -->
     <template v-if="model.renderAs === 'div-combobox'">
       <fieldset class="flex flex-col gap-2 border-0 p-0 m-0">
-        <legend class="control-group-title mb-1.5">
-          {{ t("controls.select.attributes") }}
-        </legend>
+        <SectionLegend :label="t('controls.select.attributes')" />
         <div class="grid grid-cols-2 gap-3">
-          <UCheckbox
+          <ControlCardCheckbox
             :model-value="model.comboboxAriaControls === true"
             :label="t('controls.select.comboboxAriaControls')"
-            variant="card"
-            color="primary"
-            size="md"
-            :ui="CONTROL_CARD_UI"
-            @update:model-value="update('comboboxAriaControls', $event === true)"
+            @update:model-value="update('comboboxAriaControls', $event)"
           />
-          <UCheckbox
+          <ControlCardCheckbox
             :model-value="model.comboboxListboxRole === true"
             :label="t('controls.select.comboboxListboxRole')"
-            variant="card"
-            color="primary"
-            size="md"
-            :ui="CONTROL_CARD_UI"
-            @update:model-value="update('comboboxListboxRole', $event === true)"
+            @update:model-value="update('comboboxListboxRole', $event)"
           />
         </div>
       </fieldset>
@@ -223,27 +189,17 @@ usePreviewMessage({
     </template>
 
     <fieldset class="flex flex-col gap-2 border-0 p-0 m-0">
-      <legend class="control-group-title mb-1.5">
-        {{ t("controls.select.state") }}
-      </legend>
+      <SectionLegend :label="t('controls.select.state')" />
       <div class="grid grid-cols-2 gap-3">
-        <UCheckbox
+        <ControlCardCheckbox
           :model-value="model.required === true"
           :label="t('controls.select.required')"
-          variant="card"
-          color="primary"
-          size="md"
-          :ui="CONTROL_CARD_UI"
-          @update:model-value="update('required', $event === true)"
+          @update:model-value="update('required', $event)"
         />
-        <UCheckbox
+        <ControlCardCheckbox
           :model-value="model.disabled === true"
           :label="t('controls.select.disabled')"
-          variant="card"
-          color="primary"
-          size="md"
-          :ui="CONTROL_CARD_UI"
-          @update:model-value="update('disabled', $event === true)"
+          @update:model-value="update('disabled', $event)"
         />
       </div>
     </fieldset>

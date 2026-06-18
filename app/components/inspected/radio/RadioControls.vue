@@ -1,15 +1,13 @@
 <script setup lang="ts">
 import type { RadioProps, RadioLabelAssociation, RadioGroupMode } from "./definition";
 import ResetDefaultsSection from "~/components/ButtonStudio/sections/ResetDefaultsSection.vue";
+import ControlCardCheckbox from "~/components/controls/ControlCardCheckbox.vue";
+import SectionLegend from "~/components/controls/SectionLegend.vue";
 
 const model = defineModel<Partial<RadioProps>>({ required: true });
-
-function update<K extends keyof RadioProps>(key: K, value: RadioProps[K]) {
-  model.value = { ...model.value, [key]: value };
-}
+const { update } = useModelUpdater(model);
 
 const { t } = useI18n();
-const { focusLearnTopic } = useInspectorTab();
 
 const LABEL_OPTIONS: { value: RadioLabelAssociation; labelKey: string }[] = [
   { value: "for-id", labelKey: "controls.radio.labelForId" },
@@ -29,22 +27,19 @@ const groupMode = computed(() => model.value.groupMode ?? "group-with-fieldset")
 const groupItemsText = computed({
   get: () => (model.value.groupItems ?? []).join("\n"),
   set: (value: string) => {
-    const items = value.split("\n").map((s) => s.trim()).filter(Boolean);
-    // Single combined write. Two back-to-back `update()` calls race through
-    // defineModel — the second reads `model.value` before the first emit has
-    // committed, so it spreads a stale copy and drops the `groupItems` change.
-    // That only bit when the cleared-selection branch ran (removing the
-    // currently-selected item), which silently reverted the list edit. Same
-    // fix CheckboxControls uses for its parent-sync writes.
-    const next: Partial<RadioProps> = { ...model.value, groupItems: items };
+    const items = value
+      .split("\n")
+      .map((s) => s.trim())
+      .filter(Boolean);
+    update("groupItems", items);
+    // Clear the selection if the user just removed the item that was selected.
     if (model.value.selectedItem && !items.includes(model.value.selectedItem)) {
-      next.selectedItem = "";
+      update("selectedItem", "");
     }
-    model.value = next;
   },
 });
 
-// Reka UI (under USelect) forbids `value=""` on a SelectItem — the
+// Reka UI (under USelect) forbids `value=""` on a SelectItem - the
 // empty string is reserved as the "no selection" sentinel. We still
 // want the user to be able to *pick* "(none)" from the dropdown
 // (deselect after picking something), so we use a non-empty sentinel
@@ -68,7 +63,7 @@ const selectModel = computed({
 // Iframe click bridge: when the user picks a radio inside the
 // rendered group, preview-shell forwards the change as
 // `demo:click-child` with the index. Map that back to the label so
-// the model's `selectedItem` matches what the user just chose —
+// the model's `selectedItem` matches what the user just chose -
 // otherwise the next host-side re-render would overwrite the
 // in-iframe selection.
 usePreviewMessage({
@@ -90,7 +85,7 @@ usePreviewMessage({
 
     <UFormField class="flex flex-col">
       <template #label>
-        <span class="control-group-title">{{ t('controls.radio.label') }}</span>
+        <span class="control-group-title">{{ t("controls.radio.label") }}</span>
       </template>
       <UInput
         :model-value="model.label ?? ''"
@@ -103,20 +98,10 @@ usePreviewMessage({
     <USeparator />
 
     <fieldset class="flex flex-col gap-3 border-0 p-0 m-0">
-      <legend class="control-group-title mb-1.5">
-        <a
-          href="#topic-radio"
-          class="control-label-link"
-          @click.prevent="focusLearnTopic('radio')"
-        >
-          {{ t('controls.radio.labelAssociation') }}
-          <UIcon
-            name="i-lucide-arrow-up-right"
-            class="control-label-link-icon"
-            aria-hidden="true"
-          />
-        </a>
-      </legend>
+      <SectionLegend
+        :label="t('controls.radio.labelAssociation')"
+        learn-topic="radio"
+      />
       <UFieldGroup
         size="sm"
         orientation="vertical"
@@ -136,20 +121,10 @@ usePreviewMessage({
     <USeparator />
 
     <fieldset class="flex flex-col gap-3 border-0 p-0 m-0">
-      <legend class="control-group-title mb-1.5">
-        <a
-          href="#topic-radio"
-          class="control-label-link"
-          @click.prevent="focusLearnTopic('radio')"
-        >
-          {{ t('controls.radio.groupMode') }}
-          <UIcon
-            name="i-lucide-arrow-up-right"
-            class="control-label-link-icon"
-            aria-hidden="true"
-          />
-        </a>
-      </legend>
+      <SectionLegend
+        :label="t('controls.radio.groupMode')"
+        learn-topic="radio"
+      />
       <UFieldGroup
         size="sm"
         orientation="vertical"
@@ -170,7 +145,7 @@ usePreviewMessage({
 
     <UFormField class="flex flex-col">
       <template #label>
-        <span class="control-group-title">{{ t('controls.radio.groupItems') }}</span>
+        <span class="control-group-title">{{ t("controls.radio.groupItems") }}</span>
       </template>
       <UTextarea
         v-model="groupItemsText"
@@ -184,7 +159,7 @@ usePreviewMessage({
 
     <UFormField class="flex flex-col">
       <template #label>
-        <span class="control-group-title">{{ t('controls.radio.selectedItem') }}</span>
+        <span class="control-group-title">{{ t("controls.radio.selectedItem") }}</span>
       </template>
       <USelect
         v-model="selectModel"
@@ -197,27 +172,17 @@ usePreviewMessage({
     <USeparator />
 
     <fieldset class="flex flex-col gap-2 border-0 p-0 m-0">
-      <legend class="control-group-title mb-1.5">
-        {{ t('controls.radio.state') }}
-      </legend>
+      <SectionLegend :label="t('controls.radio.state')" />
       <div class="grid grid-cols-2 gap-3">
-        <UCheckbox
+        <ControlCardCheckbox
           :model-value="model.required === true"
           :label="t('controls.radio.required')"
-          variant="card"
-          color="primary"
-          size="md"
-          :ui="CONTROL_CARD_UI"
-          @update:model-value="update('required', $event === true)"
+          @update:model-value="update('required', $event)"
         />
-        <UCheckbox
+        <ControlCardCheckbox
           :model-value="model.disabled === true"
           :label="t('controls.radio.disabled')"
-          variant="card"
-          color="primary"
-          size="md"
-          :ui="CONTROL_CARD_UI"
-          @update:model-value="update('disabled', $event === true)"
+          @update:model-value="update('disabled', $event)"
         />
       </div>
     </fieldset>
@@ -226,7 +191,7 @@ usePreviewMessage({
 
     <UFormField class="flex flex-col">
       <template #label>
-        <span class="control-group-title">{{ t('controls.radio.name') }}</span>
+        <span class="control-group-title">{{ t("controls.radio.name") }}</span>
       </template>
       <UInput
         :model-value="model.name ?? ''"

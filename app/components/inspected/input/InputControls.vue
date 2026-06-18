@@ -11,16 +11,15 @@ import type { CssUnit, CssLength } from "~/composables/useUnitConversion";
 import ResetDefaultsSection from "~/components/ButtonStudio/sections/ResetDefaultsSection.vue";
 import ColorPickerRow from "~/components/controls/ColorPickerRow.vue";
 import StyleTargetPicker from "~/components/controls/StyleTargetPicker.vue";
+import ControlCardCheckbox from "~/components/controls/ControlCardCheckbox.vue";
+import SectionLegend from "~/components/controls/SectionLegend.vue";
+import LearnLink from "~/components/controls/LearnLink.vue";
 
 const model = defineModel<Partial<InputProps>>({ required: true });
-
-function update<K extends keyof InputProps>(key: K, value: InputProps[K]) {
-  model.value = { ...model.value, [key]: value };
-}
+const { update, updateMany } = useModelUpdater(model);
 
 const { t } = useI18n();
 const unitConv = useUnitConversion();
-const { focusLearnTopic } = useInspectorTab();
 
 const DEFAULTS = {
   fontSize: 14,
@@ -29,7 +28,7 @@ const DEFAULTS = {
   borderColor: "#888888",
 } as const;
 
-// The "Style applies to" picker — which part of the input the
+// The "Style applies to" picker - which part of the input the
 // surrounding font-size and text-colour controls bind to. Local state;
 // not part of the model because it's a UI concern, not a rendered
 // property. Background and border controls are input-only and don't
@@ -56,17 +55,17 @@ function activeSlice(): InputTextStyleSlice {
 
 function updateActiveSlice(patch: Partial<InputTextStyleSlice>) {
   if (activeStyleTarget.value === "input") {
-    model.value = { ...model.value, ...patch } as Partial<InputProps>;
+    updateMany(patch as Partial<InputProps>);
     return;
   }
-  const sliceKey
-    = activeStyleTarget.value === "label"
+  const sliceKey =
+    activeStyleTarget.value === "label"
       ? "labelStyle"
       : activeStyleTarget.value === "placeholder"
         ? "placeholderStyle"
         : "helpTextStyle";
   const current = model.value[sliceKey] ?? {};
-  // Build the next slice without spreading undefineds — so toggling
+  // Build the next slice without spreading undefineds - so toggling
   // a property off actually removes it rather than leaving an
   // explicit `undefined` value.
   const next: InputTextStyleSlice = {};
@@ -78,7 +77,7 @@ function updateActiveSlice(patch: Partial<InputTextStyleSlice>) {
     const value = patch[key];
     if (value !== undefined) next[key] = value as never;
   }
-  model.value = { ...model.value, [sliceKey]: next };
+  update(sliceKey, next);
 }
 
 const activeFontSize = computed<CssLength | undefined>({
@@ -100,27 +99,21 @@ const bgColor = computed({
   set: (value: string) => update("bg", value),
 });
 
-const borderColorComputed = computed({
+const borderColor = computed({
   get: () => model.value.borderColor ?? DEFAULTS.borderColor,
   set: (value: string) => update("borderColor", value),
 });
 
-const inputBgEnabled = computed(() =>
-  model.value.bg != null || model.value.borderColor != null,
-);
+const inputBgEnabled = computed(() => model.value.bg != null || model.value.borderColor != null);
 
-const { ratio: contrastRatio, verdict: contrastVerdict } = useContrast(
-  activeFgText,
-  bgColor,
-  {
-    fontSizePx: () => {
-      const f = activeFontSize.value;
-      if (!f) return DEFAULTS.fontSize;
-      return unitConv.lengthToPx(f);
-    },
-    bold: false,
+const { ratio: contrastRatio, verdict: contrastVerdict } = useContrast(activeFgText, bgColor, {
+  fontSizePx: () => {
+    const f = activeFontSize.value;
+    if (!f) return DEFAULTS.fontSize;
+    return unitConv.lengthToPx(f);
   },
-);
+  bold: false,
+});
 
 function toggleFontSize(value: boolean | "indeterminate") {
   if (value === true) {
@@ -140,16 +133,12 @@ function toggleActiveFgText(value: boolean | "indeterminate") {
 
 function toggleInputBg(value: boolean | "indeterminate") {
   if (value === true) {
-    model.value = {
-      ...model.value,
-      bg: DEFAULTS.bg,
-      borderColor: DEFAULTS.borderColor,
-    };
+    updateMany({ bg: DEFAULTS.bg, borderColor: DEFAULTS.borderColor });
   } else {
-    const next = { ...model.value };
-    delete next.bg;
-    delete next.borderColor;
-    model.value = next;
+    // Remove the keys outright (rather than set undefined) so the rendered
+    // output and code drawer show no leftover background/border declarations.
+    delete model.value.bg;
+    delete model.value.borderColor;
   }
 }
 
@@ -190,18 +179,14 @@ const ariaLabelAttr = computed({
   set: (value: boolean) => update("ariaLabel", value),
 });
 
-const showSearchIconToggle = computed(() =>
-  model.value.renderAs === "search",
-);
+const showSearchIconToggle = computed(() => model.value.renderAs === "search");
 
 const showSearchIcon = computed({
   get: () => model.value.showSearchIcon === true,
   set: (value: boolean) => update("showSearchIcon", value),
 });
 
-const showPasswordToggleControl = computed(() =>
-  model.value.renderAs === "password",
-);
+const showPasswordToggleControl = computed(() => model.value.renderAs === "password");
 
 const showPasswordToggle = computed({
   get: () => model.value.showPasswordToggle === true,
@@ -244,18 +229,11 @@ useVariantLabelSync(model, {
     <!-- Label / accessible name -->
     <UFormField class="flex flex-col">
       <template #label>
-        <a
-          href="#topic-vague-label"
-          class="control-group-title control-label-link"
-          @click.prevent="focusLearnTopic('vague-label')"
-        >
-          {{ t('controls.input.label') }}
-          <UIcon
-            name="i-lucide-arrow-up-right"
-            class="control-label-link-icon"
-            aria-hidden="true"
-          />
-        </a>
+        <LearnLink
+          class="control-group-title"
+          topic="vague-label"
+          :label="t('controls.input.label')"
+        />
       </template>
       <UInput
         :model-value="model.label ?? ''"
@@ -269,20 +247,10 @@ useVariantLabelSync(model, {
 
     <!-- Label-association pattern -->
     <fieldset class="flex flex-col gap-3 border-0 p-0 m-0">
-      <legend class="control-group-title mb-1.5">
-        <a
-          href="#topic-accessible-name"
-          class="control-label-link"
-          @click.prevent="focusLearnTopic('accessible-name')"
-        >
-          {{ t('controls.input.labelAssociation') }}
-          <UIcon
-            name="i-lucide-arrow-up-right"
-            class="control-label-link-icon"
-            aria-hidden="true"
-          />
-        </a>
-      </legend>
+      <SectionLegend
+        :label="t('controls.input.labelAssociation')"
+        learn-topic="accessible-name"
+      />
       <UFieldGroup
         size="sm"
         orientation="vertical"
@@ -298,25 +266,17 @@ useVariantLabelSync(model, {
         </UButton>
       </UFieldGroup>
 
-      <UCheckbox
+      <ControlCardCheckbox
         v-if="showSearchIconToggle"
         v-model="showSearchIcon"
         :label="t('controls.input.showSearchIcon')"
-        variant="card"
-        color="primary"
-        size="md"
-        :ui="CONTROL_CARD_UI"
         class="mt-2"
       />
 
-      <UCheckbox
+      <ControlCardCheckbox
         v-if="showPasswordToggleControl"
         v-model="showPasswordToggle"
         :label="t('controls.input.showPasswordToggle')"
-        variant="card"
-        color="primary"
-        size="md"
-        :ui="CONTROL_CARD_UI"
         class="mt-2"
       />
     </fieldset>
@@ -326,23 +286,17 @@ useVariantLabelSync(model, {
     <!--
       Attributes section: ARIA-related flags that aren't part of the
       label-association decision. `aria-hidden` lives here so the
-      user can apply it to any input type — toggling it on a regular
+      user can apply it to any input type - toggling it on a regular
       text input demonstrates the anti-pattern (a form field hidden
       from assistive technology), which is exactly the "learn by
       failing" path the studio is built for. Never disabled, never
       gated on the search icon.
     -->
     <fieldset class="flex flex-col gap-2 border-0 p-0 m-0">
-      <legend class="control-group-title mb-1.5">
-        {{ t('controls.input.attributes') }}
-      </legend>
-      <UCheckbox
+      <SectionLegend :label="t('controls.input.attributes')" />
+      <ControlCardCheckbox
         v-model="ariaHidden"
         :label="t('controls.input.ariaHidden')"
-        variant="card"
-        color="primary"
-        size="md"
-        :ui="CONTROL_CARD_UI"
       />
     </fieldset>
 
@@ -351,7 +305,7 @@ useVariantLabelSync(model, {
     <!-- Placeholder -->
     <UFormField class="flex flex-col">
       <template #label>
-        <span class="control-group-title">{{ t('controls.input.placeholder') }}</span>
+        <span class="control-group-title">{{ t("controls.input.placeholder") }}</span>
       </template>
       <UInput
         :model-value="model.placeholder ?? ''"
@@ -365,13 +319,11 @@ useVariantLabelSync(model, {
 
     <!-- Attributes -->
     <fieldset class="flex flex-col gap-3 border-0 p-0 m-0">
-      <legend class="control-group-title mb-1.5">
-        {{ t('controls.input.attributes') }}
-      </legend>
+      <SectionLegend :label="t('controls.input.attributes')" />
 
       <UFormField class="flex flex-col">
         <template #label>
-          <span class="control-group-title">{{ t('controls.input.name') }}</span>
+          <span class="control-group-title">{{ t("controls.input.name") }}</span>
         </template>
         <UInput
           :model-value="model.name ?? ''"
@@ -383,7 +335,7 @@ useVariantLabelSync(model, {
 
       <UFormField class="flex flex-col">
         <template #label>
-          <span class="control-group-title">{{ t('controls.input.autocomplete') }}</span>
+          <span class="control-group-title">{{ t("controls.input.autocomplete") }}</span>
         </template>
         <UInput
           :model-value="model.autocomplete ?? ''"
@@ -394,29 +346,17 @@ useVariantLabelSync(model, {
       </UFormField>
 
       <div class="grid grid-cols-2 gap-3">
-        <UCheckbox
+        <ControlCardCheckbox
           v-model="required"
           :label="t('controls.input.required')"
-          variant="card"
-          color="primary"
-          size="md"
-          :ui="CONTROL_CARD_UI"
         />
-        <UCheckbox
+        <ControlCardCheckbox
           v-model="disabled"
           :label="t('controls.input.disabled')"
-          variant="card"
-          color="primary"
-          size="md"
-          :ui="CONTROL_CARD_UI"
         />
-        <UCheckbox
+        <ControlCardCheckbox
           v-model="ariaLabelAttr"
           :label="t('controls.input.ariaLabelAttr')"
-          variant="card"
-          color="primary"
-          size="md"
-          :ui="CONTROL_CARD_UI"
         />
       </div>
     </fieldset>
@@ -426,7 +366,7 @@ useVariantLabelSync(model, {
     <!-- Help text -->
     <UFormField class="flex flex-col">
       <template #label>
-        <span class="control-group-title">{{ t('controls.input.helpText') }}</span>
+        <span class="control-group-title">{{ t("controls.input.helpText") }}</span>
       </template>
       <UInput
         :model-value="model.helpText ?? ''"
@@ -451,7 +391,9 @@ useVariantLabelSync(model, {
     <fieldset class="flex flex-col gap-3 border-0 p-0 m-0">
       <div>
         <div class="flex items-center justify-between mb-1.5">
-          <span class="control-group-title font-medium text-(--text-secondary)">{{ t('controls.fontSize') }}</span>
+          <span class="control-group-title font-medium text-(--text-secondary)">{{
+            t("controls.fontSize")
+          }}</span>
           <USwitch
             :model-value="fontSizeEnabled"
             size="xs"
@@ -472,7 +414,9 @@ useVariantLabelSync(model, {
             size="sm"
             :disabled="!fontSizeEnabled"
             class="flex-1"
-            @update:model-value="activeFontSize = unitConv.fromSliderPx(Number($event), unitFor(activeFontSize))"
+            @update:model-value="
+              activeFontSize = unitConv.fromSliderPx(Number($event), unitFor(activeFontSize))
+            "
           />
           <LengthValueInput
             v-if="fontSizeEnabled"
@@ -490,7 +434,7 @@ useVariantLabelSync(model, {
     <!-- TEXT COLOUR (active target) -->
     <fieldset class="flex flex-col gap-3 border-0 p-0 m-0">
       <legend class="flex items-center justify-between w-full mb-1.5">
-        <span class="control-group-title">{{ t('controls.textColor') }}</span>
+        <span class="control-group-title">{{ t("controls.textColor") }}</span>
         <USwitch
           :model-value="activeFgTextEnabled"
           size="xs"
@@ -512,7 +456,7 @@ useVariantLabelSync(model, {
       <USeparator />
       <fieldset class="flex flex-col gap-3 border-0 p-0 m-0">
         <legend class="flex items-center justify-between w-full mb-1.5">
-          <span class="control-group-title">{{ t('controls.input.background') }}</span>
+          <span class="control-group-title">{{ t("controls.input.background") }}</span>
           <USwitch
             :model-value="inputBgEnabled"
             size="xs"
@@ -534,7 +478,7 @@ useVariantLabelSync(model, {
             :verdict="contrastVerdict"
           />
           <ColorPickerRow
-            v-model="borderColorComputed"
+            v-model="borderColor"
             :label="t('controls.borderColor')"
             :disabled="!inputBgEnabled"
           />

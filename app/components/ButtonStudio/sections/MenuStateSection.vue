@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { BaseButtonProps } from "~/types/button";
 import type { MenuBehaviour } from "~/components/inspected/buttons/shared/types";
+import ControlCardCheckbox from "~/components/controls/ControlCardCheckbox.vue";
+import SectionLegend from "~/components/controls/SectionLegend.vue";
 
 type MenuProps = Partial<BaseButtonProps> & {
   menuBehaviour?: MenuBehaviour;
@@ -12,7 +14,6 @@ const model = defineModel<MenuProps>({ required: true });
 const { update } = useModelUpdater(model);
 
 const { t } = useI18n();
-const { focusLearnTopic } = useInspectorTab();
 
 const behaviour = computed(() => model.value.menuBehaviour ?? "none");
 
@@ -26,20 +27,10 @@ const OPTIONS: { value: MenuBehaviour; labelKey: string }[] = [
 
 <template>
   <fieldset class="flex flex-col gap-3 border-0 p-0 m-0">
-    <legend class="control-group-title mb-1.5">
-      <a
-        href="#topic-menu-triggers"
-        class="control-label-link"
-        @click.prevent="focusLearnTopic('menu-triggers')"
-      >
-        {{ t("controls.menuBehaviour") }}
-        <UIcon
-          name="i-lucide-arrow-up-right"
-          class="control-label-link-icon"
-          aria-hidden="true"
-        />
-      </a>
-    </legend>
+    <SectionLegend
+      :label="t('controls.menuBehaviour')"
+      learn-topic="menu-triggers"
+    />
 
     <UFieldGroup
       size="sm"
@@ -56,16 +47,12 @@ const OPTIONS: { value: MenuBehaviour; labelKey: string }[] = [
       </UButton>
     </UFieldGroup>
 
-    <UCheckbox
+    <ControlCardCheckbox
       v-if="behaviour !== 'none'"
       :model-value="model.menuShowControls === true"
       :label="t('controls.menuShowControls')"
-      variant="card"
-      color="primary"
-      size="md"
       class="mt-2"
-      :ui="CONTROL_CARD_UI"
-      @update:model-value="update('menuShowControls', $event === true)"
+      @update:model-value="update('menuShowControls', $event)"
     />
   </fieldset>
 </template>

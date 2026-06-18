@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { BaseButtonProps } from "~/types/button";
+import LearnLink from "~/components/controls/LearnLink.vue";
 
 const model = defineModel<Partial<BaseButtonProps>>({ required: true });
 const { update } = useModelUpdater(model);
@@ -8,7 +9,6 @@ const { hideContentType = false } = defineProps<{
 }>();
 
 const { t } = useI18n();
-const { focusLearnTopic } = useInspectorTab();
 
 const VARIANT_LABEL_PLACEHOLDER_KEYS: Record<string, string> = {
   "button-submit": "controls.labelPlaceholderSubmit",
@@ -51,18 +51,11 @@ const labelFieldPlaceholderKey = computed(
       class="flex flex-col"
     >
       <template #label>
-        <a
-          :href="`#topic-${labelFieldTopicId}`"
-          class="control-group-title control-label-link"
-          @click.prevent="focusLearnTopic(labelFieldTopicId)"
-        >
-          {{ t(labelFieldKey) }}
-          <UIcon
-            name="i-lucide-arrow-up-right"
-            class="control-label-link-icon"
-            aria-hidden="true"
-          />
-        </a>
+        <LearnLink
+          class="control-group-title"
+          :topic="labelFieldTopicId"
+          :label="t(labelFieldKey)"
+        />
       </template>
       <UInput
         :model-value="model.label ?? ''"
@@ -102,18 +95,11 @@ const labelFieldPlaceholderKey = computed(
       class="flex flex-col"
     >
       <template #label>
-        <a
-          href="#topic-accessible-name"
-          class="control-group-title control-label-link"
-          @click.prevent="focusLearnTopic('accessible-name')"
-        >
-          {{ t("controls.alt") }}
-          <UIcon
-            name="i-lucide-arrow-up-right"
-            class="control-label-link-icon"
-            aria-hidden="true"
-          />
-        </a>
+        <LearnLink
+          class="control-group-title"
+          topic="accessible-name"
+          :label="t('controls.alt')"
+        />
       </template>
       <UInput
         :model-value="model.alt ?? ''"
@@ -128,18 +114,11 @@ const labelFieldPlaceholderKey = computed(
       class="flex flex-col"
     >
       <template #label>
-        <a
-          href="#topic-button-value-attribute"
-          class="control-group-title control-label-link"
-          @click.prevent="focusLearnTopic('button-value-attribute')"
-        >
-          {{ t("controls.valueAttribute") }}
-          <UIcon
-            name="i-lucide-arrow-up-right"
-            class="control-label-link-icon"
-            aria-hidden="true"
-          />
-        </a>
+        <LearnLink
+          class="control-group-title"
+          topic="button-value-attribute"
+          :label="t('controls.valueAttribute')"
+        />
       </template>
       <UInput
         :model-value="model.value ?? ''"
@@ -154,18 +133,11 @@ const labelFieldPlaceholderKey = computed(
       class="flex flex-col"
     >
       <template #label>
-        <a
-          href="#topic-button-value-attribute"
-          class="control-group-title control-label-link"
-          @click.prevent="focusLearnTopic('button-value-attribute')"
-        >
-          {{ t("controls.nameAttribute") }}
-          <UIcon
-            name="i-lucide-arrow-up-right"
-            class="control-label-link-icon"
-            aria-hidden="true"
-          />
-        </a>
+        <LearnLink
+          class="control-group-title"
+          topic="button-value-attribute"
+          :label="t('controls.nameAttribute')"
+        />
       </template>
       <UInput
         :model-value="model.name ?? ''"

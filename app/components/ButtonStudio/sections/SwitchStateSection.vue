@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { BaseButtonProps } from "~/types/button";
 import type { ButtonRenderAs, SwitchBehaviour } from "~/components/inspected/buttons/shared/types";
+import ControlCardCheckbox from "~/components/controls/ControlCardCheckbox.vue";
+import SectionLegend from "~/components/controls/SectionLegend.vue";
 
 type SwitchProps = Partial<BaseButtonProps> & {
   renderAs?: ButtonRenderAs;
@@ -13,7 +15,6 @@ const model = defineModel<SwitchProps>({ required: true });
 const { update } = useModelUpdater(model);
 
 const { t } = useI18n();
-const { focusLearnTopic } = useInspectorTab();
 
 const behaviour = computed(() => model.value.switchBehaviour ?? "none");
 
@@ -30,20 +31,10 @@ const OPTIONS: { value: SwitchBehaviour; labelKey: string }[] = [
 
 <template>
   <fieldset class="flex flex-col gap-3 border-0 p-0 m-0">
-    <legend class="control-group-title mb-1.5">
-      <a
-        href="#topic-switches"
-        class="control-label-link"
-        @click.prevent="focusLearnTopic('switches')"
-      >
-        {{ t("controls.switchBehaviour") }}
-        <UIcon
-          name="i-lucide-arrow-up-right"
-          class="control-label-link-icon"
-          aria-hidden="true"
-        />
-      </a>
-    </legend>
+    <SectionLegend
+      :label="t('controls.switchBehaviour')"
+      learn-topic="switches"
+    />
 
     <UFieldGroup
       size="sm"
@@ -64,24 +55,16 @@ const OPTIONS: { value: SwitchBehaviour; labelKey: string }[] = [
       v-if="behaviour !== 'none'"
       class="grid grid-cols-2 gap-3 mt-2"
     >
-      <UCheckbox
+      <ControlCardCheckbox
         v-if="supportsPillStyling"
         :model-value="model.switchPillStyling !== false"
         :label="t('controls.switchPillStyling')"
-        variant="card"
-        color="primary"
-        size="md"
-        :ui="CONTROL_CARD_UI"
-        @update:model-value="update('switchPillStyling', $event === true)"
+        @update:model-value="update('switchPillStyling', $event)"
       />
-      <UCheckbox
+      <ControlCardCheckbox
         :model-value="model.switchChecked === true"
         :label="t('controls.switchChecked')"
-        variant="card"
-        color="primary"
-        size="md"
-        :ui="CONTROL_CARD_UI"
-        @update:model-value="update('switchChecked', $event === true)"
+        @update:model-value="update('switchChecked', $event)"
       />
     </div>
   </fieldset>
