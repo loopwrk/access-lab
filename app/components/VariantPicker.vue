@@ -5,7 +5,6 @@ import type {
 } from "~/types/component";
 
 interface Props {
-  modelValue: string;
   variants: ComponentVariant[];
   placeholder?: string;
   title?: string;
@@ -24,9 +23,7 @@ const resolvedPlaceholder = computed(
 );
 const resolvedTitle = computed(() => props.title || t("variantPicker.title"));
 
-const emit = defineEmits<{
-  "update:modelValue": [value: string];
-}>();
+const modelValue = defineModel<string>({ required: true });
 
 const isOpen = ref(false);
 const triggerRef = ref<HTMLElement | null>(null);
@@ -42,7 +39,7 @@ onClickOutside(triggerRef, closeIfOpen, {
 usePreviewIframeOutsideClick(closeIfOpen);
 
 const selectedVariant = computed(() =>
-  props.variants.find((variant) => variant.key === props.modelValue),
+  props.variants.find((variant) => variant.key === modelValue.value),
 );
 
 const isSingleVariant = computed(() => props.variants.length <= 1);
@@ -91,11 +88,11 @@ function visualFor(status?: ComponentVariantStatus): StatusVisual | null {
 }
 
 function isSelected(key: string): boolean {
-  return key === props.modelValue;
+  return key === modelValue.value;
 }
 
 function select(key: string) {
-  emit("update:modelValue", key);
+  modelValue.value = key;
   isOpen.value = false;
 }
 
