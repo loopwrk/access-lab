@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const { t } = useI18n();
-const { activeComponentName, activeLearnTopicId } = useStudioToolbar();
+const { activeComponentName, activeLearnTopicId } = useActiveComponent();
 const { focusLearnTopic } = useInspectorTab();
 const { criticalCount, warningCount, passingCount } = useAxeCounts();
 const { allViolations } = useAllViolations();

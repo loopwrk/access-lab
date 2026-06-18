@@ -5,7 +5,7 @@ import type { ButtonStudioDefaults } from "~/composables/useButtonStudioDefaults
 const props = defineProps<{
   defaults: ButtonStudioDefaults;
   // When true (input-image), background and text-colour swatches are
-  // hidden — the image provides its own visible content; only the
+  // hidden - the image provides its own visible content; only the
   // border colour applies.
   hideBgAndText?: boolean;
 }>();
@@ -42,9 +42,9 @@ const borderColorComputed = computed({
 
 const { ratio: contrastRatio, verdict: contrastVerdict } = useContrast(fgTextColor, bgColor, {
   fontSizePx: () => {
-    const f = model.value.fontSize;
-    if (!f) return props.defaults.fontSize;
-    return unitConv.lengthToPx(f);
+    const fontSize = model.value.fontSize;
+    if (!fontSize) return props.defaults.fontSize;
+    return unitConv.lengthToPx(fontSize);
   },
   bold: false,
 });

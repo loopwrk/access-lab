@@ -1,10 +1,10 @@
 <script setup lang="ts">
 /**
  * Learn-topic picker shown in the inspector. Pure navigation surface
- * — every topic is a button that opens the article in read mode
+ * - every topic is a button that opens the article in read mode
  * (`/learn/<topicId>`).
  *
- * Topics come from `useLearnTopicTree` / `useLearnTopics` — the
+ * Topics come from `useLearnTopicTree` / `useLearnTopics` - the
  * same data source as the read-mode tree, so adding a topic in
  * markdown frontmatter shows up here automatically.
  */
@@ -16,7 +16,7 @@ const {
   activeComponentName,
   activeLearnTopicId,
   activeRelatedLearnTopicIds,
-} = useStudioToolbar();
+} = useActiveComponent();
 
 const pinnedTopics = computed(() => {
   const byId = new Map(topics.value.map((topic) => [topic.id, topic]));
@@ -36,7 +36,7 @@ const pinnedTopics = computed(() => {
   }
 
   // 2. Curated related topics in declaration order. The author's
-  //    intent is preserved literally — no re-sorting by category or
+  //    intent is preserved literally - no re-sorting by category or
   //    overlap.
   for (const id of activeRelatedLearnTopicIds.value) {
     if (seen.has(id)) continue;

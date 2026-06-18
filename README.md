@@ -15,7 +15,7 @@ Accessibility is not always prioritised in mainstream teaching material and lear
 
 ## Project status
 
-Mid-development, in a pre-user-testing polish window. Ten inspected components are currently included (six button-family patterns plus four form-input elements), the full Studio shell is working, and the three-engine audit pipeline (axe-core + prop-based custom rules + DOM-based rules) feeds the live Issues panel. A separate read-friendly view for learning topics that directly relate to the live, inspected components available to audit has been implemented. There are currently 16 custom written articles that explain topics in an accessible manner.
+Mid-development, in a pre-user-testing polish window. Ten inspected components are currently included (six button-family patterns plus four form-input elements), the full Studio shell is working, and the three-engine audit pipeline (axe-core + prop-based custom rules + DOM-based rules) feeds the live Issues panel. A separate read-friendly view for learning topics that directly relate to the live, inspected components available to audit has been implemented. There are currently 22 custom-written articles that explain topics in an accessible manner.
 
 ## The Studio layout
 
@@ -26,7 +26,7 @@ Mid-development, in a pre-user-testing polish window. Ten inspected components a
 
 ## Read Mode (Educational Articles)
 
-Long-form learning lives at `/learn/<topicId>` - a dedicated reading route with its own layout, separate from the studio chrome. Sixteen articles cover the underlying patterns: button types, vague labels, native rendering, form wrapping, switches, disclosure triggers, menu triggers, and the rest.
+Long-form learning lives at `/learn/<topicId>` - a dedicated reading route with its own layout, separate from the studio chrome. Twenty-two articles cover the underlying patterns: button types, vague labels, native rendering, form wrapping, switches, disclosure triggers, menu triggers, and the rest.
 
 **Where it appears.**
 
@@ -149,9 +149,9 @@ Static-gen output lives in `.output/` and is deployable to any CDN - Nuxt 4's `n
 
 ```bash
 corepack pnpm typecheck       # vue-tsc strict, no any
-corepack pnpm lint            # ESLint (Nuxt-flavoured + custom stylistic)
-corepack pnpm lint --fix      # safe to run; ~3k auto-fixable stylistic rules
-corepack pnpm test            # vitest (currently scaffolding only)
+corepack pnpm lint            # ESLint (Nuxt config; correctness only, Prettier owns formatting)
+corepack pnpm lint --fix      # auto-fix the correctness rules ESLint can fix
+corepack pnpm test            # vitest, all projects (prefer test:unit / test:nuxt; see NOTES)
 corepack pnpm test:unit       # unit project
 corepack pnpm test:nuxt       # nuxt component-test project
 corepack pnpm test:coverage   # with v8 coverage

@@ -18,7 +18,7 @@ const {
   activeLearnTopicId,
   activeRelevantConcepts,
   activeRelatedLearnTopicIds,
-} = useStudioToolbar();
+} = useActiveComponent();
 
 const renderAs = computed({
   get: () => (componentProps.value.renderAs as string | undefined) ?? "",
@@ -40,7 +40,7 @@ const enabledWrappers = computed({
 
 /**
  * Context-wrappers actually available for the current variant. A wrapper
- * may declare `availableFor(renderAs)` to opt out of certain variants —
+ * may declare `availableFor(renderAs)` to opt out of certain variants -
  * for example, `<button>` wrapping another `<button>` can't exist at
  * runtime because the HTML parser auto-closes the outer button.
  */

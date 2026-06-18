@@ -36,12 +36,12 @@ export function useButtonStudioDefaults(
   const { defaults: browser } = useBrowserDefaults(tagName);
 
   return computed(() => {
-    const b = browser.value;
+    const styles = browser.value;
     const num = (prop: string): number | undefined => {
-      const v = b?.[prop];
-      if (!v || v === "none") return undefined;
-      const n = parseFloat(v);
-      return isNaN(n) ? undefined : n;
+      const raw = styles?.[prop];
+      if (!raw || raw === "none") return undefined;
+      const parsed = parseFloat(raw);
+      return isNaN(parsed) ? undefined : parsed;
     };
     return {
       width: HARDCODED.width,
@@ -49,9 +49,9 @@ export function useButtonStudioDefaults(
       fontSize: num("fontSize") ?? HARDCODED.fontSize,
       padding: num("paddingTop") ?? HARDCODED.padding,
       borderWidth: num("borderTopWidth") ?? HARDCODED.borderWidth,
-      bg: rgbToHex(b?.["backgroundColor"]) || HARDCODED.bg,
-      fgText: rgbToHex(b?.color) || HARDCODED.fgText,
-      borderColor: rgbToHex(b?.["borderTopColor"]) || HARDCODED.borderColor,
+      bg: rgbToHex(styles?.["backgroundColor"]) || HARDCODED.bg,
+      fgText: rgbToHex(styles?.color) || HARDCODED.fgText,
+      borderColor: rgbToHex(styles?.["borderTopColor"]) || HARDCODED.borderColor,
     };
   });
 }

@@ -7,16 +7,16 @@
  * reader (useReadMode().open).
  *
  * The topic data comes from Nuxt Content (useLearnTopics / useLearnTopicTree via
- * queryCollection), which doesn't run in happy-dom — so those are mocked with
+ * queryCollection), which doesn't run in happy-dom - so those are mocked with
  * controlled topics, and useReadMode().open is mocked to capture clicks. The
- * pinning inputs (primary + related ids) are real useStudioToolbar useState.
+ * pinning inputs (primary + related ids) are real useActiveComponent useState.
  */
 
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { mockNuxtImport, mountSuspended } from "@nuxt/test-utils/runtime";
 import { defineComponent, h, ref } from "vue";
 import LearnPanel from "~/components/LearnPanel.vue";
-import { useStudioToolbar } from "~/composables/useStudioToolbar";
+import { useActiveComponent } from "~/composables/useActiveComponent";
 
 interface MockTopic {
   id: string;
@@ -49,13 +49,13 @@ const TOPICS: MockTopic[] = [
   { id: "d", title: "Delta", summary: "" },
 ];
 
-let toolbar: ReturnType<typeof useStudioToolbar>;
+let toolbar: ReturnType<typeof useActiveComponent>;
 let panel: Awaited<ReturnType<typeof mountSuspended>> | null = null;
 
 beforeAll(async () => {
   const Capture = defineComponent({
     setup() {
-      toolbar = useStudioToolbar();
+      toolbar = useActiveComponent();
       return () => h("div");
     },
   });
@@ -82,7 +82,7 @@ function titlesIn(section: { findAll: (s: string) => Array<{ text: () => string 
   return section.findAll("button").map((b) => b.text().trim());
 }
 
-describe("LearnPanel — pinned ordering", () => {
+describe("LearnPanel - pinned ordering", () => {
   it("puts the primary first, then related in declaration order, deduping the primary and skipping unknown ids", async () => {
     mocks.topics = TOPICS;
     toolbar.activeLearnTopicId.value = "c"; // primary
@@ -103,12 +103,12 @@ describe("LearnPanel — pinned ordering", () => {
     panel = w;
 
     const sections = w.findAll("section");
-    expect(sections).toHaveLength(1); // the category group only — no pinned block
+    expect(sections).toHaveLength(1); // the category group only - no pinned block
     expect(titlesIn(sections[0]!)).toEqual(["Alpha"]);
   });
 });
 
-describe("LearnPanel — categorised groups + open", () => {
+describe("LearnPanel - categorised groups + open", () => {
   it("lists each category group's topics below the pinned block", async () => {
     mocks.topics = TOPICS;
     toolbar.activeLearnTopicId.value = "a"; // a pinned block exists
