@@ -4,7 +4,7 @@ import type { BaseButtonProps } from "~/types/button";
 defineProps<{ hideDisabled?: boolean }>();
 
 const model = defineModel<Partial<BaseButtonProps>>({ required: true });
-const { update } = useButtonControlsModel(model);
+const { update } = useModelUpdater(model);
 
 const { t } = useI18n();
 const { focusLearnTopic } = useInspectorTab();
@@ -13,7 +13,7 @@ const { focusLearnTopic } = useInspectorTab();
 <template>
   <fieldset class="flex flex-col gap-3 border-0 p-0 m-0">
     <legend class="control-group-title mb-1.5">
-      {{ t('controls.aria') }}
+      {{ t("controls.aria") }}
     </legend>
 
     <UFormField class="flex flex-col mb-4">
@@ -23,7 +23,7 @@ const { focusLearnTopic } = useInspectorTab();
           class="control-group-title control-label-link"
           @click.prevent="focusLearnTopic('accessible-name')"
         >
-          {{ t('controls.ariaLabel') }}
+          {{ t("controls.ariaLabel") }}
           <UIcon
             name="i-lucide-arrow-up-right"
             class="control-label-link-icon"
@@ -49,7 +49,7 @@ const { focusLearnTopic } = useInspectorTab();
       @update:model-value="update('disabled', $event === true)"
     >
       <template #label>
-        {{ t('controls.disabled') }}
+        {{ t("controls.disabled") }}
       </template>
     </UCheckbox>
   </fieldset>

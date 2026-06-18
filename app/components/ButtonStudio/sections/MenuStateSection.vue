@@ -9,7 +9,7 @@ type MenuProps = Partial<BaseButtonProps> & {
 };
 
 const model = defineModel<MenuProps>({ required: true });
-const { update } = useButtonControlsModel(model);
+const { update } = useModelUpdater(model);
 
 const { t } = useI18n();
 const { focusLearnTopic } = useInspectorTab();
@@ -32,7 +32,7 @@ const OPTIONS: { value: MenuBehaviour; labelKey: string }[] = [
         class="control-label-link"
         @click.prevent="focusLearnTopic('menu-triggers')"
       >
-        {{ t('controls.menuBehaviour') }}
+        {{ t("controls.menuBehaviour") }}
         <UIcon
           name="i-lucide-arrow-up-right"
           class="control-label-link-icon"

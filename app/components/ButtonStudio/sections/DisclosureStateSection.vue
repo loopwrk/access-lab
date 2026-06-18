@@ -9,7 +9,7 @@ type DisclosureProps = Partial<BaseButtonProps> & {
 };
 
 const model = defineModel<DisclosureProps>({ required: true });
-const { update } = useButtonControlsModel(model);
+const { update } = useModelUpdater(model);
 
 const { t } = useI18n();
 const { focusLearnTopic } = useInspectorTab();
@@ -31,7 +31,7 @@ const OPTIONS: { value: DisclosureBehaviour; labelKey: string }[] = [
         class="control-label-link"
         @click.prevent="focusLearnTopic('disclosure-triggers')"
       >
-        {{ t('controls.disclosureBehaviour') }}
+        {{ t("controls.disclosureBehaviour") }}
         <UIcon
           name="i-lucide-arrow-up-right"
           class="control-label-link-icon"

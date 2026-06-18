@@ -1,3 +1,4 @@
+import { PREVIEW_MESSAGE, type HostBoundMessage } from "~/types/preview-messages";
 import type { DomMeasurement } from "~/rules/types";
 import type { AxeResult } from "~/types/axe";
 
@@ -34,23 +35,23 @@ export function useAxeAudit(iframeRef: {
     const iframe = iframeRef.value;
     if (!iframe || event.source !== iframe.contentWindow) return;
 
-    const data = event.data;
+    const data = event.data as HostBoundMessage | undefined;
     if (!data || typeof data.type !== "string") return;
 
     switch (data.type) {
-      case "preview:ready":
+      case PREVIEW_MESSAGE.SHELL_READY:
         state.value.isReady = true;
         break;
-      case "axe:result":
+      case PREVIEW_MESSAGE.AXE_RESULT:
         state.value.violations = asAxeResults(data.violations);
         state.value.passes = asAxeResults(data.passes);
         state.value.incomplete = asAxeResults(data.incomplete);
         state.value.errorMessage = null;
         break;
-      case "axe:error":
+      case PREVIEW_MESSAGE.AXE_ERROR:
         state.value.errorMessage = typeof data.message === "string" ? data.message : null;
         break;
-      case "overflow:result":
+      case PREVIEW_MESSAGE.DOM_MEASUREMENT:
         measurement.value = data.measurement;
         break;
     }

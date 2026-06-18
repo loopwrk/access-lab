@@ -42,7 +42,7 @@
       // Pre-defined for the toggle-button demo's
       // `onclick="toggleBold()"`. Wraps / unwraps the sample
       // paragraph in `<strong>` so the click actually does
-      // something visible — mirrors the simple production-style JS
+      // something visible - mirrors the simple production-style JS
       // shown in the code drawer's JS tab. The host also re-renders
       // (driven by togglePressed) so any state-restoration after
       // navigation produces the same markup; see
@@ -77,7 +77,7 @@
           frameworkCss.textContent = e.data.css || "";
           mount.innerHTML = e.data.html;
 
-          // `indeterminate` is a DOM property, not an HTML attribute —
+          // `indeterminate` is a DOM property, not an HTML attribute -
           // it can only be set from JavaScript. Renderers emit the
           // `data-al-indeterminate` marker on any checkbox that should
           // display as indeterminate; we apply the property here so
@@ -103,7 +103,7 @@
               var control = mount.querySelector("button, input") || target;
               parent.postMessage(
                 {
-                  type: "overflow:result",
+                  type: "dom:measurement",
                   measurement: {
                     tagName: target.tagName.toLowerCase(),
                     scrollWidth: target.scrollWidth,
@@ -227,7 +227,7 @@
         // the generic click toast so the user does not see two.
         if (form && (isSubmit || isReset)) return;
 
-        // Submit / reset outside a form: the click does nothing — there
+        // Submit / reset outside a form: the click does nothing - there
         // is no form to act on. Surface the misuse via an error toast so
         // the user understands why nothing visible happened.
         if (!form && isSubmit) {
@@ -261,7 +261,7 @@
         var el = event.target;
         if (!(el instanceof Element)) return;
 
-        // <select> — post the picked value + label so the host can
+        // <select> - post the picked value + label so the host can
         // resolve back to the original option in its model.
         if (el.tagName === "SELECT" && el.classList.contains("al-inspected-element")) {
           var selectEl = /** @type {HTMLSelectElement} */ (el);
@@ -303,7 +303,7 @@
       // a sibling popup; clicking an option commits the value. Enter
       // and Space open/close on the trigger so a keyboard user can at
       // least surface the popup. Arrow navigation, type-ahead, Escape,
-      // and proper focus management are deliberately absent — those
+      // and proper focus management are deliberately absent - those
       // gaps are what makes the div pattern an anti-pattern (the
       // `select-not-keyboard` rule explains the trade-offs).
       mount.addEventListener("click", function (event) {
@@ -376,7 +376,7 @@
       // not navigate away. Report the full set of submitted name/value
       // pairs by reading FormData against the form + submitter (the
       // browser's own submission-data algorithm). Also report whether
-      // the trigger was a <button> with no `type` attribute — that's
+      // the trigger was a <button> with no `type` attribute - that's
       // the implicit-submit pitfall and the only case where the
       // "Why did the button send a form submission?" link is relevant.
       mount.addEventListener("submit", function (event) {

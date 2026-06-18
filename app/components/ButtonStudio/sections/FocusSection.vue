@@ -4,7 +4,7 @@ import type { CssLength, CssUnit } from "~/composables/useUnitConversion";
 import LengthControl from "~/components/controls/LengthControl.vue";
 
 const model = defineModel<Partial<BaseButtonProps>>({ required: true });
-const { update } = useButtonControlsModel(model);
+const { update } = useModelUpdater(model);
 
 const { t } = useI18n();
 
@@ -39,7 +39,7 @@ const focusRingColor = computed({
 <template>
   <fieldset class="flex flex-col gap-3 border-0 p-0 m-0">
     <legend class="flex items-center justify-between w-full mb-1.5">
-      <span class="control-group-title">{{ t('controls.focus') }}</span>
+      <span class="control-group-title">{{ t("controls.focus") }}</span>
       <USwitch
         :model-value="enabled"
         size="xs"
@@ -54,7 +54,9 @@ const focusRingColor = computed({
     >
       <div>
         <div class="flex items-center justify-between mb-1.5">
-          <span class="control-group-title font-medium text-(--text-secondary)">{{ t('controls.focusWidth') }}</span>
+          <span class="control-group-title font-medium text-(--text-secondary)">{{
+            t("controls.focusWidth")
+          }}</span>
         </div>
         <LengthControl
           :model-value="model.focusRingWidth"
@@ -69,7 +71,9 @@ const focusRingColor = computed({
 
       <div>
         <div class="flex items-center justify-between mb-1.5">
-          <span class="control-group-title font-medium text-(--text-secondary)">{{ t('controls.focusOffset') }}</span>
+          <span class="control-group-title font-medium text-(--text-secondary)">{{
+            t("controls.focusOffset")
+          }}</span>
         </div>
         <LengthControl
           :model-value="model.focusRingOffset"
@@ -104,7 +108,7 @@ const focusRingColor = computed({
             />
           </button>
           <div class="flex flex-col flex-1 min-w-0">
-            <span class="color-label-title">{{ t('controls.focusColor') }}</span>
+            <span class="color-label-title">{{ t("controls.focusColor") }}</span>
             <span class="color-label-hex">{{ focusRingColor }}</span>
           </div>
           <UInput

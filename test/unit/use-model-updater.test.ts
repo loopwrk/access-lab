@@ -13,7 +13,7 @@
 
 import { describe, expect, it } from "vitest";
 import type { Ref } from "vue";
-import { useButtonControlsModel } from "../../app/composables/useButtonControlsModel";
+import { useModelUpdater } from "../../app/composables/useModelUpdater";
 
 interface Props {
   a: number;
@@ -23,11 +23,11 @@ interface Props {
 
 const fakeRef = <T extends object>(value: T): Ref<T> => ({ value }) as unknown as Ref<T>;
 
-describe("useButtonControlsModel", () => {
+describe("useModelUpdater", () => {
   it("update mutates the existing model object in place (not a replacement)", () => {
     const model = fakeRef<Partial<Props>>({ a: 1 });
     const original = model.value;
-    const { update } = useButtonControlsModel(model);
+    const { update } = useModelUpdater(model);
     update("a", 2);
     expect(model.value.a).toBe(2);
     expect(model.value).toBe(original); // same reference — direct mutation, not spread
@@ -35,7 +35,7 @@ describe("useButtonControlsModel", () => {
 
   it("update can clear a key with undefined", () => {
     const model = fakeRef<Partial<Props>>({ a: 1 });
-    const { update } = useButtonControlsModel(model);
+    const { update } = useModelUpdater(model);
     update("a", undefined);
     expect(model.value.a).toBeUndefined();
   });
@@ -43,7 +43,7 @@ describe("useButtonControlsModel", () => {
   it("updateMany merges a patch into the existing object", () => {
     const model = fakeRef<Partial<Props>>({ a: 1 });
     const original = model.value;
-    const { updateMany } = useButtonControlsModel(model);
+    const { updateMany } = useModelUpdater(model);
     updateMany({ b: 2, c: 3 });
     expect(model.value).toEqual({ a: 1, b: 2, c: 3 });
     expect(model.value).toBe(original);

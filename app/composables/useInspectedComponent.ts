@@ -6,7 +6,7 @@ import { vagueLabel } from "~/rules/shared/vague-label";
 /**
  * Drives the component studio for a given definition.
  *
- * Owns the entire per-route lifecycle that used to live in the page's
+ * Owns the entire per-route lifecycle.
  * setup script:
  *   - the reactive component-props ref, seeded from defaultProps
  *   - a debounced render pipeline (props -> render fn -> iframe -> code drawer)
@@ -23,6 +23,7 @@ import { vagueLabel } from "~/rules/shared/vague-label";
  * @param definition  The component contract to drive.
  * @param options.debounceMs  Render debounce window. Defaults to 10ms.
  */
+
 export function useInspectedComponent(
   definition: ComponentDefinition<Record<string, unknown>>,
   options: { debounceMs?: number } = {},
@@ -33,13 +34,6 @@ export function useInspectedComponent(
     render: (html: string, css?: string, rootFontSize?: number) => void;
   } | null>(null);
 
-  // Lifted into useState (keyed per definition) so the user's tweaks
-  // survive a navigation away from the studio — e.g. opening a learn
-  // article on `/learn/<id>` and clicking "Close reader view" should
-  // land them back on the same component with their controls intact,
-  // not reset to defaults. A plain `ref` would die with the page
-  // unmount. Keyed by `definition.id` so distinct components don't
-  // share state (and so cross-component navigation is independent).
   const componentProps = useState<Partial<Record<string, unknown>>>(
     `inspected-component-props:${definition.id}`,
     () => ({ ...definition.defaultProps }),
@@ -82,18 +76,12 @@ export function useInspectedComponent(
     // targets. `js` is not injected; it surfaces in the code drawer
     // as the canonical production code, not as runtime behaviour.
     const payload = css ? `<style>${css}</style>${html}` : html;
-    previewRef.value?.render(
-      payload,
-      undefined,
-      unitConv.simulatedRootPx.value,
-    );
+    previewRef.value?.render(payload, undefined, unitConv.simulatedRootPx.value);
     setOutput(html, css, js);
     // Resolve any CssLength values to flat px so rule evaluators
     // (target-size, contrast-via-fontSize, etc.) can keep reading
     // props.<key> as numbers without caring about units.
-    const resolved = unitConv.resolveProps(
-      componentProps.value as Record<string, unknown>,
-    );
+    const resolved = unitConv.resolveProps(componentProps.value as Record<string, unknown>);
     customRules.evaluate(resolved);
   }, debounceMs);
 

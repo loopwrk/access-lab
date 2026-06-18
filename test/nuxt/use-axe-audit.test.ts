@@ -4,7 +4,7 @@
  *     (the reason it uses useEventListener directly, not usePreviewMessage);
  *   - preview:ready flips isReady; axe:result fills violations/passes/incomplete
  *     (defensively coercing non-arrays to []); axe:error captures a string
- *     message (else null); overflow:result stores the DOM measurement;
+ *     message (else null); dom:measurement stores the DOM measurement;
  *   - resetState on mount clears the shared audit state.
  *
  * Nuxt env: it's useState-backed (useAxeResults + dom-measurement) and attaches
@@ -94,7 +94,7 @@ describe("useAxeAudit — message handling", () => {
     expect(state.value.errorMessage).toBe(null);
   });
 
-  it("stores the DOM measurement from overflow:result", async () => {
+  it("stores the DOM measurement from dom:measurement", async () => {
     const m: DomMeasurement = {
       tagName: "button",
       scrollWidth: 200,
@@ -104,7 +104,7 @@ describe("useAxeAudit — message handling", () => {
       targetWidth: 100,
       targetHeight: 40,
     };
-    await post({ type: "overflow:result", measurement: m });
+    await post({ type: "dom:measurement", measurement: m });
     expect(measurement.value).toEqual(m);
   });
 

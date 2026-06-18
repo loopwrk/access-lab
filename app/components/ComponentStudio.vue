@@ -61,12 +61,6 @@ watch(availableContextWrappers, (next) => {
 const toast = useToast();
 
 interface FormSubmittedEntry { name: string; value: string }
-interface FormSubmittedMessage {
-  type: "form:submitted";
-  entries: FormSubmittedEntry[];
-  wasImplicitSubmit: boolean;
-  wasImageSubmit: boolean;
-}
 
 /**
  * Build the description text for the form-submitted toast. Each
@@ -110,10 +104,9 @@ usePreviewMessage({
     });
   },
   "form:submitted": (data) => {
-    const submitted = data as FormSubmittedMessage;
     toast.add({
       title: t("studio.toasts.formSubmitted"),
-      description: buildSubmittedDescription(submitted.entries),
+      description: buildSubmittedDescription(data.entries),
       icon: "i-lucide-send",
       color: "info",
       // Two optional follow-up links, mutually exclusive by construction:
@@ -123,9 +116,9 @@ usePreviewMessage({
       //    coordinates → "Why is the button attempting to submit coordinates?"
       // An explicit type="submit" button is doing exactly what the
       // developer wrote, so neither prompt applies.
-      actions: submitted.wasImplicitSubmit
+      actions: data.wasImplicitSubmit
         ? formSubmittedAction.value
-        : submitted.wasImageSubmit
+        : data.wasImageSubmit
           ? imageSubmitAction.value
           : undefined,
     });

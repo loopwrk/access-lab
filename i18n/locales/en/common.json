@@ -203,7 +203,7 @@
         "lead": "Pick from a list of real, browser-native HTML elements.",
         "features": {
           "sidebar": {
-            "title": "Pick from the sidebar",
+            "title": "Pick an HTML element to audit",
             "description": "Choose from a list of elements in the options menu on the left."
           },
           "variant": {

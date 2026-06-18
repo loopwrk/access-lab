@@ -2,7 +2,7 @@
 import type { BaseButtonProps } from "~/types/button";
 
 const model = defineModel<Partial<BaseButtonProps>>({ required: true });
-const { update } = useButtonControlsModel(model);
+const { update } = useModelUpdater(model);
 const { hideContentType = false } = defineProps<{
   hideContentType?: boolean;
 }>();
@@ -77,7 +77,7 @@ const labelFieldPlaceholderKey = computed(
       class="flex flex-col"
     >
       <template #label>
-        <span class="control-group-title">{{ t('controls.imageFormat') }}</span>
+        <span class="control-group-title">{{ t("controls.imageFormat") }}</span>
       </template>
       <UFieldGroup size="sm">
         <UButton
@@ -107,7 +107,7 @@ const labelFieldPlaceholderKey = computed(
           class="control-group-title control-label-link"
           @click.prevent="focusLearnTopic('accessible-name')"
         >
-          {{ t('controls.alt') }}
+          {{ t("controls.alt") }}
           <UIcon
             name="i-lucide-arrow-up-right"
             class="control-label-link-icon"
@@ -133,7 +133,7 @@ const labelFieldPlaceholderKey = computed(
           class="control-group-title control-label-link"
           @click.prevent="focusLearnTopic('button-value-attribute')"
         >
-          {{ t('controls.valueAttribute') }}
+          {{ t("controls.valueAttribute") }}
           <UIcon
             name="i-lucide-arrow-up-right"
             class="control-label-link-icon"
@@ -159,7 +159,7 @@ const labelFieldPlaceholderKey = computed(
           class="control-group-title control-label-link"
           @click.prevent="focusLearnTopic('button-value-attribute')"
         >
-          {{ t('controls.nameAttribute') }}
+          {{ t("controls.nameAttribute") }}
           <UIcon
             name="i-lucide-arrow-up-right"
             class="control-label-link-icon"
@@ -180,7 +180,7 @@ const labelFieldPlaceholderKey = computed(
       class="flex flex-col"
     >
       <template #label>
-        <span class="control-group-title">{{ t('controls.contentType') }}</span>
+        <span class="control-group-title">{{ t("controls.contentType") }}</span>
       </template>
       <UFieldGroup size="sm">
         <UButton
@@ -188,7 +188,7 @@ const labelFieldPlaceholderKey = computed(
           :variant="(model.contentType ?? 'text') === 'text' ? 'solid' : 'ghost'"
           @click="update('contentType', 'text')"
         >
-          {{ t('controls.contentTypeText') }}
+          {{ t("controls.contentTypeText") }}
         </UButton>
         <UButton
           :color="model.contentType === 'icon' ? 'primary' : 'neutral'"
@@ -196,7 +196,7 @@ const labelFieldPlaceholderKey = computed(
           icon="i-lucide-search"
           @click="update('contentType', 'icon')"
         >
-          {{ t('controls.contentTypeIcon') }}
+          {{ t("controls.contentTypeIcon") }}
         </UButton>
       </UFieldGroup>
     </UFormField>

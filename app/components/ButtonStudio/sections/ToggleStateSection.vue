@@ -8,7 +8,7 @@ type ToggleProps = Partial<BaseButtonProps> & {
 };
 
 const model = defineModel<ToggleProps>({ required: true });
-const { update } = useButtonControlsModel(model);
+const { update } = useModelUpdater(model);
 
 const { t } = useI18n();
 const { focusLearnTopic } = useInspectorTab();
@@ -31,7 +31,7 @@ const OPTIONS: { value: ToggleBehaviour; labelKey: string }[] = [
         class="control-label-link"
         @click.prevent="focusLearnTopic('toggle-buttons')"
       >
-        {{ t('controls.toggleBehaviour') }}
+        {{ t("controls.toggleBehaviour") }}
         <UIcon
           name="i-lucide-arrow-up-right"
           class="control-label-link-icon"
@@ -70,7 +70,7 @@ const OPTIONS: { value: ToggleBehaviour; labelKey: string }[] = [
             class="control-label-link"
             @click.stop.prevent="focusLearnTopic('button-disabled-states')"
           >
-            {{ t('controls.disabled') }}
+            {{ t("controls.disabled") }}
           </a>
         </template>
       </UCheckbox>

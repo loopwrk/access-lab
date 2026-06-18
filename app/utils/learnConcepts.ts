@@ -28,7 +28,8 @@ export type LearnConceptId =
   | "aria-state"
   | "disclosure-pattern"
   | "menu-pattern"
-  | "native-elements";
+  | "native-elements"
+  | "codebase";
 
 export interface LearnConcept {
   id: LearnConceptId;
@@ -76,6 +77,10 @@ export const LEARN_CONCEPTS: LearnConcept[] = [
   {
     id: "native-elements",
     description: "Choosing native HTML over custom (div with role) implementations",
+  },
+  {
+    id: "codebase",
+    description: "Codebase",
   },
 ];
 

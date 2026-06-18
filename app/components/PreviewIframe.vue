@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { PREVIEW_MESSAGE, type IframeBoundMessage } from "~/types/preview-messages";
+
 const iframeRef = useTemplateRef<HTMLIFrameElement>("iframe");
 
 const {
@@ -15,10 +17,13 @@ function send(html: string, css?: string, rootFontSize?: number) {
   const iframe = iframeRef.value;
   if (!iframe || !iframe.contentWindow) return;
 
-  iframe.contentWindow.postMessage(
-    { type: "preview:render", html, css: css ?? "", rootFontSize },
-    window.location.origin,
-  );
+  const message: IframeBoundMessage = {
+    type: PREVIEW_MESSAGE.RENDER_IN_PREVIEW,
+    html,
+    css: css ?? "",
+    rootFontSize,
+  };
+  iframe.contentWindow.postMessage(message, window.location.origin);
 }
 
 /**

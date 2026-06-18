@@ -10,7 +10,7 @@ type SwitchProps = Partial<BaseButtonProps> & {
 };
 
 const model = defineModel<SwitchProps>({ required: true });
-const { update } = useButtonControlsModel(model);
+const { update } = useModelUpdater(model);
 
 const { t } = useI18n();
 const { focusLearnTopic } = useInspectorTab();
@@ -36,7 +36,7 @@ const OPTIONS: { value: SwitchBehaviour; labelKey: string }[] = [
         class="control-label-link"
         @click.prevent="focusLearnTopic('switches')"
       >
-        {{ t('controls.switchBehaviour') }}
+        {{ t("controls.switchBehaviour") }}
         <UIcon
           name="i-lucide-arrow-up-right"
           class="control-label-link-icon"

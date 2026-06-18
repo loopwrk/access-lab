@@ -10,7 +10,7 @@ const props = defineProps<{
   hideBgAndText?: boolean;
 }>();
 const model = defineModel<Partial<BaseButtonProps>>({ required: true });
-const { update } = useButtonControlsModel(model);
+const { update } = useModelUpdater(model);
 
 const unitConv = useUnitConversion();
 const { t } = useI18n();
@@ -40,24 +40,20 @@ const borderColorComputed = computed({
   set: (value: string) => update("borderColor", value),
 });
 
-const { ratio: contrastRatio, verdict: contrastVerdict } = useContrast(
-  fgTextColor,
-  bgColor,
-  {
-    fontSizePx: () => {
-      const f = model.value.fontSize;
-      if (!f) return props.defaults.fontSize;
-      return unitConv.lengthToPx(f);
-    },
-    bold: false,
+const { ratio: contrastRatio, verdict: contrastVerdict } = useContrast(fgTextColor, bgColor, {
+  fontSizePx: () => {
+    const f = model.value.fontSize;
+    if (!f) return props.defaults.fontSize;
+    return unitConv.lengthToPx(f);
   },
-);
+  bold: false,
+});
 </script>
 
 <template>
   <fieldset class="flex flex-col gap-3 border-0 p-0 m-0">
     <legend class="flex items-center justify-between w-full mb-1.5">
-      <span class="control-group-title">{{ t('controls.colours') }}</span>
+      <span class="control-group-title">{{ t("controls.colours") }}</span>
       <USwitch
         :model-value="enabled"
         size="xs"
@@ -93,7 +89,7 @@ const { ratio: contrastRatio, verdict: contrastVerdict } = useContrast(
               />
             </button>
             <div class="flex flex-col flex-1 min-w-0">
-              <span class="color-label-title">{{ t('controls.background') }}</span>
+              <span class="color-label-title">{{ t("controls.background") }}</span>
               <span class="color-label-hex">{{ bgColor }}</span>
             </div>
             <UInput
@@ -128,7 +124,7 @@ const { ratio: contrastRatio, verdict: contrastVerdict } = useContrast(
               />
             </button>
             <div class="flex flex-col flex-1 min-w-0">
-              <span class="color-label-title">{{ t('controls.textColor') }}</span>
+              <span class="color-label-title">{{ t("controls.textColor") }}</span>
               <span class="color-label-hex">{{ fgTextColor }}</span>
             </div>
             <UInput
@@ -169,7 +165,7 @@ const { ratio: contrastRatio, verdict: contrastVerdict } = useContrast(
             />
           </button>
           <div class="flex flex-col flex-1 min-w-0">
-            <span class="color-label-title">{{ t('controls.borderColor') }}</span>
+            <span class="color-label-title">{{ t("controls.borderColor") }}</span>
             <span class="color-label-hex">{{ borderColorComputed }}</span>
           </div>
           <UInput

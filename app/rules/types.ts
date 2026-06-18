@@ -31,7 +31,7 @@ export interface Rule {
 
 /**
  * A snapshot of the rendered element's box and content dimensions, measured
- * inside the preview iframe and posted to the host via `overflow:result`.
+ * inside the preview iframe and posted to the host via `dom:measurement`.
  *
  * scrollWidth/Height include any overflowed content; clientWidth/Height
  * are the visible content-box. scrollX > clientX → horizontal overflow.

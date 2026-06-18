@@ -10,7 +10,7 @@ const props = defineProps<{
   naturalSize: { width: number; height: number };
 }>();
 const model = defineModel<Partial<BaseButtonProps>>({ required: true });
-const { update } = useButtonControlsModel(model);
+const { update } = useModelUpdater(model);
 
 const unitConv = useUnitConversion();
 const { t } = useI18n();
@@ -21,15 +21,21 @@ const widthEnabled = computed(() => model.value.width != null);
 const heightEnabled = computed(() => model.value.height != null);
 
 function toggleWidth(value: boolean | "indeterminate") {
-  update("width", value === true
-    ? unitConv.fromPx(props.naturalSize.width || props.defaults.width, "px")
-    : undefined);
+  update(
+    "width",
+    value === true
+      ? unitConv.fromPx(props.naturalSize.width || props.defaults.width, "px")
+      : undefined,
+  );
 }
 
 function toggleHeight(value: boolean | "indeterminate") {
-  update("height", value === true
-    ? unitConv.fromPx(props.naturalSize.height || props.defaults.height, "px")
-    : undefined);
+  update(
+    "height",
+    value === true
+      ? unitConv.fromPx(props.naturalSize.height || props.defaults.height, "px")
+      : undefined,
+  );
 }
 
 const { enabled: paddingEnabled, toggle: togglePadding } = useToggleableSection(model, {
@@ -75,7 +81,9 @@ const paddingValue = computed<SpacingValue>({
   <div class="flex flex-col gap-3">
     <div>
       <div class="flex items-center justify-between mb-2">
-        <span class="control-group-title font-medium text-(--text-secondary)">{{ t('controls.width') }}</span>
+        <span class="control-group-title font-medium text-(--text-secondary)">{{
+          t("controls.width")
+        }}</span>
         <USwitch
           :model-value="widthEnabled"
           size="xs"
@@ -98,7 +106,9 @@ const paddingValue = computed<SpacingValue>({
 
     <div>
       <div class="flex items-center justify-between mb-2">
-        <span class="control-group-title font-medium text-(--text-secondary)">{{ t('controls.height') }}</span>
+        <span class="control-group-title font-medium text-(--text-secondary)">{{
+          t("controls.height")
+        }}</span>
         <USwitch
           :model-value="heightEnabled"
           size="xs"
@@ -121,7 +131,7 @@ const paddingValue = computed<SpacingValue>({
 
     <fieldset class="flex flex-col gap-3 border-0 p-0 m-0">
       <legend class="flex items-center justify-between w-full mb-1.5">
-        <span class="control-group-title">{{ t('controls.padding') }}</span>
+        <span class="control-group-title">{{ t("controls.padding") }}</span>
         <USwitch
           :model-value="paddingEnabled"
           size="xs"

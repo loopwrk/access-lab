@@ -5,7 +5,7 @@ import type { AxeResult } from "~/types/axe";
  * DOM-based rule engine.
  *
  * Mirrors useCustomRules but evaluates against the latest iframe-side DOM
- * measurement (posted by preview-shell.html as `overflow:result` and stored
+ * measurement (posted by preview-shell.html as `dom:measurement` and stored
  * in `dom-measurement` shared state by useAxeAudit) rather than against
  * component props.
  *
