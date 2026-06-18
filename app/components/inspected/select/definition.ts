@@ -5,13 +5,13 @@ import { selectNoLabel } from "~/rules/select/select-no-label";
 import { selectOptionsEmpty } from "~/rules/select/select-options-empty";
 import { selectNotKeyboard } from "~/rules/select/select-not-keyboard";
 import type { ComponentDefinition } from "~/types/component";
-import type { CssLength } from "~/composables/useUnitConversion";
+import type { FormInputStyleProps } from "~/types/formInputStyle";
 
 export type SelectRenderAs = "select-native" | "select-multiple" | "div-combobox";
 
 export type SelectLabelAssociation = "for-id" | "wrapping" | "aria-label" | "none";
 
-export interface SelectProps {
+export interface SelectProps extends FormInputStyleProps {
   renderAs: SelectRenderAs;
 
   name: string;
@@ -33,11 +33,6 @@ export interface SelectProps {
   comboboxListboxRole: boolean;
   /** div-combobox open/closed state - host-owned, flipped by the demo:activate fact. */
   comboboxOpen: boolean;
-
-  fontSize: CssLength;
-  bg: string;
-  fgText: string;
-  borderColor: string;
 }
 
 export const selectDefinition: ComponentDefinition<SelectProps> = {

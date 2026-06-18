@@ -6,7 +6,7 @@ import { checkboxAriaCheckedRedundant } from "~/rules/checkbox/aria-checked-redu
 import { checkboxCheckedAndIndeterminate } from "~/rules/checkbox/checked-and-indeterminate";
 import { checkboxParentChildMismatch } from "~/rules/checkbox/parent-child-mismatch";
 import type { ComponentDefinition } from "~/types/component";
-import type { CssLength } from "~/composables/useUnitConversion";
+import type { FormInputStyleProps } from "~/types/formInputStyle";
 
 export type CheckboxLabelAssociation
   = | "for-id" // <label for="x"><input id="x"> + label sibling
@@ -25,7 +25,7 @@ export type CheckboxGroupMode
     | "group-no-fieldset" // multiple checkboxes, no fieldset (anti-pattern)
     | "parent-with-children"; // "select all" parent summarising a child group
 
-export interface CheckboxProps {
+export interface CheckboxProps extends FormInputStyleProps {
   renderAs: string;
 
   name: string;
@@ -68,11 +68,6 @@ export interface CheckboxProps {
    * The `checkbox-aria-checked-redundant` rule warns about that case.
    */
   ariaChecked: boolean;
-
-  fontSize: CssLength;
-  bg: string;
-  fgText: string;
-  borderColor: string;
 }
 
 export const checkboxDefinition: ComponentDefinition<CheckboxProps> = {

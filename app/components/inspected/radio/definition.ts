@@ -3,7 +3,7 @@ import { formSubmitWrapper } from "./wrappers";
 import { radioManualChecklist } from "~/rules/radio/manual-checklist";
 import { radioGroupNoFieldset } from "~/rules/radio/group-no-fieldset";
 import type { ComponentDefinition } from "~/types/component";
-import type { CssLength } from "~/composables/useUnitConversion";
+import type { FormInputStyleProps } from "~/types/formInputStyle";
 
 export type RadioLabelAssociation
   = | "for-id"
@@ -15,7 +15,7 @@ export type RadioGroupMode
   = | "group-with-fieldset" // correct: <fieldset><legend>…
     | "group-no-fieldset"; // anti-pattern: visible heading only
 
-export interface RadioProps {
+export interface RadioProps extends FormInputStyleProps {
   renderAs: string;
 
   name: string;
@@ -33,11 +33,6 @@ export interface RadioProps {
 
   required: boolean;
   disabled: boolean;
-
-  fontSize: CssLength;
-  bg: string;
-  fgText: string;
-  borderColor: string;
 }
 
 export const radioDefinition: ComponentDefinition<RadioProps> = {

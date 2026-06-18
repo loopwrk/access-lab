@@ -24,11 +24,11 @@ describe("renderRadio", () => {
   };
 
   it("renders a bare input when called without props", () => {
-    expect(renderRadio()).toBe('<input type="radio" />');
+    expect(renderRadio().html).toBe('<input type="radio" />');
   });
 
   it("renders a fieldset group with for-id labels by default", () => {
-    expect(renderRadio(baseProps)).toBe(
+    expect(renderRadio(baseProps).html).toBe(
       "<fieldset><legend>Choose</legend>" +
         '<div><input type="radio" id="al-radio-0" name="fruit" value="one" data-al-child-index="0" />' +
         ' <label for="al-radio-0">One</label></div>' +
@@ -39,14 +39,14 @@ describe("renderRadio", () => {
   });
 
   it("wraps each input in its label for the wrapping mode", () => {
-    const html = renderRadio({ ...baseProps, labelAssociation: "wrapping" });
+    const { html } = renderRadio({ ...baseProps, labelAssociation: "wrapping" });
     expect(html).toContain(
       '<label><input type="radio" id="al-radio-0" name="fruit" value="one" data-al-child-index="0" /> One</label>',
     );
   });
 
   it("uses aria-label instead of a visible label for the aria-label mode", () => {
-    const html = renderRadio({ ...baseProps, labelAssociation: "aria-label" });
+    const { html } = renderRadio({ ...baseProps, labelAssociation: "aria-label" });
     expect(html).toContain(
       '<input type="radio" id="al-radio-0" name="fruit" value="one" data-al-child-index="0" aria-label="One" />',
     );
@@ -54,18 +54,18 @@ describe("renderRadio", () => {
   });
 
   it("emits no label at all for the none mode", () => {
-    const html = renderRadio({ ...baseProps, labelAssociation: "none" });
+    const { html } = renderRadio({ ...baseProps, labelAssociation: "none" });
     expect(html).not.toContain("label");
   });
 
   it("puts required on the first input only", () => {
-    const html = renderRadio({ ...baseProps, required: true });
+    const { html } = renderRadio({ ...baseProps, required: true });
     expect(html).toContain('value="one" data-al-child-index="0" required');
     expect(html).not.toContain('data-al-child-index="1" required');
   });
 
   it("renders a heading paragraph instead of a fieldset for group-no-fieldset", () => {
-    const html = renderRadio({ ...baseProps, groupMode: "group-no-fieldset" });
+    const { html } = renderRadio({ ...baseProps, groupMode: "group-no-fieldset" });
     expect(html.startsWith('<p style="font-weight: 600; margin: 0 0 0.4em;">Choose</p>')).toBe(
       true,
     );
@@ -73,7 +73,7 @@ describe("renderRadio", () => {
   });
 
   it("builds the inline style attribute from the style props", () => {
-    const html = renderRadio({
+    const { html } = renderRadio({
       ...baseProps,
       fontSize: { value: 1.5, unit: "rem" },
       bg: "#fff",

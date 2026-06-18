@@ -9,6 +9,7 @@ import { autocompleteMismatch } from "~/rules/input/autocomplete-mismatch";
 import { passwordNoToggle } from "~/rules/input/password-no-toggle";
 import type { ComponentDefinition } from "~/types/component";
 import type { CssLength } from "~/composables/useUnitConversion";
+import type { FormInputStyleProps } from "~/types/formInputStyle";
 
 /**
  * Visible label association strategy. Mirrors the pattern used by the
@@ -43,7 +44,7 @@ export interface InputTextStyleSlice {
   fgText?: string;
 }
 
-export interface InputProps {
+export interface InputProps extends FormInputStyleProps {
   renderAs: InputType;
   label: string;
   placeholder: string;
@@ -83,17 +84,11 @@ export interface InputProps {
   // ComponentStudio's applyContextWrappers chain.
   wrappers: string[];
 
-  // Input element's style (the "input" target slice). Kept flat at
-  // the top level for backwards compatibility with the original
-  // controls; semantically equivalent to an `inputStyle` slice.
-  fontSize: CssLength;
-  bg: string;
-  fgText: string;
-  borderColor: string;
-
-  // Per-target style slices for the other three targets. Placeholder
-  // requires injecting a `::placeholder` CSS rule (inline style won't
-  // reach the pseudo-element) — handled by the renderer.
+  // The "input" target's style is the flat FormInputStyleProps slice this
+  // interface extends (fontSize / bg / fgText / borderColor), kept at the top
+  // level. The other three targets use the nested per-target slices below.
+  // Placeholder needs a `::placeholder` CSS rule (inline style won't reach the
+  // pseudo-element), handled by the renderer.
   labelStyle?: InputTextStyleSlice;
   placeholderStyle?: InputTextStyleSlice;
   helpTextStyle?: InputTextStyleSlice;

@@ -1,4 +1,5 @@
 import type { RadioProps } from "./definition";
+import type { RenderedFragment } from "~/types/component";
 import { associateLabel } from "~/utils/associateLabel";
 import { escapeHtml } from "~/utils/escapeHtml";
 import { inlineStyleAttribute } from "~/utils/inlineStyleAttribute";
@@ -64,8 +65,8 @@ function renderSingleRadio(
   });
 }
 
-export function renderRadio(props?: Partial<RadioProps>): string {
-  if (!props) return "<input type=\"radio\" />";
+export function renderRadio(props?: Partial<RadioProps>): RenderedFragment {
+  if (!props) return { html: "<input type=\"radio\" />" };
 
   const groupMode = props.groupMode ?? "group-with-fieldset";
   const items = props.groupItems?.length ? props.groupItems : [];
@@ -91,9 +92,9 @@ export function renderRadio(props?: Partial<RadioProps>): string {
 
   if (groupMode === "group-with-fieldset") {
     const legend = escapeHtml(props.label ?? "");
-    return `<fieldset><legend>${legend}</legend>${rows}</fieldset>`;
+    return { html: `<fieldset><legend>${legend}</legend>${rows}</fieldset>` };
   }
 
   const heading = escapeHtml(props.label ?? "");
-  return `<p style="font-weight: 600; margin: 0 0 0.4em;">${heading}</p>${rows}`;
+  return { html: `<p style="font-weight: 600; margin: 0 0 0.4em;">${heading}</p>${rows}` };
 }
