@@ -7,16 +7,9 @@ import { selectNotKeyboard } from "~/rules/select/select-not-keyboard";
 import type { ComponentDefinition } from "~/types/component";
 import type { CssLength } from "~/composables/useUnitConversion";
 
-export type SelectRenderAs
-  = | "select-native"
-    | "select-multiple"
-    | "div-combobox";
+export type SelectRenderAs = "select-native" | "select-multiple" | "div-combobox";
 
-export type SelectLabelAssociation
-  = | "for-id"
-    | "wrapping"
-    | "aria-label"
-    | "none";
+export type SelectLabelAssociation = "for-id" | "wrapping" | "aria-label" | "none";
 
 export interface SelectProps {
   renderAs: SelectRenderAs;
@@ -38,6 +31,8 @@ export interface SelectProps {
   hasPlaceholder: boolean;
   comboboxAriaControls: boolean;
   comboboxListboxRole: boolean;
+  /** div-combobox open/closed state - host-owned, flipped by the demo:activate fact. */
+  comboboxOpen: boolean;
 
   fontSize: CssLength;
   bg: string;
@@ -63,6 +58,7 @@ export const selectDefinition: ComponentDefinition<SelectProps> = {
     hasPlaceholder: false,
     comboboxAriaControls: false,
     comboboxListboxRole: false,
+    comboboxOpen: false,
   },
 
   variants: [
@@ -86,7 +82,7 @@ export const selectDefinition: ComponentDefinition<SelectProps> = {
     },
     {
       key: "div-combobox",
-      label: "<div role=\"combobox\">",
+      label: '<div role="combobox">',
       description: "components.select.variants.div-combobox.description",
       status: "avoid",
       statusNote: "components.select.variants.div-combobox.statusNote",
@@ -98,18 +94,8 @@ export const selectDefinition: ComponentDefinition<SelectProps> = {
   controls: [],
   rules: [selectNoLabel, selectOptionsEmpty, selectNotKeyboard],
   primaryLearnTopicId: "select",
-  relatedLearnTopicIds: [
-    "accessible-name",
-    "vague-label",
-    "native-rendering",
-    "form-wrapping",
-  ],
-  relevantConcepts: [
-    "form-control",
-    "accessible-name",
-    "form-context",
-    "native-elements",
-  ],
+  relatedLearnTopicIds: ["accessible-name", "vague-label", "native-rendering", "form-wrapping"],
+  relevantConcepts: ["form-control", "accessible-name", "form-context", "native-elements"],
   manualChecklist: selectManualChecklist,
   render: renderSelect,
   controlsComponent: defineAsyncComponent(() => import("./SelectControls.vue")),

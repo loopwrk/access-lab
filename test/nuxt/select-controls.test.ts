@@ -1,11 +1,13 @@
 /**
- * Nuxt tests for SelectControls: the iframe pick bridge (`select:change` /
- * `combobox:select` → selectedOption), and the Options textarea parsing.
+ * Nuxt tests for SelectControls: the iframe bridge (`select:change` →
+ * selectedOption for the native <select>; `demo:activate` toggles the
+ * div-combobox's host-owned open state; `demo:pick` commits an option and
+ * closes the popup), and the Options textarea parsing.
  *
  * The headline case is the regression guard for the single-write fix: removing
  * the currently-selected option from the textarea must update the list AND
  * clear the selection. The old two-write version raced through defineModel and
- * dropped the list change (the removed option sprang back) — the exact bug we
+ * dropped the list change (the removed option sprang back) - the exact bug we
  * fixed in RadioControls for B9.
  */
 
@@ -60,25 +62,21 @@ async function dispatch(data: Record<string, unknown>) {
 // Drive the Options <textarea> the way a user typing would.
 async function setTextarea(w: { find: (s: string) => { element: Element } }, value: string) {
   const el = w.find("textarea").element as HTMLTextAreaElement;
-  const setter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value")!.set!;
+  const setter = Object.getOwnPropertyDescriptor(
+    window.HTMLTextAreaElement.prototype,
+    "value",
+  )!.set!;
   setter.call(el, value);
   el.dispatchEvent(new Event("input", { bubbles: true }));
   await flush();
 }
 
-describe("SelectControls — iframe pick bridge maps a posted label to selectedOption", () => {
+describe("SelectControls - iframe pick bridge maps a posted label to selectedOption", () => {
   it("sets selectedOption from a native select:change when the label is a current option", async () => {
     const { model, Wrapper } = makeWrapper({ ...BASE });
     wrapper = await mountSuspended(Wrapper);
     await dispatch({ type: "select:change", label: "Pacific" });
     expect(model.value.selectedOption).toBe("Pacific");
-  });
-
-  it("sets selectedOption from a div-combobox combobox:select the same way", async () => {
-    const { model, Wrapper } = makeWrapper({ ...BASE, renderAs: "div-combobox" });
-    wrapper = await mountSuspended(Wrapper);
-    await dispatch({ type: "combobox:select", label: "Indian" });
-    expect(model.value.selectedOption).toBe("Indian");
   });
 
   it("ignores a stale label that is no longer in the options (picked then removed same frame)", async () => {
@@ -98,7 +96,47 @@ describe("SelectControls — iframe pick bridge maps a posted label to selectedO
   });
 });
 
-describe("SelectControls — Options textarea", () => {
+describe("SelectControls - div-combobox open state (demo:activate) + option commit (demo:pick)", () => {
+  it("toggles the host-owned comboboxOpen on each demo:activate", async () => {
+    const { model, Wrapper } = makeWrapper({
+      ...BASE,
+      renderAs: "div-combobox",
+      comboboxOpen: false,
+    });
+    wrapper = await mountSuspended(Wrapper);
+    await dispatch({ type: "demo:activate", interaction: "toggle" });
+    expect(model.value.comboboxOpen).toBe(true);
+    await dispatch({ type: "demo:activate", interaction: "toggle" });
+    expect(model.value.comboboxOpen).toBe(false);
+  });
+
+  it("commits a current option AND closes the popup on demo:pick (single write - both survive)", async () => {
+    const { model, Wrapper } = makeWrapper({
+      ...BASE,
+      renderAs: "div-combobox",
+      comboboxOpen: true,
+    });
+    wrapper = await mountSuspended(Wrapper);
+    await dispatch({ type: "demo:pick", value: "Indian" });
+    expect(model.value.selectedOption).toBe("Indian");
+    expect(model.value.comboboxOpen).toBe(false);
+  });
+
+  it("closes the popup but keeps the selection when demo:pick carries a stale label", async () => {
+    const { model, Wrapper } = makeWrapper({
+      ...BASE,
+      renderAs: "div-combobox",
+      comboboxOpen: true,
+      selectedOption: "Arctic",
+    });
+    wrapper = await mountSuspended(Wrapper);
+    await dispatch({ type: "demo:pick", value: "Mediterranean" });
+    expect(model.value.selectedOption).toBe("Arctic"); // unchanged
+    expect(model.value.comboboxOpen).toBe(false); // still closes
+  });
+});
+
+describe("SelectControls - Options textarea", () => {
   it("removing the SELECTED option updates the list AND clears the selection (single write, no race)", async () => {
     const { model, Wrapper } = makeWrapper({ ...BASE }); // Arctic selected
     const w = await mountSuspended(Wrapper);

@@ -69,6 +69,22 @@
         button.textContent = showing ? "Show password" : "Hide password";
       };
 
+      // Pre-defined for the div-combobox trigger's inline
+      // onkeydown="handleComboboxKeydown(event, this)". A custom
+      // `<div role="combobox">` gets none of the keyboard behaviour a native
+      // <select> provides, so a developer has to add it by hand. This handles
+      // ONLY Enter and Space, which re-use the click path (so the HOST stays
+      // the owner of the open/closed state). Arrow navigation, type-ahead,
+      // Escape, and focus management are deliberately absent - that
+      // incompleteness IS the select-not-keyboard lesson, shown verbatim in
+      // the code drawer's JS tab. See inspected/select/render.ts.
+      window.handleComboboxKeydown = function (event, trigger) {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          trigger.click();
+        }
+      };
+
       window.addEventListener("message", function (e) {
         if (e.data && e.data.type === "preview:render") {
           if (typeof e.data.rootFontSize === "number" && e.data.rootFontSize > 0) {
@@ -171,20 +187,17 @@
         true,
       );
 
-      // Demo-click bridge: report when the user interacts with any
-      // trigger-shaped element in the rendered preview. The parent picks
-      // an appropriate toast based on the resulting behaviour:
-      //   - submit-typed button inside form → form:submitted handler fires
-      //   - reset-typed button inside form  → form:reset handler fires
-      //   - everything else                 → demo:click (generic toast)
-      // We suppress demo:click for clicks that will produce a submit or
-      // reset event so the user does not see two toasts for one click.
+      // Interaction bridge: the click handlers below report what the user did
+      // in the rendered preview as plain facts (demo:activate / demo:pick /
+      // demo:click, plus the submit/reset heuristic); the host's controls
+      // decide what each fact means. TRIGGER_SELECTOR is the set of native
+      // trigger-shaped elements.
       var TRIGGER_SELECTOR =
         'button, input[type="submit"], input[type="button"], input[type="reset"], input[type="image"]';
 
       // Generic activation proxy: a click anywhere inside an element marked
       // `data-al-activates` is forwarded to the inspected control within it, so a
-      // visible label (or its layout wrapper) can act as the activation target —
+      // visible label (or its layout wrapper) can act as the activation target -
       // the production pattern for controls a native `<label for>` can't bind to,
       // e.g. a switch button. The marker sits on the studio wrapper, not the
       // control, so the copied markup stays clean.
@@ -198,30 +211,57 @@
         }
       });
 
+      // Declarative, host-interpreted activation. A click on an "activator"
+      // inside an element marked data-al-interaction reports a plain "the
+      // trigger was activated" fact (demo:activate); the host's controls decide
+      // what it means (a disclosure flips its panel; the combobox toggles its
+      // popup). Activators are native triggers (button / input) AND ARIA widget
+      // triggers (role="combobox") - the latter lets a non-button custom widget
+      // join the protocol with no bespoke shell branch. Options and panel
+      // content are not activators, so a click inside an open popup never
+      // re-fires the toggle.
+      var ACTIVATOR_SELECTOR = TRIGGER_SELECTOR + ', [role="combobox"]';
       mount.addEventListener("click", function (event) {
+        if (!(event.target instanceof Element)) return;
+        var activator = event.target.closest(ACTIVATOR_SELECTOR);
+        if (!activator) return;
+        var interactionRoot = activator.closest("[data-al-interaction]");
+        if (!interactionRoot) return;
+        parent.postMessage(
+          {
+            type: "demo:activate",
+            interaction: interactionRoot.getAttribute("data-al-interaction"),
+          },
+          window.location.origin,
+        );
+      });
+
+      // Generic option-commit fact: a click on an element marked data-al-pick
+      // reports the committed value; the host's controls decide what it means
+      // (the select adopts the chosen option and closes its popup). Generic so
+      // any "pick from a list" widget reuses it without a bespoke shell branch.
+      mount.addEventListener("click", function (event) {
+        if (!(event.target instanceof Element)) return;
+        var picker = event.target.closest("[data-al-pick]");
+        if (!picker) return;
+        parent.postMessage(
+          { type: "demo:pick", value: picker.getAttribute("data-al-pick") || "" },
+          window.location.origin,
+        );
+      });
+
+      // Submit / reset heuristic + generic click, run independently of the
+      // activation fact above: a type-less disclosure <button> both activates
+      // (above) AND surfaces the same "no form to submit to" lesson here -
+      // independent facts, both worth teaching.
+      mount.addEventListener("click", function (event) {
+        if (!(event.target instanceof Element)) return;
         var trigger = event.target.closest(TRIGGER_SELECTOR);
         if (!trigger) return;
 
-        // Declarative, host-interpreted interaction. When the trigger sits
-        // inside an element marked data-al-interaction, report the activation
-        // as a plain fact (demo:activate) and let the host assign meaning
-        // (e.g. a disclosure flips its panel). We then FALL THROUGH to the
-        // submit/reset heuristic below rather than returning: "the trigger was
-        // activated" and "this is a submit-typed button with no form" are
-        // independent facts, and both are worth teaching. So a type-less
-        // disclosure <button> both toggles its panel AND surfaces the same
-        // "no form to submit to" lesson as every other type-less button.
-        var interactionRoot = trigger.closest("[data-al-interaction]");
-        if (interactionRoot) {
-          parent.postMessage(
-            {
-              type: "demo:activate",
-              interaction: interactionRoot.getAttribute("data-al-interaction"),
-            },
-            window.location.origin,
-          );
-        }
-
+        // Triggers inside a data-al-interaction region already reported
+        // demo:activate, so the generic demo:click below is suppressed for them.
+        var inInteraction = !!trigger.closest("[data-al-interaction]");
         var form = trigger.closest("form");
         var triggerType = trigger.type || "submit";
         // <input type="image"> is a submit button per HTML spec.
@@ -230,7 +270,7 @@
 
         // Submit / reset inside a form: the form event handlers below
         // will fire and post their own payload-aware message. Suppress
-        // the generic click toast so the user does not see two.
+        // the generic click so the user does not see two.
         if (form && (isSubmit || isReset)) return;
 
         // Submit / reset outside a form: the click does nothing - there
@@ -245,10 +285,8 @@
           return;
         }
 
-        // Generic activation for un-migrated components. Migrated ones (with a
-        // data-al-interaction marker) already reported demo:activate above, so
-        // they do not also need the generic click signal.
-        if (!interactionRoot) {
+        // Generic activation for un-migrated components.
+        if (!inInteraction) {
           parent.postMessage({ type: "demo:click" }, window.location.origin);
         }
       });
@@ -302,56 +340,6 @@
         }
         if (el.classList.contains("al-inspected-element")) {
           parent.postMessage({ type: "demo:click" }, window.location.origin);
-        }
-      });
-
-      // <div role="combobox"> anti-pattern: clicking the trigger opens
-      // a sibling popup; clicking an option commits the value. Enter
-      // and Space open/close on the trigger so a keyboard user can at
-      // least surface the popup. Arrow navigation, type-ahead, Escape,
-      // and proper focus management are deliberately absent - those
-      // gaps are what makes the div pattern an anti-pattern (the
-      // `select-not-keyboard` rule explains the trade-offs).
-      mount.addEventListener("click", function (event) {
-        if (!(event.target instanceof Element)) return;
-
-        var option = event.target.closest(".al-div-combobox-popup [data-option]");
-        if (option) {
-          var popup = option.closest(".al-div-combobox-popup");
-          if (popup) popup.hidden = true;
-          var trigger = popup ? popup.previousElementSibling : null;
-          if (trigger) trigger.setAttribute("aria-expanded", "false");
-          parent.postMessage(
-            {
-              type: "combobox:select",
-              value: option.getAttribute("data-option") || "",
-              label: (option.textContent || "").trim(),
-            },
-            window.location.origin,
-          );
-          return;
-        }
-
-        var triggerEl = event.target.closest(".al-div-combobox-trigger");
-        if (triggerEl) {
-          var expanded = triggerEl.getAttribute("aria-expanded") === "true";
-          triggerEl.setAttribute("aria-expanded", String(!expanded));
-          var popupEl = triggerEl.nextElementSibling;
-          if (popupEl && popupEl.classList.contains("al-div-combobox-popup")) {
-            // `expanded` was the OLD state; the popup's new visibility
-            // is the opposite (hide when old=open, show when old=closed).
-            popupEl.hidden = expanded;
-          }
-        }
-      });
-
-      mount.addEventListener("keydown", function (event) {
-        if (!(event.target instanceof Element)) return;
-        var trigger = event.target.closest(".al-div-combobox-trigger");
-        if (!trigger) return;
-        if (event.key === " " || event.key === "Enter") {
-          event.preventDefault();
-          trigger.click();
         }
       });
 

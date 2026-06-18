@@ -4,7 +4,7 @@
  * These pin the exact HTML each renderer emits per label-association
  * mode and group mode. The rendered markup is load-bearing: axe-core
  * audits it, the custom rules reason about it, and the code drawer
- * shows it to the student verbatim — so refactors of the render
+ * shows it to the student verbatim - so refactors of the render
  * helpers must not change a single byte of output.
  */
 
@@ -66,7 +66,9 @@ describe("renderRadio", () => {
 
   it("renders a heading paragraph instead of a fieldset for group-no-fieldset", () => {
     const html = renderRadio({ ...baseProps, groupMode: "group-no-fieldset" });
-    expect(html.startsWith('<p style="font-weight: 600; margin: 0 0 0.4em;">Choose</p>')).toBe(true);
+    expect(html.startsWith('<p style="font-weight: 600; margin: 0 0 0.4em;">Choose</p>')).toBe(
+      true,
+    );
     expect(html).not.toContain("<fieldset>");
   });
 
@@ -204,7 +206,7 @@ describe("renderInput", () => {
     expect(html).not.toContain("#999");
   });
 
-  it("emits the autocomplete attribute when set (valid or invalid — axe judges validity), omits it otherwise", () => {
+  it("emits the autocomplete attribute when set (valid or invalid - axe judges validity), omits it otherwise", () => {
     expect(renderInput({ label: "Email", name: "email", autocomplete: "email" }).html).toContain(
       'autocomplete="email"',
     );
@@ -299,7 +301,7 @@ describe("renderSelect", () => {
     );
 
     // With a real option chosen, the placeholder stays present but loses
-    // `selected` — the chosen option takes it instead.
+    // `selected` - the chosen option takes it instead.
     const withChoice = renderSelect({
       ...nativeBase,
       labelAssociation: "for-id",
@@ -323,7 +325,7 @@ describe("renderSelect", () => {
       ...nativeBase,
       renderAs: "select-multiple",
       labelAssociation: "for-id",
-      hasPlaceholder: true, // ignored — every option of a multi-select is visible
+      hasPlaceholder: true, // ignored - every option of a multi-select is visible
     });
     expect(html).toBe(
       '<div><label for="al-select" style="display: block; margin-bottom: 4px">Pet</label>' +
@@ -341,14 +343,14 @@ describe("renderSelect", () => {
       labelAssociation: "for-id",
     });
     expect(html).toBe(
-      "<div>" +
+      '<div data-al-interaction="toggle">' +
         '<label style="display: block; margin-bottom: 4px">Pet</label>' +
-        '<div class="al-div-combobox-trigger al-inspected-element" role="combobox"'
-        + ' aria-expanded="false" tabindex="0">'
-        + `<span>Choose an option</span><span aria-hidden="true">${ARROW}</span></div>`
-        + '<div class="al-div-combobox-popup" id="al-combobox-popup" hidden>'
-        + '<div data-option="cat">Cat</div><div data-option="dog">Dog</div></div>'
-        + "</div>",
+        '<div class="al-div-combobox-trigger al-inspected-element" role="combobox"' +
+        ' aria-expanded="false" tabindex="0" onkeydown="handleComboboxKeydown(event, this)">' +
+        `<span>Choose an option</span><span aria-hidden="true">${ARROW}</span></div>` +
+        '<div class="al-div-combobox-popup" id="al-combobox-popup" hidden>' +
+        '<div data-al-pick="Cat">Cat</div><div data-al-pick="Dog">Dog</div></div>' +
+        "</div>",
     );
     // The combobox is the one select variant that ships its own CSS.
     expect(css).toContain(".al-div-combobox-trigger{");
@@ -363,14 +365,15 @@ describe("renderSelect", () => {
       comboboxListboxRole: true,
     });
     expect(html).toBe(
-      "<div>"
-        + '<div class="al-div-combobox-trigger al-inspected-element" role="combobox"'
-        + ' aria-expanded="false" tabindex="0" aria-controls="al-combobox-popup" aria-label="Pet">'
-        + `<span>Choose an option</span><span aria-hidden="true">${ARROW}</span></div>`
-        + '<div class="al-div-combobox-popup" id="al-combobox-popup" role="listbox" hidden>'
-        + '<div data-option="cat" role="option">Cat</div>'
-        + '<div data-option="dog" role="option">Dog</div></div>'
-        + "</div>",
+      '<div data-al-interaction="toggle">' +
+        '<div class="al-div-combobox-trigger al-inspected-element" role="combobox"' +
+        ' aria-expanded="false" tabindex="0" onkeydown="handleComboboxKeydown(event, this)"' +
+        ' aria-controls="al-combobox-popup" aria-label="Pet">' +
+        `<span>Choose an option</span><span aria-hidden="true">${ARROW}</span></div>` +
+        '<div class="al-div-combobox-popup" id="al-combobox-popup" role="listbox" hidden>' +
+        '<div data-al-pick="Cat" role="option">Cat</div>' +
+        '<div data-al-pick="Dog" role="option">Dog</div></div>' +
+        "</div>",
     );
   });
 
@@ -397,7 +400,7 @@ describe("renderSelect", () => {
     expect(onlyListbox).toContain(
       '<div class="al-div-combobox-popup" id="al-combobox-popup" role="listbox" hidden>',
     );
-    expect(onlyListbox).toContain('<div data-option="cat" role="option">Cat</div>');
+    expect(onlyListbox).toContain('<div data-al-pick="Cat" role="option">Cat</div>');
   });
 
   it("shows the selected option text in the combobox trigger instead of the placeholder hint", () => {
@@ -419,14 +422,31 @@ describe("renderSelect", () => {
       options: ["Cat"],
     });
     expect(html).toBe(
-      "<div>"
-        + '<label><span style="display: block; margin-bottom: 4px">Pet</span>'
-        + '<div class="al-div-combobox-trigger al-inspected-element" role="combobox"'
-        + ' aria-expanded="false" tabindex="0">'
-        + `<span>Choose an option</span><span aria-hidden="true">${ARROW}</span></div>`
-        + '<div class="al-div-combobox-popup" id="al-combobox-popup" hidden>'
-        + '<div data-option="cat">Cat</div></div></label>'
-        + "</div>",
+      '<div data-al-interaction="toggle">' +
+        '<label><span style="display: block; margin-bottom: 4px">Pet</span>' +
+        '<div class="al-div-combobox-trigger al-inspected-element" role="combobox"' +
+        ' aria-expanded="false" tabindex="0" onkeydown="handleComboboxKeydown(event, this)">' +
+        `<span>Choose an option</span><span aria-hidden="true">${ARROW}</span></div>` +
+        '<div class="al-div-combobox-popup" id="al-combobox-popup" hidden>' +
+        '<div data-al-pick="Cat">Cat</div></div></label>' +
+        "</div>",
     );
+  });
+
+  it("reflects host-owned open state: comboboxOpen shows aria-expanded=true, a visible popup, and the keyboard JS", () => {
+    const { html, js } = renderSelect({
+      ...nativeBase,
+      renderAs: "div-combobox",
+      labelAssociation: "none",
+      options: ["Cat"],
+      comboboxOpen: true,
+    });
+    // Open: aria-expanded flips and the popup drops its hidden attribute.
+    expect(html).toContain('role="combobox" aria-expanded="true"');
+    expect(html).toContain('<div class="al-div-combobox-popup" id="al-combobox-popup">');
+    expect(html).not.toContain('id="al-combobox-popup" hidden');
+    // The deliberately-incomplete keyboard handler is surfaced for the JS tab.
+    expect(js).toContain("function handleComboboxKeydown(event, trigger)");
+    expect(js).toContain('event.key === "Enter" || event.key === " "');
   });
 });

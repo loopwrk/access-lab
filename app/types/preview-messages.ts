@@ -45,12 +45,12 @@ export const PREVIEW_MESSAGE = {
   DEMO_CLICK: "demo:click",
   /** A trigger inside a `data-al-interaction` region was activated (host assigns meaning). */
   DEMO_ACTIVATE: "demo:activate",
+  /** An option marked `data-al-pick` was committed (host assigns meaning). */
+  DEMO_PICK: "demo:pick",
   /** A child control (checkbox/radio in a group) changed, identified by index. */
   DEMO_CLICK_CHILD: "demo:click-child",
   /** A native `<select>` changed. */
   SELECT_CHANGE: "select:change",
-  /** An option was committed in the `<div role="combobox">` anti-pattern. */
-  COMBOBOX_SELECT: "combobox:select",
 
   // ── iframe → host: forms ───────────────────────────────────────
   /** A form was submitted (cancelled), with its FormData payload. */
@@ -120,6 +120,12 @@ export interface DemoActivateMessage {
   interaction: string | null;
 }
 
+export interface DemoPickMessage {
+  type: typeof PREVIEW_MESSAGE.DEMO_PICK;
+  /** The committed `data-al-pick` value; for the select, the chosen option's label. */
+  value: string;
+}
+
 export interface DemoClickChildMessage {
   type: typeof PREVIEW_MESSAGE.DEMO_CLICK_CHILD;
   index: number;
@@ -131,12 +137,6 @@ export interface SelectChangeMessage {
   label: string;
   values: string[];
   labels: string[];
-}
-
-export interface ComboboxSelectMessage {
-  type: typeof PREVIEW_MESSAGE.COMBOBOX_SELECT;
-  value: string;
-  label: string;
 }
 
 export interface FormSubmittedMessage {
@@ -169,9 +169,9 @@ export type HostBoundMessage =
   | DomMeasurementMessage
   | DemoClickMessage
   | DemoActivateMessage
+  | DemoPickMessage
   | DemoClickChildMessage
   | SelectChangeMessage
-  | ComboboxSelectMessage
   | FormSubmittedMessage
   | FormResetMessage
   | FormSubmitMissingFormMessage
@@ -197,7 +197,7 @@ export type HostBoundMessageOf<T extends HostBoundMessage["type"]> = Extract<
  * map back to a real constant. Rename a constant without updating its interface
  * (or point an interface at the wrong one) and one of these stops compiling,
  * naming the offending message. This catches the failure the runtime drift-guard
- * test cannot — that test only compares wire strings, so two interfaces sharing a
+ * test cannot - that test only compares wire strings, so two interfaces sharing a
  * (valid) constant, or a constant no interface uses, slip past it.
  */
 type ExpectNever<T extends never> = T;

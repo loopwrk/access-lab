@@ -23,9 +23,12 @@ const labelAssociation = computed(() => model.value.labelAssociation ?? "for-id"
 const optionsText = computed({
   get: () => (model.value.options ?? []).join("\n"),
   set: (value: string) => {
-    const items = value.split("\n").map((s) => s.trim()).filter(Boolean);
+    const items = value
+      .split("\n")
+      .map((s) => s.trim())
+      .filter(Boolean);
     // Single combined write. Two back-to-back `update()` calls race through
-    // defineModel — the second reads `model.value` before the first emit has
+    // defineModel - the second reads `model.value` before the first emit has
     // committed, so it spreads a stale copy and drops the `options` change.
     // That only bit when the cleared-selection branch ran (removing the
     // currently-selected option), which silently reverted the list edit. Same
@@ -65,13 +68,25 @@ function applyIframePick(payload: unknown) {
   update("selectedOption", label);
 }
 
-// Iframe bridge — without these, picking an option inside the
-// rendered <select> (or the <div role="combobox"> popup) had no
-// effect on the host model and the next re-render overwrote the
-// user's pick.
+// Iframe bridge. The native <select> reports a pick as select:change. The
+// div-combobox anti-pattern now reports its trigger toggle as demo:activate
+// and its option commit as demo:pick (the generic facts disclosure/menu use);
+// open/closed state lives here in comboboxOpen instead of in the shell.
 usePreviewMessage({
   "select:change": applyIframePick,
-  "combobox:select": applyIframePick,
+  "demo:activate": () => update("comboboxOpen", model.value.comboboxOpen !== true),
+  "demo:pick": (message) => {
+    // A click on an option always closes the popup; the chosen label is
+    // adopted only if it is still a current option (a pick racing an option
+    // removal is ignored). Single combined write - two update() calls race
+    // through defineModel and drop one (the hazard the options setter documents).
+    const items = model.value.options ?? [];
+    const next: Partial<SelectProps> = { ...model.value, comboboxOpen: false };
+    if (items.includes(message.value)) {
+      next.selectedOption = message.value;
+    }
+    model.value = next;
+  },
 });
 </script>
 
@@ -82,7 +97,7 @@ usePreviewMessage({
 
     <UFormField class="flex flex-col">
       <template #label>
-        <span class="control-group-title">{{ t('controls.select.label') }}</span>
+        <span class="control-group-title">{{ t("controls.select.label") }}</span>
       </template>
       <UInput
         :model-value="model.label ?? ''"
@@ -101,7 +116,7 @@ usePreviewMessage({
           class="control-label-link"
           @click.prevent="focusLearnTopic('select')"
         >
-          {{ t('controls.select.labelAssociation') }}
+          {{ t("controls.select.labelAssociation") }}
           <UIcon
             name="i-lucide-arrow-up-right"
             class="control-label-link-icon"
@@ -129,7 +144,7 @@ usePreviewMessage({
 
     <UFormField class="flex flex-col">
       <template #label>
-        <span class="control-group-title">{{ t('controls.select.options') }}</span>
+        <span class="control-group-title">{{ t("controls.select.options") }}</span>
       </template>
       <UTextarea
         v-model="optionsText"
@@ -141,7 +156,7 @@ usePreviewMessage({
 
     <!--
       Placeholder option lives in the options-related stack, above the
-      Default selection dropdown. Only shown for `select-native` —
+      Default selection dropdown. Only shown for `select-native` -
       `<select multiple>` displays every option simultaneously (so a
       "please choose" entry is meaningless) and `<div role="combobox">`
       already uses its trigger text as the placeholder hint.
@@ -159,7 +174,7 @@ usePreviewMessage({
 
     <UFormField class="flex flex-col">
       <template #label>
-        <span class="control-group-title">{{ t('controls.select.selectedOption') }}</span>
+        <span class="control-group-title">{{ t("controls.select.selectedOption") }}</span>
       </template>
       <USelect
         v-model="selectedModel"
@@ -173,14 +188,14 @@ usePreviewMessage({
 
     <!--
       Attributes section only appears for the `<div role="combobox">`
-      variant — the two flags inside drive ARIA properties that don't
+      variant - the two flags inside drive ARIA properties that don't
       apply to the native `<select>` element. Each flag is a card-
       checkbox so the State + Attributes sections read as a pair.
     -->
     <template v-if="model.renderAs === 'div-combobox'">
       <fieldset class="flex flex-col gap-2 border-0 p-0 m-0">
         <legend class="control-group-title mb-1.5">
-          {{ t('controls.select.attributes') }}
+          {{ t("controls.select.attributes") }}
         </legend>
         <div class="grid grid-cols-2 gap-3">
           <UCheckbox
@@ -209,7 +224,7 @@ usePreviewMessage({
 
     <fieldset class="flex flex-col gap-2 border-0 p-0 m-0">
       <legend class="control-group-title mb-1.5">
-        {{ t('controls.select.state') }}
+        {{ t("controls.select.state") }}
       </legend>
       <div class="grid grid-cols-2 gap-3">
         <UCheckbox
@@ -237,7 +252,7 @@ usePreviewMessage({
 
     <UFormField class="flex flex-col">
       <template #label>
-        <span class="control-group-title">{{ t('controls.select.name') }}</span>
+        <span class="control-group-title">{{ t("controls.select.name") }}</span>
       </template>
       <UInput
         :model-value="model.name ?? ''"
