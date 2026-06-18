@@ -182,13 +182,19 @@
       var TRIGGER_SELECTOR =
         'button, input[type="submit"], input[type="button"], input[type="reset"], input[type="image"]';
 
+      // Generic activation proxy: a click anywhere inside an element marked
+      // `data-al-activates` is forwarded to the inspected control within it, so a
+      // visible label (or its layout wrapper) can act as the activation target —
+      // the production pattern for controls a native `<label for>` can't bind to,
+      // e.g. a switch button. The marker sits on the studio wrapper, not the
+      // control, so the copied markup stays clean.
       mount.addEventListener("click", function (event) {
         if (!(event.target instanceof Element)) return;
-        var label = event.target.closest("#al-switch-label");
-        if (!label) return;
-        var btn = mount.querySelector(".al-inspected-element.al-switch");
-        if (btn instanceof HTMLElement && !btn.contains(event.target)) {
-          btn.click();
+        var region = event.target.closest("[data-al-activates]");
+        if (!region) return;
+        var control = region.querySelector(".al-inspected-element");
+        if (control instanceof HTMLElement && !control.contains(event.target)) {
+          control.click();
         }
       });
 

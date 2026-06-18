@@ -37,7 +37,7 @@ describe("renderSwitch — the correct pattern: role=switch + aria-checked, pill
     // <span> via aria-labelledby (the visible-label-beside-the-control pattern).
     // role="switch" + aria-checked is what makes AT announce "switch, off".
     expect(html).toBe(
-      '<div class="al-switch-wrap">' +
+      '<div class="al-switch-wrap" data-al-activates>' +
         '<span id="al-switch-label">Toggle dark mode</span>' +
         '<button onclick="toggleDarkMode()" class="al-inspected-element al-switch" type="button" aria-labelledby="al-switch-label" role="switch" aria-checked="false"></button>' +
         "</div>",

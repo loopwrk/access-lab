@@ -455,7 +455,7 @@ export function renderButton(props?: Partial<ButtonProps>): RenderedFragment {
     const labelText = escapeHtml(props.label ?? DEFAULT_LABEL);
     const labelStyleAttr = labelStyle ? ` style="${labelStyle}"` : "";
     element =
-      `<div class="${SWITCH_WRAP_CLASS}">` +
+      `<div class="${SWITCH_WRAP_CLASS}" data-al-activates>` +
       `<span id="${SWITCH_LABEL_ID}"${labelStyleAttr}>${labelText}</span>` +
       element +
       `</div>`;
