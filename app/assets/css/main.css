@@ -182,8 +182,8 @@
   }
 }
 
-/* Studio control classes — shared by every section component under
-   ButtonStudio/ and the atoms in components/controls/. */
+/* Studio control classes - shared by every section component under
+   studio/sections/ and the atoms in components/controls/. */
 @layer components {
   .control-group-title {
     font-size: var(--al-font-size-caption);

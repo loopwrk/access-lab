@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { CheckboxProps, CheckboxLabelAssociation, CheckboxGroupMode } from "./definition";
-import ResetDefaultsSection from "~/components/ButtonStudio/sections/ResetDefaultsSection.vue";
+import ResetDefaultsSection from "~/components/studio/sections/ResetDefaultsSection.vue";
 import ControlCardCheckbox from "~/components/controls/ControlCardCheckbox.vue";
 import SectionLegend from "~/components/controls/SectionLegend.vue";
 import LearnLink from "~/components/controls/LearnLink.vue";

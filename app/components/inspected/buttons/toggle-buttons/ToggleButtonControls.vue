@@ -2,15 +2,15 @@
 import type { BaseButtonProps } from "~/types/button";
 import type { ToggleBehaviour } from "../shared/types";
 import { toggleButtonDefinition } from "./definition";
-import ResetDefaultsSection from "~/components/ButtonStudio/sections/ResetDefaultsSection.vue";
-import ContentSection from "~/components/ButtonStudio/sections/ContentSection.vue";
-import AriaSection from "~/components/ButtonStudio/sections/AriaSection.vue";
-import ToggleStateSection from "~/components/ButtonStudio/sections/ToggleStateSection.vue";
-import TextSection from "~/components/ButtonStudio/sections/TextSection.vue";
-import DimensionsSection from "~/components/ButtonStudio/sections/DimensionsSection.vue";
-import BorderSection from "~/components/ButtonStudio/sections/BorderSection.vue";
-import ColoursSection from "~/components/ButtonStudio/sections/ColoursSection.vue";
-import FocusSection from "~/components/ButtonStudio/sections/FocusSection.vue";
+import ResetDefaultsSection from "~/components/studio/sections/ResetDefaultsSection.vue";
+import ContentSection from "~/components/studio/sections/ContentSection.vue";
+import AriaSection from "~/components/studio/sections/AriaSection.vue";
+import ToggleStateSection from "~/components/studio/sections/ToggleStateSection.vue";
+import TextSection from "~/components/studio/sections/TextSection.vue";
+import DimensionsSection from "~/components/studio/sections/DimensionsSection.vue";
+import BorderSection from "~/components/studio/sections/BorderSection.vue";
+import ColoursSection from "~/components/studio/sections/ColoursSection.vue";
+import FocusSection from "~/components/studio/sections/FocusSection.vue";
 
 type ToggleModel = Partial<BaseButtonProps> & {
   wrappers?: string[];

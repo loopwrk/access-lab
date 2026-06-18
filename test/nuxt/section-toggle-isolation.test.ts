@@ -16,8 +16,8 @@ import { mountSuspended } from "@nuxt/test-utils/runtime";
 import { defineComponent, ref } from "vue";
 import type { Component } from "vue";
 import type { BaseButtonProps } from "~/types/button";
-import ColoursSection from "~/components/ButtonStudio/sections/ColoursSection.vue";
-import BorderSection from "~/components/ButtonStudio/sections/BorderSection.vue";
+import ColoursSection from "~/components/studio/sections/ColoursSection.vue";
+import BorderSection from "~/components/studio/sections/BorderSection.vue";
 
 const DEFAULTS = {
   width: 70,

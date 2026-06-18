@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { SelectProps, SelectLabelAssociation } from "./definition";
-import ResetDefaultsSection from "~/components/ButtonStudio/sections/ResetDefaultsSection.vue";
+import ResetDefaultsSection from "~/components/studio/sections/ResetDefaultsSection.vue";
 import ControlCardCheckbox from "~/components/controls/ControlCardCheckbox.vue";
 import SectionLegend from "~/components/controls/SectionLegend.vue";
 
