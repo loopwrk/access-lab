@@ -14,7 +14,7 @@ export const selectNotKeyboard: Rule = {
     if (props.renderAs !== "div-combobox") return null;
     return {
       severity: "serious",
-      measurement:
+      message:
         'Rendered as a `<div role="combobox">` with no aria-controls, no `role="listbox"`, no `role="option"`, and no arrow-key navigation - only mouse and a partial keyboard toggle work.',
     };
   },

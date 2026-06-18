@@ -36,7 +36,7 @@ export const focusableInAnchor: Rule = {
     if (!wrappers.includes("link")) return null;
     return {
       severity: "serious",
-      measurement:
+      message:
         "The button is wrapped in an `<a href>`. The anchor and the button are both focusable, producing two separate tab stops, two screen-reader announcements, and an ambiguous click target.",
     };
   },

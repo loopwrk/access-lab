@@ -54,14 +54,14 @@ export const ariaLabelWithoutVisibleLabel: Rule = {
     if (isSearchWithIcon) {
       return {
         severity: "moderate",
-        measurement:
+        message:
           "The input uses aria-label paired with a visible magnifying-glass icon. The icon signals \"search\" to sighted users, which Deque's guidance accepts as a substitute for a visible label. It is still not best practice: users with cognitive impairments may not recognise the icon's meaning, users returning to a partial form may forget what was expected, and users with heavy zoom may cut the icon out of view. A real visible label remains the more robust choice.",
       };
     }
 
     return {
       severity: "serious",
-      measurement:
+      message:
         "The input uses aria-label as its only accessible name with no visible cue. Screen reader users hear the label, but sighted users see only an unlabelled field. They cannot tell what information is expected, whether the field is required, or what submitting will do.",
     };
   },

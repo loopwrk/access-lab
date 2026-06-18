@@ -101,8 +101,8 @@ describe("checkboxParentChildMismatch — the derived 'select all' state", () =>
     // some ticked → should be indeterminate, but markup says checked
     const result = evalParent([true, false, false], { checked: true, indeterminate: false });
     expect(result?.severity).toBe("moderate");
-    expect(result?.measurement).toContain("1 of 3");
-    expect(result?.measurement).toContain("indeterminate");
+    expect(result?.message).toContain("1 of 3");
+    expect(result?.message).toContain("indeterminate");
     // all ticked → should be checked, but markup says unchecked
     expect(evalParent([true, true, true], { checked: false, indeterminate: false })).not.toBeNull();
     // none ticked → should be unchecked, but markup says checked

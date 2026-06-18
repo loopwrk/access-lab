@@ -31,7 +31,7 @@ export const contentOverflow: DomRule = {
 
     return {
       severity: "critical",
-      measurement: `Content overflows the <${m.tagName}> - ${parts.join("; ")}`,
+      message: `Content overflows the <${m.tagName}> - ${parts.join("; ")}`,
     };
   },
 };

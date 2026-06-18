@@ -32,7 +32,7 @@ export const checkboxAriaCheckedRedundant: Rule = {
     if (props.ariaChecked !== true) return null;
     return {
       severity: "minor",
-      measurement:
+      message:
         'aria-checked is set on a native <input type="checkbox"> - the browser already tracks the checked state via the built-in checkbox role.',
     };
   },

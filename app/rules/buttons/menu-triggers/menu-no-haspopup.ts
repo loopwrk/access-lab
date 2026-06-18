@@ -19,7 +19,7 @@ export const menuNoHasPopup: Rule = {
     if (behaviour !== "none" && behaviour !== "expanded-only") return null;
     return {
       severity: "serious",
-      measurement:
+      message:
         "Menu behaviour is set without `aria-haspopup` - assistive tech is not told the button opens a menu.",
     };
   },

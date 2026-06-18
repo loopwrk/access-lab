@@ -62,7 +62,7 @@ export const missingAutocomplete: Rule = {
 
     return {
       severity: "moderate",
-      measurement: `This field has a recognisable purpose but no autocomplete attribute, so browsers can't offer autofill. Add autocomplete="${hint.token}".`,
+      message: `This field has a recognisable purpose but no autocomplete attribute, so browsers can't offer autofill. Add autocomplete="${hint.token}".`,
     };
   },
 };

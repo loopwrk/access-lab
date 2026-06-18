@@ -21,7 +21,7 @@ export const targetSizeAA: DomRule = {
     if (w < 24 || h < 24) {
       return {
         severity: "serious",
-        measurement: `Rendered size: ${w} × ${h}px - fails AA minimum of 24×24px`,
+        message: `Rendered size: ${w} × ${h}px - fails AA minimum of 24×24px`,
       };
     }
     return null;
@@ -45,7 +45,7 @@ export const targetSizeAAA: DomRule = {
     if (w >= 24 && h >= 24 && (w < 44 || h < 44)) {
       return {
         severity: "moderate",
-        measurement: `Rendered size: ${w} × ${h}px - fails AAA recommendation of 44×44px`,
+        message: `Rendered size: ${w} × ${h}px - fails AAA recommendation of 44×44px`,
       };
     }
     return null;

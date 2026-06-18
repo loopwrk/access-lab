@@ -28,7 +28,7 @@ export const passwordNoToggle: Rule = {
 
     return {
       severity: "minor",
-      measurement:
+      message:
         "This password field has no show-password toggle. Consider adding one so people can "
         + "reveal and check what they typed - masking hides typos from the person entering them.",
     };

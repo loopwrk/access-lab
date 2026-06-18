@@ -20,7 +20,7 @@ export const switchWrongAttribute: Rule = {
     if (props.switchBehaviour !== "aria-pressed") return null;
     return {
       severity: "serious",
-      measurement:
+      message:
         "Switch uses aria-pressed - assistive tech will announce it as a toggle button rather than a setting.",
     };
   },

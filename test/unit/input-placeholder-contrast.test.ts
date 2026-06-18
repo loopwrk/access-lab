@@ -19,8 +19,8 @@ describe("placeholderContrast", () => {
       placeholderStyle: { fgText: "#999999" }, // ~2.85:1 on white
     });
     expect(result?.severity).toBe("serious");
-    expect(result?.measurement).toContain("#999999");
-    expect(result?.measurement).toContain("4.5:1");
+    expect(result?.message).toContain("#999999");
+    expect(result?.message).toContain("4.5:1");
   });
 
   it("stays silent when the placeholder colour clears 4.5:1", () => {

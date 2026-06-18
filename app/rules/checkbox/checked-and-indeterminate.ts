@@ -43,7 +43,7 @@ export const checkboxCheckedAndIndeterminate: Rule = {
     if (props.indeterminate !== true) return null;
     return {
       severity: "moderate",
-      measurement:
+      message:
         "`checked` and `indeterminate` are both true - the visible dash and the submitted value disagree.",
     };
   },

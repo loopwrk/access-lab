@@ -20,7 +20,7 @@ export const switchNoRole: Rule = {
     if (props.switchBehaviour !== "none") return null;
     return {
       severity: "serious",
-      measurement:
+      message:
         "Switch behaviour is set to None - the element renders as a plain button with no ARIA role or state.",
     };
   },

@@ -19,7 +19,7 @@ describe("vagueLabel", () => {
   it("fires for a vague visible label", () => {
     const result = vagueLabel.evaluate({ label: "OK" });
     expect(result?.severity).toBe("moderate");
-    expect(result?.measurement).toContain("OK");
+    expect(result?.message).toContain("OK");
   });
 
   it("normalises case and surrounding whitespace before matching", () => {
@@ -80,19 +80,19 @@ describe("contentOverflow", () => {
   it("fires (critical) on horizontal overflow", () => {
     const result = contentOverflow.evaluate(box({ sw: 200, cw: 150 }));
     expect(result?.severity).toBe("critical");
-    expect(result?.measurement).toContain("content width 200px exceeds container 150px");
-    expect(result?.measurement).toContain("<button>");
+    expect(result?.message).toContain("content width 200px exceeds container 150px");
+    expect(result?.message).toContain("<button>");
   });
 
   it("fires on vertical overflow", () => {
     const result = contentOverflow.evaluate(box({ sh: 80, ch: 40 }));
-    expect(result?.measurement).toContain("content height 80px exceeds container 40px");
+    expect(result?.message).toContain("content height 80px exceeds container 40px");
   });
 
   it("reports both axes when both overflow", () => {
     const result = contentOverflow.evaluate(box({ sw: 200, cw: 150, sh: 80, ch: 40 }));
-    expect(result?.measurement).toContain("content width 200px exceeds container 150px");
-    expect(result?.measurement).toContain("content height 80px exceeds container 40px");
+    expect(result?.message).toContain("content width 200px exceeds container 150px");
+    expect(result?.message).toContain("content height 80px exceeds container 40px");
   });
 
   it("declares the right metadata", () => {
@@ -104,7 +104,7 @@ describe("invisibleText", () => {
   it("fires (critical) when fg and bg are the same colour", () => {
     const result = invisibleText.evaluate({ fgText: "#000000", bg: "#000000" });
     expect(result?.severity).toBe("critical");
-    expect(result?.measurement).toContain("#000000");
+    expect(result?.message).toContain("#000000");
   });
 
   // The fix: compare parsed colours, not strings — so equivalent colours

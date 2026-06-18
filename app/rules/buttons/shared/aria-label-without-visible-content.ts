@@ -49,7 +49,7 @@ export const ariaLabelWithoutVisibleContent: Rule = {
 
     return {
       severity: "serious",
-      measurement: `Not a WCAG failure - the button has a valid accessible name ("${props.ariaLabel}"). AccessLab flags it because the button shows no visible text or icon, so sighted users see an empty control with no way to tell what it does.`,
+      message: `Not a WCAG failure - the button has a valid accessible name ("${props.ariaLabel}"). AccessLab flags it because the button shows no visible text or icon, so sighted users see an empty control with no way to tell what it does.`,
     };
   },
 };

@@ -20,7 +20,7 @@ export const focusNotVisible: Rule = {
     if (width > 0) return null;
     return {
       severity: "serious",
-      measurement:
+      message:
         "Focus ring width is 0 - keyboard users have no visible cue as they tab onto this button.",
     };
   },
@@ -57,7 +57,7 @@ export const focusLowContrast: Rule = {
     if (ratio >= MIN_NON_TEXT_CONTRAST) return null;
     return {
       severity: "serious",
-      measurement: `Focus ring contrast vs. page background: ${ratio.toFixed(2)}:1 (needs ≥ 3:1).`,
+      message: `Focus ring contrast vs. page background: ${ratio.toFixed(2)}:1 (needs ≥ 3:1).`,
     };
   },
 };

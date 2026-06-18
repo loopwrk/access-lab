@@ -70,7 +70,7 @@ export const numberInputForFormattedValue: Rule = {
 
     return {
       severity: "moderate",
-      measurement: `This field looks like it holds ${match.noun}, but type="number" is for quantities - leading zeros are stripped and the spinner / scroll controls can corrupt the value. Use ${match.recommend}.`,
+      message: `This field looks like it holds ${match.noun}, but type="number" is for quantities - leading zeros are stripped and the spinner / scroll controls can corrupt the value. Use ${match.recommend}.`,
     };
   },
 };

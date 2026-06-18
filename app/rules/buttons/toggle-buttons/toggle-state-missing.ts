@@ -17,7 +17,7 @@ export const toggleStateMissing: Rule = {
     if (props.toggleBehaviour !== "visual-only") return null;
     return {
       severity: "serious",
-      measurement:
+      message:
         "Toggle behaviour is set to visual-only - the button's pressed state has no ARIA representation.",
     };
   },

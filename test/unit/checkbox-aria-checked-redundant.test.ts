@@ -28,7 +28,7 @@ describe("checkboxAriaCheckedRedundant rule", () => {
     });
     expect(result).not.toBeNull();
     expect(result?.severity).toBe("minor");
-    expect(result?.measurement).toMatch(/aria-checked/);
+    expect(result?.message).toMatch(/aria-checked/);
   });
 
   it("does not fire for the native variant when aria-checked is false", () => {

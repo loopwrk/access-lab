@@ -17,7 +17,7 @@ export const disclosureStateOutOfSync: Rule = {
     if (props.disclosureBehaviour !== "out-of-sync") return null;
     return {
       severity: "serious",
-      measurement:
+      message:
         'Disclosure behaviour is set to "stuck at false" - aria-expanded never updates when the panel opens.',
     };
   },

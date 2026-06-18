@@ -26,7 +26,7 @@ function violationToAxeResult(
           {
             id: rule.id,
             impact: result.severity,
-            message: result.measurement,
+            message: result.message,
             data: null,
           },
         ],

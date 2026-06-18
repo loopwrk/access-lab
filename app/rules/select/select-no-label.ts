@@ -21,14 +21,14 @@ export const selectNoLabel: Rule = {
     if (props.labelAssociation === "none") {
       return {
         severity: "serious",
-        measurement:
+        message:
           "Label association is set to None - the select carries no accessible name for assistive technology.",
       };
     }
     if (props.labelAssociation === "aria-label" && labelText.length === 0) {
       return {
         severity: "serious",
-        measurement:
+        message:
           "Label association is aria-label but the label text is empty - assistive technology hears no accessible name.",
       };
     }

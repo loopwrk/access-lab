@@ -17,7 +17,7 @@ describe("passwordNoToggle - nudges a password field with no toggle", () => {
   it("fires as a minor warning and suggests adding a toggle", () => {
     const result = evaluate({ renderAs: "password" });
     expect(result?.severity).toBe("minor");
-    expect(result?.measurement).toMatch(/show-password toggle/i);
+    expect(result?.message).toMatch(/show-password toggle/i);
   });
 
   it("clears once a toggle is added", () => {

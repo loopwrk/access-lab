@@ -19,7 +19,7 @@ export const checkboxGroupNoFieldset: Rule = {
     if (props.groupMode !== "group-no-fieldset") return null;
     return {
       severity: "serious",
-      measurement:
+      message:
         'Group mode is set to "no fieldset" - the checkboxes share no programmatic group association.',
     };
   },

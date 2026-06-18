@@ -19,7 +19,7 @@ export const menuNoExpanded: Rule = {
     if (behaviour !== "none" && behaviour !== "haspopup-only") return null;
     return {
       severity: "serious",
-      measurement:
+      message:
         "Menu behaviour is set without `aria-expanded` - the open/closed state is not exposed.",
     };
   },

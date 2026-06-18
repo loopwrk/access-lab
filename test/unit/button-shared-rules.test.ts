@@ -42,8 +42,8 @@ describe("targetSizeAA — the 24×24 floor (WCAG 2.5.8, Level AA)", () => {
   it("fires (serious) when the rendered box is below 24 CSS px on either axis", () => {
     const r = targetSizeAA.evaluate(box(20, 20));
     expect(r?.severity).toBe("serious");
-    expect(r?.measurement).toContain("20 × 20px");
-    expect(r?.measurement).toContain("AA");
+    expect(r?.message).toContain("20 × 20px");
+    expect(r?.message).toContain("AA");
     // One axis under the floor is enough to fail.
     expect(targetSizeAA.evaluate(box(30, 20))).not.toBeNull();
     expect(targetSizeAA.evaluate(box(20, 30))).not.toBeNull();
@@ -72,7 +72,7 @@ describe("targetSizeAAA — the 44×44 goal, layered above AA (WCAG 2.5.5)", () 
   it("fires (moderate) in the 24–43 band where AA passes but AAA does not", () => {
     const r = targetSizeAAA.evaluate(box(24, 24));
     expect(r?.severity).toBe("moderate");
-    expect(r?.measurement).toContain("44×44");
+    expect(r?.message).toContain("44×44");
   });
 
   it("passes at exactly 44×44", () => {
@@ -179,7 +179,7 @@ describe("focusableInAnchor — fills the nested-interactive gap axe leaves open
   it("fires (serious) when the button is wrapped in an <a href>", () => {
     const r = focusableInAnchor.evaluate({ wrappers: ["link"] });
     expect(r?.severity).toBe("serious");
-    expect(r?.measurement).toContain("anchor");
+    expect(r?.message).toContain("anchor");
   });
 
   // The division of labour with axe: axe's nested-interactive DOES catch a

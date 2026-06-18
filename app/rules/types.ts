@@ -74,7 +74,7 @@ export interface DomRule {
 
 export interface ViolationResult {
   severity: NonNullable<ImpactValue>;
-  measurement: string;
+  message: string;
 }
 export interface ManualChecklistItem {
   id: string;

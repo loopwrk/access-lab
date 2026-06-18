@@ -17,18 +17,18 @@ describe("missingAutocomplete — fires on an identifiable field with no autocom
   it("fires (moderate) and suggests the matching token", () => {
     const result = evaluate({ renderAs: "email", label: "Email" });
     expect(result?.severity).toBe("moderate");
-    expect(result?.measurement).toContain('autocomplete="email"');
+    expect(result?.message).toContain('autocomplete="email"');
   });
 
   it("recognises phone, postcode, card, and address fields", () => {
-    expect(evaluate({ renderAs: "tel", label: "Phone" })?.measurement).toContain('"tel"');
-    expect(evaluate({ renderAs: "text", label: "Postcode" })?.measurement).toContain(
+    expect(evaluate({ renderAs: "tel", label: "Phone" })?.message).toContain('"tel"');
+    expect(evaluate({ renderAs: "text", label: "Postcode" })?.message).toContain(
       '"postal-code"',
     );
-    expect(evaluate({ renderAs: "text", label: "Credit card number" })?.measurement).toContain(
+    expect(evaluate({ renderAs: "text", label: "Credit card number" })?.message).toContain(
       '"cc-number"',
     );
-    expect(evaluate({ renderAs: "text", label: "Street address" })?.measurement).toContain(
+    expect(evaluate({ renderAs: "text", label: "Street address" })?.message).toContain(
       '"street-address"',
     );
   });
@@ -54,7 +54,7 @@ describe("missingAutocomplete — stays silent appropriately", () => {
   });
 
   it("avoids the 'email address' → street-address trap (email wins over address)", () => {
-    expect(evaluate({ renderAs: "email", label: "Email address" })?.measurement).toContain(
+    expect(evaluate({ renderAs: "email", label: "Email address" })?.message).toContain(
       '"email"',
     );
   });

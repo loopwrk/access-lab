@@ -15,7 +15,7 @@ export const selectOptionsEmpty: Rule = {
     if (options.length > 0) return null;
     return {
       severity: "moderate",
-      measurement: "Options list is empty - the rendered select has nothing for the user to pick.",
+      message: "Options list is empty - the rendered select has nothing for the user to pick.",
     };
   },
 };

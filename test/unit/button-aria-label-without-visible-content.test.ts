@@ -31,9 +31,9 @@ describe("button-aria-label-without-visible-content", () => {
       label: "",
       ariaLabel: "Fire trigger event",
     });
-    expect(result?.measurement).toMatch(/not a WCAG failure/i);
-    expect(result?.measurement).toMatch(/AccessLab flags it/i);
-    expect(result?.measurement).toContain("Fire trigger event"); // names the offending control
+    expect(result?.message).toMatch(/not a WCAG failure/i);
+    expect(result?.message).toMatch(/AccessLab flags it/i);
+    expect(result?.message).toContain("Fire trigger event"); // names the offending control
   });
 
   it("does not fire for an icon button (the icon conveys purpose)", () => {

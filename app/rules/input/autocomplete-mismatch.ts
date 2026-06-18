@@ -117,7 +117,7 @@ export const autocompleteMismatch: Rule = {
 
     return {
       severity: "serious",
-      measurement:
+      message:
         `This field is type="${type}", but autocomplete="${token}" describes a different kind of data. ` +
         `Autofill would offer the wrong value. Use autocomplete="${RECOMMENDED_TOKEN[type]}".`,
     };

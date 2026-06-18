@@ -65,7 +65,7 @@ export const checkboxParentChildMismatch: Rule = {
 
     return {
       severity: "moderate",
-      measurement:
+      message:
         `${ticked} of ${total} children ticked - the parent should be ` +
         `${describe(expectedChecked, expectedIndeterminate)}, but its ` +
         `markup says ${describe(parentChecked, parentIndeterminate)}.`,

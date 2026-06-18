@@ -23,7 +23,7 @@ export const toggleWrongAttribute: Rule = {
     if (props.toggleBehaviour !== "aria-checked") return null;
     return {
       severity: "serious",
-      measurement:
+      message:
         'Button uses aria-checked but has no role="switch" - assistive tech will not interpret the state reliably.',
     };
   },

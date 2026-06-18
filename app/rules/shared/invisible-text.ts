@@ -41,7 +41,7 @@ export const invisibleText: Rule = {
     if (!fg || !bg || !colorsMatch(fg, bg)) return null;
     return {
       severity: "critical",
-      measurement: `Text colour ${props.fgText} matches background ${props.bg} - content is invisible to sighted users.`,
+      message: `Text colour ${props.fgText} matches background ${props.bg} - content is invisible to sighted users.`,
     };
   },
 };

@@ -32,7 +32,7 @@ const ruleSerious: Rule = {
   helpUrl: "https://s",
   tags: ["best-practice"],
   learnTopicId: "topic",
-  evaluate: (p) => (p.fireSerious ? { severity: "serious", measurement: "serious msg" } : null),
+  evaluate: (p) => (p.fireSerious ? { severity: "serious", message: "serious msg" } : null),
 };
 const ruleModerate: Rule = {
   id: "custom-moderate",
@@ -41,7 +41,7 @@ const ruleModerate: Rule = {
   description: "",
   help: "",
   tags: [],
-  evaluate: (p) => (p.fireModerate ? { severity: "moderate", measurement: "mod msg" } : null),
+  evaluate: (p) => (p.fireModerate ? { severity: "moderate", message: "mod msg" } : null),
 };
 const ruleNever: Rule = {
   id: "custom-never",
@@ -60,7 +60,7 @@ const ruleSupersedable: Rule = {
   help: "",
   tags: [],
   supersededByAxe: ["axe-dup"],
-  evaluate: (p) => (p.fireDup ? { severity: "serious", measurement: "dup msg" } : null),
+  evaluate: (p) => (p.fireDup ? { severity: "serious", message: "dup msg" } : null),
 };
 const domRuleCritical: DomRule = {
   id: "dom-crit",
@@ -69,7 +69,7 @@ const domRuleCritical: DomRule = {
   description: "",
   help: "",
   tags: [],
-  evaluate: (m) => (m.scrollWidth > m.clientWidth ? { severity: "critical", measurement: "overflow" } : null),
+  evaluate: (m) => (m.scrollWidth > m.clientWidth ? { severity: "critical", message: "overflow" } : null),
 };
 
 const axeRes = (id: string, impact?: ImpactValue): AxeResult => ({

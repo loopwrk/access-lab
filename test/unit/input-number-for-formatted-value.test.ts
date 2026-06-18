@@ -21,22 +21,22 @@ describe("numberInputForFormattedValue — fires on intent, only for type=number
   it("fires (moderate) for a card number and recommends cc-number", () => {
     const result = evaluate({ renderAs: "number", label: "Credit card number" });
     expect(result?.severity).toBe("moderate");
-    expect(result?.measurement).toContain("a card number");
-    expect(result?.measurement).toContain('autocomplete="cc-number"');
+    expect(result?.message).toContain("a card number");
+    expect(result?.message).toContain('autocomplete="cc-number"');
   });
 
   it("fires for a phone number (incl. the bare 'tel' term) and recommends type=tel", () => {
     const result = evaluate({ renderAs: "number", label: "Phone" });
-    expect(result?.measurement).toContain("a phone number");
-    expect(result?.measurement).toContain('type="tel"');
+    expect(result?.message).toContain("a phone number");
+    expect(result?.message).toContain('type="tel"');
     expect(evaluate({ renderAs: "number", label: "Tel" })).not.toBeNull();
     expect(evaluate({ renderAs: "number", label: "", name: "tel" })).not.toBeNull();
   });
 
   it("fires for a postal code and recommends postal-code", () => {
     const result = evaluate({ renderAs: "number", label: "Postcode" });
-    expect(result?.measurement).toContain("a postal code");
-    expect(result?.measurement).toContain('autocomplete="postal-code"');
+    expect(result?.message).toContain("a postal code");
+    expect(result?.message).toContain('autocomplete="postal-code"');
     expect(evaluate({ renderAs: "number", label: "ZIP code" })).not.toBeNull();
   });
 

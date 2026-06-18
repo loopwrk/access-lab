@@ -20,7 +20,7 @@ export const disclosureNoState: Rule = {
     if (props.disclosureBehaviour !== "none") return null;
     return {
       severity: "serious",
-      measurement:
+      message:
         'Disclosure behaviour is set to "no aria-expanded" - the panel toggles visually but the state is not exposed.',
     };
   },

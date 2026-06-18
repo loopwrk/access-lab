@@ -22,18 +22,18 @@ describe("autocompleteMismatch - fires on a valid token of the wrong purpose", (
   it("flags tel on an email field (serious) and recommends the matching token", () => {
     const result = evaluate({ renderAs: "email", autocomplete: "tel" });
     expect(result?.severity).toBe("serious");
-    expect(result?.measurement).toContain('autocomplete="tel"');
-    expect(result?.measurement).toContain('autocomplete="email"'); // the recommendation
+    expect(result?.message).toContain('autocomplete="tel"');
+    expect(result?.message).toContain('autocomplete="email"'); // the recommendation
   });
 
   it("flags email on a tel field, recommending tel", () => {
-    expect(evaluate({ renderAs: "tel", autocomplete: "email" })?.measurement).toContain(
+    expect(evaluate({ renderAs: "tel", autocomplete: "email" })?.message).toContain(
       'autocomplete="tel"',
     );
   });
 
   it("flags tel on a url field, recommending url", () => {
-    expect(evaluate({ renderAs: "url", autocomplete: "tel" })?.measurement).toContain(
+    expect(evaluate({ renderAs: "url", autocomplete: "tel" })?.message).toContain(
       'autocomplete="url"',
     );
   });

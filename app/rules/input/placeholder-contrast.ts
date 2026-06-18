@@ -58,7 +58,7 @@ export const placeholderContrast: Rule = {
 
     return {
       severity: "serious",
-      measurement: `Placeholder colour ${fgText} on background ${bg} measures ${ratio.toFixed(2)}:1 - fails WCAG AA minimum of 4.5:1 for normal text.`,
+      message: `Placeholder colour ${fgText} on background ${bg} measures ${ratio.toFixed(2)}:1 - fails WCAG AA minimum of 4.5:1 for normal text.`,
     };
   },
 };

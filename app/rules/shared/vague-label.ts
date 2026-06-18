@@ -52,7 +52,7 @@ export const vagueLabel: Rule = {
 
     return {
       severity: "moderate",
-      measurement: `"${displayName}" is too vague - screen-reader users navigating by element list won't know what this button does.`,
+      message: `"${displayName}" is too vague - screen-reader users navigating by element list won't know what this button does.`,
     };
   },
 };
