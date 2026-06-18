@@ -1,158 +1,15 @@
 <script setup lang="ts">
-import type {
-  InputProps,
-  InputLabelAssociation,
-  InputType,
-  InputStyleTarget,
-  InputTextStyleSlice,
-} from "./definition";
-import { useUnitConversion } from "~/composables/useUnitConversion";
-import type { CssUnit, CssLength } from "~/composables/useUnitConversion";
+import type { InputProps, InputLabelAssociation, InputType } from "./definition";
 import ResetDefaultsSection from "~/components/ButtonStudio/sections/ResetDefaultsSection.vue";
-import ColorPickerRow from "~/components/controls/ColorPickerRow.vue";
-import StyleTargetPicker from "~/components/controls/StyleTargetPicker.vue";
 import ControlCardCheckbox from "~/components/controls/ControlCardCheckbox.vue";
 import SectionLegend from "~/components/controls/SectionLegend.vue";
 import LearnLink from "~/components/controls/LearnLink.vue";
+import InputStyleSection from "./InputStyleSection.vue";
 
 const model = defineModel<Partial<InputProps>>({ required: true });
-const { update, updateMany } = useModelUpdater(model);
+const { update } = useModelUpdater(model);
 
 const { t } = useI18n();
-const unitConv = useUnitConversion();
-
-const DEFAULTS = {
-  fontSize: 14,
-  bg: "#FFFFFF",
-  fgText: "#000000",
-  borderColor: "#888888",
-} as const;
-
-// The "Style applies to" picker - which part of the input the
-// surrounding font-size and text-colour controls bind to. Local state;
-// not part of the model because it's a UI concern, not a rendered
-// property. Background and border controls are input-only and don't
-// follow the picker.
-const STYLE_TARGET_OPTIONS = [
-  { value: "label", label: "Label" },
-  { value: "input", label: "Input" },
-  { value: "placeholder", label: "Placeholder" },
-  { value: "helpText", label: "Help text" },
-];
-
-const activeStyleTarget = ref<InputStyleTarget>("input");
-const isInputTarget = computed(() => activeStyleTarget.value === "input");
-
-// Read the current target's slice. For the "input" target the slice
-// lives in the top-level props; for label / helpText it lives nested
-// under the corresponding `*Style` slot.
-function activeSlice(): InputTextStyleSlice {
-  if (activeStyleTarget.value === "label") return model.value.labelStyle ?? {};
-  if (activeStyleTarget.value === "placeholder") return model.value.placeholderStyle ?? {};
-  if (activeStyleTarget.value === "helpText") return model.value.helpTextStyle ?? {};
-  return { fontSize: model.value.fontSize, fgText: model.value.fgText };
-}
-
-function updateActiveSlice(patch: Partial<InputTextStyleSlice>) {
-  if (activeStyleTarget.value === "input") {
-    updateMany(patch as Partial<InputProps>);
-    return;
-  }
-  const sliceKey =
-    activeStyleTarget.value === "label"
-      ? "labelStyle"
-      : activeStyleTarget.value === "placeholder"
-        ? "placeholderStyle"
-        : "helpTextStyle";
-  const current = model.value[sliceKey] ?? {};
-  // Build the next slice without spreading undefineds - so toggling
-  // a property off actually removes it rather than leaving an
-  // explicit `undefined` value.
-  const next: InputTextStyleSlice = {};
-  for (const key of Object.keys(current) as (keyof InputTextStyleSlice)[]) {
-    const value = current[key];
-    if (value !== undefined) next[key] = value as never;
-  }
-  for (const key of Object.keys(patch) as (keyof InputTextStyleSlice)[]) {
-    const value = patch[key];
-    if (value !== undefined) next[key] = value as never;
-  }
-  update(sliceKey, next);
-}
-
-const activeFontSize = computed<CssLength | undefined>({
-  get: () => activeSlice().fontSize,
-  set: (value) => updateActiveSlice({ fontSize: value }),
-});
-
-const fontSizeEnabled = computed(() => activeFontSize.value != null);
-
-const activeFgText = computed({
-  get: () => activeSlice().fgText ?? DEFAULTS.fgText,
-  set: (value: string) => updateActiveSlice({ fgText: value }),
-});
-
-const activeFgTextEnabled = computed(() => activeSlice().fgText != null);
-
-const bgColor = computed({
-  get: () => model.value.bg ?? DEFAULTS.bg,
-  set: (value: string) => update("bg", value),
-});
-
-const borderColor = computed({
-  get: () => model.value.borderColor ?? DEFAULTS.borderColor,
-  set: (value: string) => update("borderColor", value),
-});
-
-const inputBgEnabled = computed(() => model.value.bg != null || model.value.borderColor != null);
-
-const { ratio: contrastRatio, verdict: contrastVerdict } = useContrast(activeFgText, bgColor, {
-  fontSizePx: () => {
-    const f = activeFontSize.value;
-    if (!f) return DEFAULTS.fontSize;
-    return unitConv.lengthToPx(f);
-  },
-  bold: false,
-});
-
-function toggleFontSize(value: boolean | "indeterminate") {
-  if (value === true) {
-    activeFontSize.value = unitConv.fromPx(DEFAULTS.fontSize, "rem");
-  } else {
-    activeFontSize.value = undefined;
-  }
-}
-
-function toggleActiveFgText(value: boolean | "indeterminate") {
-  if (value === true) {
-    activeFgText.value = DEFAULTS.fgText;
-  } else {
-    updateActiveSlice({ fgText: undefined });
-  }
-}
-
-function toggleInputBg(value: boolean | "indeterminate") {
-  if (value === true) {
-    updateMany({ bg: DEFAULTS.bg, borderColor: DEFAULTS.borderColor });
-  } else {
-    // Remove the keys outright (rather than set undefined) so the rendered
-    // output and code drawer show no leftover background/border declarations.
-    delete model.value.bg;
-    delete model.value.borderColor;
-  }
-}
-
-function pxOrFallback(length: CssLength | undefined, fallbackPx: number): number {
-  return length ? unitConv.lengthToPx(length) : fallbackPx;
-}
-
-function unitFor(length: CssLength | undefined): CssUnit {
-  return length?.unit ?? "px";
-}
-
-function lengthOrFallback(length: CssLength | undefined, fallbackPx: number): CssLength {
-  return length ?? { value: fallbackPx, unit: "px" };
-}
 
 const LABEL_OPTIONS: { value: InputLabelAssociation; labelKey: string }[] = [
   { value: "for-id", labelKey: "controls.input.labelForId" },
@@ -283,25 +140,6 @@ useVariantLabelSync(model, {
 
     <USeparator />
 
-    <!--
-      Attributes section: ARIA-related flags that aren't part of the
-      label-association decision. `aria-hidden` lives here so the
-      user can apply it to any input type - toggling it on a regular
-      text input demonstrates the anti-pattern (a form field hidden
-      from assistive technology), which is exactly the "learn by
-      failing" path the studio is built for. Never disabled, never
-      gated on the search icon.
-    -->
-    <fieldset class="flex flex-col gap-2 border-0 p-0 m-0">
-      <SectionLegend :label="t('controls.input.attributes')" />
-      <ControlCardCheckbox
-        v-model="ariaHidden"
-        :label="t('controls.input.ariaHidden')"
-      />
-    </fieldset>
-
-    <USeparator />
-
     <!-- Placeholder -->
     <UFormField class="flex flex-col">
       <template #label>
@@ -358,6 +196,12 @@ useVariantLabelSync(model, {
           v-model="ariaLabelAttr"
           :label="t('controls.input.ariaLabelAttr')"
         />
+        <!-- aria-hidden on any input is an anti-pattern (a form field hidden
+             from assistive technology); offered here so the user can trip it. -->
+        <ControlCardCheckbox
+          v-model="ariaHidden"
+          :label="t('controls.input.ariaHidden')"
+        />
       </div>
     </fieldset>
 
@@ -378,112 +222,6 @@ useVariantLabelSync(model, {
 
     <USeparator />
 
-    <!-- STYLE APPLIES TO picker -->
-    <StyleTargetPicker
-      v-model="activeStyleTarget"
-      :options="STYLE_TARGET_OPTIONS"
-      :legend="t('controls.input.styleAppliesTo')"
-    />
-
-    <USeparator />
-
-    <!-- FONT SIZE (active target) -->
-    <fieldset class="flex flex-col gap-3 border-0 p-0 m-0">
-      <div>
-        <div class="flex items-center justify-between mb-1.5">
-          <span class="control-group-title font-medium text-(--text-secondary)">{{
-            t("controls.fontSize")
-          }}</span>
-          <USwitch
-            :model-value="fontSizeEnabled"
-            size="xs"
-            color="primary"
-            @update:model-value="toggleFontSize"
-          />
-        </div>
-        <div
-          :class="[fontSizeEnabled ? '' : 'opacity-50']"
-          class="flex items-center gap-3"
-        >
-          <USlider
-            :model-value="pxOrFallback(activeFontSize, DEFAULTS.fontSize)"
-            :min="8"
-            :max="128"
-            :step="2"
-            color="primary"
-            size="sm"
-            :disabled="!fontSizeEnabled"
-            class="flex-1"
-            @update:model-value="
-              activeFontSize = unitConv.fromSliderPx(Number($event), unitFor(activeFontSize))
-            "
-          />
-          <LengthValueInput
-            v-if="fontSizeEnabled"
-            :model-value="lengthOrFallback(activeFontSize, DEFAULTS.fontSize)"
-            :px-step="2"
-            :disabled="!fontSizeEnabled"
-            @update:model-value="activeFontSize = $event"
-          />
-        </div>
-      </div>
-    </fieldset>
-
-    <USeparator />
-
-    <!-- TEXT COLOUR (active target) -->
-    <fieldset class="flex flex-col gap-3 border-0 p-0 m-0">
-      <legend class="flex items-center justify-between w-full mb-1.5">
-        <span class="control-group-title">{{ t("controls.textColor") }}</span>
-        <USwitch
-          :model-value="activeFgTextEnabled"
-          size="xs"
-          color="primary"
-          @update:model-value="toggleActiveFgText"
-        />
-      </legend>
-      <div :class="[activeFgTextEnabled ? '' : 'opacity-50 pointer-events-none']">
-        <ColorPickerRow
-          v-model="activeFgText"
-          :label="t('controls.textColor')"
-          :disabled="!activeFgTextEnabled"
-        />
-      </div>
-    </fieldset>
-
-    <!-- BACKGROUND + BORDER (input target only) -->
-    <template v-if="isInputTarget">
-      <USeparator />
-      <fieldset class="flex flex-col gap-3 border-0 p-0 m-0">
-        <legend class="flex items-center justify-between w-full mb-1.5">
-          <span class="control-group-title">{{ t("controls.input.background") }}</span>
-          <USwitch
-            :model-value="inputBgEnabled"
-            size="xs"
-            color="primary"
-            @update:model-value="toggleInputBg"
-          />
-        </legend>
-        <div
-          :class="[inputBgEnabled ? '' : 'opacity-50 pointer-events-none']"
-          class="flex flex-col gap-3"
-        >
-          <ColorPickerRow
-            v-model="bgColor"
-            :label="t('controls.background')"
-            :disabled="!inputBgEnabled"
-          />
-          <ContrastBadge
-            :ratio="contrastRatio"
-            :verdict="contrastVerdict"
-          />
-          <ColorPickerRow
-            v-model="borderColor"
-            :label="t('controls.borderColor')"
-            :disabled="!inputBgEnabled"
-          />
-        </div>
-      </fieldset>
-    </template>
+    <InputStyleSection v-model="model" />
   </div>
 </template>

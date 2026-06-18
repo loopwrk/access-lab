@@ -89,6 +89,12 @@
       "helpText": "Help text",
       "helpTextPlaceholder": "e.g. We'll never share this address",
       "styleAppliesTo": "Style applies to",
+      "styleTarget": {
+        "label": "Label",
+        "input": "Input",
+        "placeholder": "Placeholder",
+        "helpText": "Help text"
+      },
       "background": "Background",
       "showSearchIcon": "Icon",
       "showPasswordToggle": "Add show-password toggle",
