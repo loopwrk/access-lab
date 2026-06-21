@@ -1,19 +1,20 @@
 <script setup lang="ts">
-import type { FontSize } from "~/types/typography";
+import DisplayControlsPanel from "./appbar/DisplayControlsPanel.vue";
+import { fontOptions, sizeOptions } from "~/utils/displayControlOptions";
 
 const { t } = useI18n();
 const { isDark, isHighContrast, setMode, toggleContrast } = useTheme();
 const { family: fontFamily, size: fontSize, setFont, setSize } = useFont();
 const { open: openOnboarding } = useOnboarding();
 
-// On mobile while the reader is open, the logo should not navigate —
+// On mobile while the reader is open, the logo should not navigate -
 // "/" would close the reader and dump the user onto MobileBlocker,
 // which contradicts the rule that reader is the only mobile surface.
 //
 // We render the same `<NuxtLink>` on server and client (so SSR HTML
-// matches client hydration — no element-type swap on mount) and
+// matches client hydration - no element-type swap on mount) and
 // suppress the click in JS only when the mobile-in-reader condition
-// holds. Visually identical to today's UX without the hydration jank.
+// holds. Visually identical to today's UX without the hydration flicker.
 const isBelowDesktop = useIsBelowDesktop();
 const { isOpen: readModeOpen } = useReadMode();
 
@@ -23,34 +24,7 @@ function onLogoClick(event: MouseEvent) {
   }
 }
 
-interface FontOption {
-  label: string;
-  value: string;
-  family: string;
-}
-
-const fonts: FontOption[] = [
-  { label: "Figtree", value: "Figtree Variable", family: "Figtree Variable" },
-  { label: "Dyslexic", value: "OpenDyslexicRegular", family: "OpenDyslexicRegular" },
-  { label: "Atkinson", value: "Atkinson Hyperlegible", family: "Atkinson Hyperlegible" },
-  {
-    label: "Comic Sans",
-    value: '"Comic Sans MS", "Comic Sans", cursive',
-    family: '"Comic Sans MS", "Comic Sans", cursive',
-  },
-];
-
-interface SizeOption {
-  label: string;
-  value: FontSize;
-}
-
-const sizes: SizeOption[] = [
-  { label: "S", value: "100%" },
-  { label: "M", value: "112.5%" },
-  { label: "L", value: "131.25%" },
-  { label: "XL", value: "150%" },
-];
+const displaySettingsOpen = ref(false);
 </script>
 
 <template>
@@ -74,7 +48,13 @@ const sizes: SizeOption[] = [
       </NuxtLink>
     </div>
 
-    <div class="flex items-center gap-4">
+    <!--
+      Desktop control strip. Hidden below `lg` (1024px), which is also
+      the 320 CSS px a desktop user reaches at 400% zoom - at that width
+      eleven controls cannot share one row at AAA 44px target size, so
+      they move into the Display settings sheet below.
+    -->
+    <div class="hidden lg:flex items-center gap-4">
       <!-- Replay the onboarding. Studio-only: the modal lives in the
            studio layout, hidden while the reader is open. -->
       <UTooltip
@@ -94,7 +74,7 @@ const sizes: SizeOption[] = [
       <!-- Font family picker -->
       <UFieldGroup size="sm">
         <UButton
-          v-for="option in fonts"
+          v-for="option in fontOptions"
           :key="option.value"
           :color="fontFamily === option.value ? 'primary' : 'neutral'"
           :variant="fontFamily === option.value ? 'solid' : 'ghost'"
@@ -108,7 +88,7 @@ const sizes: SizeOption[] = [
       <!-- Font size picker -->
       <UFieldGroup size="sm">
         <UButton
-          v-for="option in sizes"
+          v-for="option in sizeOptions"
           :key="option.value"
           :color="fontSize === option.value ? 'primary' : 'neutral'"
           :variant="fontSize === option.value ? 'solid' : 'ghost'"
@@ -153,5 +133,34 @@ const sizes: SizeOption[] = [
         </UButton>
       </UFieldGroup>
     </div>
+
+    <UDrawer
+      v-model:open="displaySettingsOpen"
+      class="lg:hidden"
+      :title="t('appBar.display.title')"
+      :description="t('appBar.display.description')"
+      :ui="{ header: 'pe-12' }"
+    >
+      <UButton
+        class="min-h-11"
+        color="neutral"
+        variant="subtle"
+        icon="i-lucide-sliders-horizontal"
+      >
+        {{ t("appBar.display.trigger") }}
+      </UButton>
+
+      <template #body>
+        <UButton
+          :aria-label="t('appBar.display.close')"
+          icon="i-lucide-x"
+          color="neutral"
+          variant="ghost"
+          class="absolute end-3 top-3 min-h-11 min-w-11 justify-center"
+          @click="displaySettingsOpen = false"
+        />
+        <DisplayControlsPanel />
+      </template>
+    </UDrawer>
   </header>
 </template>

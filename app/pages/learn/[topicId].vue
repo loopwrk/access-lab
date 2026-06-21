@@ -4,7 +4,7 @@
  * params, which is the only source of truth for "what am I reading."
  *
  * Layout, AppBar, tree aside, slideover, close button all live in
- * `layouts/learn.vue` — this file is just the article body. Keeps
+ * `layouts/learn.vue` - this file is just the article body. Keeps
  * the page focused on content rendering.
  *
  * `definePageMeta({ key })` forces a fresh component instance per
@@ -28,21 +28,18 @@ const topicId = computed(() => {
 
 // useAsyncData is *cached by key*. The page re-mounts per topic
 // (via `definePageMeta({ key })` below), so we want each topic to
-// have its own cache slot — otherwise the second mount hits the
+// have its own cache slot - otherwise the second mount hits the
 // first topic's cached value and returns it without re-fetching
 // (the `watch` only fires on subsequent changes, not initial mount).
 // Capturing `topicId.value` at setup time gives each fresh mount a
-// unique, stable key for its lifetime — no watch needed.
+// unique, stable key for its lifetime - no watch needed.
 const cacheKey = `learn-topic-page:${topicId.value}`;
 
-const { data: doc, status } = useAsyncData(
-  cacheKey,
-  () => {
-    const id = topicId.value;
-    if (!id) return Promise.resolve(null);
-    return queryCollection("content").where("topicId", "=", id).first();
-  },
-);
+const { data: doc, status } = useAsyncData(cacheKey, () => {
+  const id = topicId.value;
+  if (!id) return Promise.resolve(null);
+  return queryCollection("content").where("topicId", "=", id).first();
+});
 
 const articleRef = ref<HTMLElement | null>(null);
 
@@ -56,14 +53,11 @@ const articleRef = ref<HTMLElement | null>(null);
 // up pushing the AppBar + toolbar above the viewport. The focus
 // itself is what matters for AT users; the scroll-on-focus side
 // effect is purely cosmetic and unwanted.
-watch(
-  [status, articleRef],
-  ([currentStatus, el]) => {
-    if (currentStatus === "success" && el) {
-      nextTick(() => el.focus({ preventScroll: true }));
-    }
-  },
-);
+watch([status, articleRef], ([currentStatus, el]) => {
+  if (currentStatus === "success" && el) {
+    nextTick(() => el.focus({ preventScroll: true }));
+  }
+});
 </script>
 
 <template>
@@ -76,7 +70,7 @@ watch(
       class="size-6 animate-spin text-(--text-muted)"
       aria-hidden="true"
     />
-    <span class="sr-only">{{ t('learn.readMode.loading') }}</span>
+    <span class="sr-only">{{ t("learn.readMode.loading") }}</span>
   </div>
 
   <div
@@ -89,12 +83,12 @@ watch(
       aria-hidden="true"
     />
     <p class="text-(--text-muted) text-(length:--al-font-size-body)">
-      {{ t('learn.readMode.notFound') }}
+      {{ t("learn.readMode.notFound") }}
     </p>
     <!--
       Surface the "go home" affordance here too. On desktop the
       layout's close button is also present; on mobile it's hidden,
-      so this is the only escape hatch — explicit text rather than
+      so this is the only escape hatch - explicit text rather than
       an icon so screen-reader users get a clear destination.
     -->
     <UButton
@@ -103,7 +97,7 @@ watch(
       size="sm"
       :to="'/'"
     >
-      {{ t('learn.readMode.goBack') }}
+      {{ t("learn.readMode.goBack") }}
     </UButton>
   </div>
 
@@ -111,7 +105,7 @@ watch(
     tabindex=-1 so focus can move here programmatically once the
     article resolves. The frontmatter `title` is rendered as the
     <h1> so the markdown body stays focused on section content
-    (## and below) — single source of truth for the article title.
+    (## and below) - single source of truth for the article title.
   -->
   <article
     v-else
@@ -133,7 +127,7 @@ watch(
 /*
  * Prose customisation. Nuxt Content's ContentRenderer + Tailwind
  * Typography handles the heavy lifting; this only overrides what the
- * defaults can't express through Tailwind utilities — namely token-
+ * defaults can't express through Tailwind utilities - namely token-
  * driven colours, project font-size tokens, and rules that target
  * markdown-emitted elements which can't carry classes.
  *
@@ -263,5 +257,18 @@ watch(
 
 .read-mode-prose :deep(strong) {
   color: var(--text-primary);
+}
+
+@media (max-width: 640px) {
+  .read-mode-prose :deep(code) {
+    white-space: normal;
+    overflow-wrap: break-word;
+  }
+
+  .read-mode-prose :deep(table) {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+  }
 }
 </style>

@@ -10,7 +10,17 @@
   },
   "appBar": {
     "brand": "AccessLab",
-    "ariaLabel": "Application bar"
+    "ariaLabel": "Application bar",
+    "display": {
+      "trigger": "Display settings",
+      "title": "Display settings",
+      "description": "Adjust the font, text size, contrast, and theme.",
+      "close": "Close",
+      "font": "Font",
+      "textSize": "Text size",
+      "contrast": "Contrast",
+      "theme": "Theme"
+    }
   },
   "errorPage": {
     "ariaLabel": "Error notice",
