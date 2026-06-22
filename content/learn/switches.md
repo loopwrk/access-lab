@@ -55,22 +55,22 @@ If you build the pill from scratch, the most accessible approach is a `<button>`
 
 ## Keep the label stable
 
-A switch's label should name the setting, not its current state. "Dark mode" stays "Dark mode" whether the setting is on or off - flipping the label to "Light mode" would name a different setting and break the user's mental map of the control.
+A switch's label should name the setting, not its current state. "Dark mode" stays "Dark mode" whether the setting is on or off.
 
 If you want to convey extra context about the current value, two patterns work:
 
 - The switch's own state (`aria-checked` or `checked`) - assistive technology already announces this.
 - Helper text near the switch - a small line of supplementary description.
 
-This separation helps people understand both what the setting controls (the label) and what its current value is (the switch state).
+This separation helps users understand both what the setting controls (the label) and what its current value is (the switch state).
 
 ## Make the label clickable
 
-People expect to tap the text label to flip a switch. That is how it works in every smartphone settings screen and in most modern desktop interfaces.
+Users expect to tap the text label to flip a switch. That is standard for smartphone settings screens and in most modern desktop interfaces.
 
 The native checkbox approach gives you this for free, as long as the `<label>` is associated with the `<input>` (either by wrapping it or via the `for`/`id` pair). The custom button approach does not - you will need to wire the label's click event to the button's click event manually.
 
-A larger clickable area benefits everyone, but it is especially helpful for touch users, people with motor difficulties, and anyone who finds small targets fiddly.
+A larger actionable area benefits everyone, switches themselves can be small, so it's especially helpful for touch users and users with motor differences.
 
 ## Switch vs. checkbox
 

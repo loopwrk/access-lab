@@ -6,9 +6,9 @@
     "pinnedForComponent": "Relevant to {component}",
     "readMode": {
       "button": "Read mode",
-      "title": "Reader view",
-      "ariaLabel": "Reader view — distraction-free reading mode for this topic",
-      "close": "Close reader view",
+      "title": "Learning portal",
+      "ariaLabel": "A collection of articles to teach accessibility best-practice",
+      "close": "Close learning portal ",
       "loading": "Loading content…",
       "notFound": "This topic is not available in reader view yet.",
       "goBack": "Go back",

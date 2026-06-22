@@ -15,22 +15,20 @@ summary: A menu trigger opens a popup of choices. The button needs both
   do not give you for free.
 ---
 
-A menu trigger is a button that opens a pop-up list of choices, such as a user profile or settings menu. When building a custom menu using ARIA, browsers do not provide complete accessible behaviour automatically. This means you must implement keyboard interaction, focus management, and open/close state handling yourself using JavaScript.
-
-Since browsers don't support these custom pop-ups automatically, your code will just need to explicitly link the button to the menu and ensure the whole component responds smoothly to standard keyboard controls.
+A menu trigger is a button that opens a pop-up list of choices, such as a settings menu. When building a custom menu using ARIA, browsers do not provide complete accessible behaviour automatically. This means you must implement keyboard interaction, focus management, and open/close state handling yourself using JavaScript.
 
 ## The Correct Pattern
 
 If you are implementing the ARIA menu pattern, use a standard HTML `<button>` element with the following attributes:
 
 - **`aria-haspopup="menu"`**
-- **`aria-expanded`** (updated dynamically to reflect open or closed state)
+- **`aria-expanded="false"`** (Set to `true`, if you want it to be in an open state by default)
 
 Optionally, you may include `aria-controls` to associate the button with the menu element it opens, although this is not strictly required.
 
 The menu container should use `role="menu"` when implementing the ARIA menu pattern. Each interactive option inside it should use `role="menuitem"` to ensure assistive technologies correctly announce the structure and available actions.
 
-When the menu is closed, the container element must be completely hidden using the native HTML `hidden` attribute or CSS `display: none`. This keeps the hidden items out of the digital accessibility tree, matching the expectations of users navigating non-visually.
+When the menu is closed, the container element must be completely hidden using the native HTML `hidden` attribute or CSS `display: none`. This ensures it's not read by screen readers when closed.
 
 #### Example
 
@@ -58,7 +56,7 @@ When the menu is closed, the container element must be completely hidden using t
 
 ## Why Both Attributes Are Essential
 
-The `aria-haspopup` and `aria-expanded` attributes solve two entirely different communication problems:
+The `aria-haspopup` and `aria-expanded` communicate two entirely different things:
 
 1. **`aria-haspopup`** tells the user **what** kind of interface element will appear (e.g., a menu, a listbox, or a dialog window).
 2. **`aria-expanded`** tells the user **when** that element is active and visible.

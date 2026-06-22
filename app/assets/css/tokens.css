@@ -36,7 +36,7 @@
      ────────────────────────────────────────────────────────────── */
 
   /* Heading 1 — markdown `# Heading` */
-  --al-learn-h1-font-size: 3rem;
+  --al-learn-h1-font-size: 2.75rem;
   --al-learn-h1-font-weight: 600;
   --al-learn-h1-color: var(--brand);
   --al-learn-h1-line-height: 1.25;

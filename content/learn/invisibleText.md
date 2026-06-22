@@ -50,7 +50,7 @@ AccessLab's colour tool - available in the Controls panel for most HTML elements
 
 Update your code to use distinct text and background colours that meet the required contrast ratios.
 
-### If you actually want to hide the text for screen-reader users only
+### If you actually want to hide the text visually, but readable by screen-readers
 
 Avoid hiding text by making it the exact same color as your background. Instead, use a modern CSS technique that shrinks the element down to an invisible 1-pixel dot. This removes the text from the screen visually while keeping the underlying code completely intact.
 
