@@ -10,7 +10,7 @@ Current snapshot of what is built, what is in flight, and what remains. Update t
 
 **What runs today:** the full Studio shell, all four inspector tabs (Controls, Issues, Manual, Learn), the three-engine audit pipeline (axe-core + prop-based custom rules + DOM-based rules), the Read Mode reader at `/learn/<topicId>`, and ten inspected components - six in the button family plus four form inputs.
 
-**What's not done:** Part D of the test plan - Playwright end-to-end journeys plus the axe-playwright AAA gate on the app's own chrome. The unit and Nuxt-component suites are otherwise extensive: UNITTESTS.md Parts A through C are complete (359 unit + 242 Nuxt-component tests passing).
+**What's not done:** Part D of the test plan - Playwright end-to-end journeys plus the axe-playwright AAA gate on the app's own chrome. The unit and Nuxt-component suites are otherwise extensive: UNITTESTS.md Parts A through C are complete (359 unit + 252 Nuxt-component tests passing).
 
 ---
 
@@ -34,7 +34,7 @@ Current snapshot of what is built, what is in flight, and what remains. Update t
 
 - `app/components/AppInspector.vue` - `UTabs` (`:content="false"`) plus four teleport-target panels (`controls-panel`, `issues-panel`, `manual-panel`, `learn-panel`). Aside is `flex flex-col min-h-0`; inner div is `flex-1 min-h-0 overflow-y-auto`. Tab strip stays pinned; content scrolls within.
 - `app/components/AppSidebar.vue` - nested-accordion `UNavigationMenu` (vertical, `:highlight`). Two `type: "trigger"` groups: Buttons (6 items) and Form Inputs (4 items), each component a child link. Accepts a known axe `aria-allowed-attr` violation in exchange for the highlight line - see AGENTS.md "Sidebar nav".
-- `app/components/AppBar.vue` - font family picker (4 options), size picker (4 options), high-contrast toggle, light/dark toggle. Reads composable refs via destructure so Vue auto-unwraps in the template; `setMode('light')` / `setMode('dark')` for direct mode switches.
+- `app/components/AppBar.vue` - font family picker (4 options), size picker (4 options), high-contrast toggle, light/dark toggle. Reads composable refs via destructure so Vue auto-unwraps in the template; `setMode('light')` / `setMode('dark')` for direct mode switches. **Responsive:** the inline strip is `hidden lg:flex`; below `lg` (which is also the 320 CSS px a desktop user reaches at 400% zoom) the controls collapse into a single "Display settings" trigger that opens a bottom-sheet `UDrawer` hosting `app/components/appbar/DisplayControlsPanel.vue` (same controls, vertical and labelled, 44px targets, `aria-pressed` selection state). Shared option data lives in `app/utils/displayControlOptions.ts`. See "Learn-page mobile responsiveness" below.
 
 ### Preview pipeline
 
@@ -215,6 +215,15 @@ A codebase audit found the baseline broken on a clean working tree (one type err
 - CI now also runs the test suite (`.github/workflows/ci.yml`).
 - First shared render utilities extracted: `app/utils/escapeHtml.ts`, `app/utils/formatCssLength.ts`, `app/utils/valueFromLabel.ts` replace per-file private copies in the four form-input `render.ts` files. `useUnitConversion().formatLength` now delegates to `formatCssLength`, removing a keep-in-sync comment obligation.
 
+### Learn-page mobile responsiveness (current branch)
+
+The reader (`/learn/*`) is the only mobile-usable surface (the studio shows `MobileBlocker` below `lg`), so its chrome and content must reflow without horizontal scroll - which doubles as the 400%-zoom-desktop experience, since 320 CSS px is what a 1280px window becomes at 400% zoom (WCAG 1.4.10). Two changes:
+
+- **AppBar collapses into a "Display settings" bottom sheet below `lg`.** Eleven controls cannot share one row at the AAA 44px target size at 320 px, so the inline strip (`hidden lg:flex`, desktop unchanged) is replaced below `lg` by a labelled trigger opening a `UDrawer` bottom sheet (`app/components/appbar/DisplayControlsPanel.vue`). The disclosure is the endorsed reader convention (the e-reader "Aa" panel), and a single top-level trigger is the not-buried form the accessibility community recommends. The collapse is CSS-driven (Tailwind `lg:` classes, not `useIsBelowDesktop`) so it fires at 400% zoom too and renders identically on server and client (no hydration mismatch from the swap). The sheet carries a visible, labelled top-right close button - pinned to the fixed sheet so it survives panel scroll - alongside Vaul's Escape + outside-click + drag handle. Shared option data: `app/utils/displayControlOptions.ts`.
+- **Article content reflow.** `pages/learn/[topicId].vue` gained a `@media (max-width: 640px)` block (the article's own mobile line): inline `code` drops `white-space: nowrap` so long tokens wrap instead of forcing two-dimensional scroll, and wide tables become independently scrollable (`display: block; overflow-x: auto`) - the one case 1.4.10 allows horizontal scroll. Desktop defaults are untouched (separation of concerns).
+
+**Pre-existing issue surfaced (not introduced here):** a color-mode SSR hydration mismatch on the `/learn` theme toggle - confirmed present on the clean baseline, check-only, undocumented until now. See NOTES.md "Color-mode hydration mismatch on /learn".
+
 ---
 
 ## Remaining work
@@ -227,7 +236,7 @@ The file picker (`<input type="file">` + label-wrap pattern) was scoped for the 
 
 ### Tests
 
-Vitest is wired with `unit` (node) and `nuxt` (happy-dom) projects (`pnpm test:unit` / `test:nuxt` / `test:coverage`). Coverage is extensive: UNITTESTS.md Parts A (shared foundations), B1-B10 (every component's render, rules, and controls), and C1-C11 (inspector UI + studio shell) are complete - 359 unit + 242 Nuxt-component tests. Remaining:
+Vitest is wired with `unit` (node) and `nuxt` (happy-dom) projects (`pnpm test:unit` / `test:nuxt` / `test:coverage`). Coverage is extensive: UNITTESTS.md Parts A (shared foundations), B1-B10 (every component's render, rules, and controls), and C1-C11 (inspector UI + studio shell) are complete - 359 unit + 252 Nuxt-component tests. Remaining:
 
 - Part D: Playwright end-to-end journeys through the studio, plus the axe-playwright AAA gate on the app's own chrome (the gate AGENTS.md calls for). The tooling install is gated on sign-off (UNITTESTS.md Batch D0).
 - Known flake: the combined `corepack pnpm test` (both projects at once) intermittently fails a first `mountSuspended` cold-start; run the suites separately. See NOTES.md.
