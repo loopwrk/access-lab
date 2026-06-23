@@ -267,18 +267,25 @@
         // <input type="image"> is a submit button per HTML spec.
         var isSubmit = triggerType === "submit" || triggerType === "image";
         var isReset = triggerType === "reset";
+        var isActivationWidget =
+          trigger.getAttribute("role") === "switch" ||
+          trigger.hasAttribute("aria-pressed") ||
+          trigger.hasAttribute("aria-checked");
 
         // Submit / reset inside a form: the form event handlers below
         // will fire and post their own payload-aware message. Suppress
         // the generic click so the user does not see two.
         if (form && (isSubmit || isReset)) return;
 
-        // Submit / reset outside a form: the click does nothing - there
-        // is no form to act on. Surface the misuse via an error toast so
-        // the user understands why nothing visible happened.
+        // Submit / reset outside a form: there is no form to act on, so surface
+        // the type-less-button pitfall via a toast - a <button> with no type is
+        // implicitly type="submit", worth flagging even on a switch (it would
+        // submit if wrapped in a form). A plain submit button has nothing more to
+        // do and stops here; an activation widget also flips state, so it falls
+        // through to demo:click below.
         if (!form && isSubmit) {
           parent.postMessage({ type: "form:submitMissingForm" }, window.location.origin);
-          return;
+          if (!isActivationWidget) return;
         }
         if (!form && isReset) {
           parent.postMessage({ type: "form:resetMissingForm" }, window.location.origin);
