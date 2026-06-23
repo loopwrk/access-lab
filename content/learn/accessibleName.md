@@ -39,14 +39,30 @@ Below is a list of naming sources the browser can use as an accessible name. Thi
 This attribute gives you direct control over what assistive technology announces by associating it with a named element elsewhere on the page.
 
 - **When to use:** When the text you want to use as a label **already exists** elsewhere on the page.
-- **How it works:** You point this attribute to the `id` of the existing visible text element.
+- **How it works:** You point this attribute to the `id` of the existing visible text you want to use as the name. You can also list more than one `id`, separated by spaces, and the browser joins their text together in the order you list them.
 
-#### Examples
+#### Example
+
+Imagine a page that has several buttons that share the same visible text - a list of people, each with a "View profile" button. Sighted users tell them apart by the name beside each button, but a screen reader user moving from button to button would just hear "View profile" repeated, with nothing to separate them. `aria-labelledby` fixes this by naming each button with its own text **and** the adjacent person's name:
 
 ```html
-<h2 id="dialog-title">View your profile</h2>
-<button aria-labelledby="dialog-title">X</button>
+<ul>
+  <li>
+    <span id="member-ada">Ada Lovelace</span>
+    <button id="view-ada" aria-labelledby="view-ada member-ada">
+      View profile
+    </button>
+  </li>
+  <li>
+    <span id="member-alan">Alan Turing</span>
+    <button id="view-alan" aria-labelledby="view-alan member-alan">
+      View profile
+    </button>
+  </li>
+</ul>
 ```
+
+Each button still shows "View profile", so voice-control users can say "View profile" to activate it, while screen reader users hear a distinct name for each one - "View profile Ada Lovelace" and "View profile Alan Turing".
 
 > The element you are naming and the element with the name, do not need to be adjacent like they are in the example above. They just need to be on the same page.
 
