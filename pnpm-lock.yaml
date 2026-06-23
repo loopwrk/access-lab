@@ -17,6 +17,9 @@ importers:
       '@fontsource/atkinson-hyperlegible':
         specifier: ^5.2.8
         version: 5.2.8
+      '@fontsource/comic-neue':
+        specifier: ^5.2.7
+        version: 5.2.7
       '@iconify-json/lucide':
         specifier: ^1.2.108
         version: 1.2.111
@@ -881,6 +884,9 @@ packages:
 
   '@fontsource/atkinson-hyperlegible@5.2.8':
     resolution: {integrity: sha512-HciLcJ5DIK/OVOdo71EbEN4NnvDFlp6/SpAxtcbWf2aAdcsOuPqITxj5KNEXb48qSPSdnnZdGGnSJChPKi3/bA==}
+
+  '@fontsource/comic-neue@5.2.7':
+    resolution: {integrity: sha512-tNi0Nxbz0QMwHvZWJSP5G0SXq8CeX5b+K3l3q/afPmJ/WlQ+i3/NfOYWBzsojCZko1lNplfmjbsOGMuBs4WmcA==}
 
   '@humanfs/core@0.19.2':
     resolution: {integrity: sha512-UhXNm+CFMWcbChXywFwkmhqjs3PRCmcSa/hfBgLIb7oQ5HNb1wS0icWsGtSAUNgefHeI+eBrA8I1fxmbHsGdvA==}
@@ -7836,6 +7842,8 @@ snapshots:
   '@fontsource-variable/jetbrains-mono@5.2.8': {}
 
   '@fontsource/atkinson-hyperlegible@5.2.8': {}
+
+  '@fontsource/comic-neue@5.2.7': {}
 
   '@humanfs/core@0.19.2':
     dependencies:

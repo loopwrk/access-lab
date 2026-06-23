@@ -15,7 +15,9 @@
  * useColorMode is mocked so the theme assertions are deterministic (clicking
  * Light/Dark sets the preference). font/size/contrast use real useLocalStorage
  * and the document, which jsdom provides; localStorage is the source of truth
- * we read back, matching the approach in onboarding-modal.test.ts.
+ * we read back, matching the approach in onboarding-modal.test.ts. isFontAvailable
+ * is mocked because the picker hides any system font the device cannot render,
+ * and happy-dom does not model the canvas text metrics that detection relies on.
  *
  * UButton/UIcon are stubbed down to a plain <button> so aria-pressed (and the
  * font-preview style) fall through to a real element we can query.
@@ -23,11 +25,19 @@
 
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { mockNuxtImport, mountSuspended } from "@nuxt/test-utils/runtime";
-import { defineComponent, h } from "vue";
+import { defineComponent, h, nextTick } from "vue";
 import DisplayControlsPanel from "~/components/appbar/DisplayControlsPanel.vue";
 
 const colorMode = vi.hoisted(() => ({ value: "light", preference: "light" }));
 mockNuxtImport("useColorMode", () => () => colorMode);
+
+// Canvas-based font detection cannot run in happy-dom, so the availability check
+// is mocked. Default: every system font is available (the full picker shows).
+const systemFonts = vi.hoisted(() => ({ comicSansAvailable: true }));
+vi.mock("~/utils/isFontAvailable", () => ({
+  isFontAvailable: (fontName: string) =>
+    fontName === "Comic Sans MS" ? systemFonts.comicSansAvailable : true,
+}));
 
 const stubs = {
   UButton: {
@@ -55,6 +65,7 @@ beforeEach(() => {
   localStorage.clear();
   colorMode.value = "light";
   colorMode.preference = "light";
+  systemFonts.comicSansAvailable = true;
   document.documentElement.className = "";
 });
 
@@ -67,11 +78,33 @@ describe("DisplayControlsPanel", () => {
     expect(text).toContain("Theme");
   });
 
-  it("offers every font option", async () => {
+  it("offers every font option when the device can render them all", async () => {
     const wrapper = await mount();
     for (const label of ["Figtree", "Dyslexic", "Atkinson", "Comic Sans"]) {
       expect(buttonByText(wrapper, label)).toBeDefined();
     }
+  });
+
+  it("hides a font the device cannot render natively", async () => {
+    systemFonts.comicSansAvailable = false;
+    const wrapper = await mount();
+    await nextTick();
+
+    expect(buttonByText(wrapper, "Comic Sans")).toBeUndefined();
+    for (const label of ["Figtree", "Dyslexic", "Atkinson"]) {
+      expect(buttonByText(wrapper, label)).toBeDefined();
+    }
+  });
+
+  it("falls back to the default font when the saved font is no longer renderable", async () => {
+    localStorage.setItem("al-font-family", '"Comic Sans MS", "Comic Sans", "Comic Neue", sans-serif');
+    systemFonts.comicSansAvailable = false;
+
+    const wrapper = await mount();
+    await nextTick();
+
+    expect(localStorage.getItem("al-font-family")).toBe("Figtree Variable");
+    expect(buttonByText(wrapper, "Figtree")!.attributes("aria-pressed")).toBe("true");
   });
 
   it("persists the chosen font and marks it pressed", async () => {

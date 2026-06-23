@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { fontOptions, sizeOptions } from "~/utils/displayControlOptions";
+import { sizeOptions } from "~/utils/displayControlOptions";
 
 const { t } = useI18n();
-const { family, size, setFont, setSize } = useFont();
+const { family, size, availableFontOptions, setFont, setSize } = useFont();
 const { isDark, isHighContrast, setMode, toggleContrast } = useTheme();
 </script>
 
@@ -15,7 +15,7 @@ const { isDark, isHighContrast, setMode, toggleContrast } = useTheme();
       </legend>
       <div class="grid gap-2">
         <UButton
-          v-for="option in fontOptions"
+          v-for="option in availableFontOptions"
           :key="option.value"
           block
           class="min-h-11 justify-center"

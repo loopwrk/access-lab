@@ -1,10 +1,16 @@
 <script setup lang="ts">
 import DisplayControlsPanel from "./appbar/DisplayControlsPanel.vue";
-import { fontOptions, sizeOptions } from "~/utils/displayControlOptions";
+import { sizeOptions } from "~/utils/displayControlOptions";
 
 const { t } = useI18n();
 const { isDark, isHighContrast, setMode, toggleContrast } = useTheme();
-const { family: fontFamily, size: fontSize, setFont, setSize } = useFont();
+const {
+  family: fontFamily,
+  size: fontSize,
+  availableFontOptions,
+  setFont,
+  setSize,
+} = useFont();
 const { open: openOnboarding } = useOnboarding();
 
 // On mobile while the reader is open, the logo should not navigate -
@@ -74,7 +80,7 @@ const displaySettingsOpen = ref(false);
       <!-- Font family picker -->
       <UFieldGroup size="sm">
         <UButton
-          v-for="option in fontOptions"
+          v-for="option in availableFontOptions"
           :key="option.value"
           :color="fontFamily === option.value ? 'primary' : 'neutral'"
           :variant="fontFamily === option.value ? 'solid' : 'ghost'"
