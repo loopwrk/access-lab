@@ -47,12 +47,10 @@ const articleRef = ref<HTMLElement | null>(null);
 // screen-reader user lands at the title and can read forward
 // immediately. Pointer users can still scroll/click freely.
 //
-// `preventScroll: true` is important under SSR: without it, the
-// browser scroll-into-views the focused article on hydration, which
-// (because the article is already in the initial HTML and tall) ends
-// up pushing the AppBar + toolbar above the viewport. The focus
-// itself is what matters for AT users; the scroll-on-focus side
-// effect is purely cosmetic and unwanted.
+// `preventScroll: true` stops the focus call from scrolling the
+// article region down to the <article>; it should stay at the top on
+// load. The focus itself is what matters for AT users; the
+// scroll-on-focus side effect is purely cosmetic and unwanted.
 watch([status, articleRef], ([currentStatus, el]) => {
   if (currentStatus === "success" && el) {
     nextTick(() => el.focus({ preventScroll: true }));

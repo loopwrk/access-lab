@@ -20,19 +20,20 @@ function onTreeSelect() {
 </script>
 
 <template>
-  <div class="grid grid-rows-[auto_1fr] min-h-dvh bg-(--bg) text-(--text-secondary)">
+  <div class="grid grid-rows-[auto_1fr] h-dvh bg-(--bg) text-(--text-secondary)">
     <AppBar />
 
-    <div class="flex flex-col md:min-h-0 md:overflow-hidden">
+    <div class="flex flex-col min-h-0 overflow-hidden">
       <!--
         Local toolbar: hamburger on mobile to expose the tree, close
         button on desktop to return to the studio. Plain <span> for
         the title (not a heading) so the article's own <h1> stays
-        the top of the document outline. Below `md` it is sticky so
-        it pins to the top once the AppBar scrolls away.
+        the top of the document outline. It sits outside the article
+        scroll region, so it and the AppBar stay fixed while only the
+        article scrolls (see the shell sizing note above).
       -->
       <div
-        class="sticky top-0 z-10 bg-(--bg) md:static shrink-0 flex items-center justify-between gap-3 px-5 py-3 border-b border-(--border)"
+        class="shrink-0 flex items-center justify-between gap-3 px-5 py-3 border-b border-(--border)"
       >
         <div class="flex items-center gap-2 min-w-0">
           <UButton
@@ -75,7 +76,7 @@ function onTreeSelect() {
         UPage components don't suit a constrained-height surface
         because they rely on the document being the scroll root.
       -->
-      <div class="flex-1 flex md:min-h-0 md:overflow-hidden">
+      <div class="flex-1 flex min-h-0 overflow-hidden">
         <aside
           class="hidden md:block w-[320px] shrink-0 overflow-y-auto border-r border-(--border) p-3"
           :aria-label="t('learn.index.title')"
@@ -86,7 +87,7 @@ function onTreeSelect() {
           />
         </aside>
 
-        <div class="flex-1 min-w-0 md:overflow-y-auto">
+        <div class="flex-1 min-w-0 overflow-y-auto">
           <slot />
         </div>
       </div>
