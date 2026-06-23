@@ -60,9 +60,9 @@ A useful test: if changing the value would affect how the user reads or interact
 
 ## How to change the root font-size
 
-It is generally advised not to change the root font-size. While everyday users don't actually think about the literal number `16 pixels`, they expect the comfort level that 16px provides. It has become the universal baseline for web legibility over the couple of few decades.
+It is generally advised not to change the root font-size. While everyday users don't actually think about the literal number `16 pixels`, they expect the comfort level that 16px provides. It has become the universal baseline for web legibility over the past couple of decades.
 
-If you do want to change the root font-size, the recommended way to change the root-font size is using a CSS stylesheet. The most critical accessibility rule for the root font size is: never set the root font size in absolute pixels (like `18px`).
+If you do want to change the root font-size, the recommended way to change the root font-size is using a CSS stylesheet. The most critical accessibility rule for the root font size is: never set the root font size in absolute pixels (like `18px`).
 
 If a developer hardcodes `html { font-size: 18px; }`, they are effectively overriding the user's browser settings. If a user who has vision needs which require larger text than the 16px default and has set their default browser font size to `24px`, the hardcoded `18px` will shrink the text back down, breaking their custom accessibility settings.
 
@@ -78,4 +78,4 @@ html {
 
 Why this works: Setting it to `100%` means "take whatever default font size the user has chosen in their browser settings and use that as the base." For most users, this will be `16px` (making `1rem = 16px`), but for a user who needs larger text, it will seamlessly scale to their preference (e.g., `1rem = 24px`).
 
-Note: when viewing other, generally older codebases, you might see this `html { font-size: 62.5%; } /* 62.5% of 16px = 10px */` which was an old trick which was used as some developers preferred a base of 10 as it is easier for multiplication. This turned `1rem` into exactly `10px`, meaning `1.6rem` became `16px`, `2.4rem` became `24px`, and so on. While this preserves user accessibility settings, it creates a massive headache in modern web development, it breaks third-party component libraries (like Tailwind) UI, where components are built assuming 1rem equals the standard default (16px). Modern CSS now also supports the CSS calc() function which allows developers to work in base 10 if they prefer in their code, whilst the browser still uses base 16.
+Note: when viewing other, generally older codebases, you might see this `html { font-size: 62.5%; } /* 62.5% of 16px = 10px */` which was an old trick which was used as some developers preferred a base of 10 as it is easier for multiplication. This turned `1rem` into exactly `10px`, meaning `1.6rem` became `16px`, `2.4rem` became `24px`, and so on. While this preserves user accessibility settings, it creates a massive headache in modern web development: it breaks third-party component libraries (like Tailwind), where components are built assuming 1rem equals the standard default (16px). Modern CSS now also supports the CSS `calc()` function, which allows developers to work in base 10 if they prefer in their code, whilst the browser still uses base 16.

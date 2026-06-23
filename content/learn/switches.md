@@ -16,7 +16,7 @@ summary: A switch represents a setting that is on or off - Wi-Fi, Dark mode,
   role=switch and aria-checked.
 ---
 
-A switch represents a binary setting - something that is on or off. Wi-Fi on/Wi-Fi off, Dark mode on/dark mode off etc. Both positions are equally valid states of a setting; neither is "doing nothing". This is what makes a switch different from a regular button (which performs an action) and from a toggle button (which applies or removes an effect).
+A switch represents a binary setting - something that is on or off. Wi-Fi on/Wi-Fi off, Dark mode on/Dark mode off, and so on. Both positions are equally valid states of a setting; neither is "doing nothing". This is what makes a switch different from a regular button (which performs an action) and from a toggle button (which applies or removes an effect).
 
 > Not sure if you should use a switch or a toggle button? See [Choosing between a toggle and a switch](/learn/toggle-vs-switch).
 
@@ -70,7 +70,7 @@ Users expect to tap the text label to flip a switch. That is standard for smartp
 
 The native checkbox approach gives you this for free, as long as the `<label>` is associated with the `<input>` (either by wrapping it or via the `for`/`id` pair). The custom button approach does not - you will need to wire the label's click event to the button's click event manually.
 
-A larger actionable area benefits everyone, switches themselves can be small, so it's especially helpful for touch users and users with motor differences.
+A larger actionable area benefits everyone. Switches themselves can be small, so a clickable label is especially helpful for touch users and users with motor differences.
 
 ## Switch vs. checkbox
 

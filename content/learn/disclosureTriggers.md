@@ -21,7 +21,7 @@ A disclosure trigger is an HTML element that reveals or hides regions of related
 - A `<button>` configured using JavaScript to be a disclosure trigger
 - A `<summary>` element (when wrapped in a `<details>` element)
 
-Common examples where `<button>` elements are used as diclosure triggers are [accordions](https://www.w3.org/WAI/ARIA/apg/patterns/accordion/) and [expandable cards](https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/examples/disclosure-card/).
+Common examples where `<button>` elements are used as disclosure triggers are [accordions](https://www.w3.org/WAI/ARIA/apg/patterns/accordion/) and [expandable cards](https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/examples/disclosure-card/).
 
 In this article, we will be focusing on `<button>` elements only, however, note that `<summary>` elements are often preferred by developers as when they are paired with `<details>` elements, they can provide the same reveal/hide behaviour with accessibility features that are easier to implement, as no JavaScript is required. Read more about the `<details>` HTML details disclosure element [here](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/details).
 
@@ -116,7 +116,7 @@ Keeping focus stable ensures the disclosure behaves like an expansion of context
 ### When to use `aria-controls`
 
 - **When the content lives elsewhere on the page:** Use it if the button is in one part of the HTML (like a sidebar) but the content panel opens up somewhere else entirely.
-- **The Golden Rule:** If you use it, ensure the `id` matches perfectly. A `aria-controls` that doesn't match the `id` it's associated with can confuse assistive technology much more than leaving the attribute off entirely.
+- **The Golden Rule:** If you use it, ensure the `id` matches perfectly. An `aria-controls` that doesn't match the `id` it's associated with can confuse assistive technology much more than leaving the attribute off entirely.
 
 ### When It's Optional (The Common Case)
 
@@ -154,4 +154,4 @@ The panel opens and closes perfectly on screen, but the button completely lacks 
 
 The `aria-expanded` attribute is present on the button, but it stays stuck at `"false"`. The developer added it for compliance but forgot to toggle it to `"true"` inside their JavaScript click handler.
 
-Sighted users see the panel open, but screen readers are told it is still closed. This is a sneaky bug because automated testing tools usually miss it, they see that the attribute exists and assume everything is working correctly.
+Sighted users see the panel open, but screen readers are told it is still closed. This is a sneaky bug because automated testing tools usually miss it: they see that the attribute exists and assume everything is working correctly.

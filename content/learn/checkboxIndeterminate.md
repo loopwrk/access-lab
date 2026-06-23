@@ -36,7 +36,7 @@ The catch is that the two properties are independent. You can set `checked = tru
 Picture a checkbox with both flags set to true.
 
 - **A sighted person** sees a horizontal dash. They read this as "partial" - some children selected, some not.
-- **A screen-reader user** hears whatever the browser-plus-assitive-technology pairing decides to announce. NVDA with Chrome typically says "half checked" for the native indeterminate. JAWS varies by mode. VoiceOver on Safari often misses the native dash entirely and announces "checked" instead, because Safari does not always expose the indeterminate state to the accessibility tree.
+- **A screen-reader user** hears whatever the browser-plus-assistive-technology pairing decides to announce. NVDA with Chrome typically says "half checked" for the native indeterminate. JAWS varies by mode. VoiceOver on Safari often misses the native dash entirely and announces "checked" instead, because Safari does not always expose the indeterminate state to the accessibility tree.
 - **The server** receives the form post with the box ticked - because `checked` is still `true`. Whoever processes that submission has no way to know the box looked like a dash to the person who submitted it.
 
 Three audiences, three different stories about the same control.

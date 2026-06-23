@@ -28,7 +28,7 @@ Screen-reader users will hear the text perfectly and assume the page is fine.
 
 Sighted users will see an empty space or an unlabeled button and might think something in the page is broken.
 
-Catching this requires manually inspecting the final for computed colours on the screen, which standard quality assurance checks often miss.
+Catching this requires manually inspecting the final computed colours on the screen, which standard quality assurance checks often miss.
 
 ## Web Accessibility Standards (WCAG)
 
@@ -50,15 +50,15 @@ AccessLab's colour tool - available in the Controls panel for most HTML elements
 
 Update your code to use distinct text and background colours that meet the required contrast ratios.
 
-### If you actually want to hide the text visually, but readable by screen-readers
+### If you want to hide the text visually but keep it readable by screen readers
 
-Avoid hiding text by making it the exact same color as your background. Instead, use a modern CSS technique that shrinks the element down to an invisible 1-pixel dot. This removes the text from the screen visually while keeping the underlying code completely intact.
+Avoid hiding text by making it the exact same colour as your background. Instead, use a modern CSS technique that shrinks the element down to an invisible 1-pixel dot. This removes the text from the screen visually while keeping the underlying code completely intact.
 
 This safer method is important for two main reasons:
 
 It supports assistive tech: Screen readers can still find and announce the hidden text.
 
-It prevents visual glitches: The text won't accidentally reappear if a user highlights the page, overrides your website's colors, or enables a high-contrast theme.
+It prevents visual glitches: The text won't accidentally reappear if a user highlights the page, overrides your website's colours, or enables a high-contrast theme.
 
 Here is an example of how you can implement this using CSS:
 
@@ -76,4 +76,4 @@ border-width: 0;
 
 Many modern styling tools, like Tailwind CSS, provide a pre-made sr-only (screen-reader only) class exactly for this purpose.
 
-Read more an in-depth guide on [Hiding Elements Correctly](https://www.accessibility-developer-guide.com/examples/hiding-elements/) on the Accessibiilty Developer Guide website.
+Read an in-depth guide on [Hiding Elements Correctly](https://www.accessibility-developer-guide.com/examples/hiding-elements/) on the Accessibility Developer Guide website.

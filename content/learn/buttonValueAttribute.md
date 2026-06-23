@@ -11,7 +11,7 @@ concepts:
   - form-context
   - accessible-name
 summary: On a button element, the value attribute is hidden form data, not a
-  label. Screen readers do not use it as the button’s accessible nam. This is the opposite of how value
+  label. Screen readers do not use it as the button's accessible name. This is the opposite of how value
   works on an input button.
 ---
 
@@ -26,7 +26,7 @@ Consider the following:
 
 When rendered, they both look like buttons:
 
-<button type="button" value="I am an button element" style="all: revert; width: 12rem; height: 2.5rem; font-size: 1rem">I am a button element</button>
+<button type="button" value="I am a button element" style="all: revert; width: 12rem; height: 2.5rem; font-size: 1rem">I am a button element</button>
 
 <input type="button" value="I am an input element" style="all: revert; width: 12rem; height: 2.5rem; font-size: 1rem" /> <br>
 
@@ -35,7 +35,7 @@ Buttons and inputs handle the `value` attribute differently.
 
 ### The `<input>` element: double duty
 
-For `<input>` elements (specifically `type="button"`, `type="submit"`, or `type="reset"` - all which look like buttons when rendered), the `value` attribute acts as both the **visible text** and the **accessible name** read by screen readers. For example, setting `value="Save"` makes the button visibly say "Save" to all users.
+For `<input>` elements (specifically `type="button"`, `type="submit"`, or `type="reset"` - all of which look like buttons when rendered), the `value` attribute acts as both the **visible text** and the **accessible name** read by screen readers. For example, setting `value="Save"` makes the button visibly say "Save" to all users.
 
 **Why?** Because `<input>` is a _void element_. It is self-closing and cannot contain text or child elements. Writing `<input>Save</input>` is invalid HTML. Since there is nowhere to place text inside the tags, the `value` attribute is forced to serve two roles simultaneously: the visible UI label and the underlying form data.
 
@@ -48,14 +48,6 @@ Instead, the visible text is simply whatever content you place _between_ the ope
 ### The Danger Zone
 
 Because these two elements look exactly the same to the end-user, developers often carry their assumptions from one pattern to the other. If you treat a `<button>` like an `<input>` by relying on the `value` attribute to label it, you will accidentally create a button that might look correct in the source code, but lacks a label entirely.
-
-## When you would actually use the button value attribute
-
-The most common reason to set a value on a button is when a single form has more than one submit button, and the server needs to know which one was clicked.
-
-Imagine a form for writing a blog post. At the bottom you have two submit buttons. One is labelled Save as Draft and carries `value=draft`. The other is labelled Publish Now and carries `value=publish`. Both buttons share the same `name` attribute, for example `name=action`. When the user clicks Save as Draft, the form submits and the server receives `action=draft` in the request data. When they click Publish Now, the server receives `action=publish`.
-
-The server reads the `name` and `value` pair to decide what to do next. Without the `value` attribute, the server would have no way to distinguish which button submitted the form.
 
 ## When should you use the `value` attribute on a `<button>`?
 

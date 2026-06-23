@@ -13,7 +13,7 @@ summary: Wrapping a button in a form reveals submit and reset behaviour, and
   exposes the accidental implicit-submit risk of an unconfigured button.
 ---
 
-AccessLab lets you toggle a form wrapper around any button type that you select for audit. Several button variants only exhibit their real behaviour inside a form, and a plain `<button />` without an explicit type attribute can result in unintuitive results when inside a form.
+AccessLab lets you toggle a form wrapper around any button type that you select for audit. Several button variants only exhibit their real behaviour inside a form, and a plain `<button />` without an explicit type attribute can lead to unintuitive behaviour when inside a form.
 
 ## What buttons do by default inside a form
 

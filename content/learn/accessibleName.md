@@ -13,7 +13,7 @@ summary: An "accessible name" is the exact text a screen reader speaks to
   priority order.
 ---
 
-Every interactive element on a page needs an accessible name. It is the text that a screen reader announces and that voice control software listens for. Without one, the element is effectively doesn't exist to users who cannot see it.
+Every interactive element on a page needs an accessible name. It is the text that a screen reader announces and that voice control software listens for. Without one, the element effectively doesn't exist to users who cannot see it.
 
 ## Why the accessible name matters
 
@@ -23,7 +23,7 @@ Some voice-control users navigate by speaking the text they see on the screen. I
 
 ## How the browser picks the name
 
-Below is a list of naming sources the browser can use as an accessible name. This is not a strict order of specificity that the browser uses, however label elements, `aria-labelledby` or `aria-label` are often evaluated first and often take precedence over other accessible naming methods. This doesn't imply that they are the best options, in fact, if you can give an element an accessible name without using ARIA attributes, this is always preferred. You can read about how browsers decide which naming source to use at the [Accessible Name and Description Computation 1.2](https://www.w3.org/TR/accname-1.2/?utm_source=chatgpt.com) page on the W3C website.
+Below is a list of naming sources the browser can use as an accessible name. This is not a strict order of specificity that the browser uses, however label elements, `aria-labelledby` or `aria-label` are often evaluated first and often take precedence over other accessible naming methods. This doesn't imply that they are the best options, in fact, if you can give an element an accessible name without using ARIA attributes, this is always preferred. You can read about how browsers decide which naming source to use at the [Accessible Name and Description Computation 1.2](https://www.w3.org/TR/accname-1.2/) page on the W3C website.
 
 1. aria-labelledby
 2. aria-label
@@ -32,11 +32,11 @@ Below is a list of naming sources the browser can use as an accessible name. Thi
 5. alt attributes for images
 6. The title attribute (used as a fallback in limited cases)
 
-> The exact priority varies by element type; The list above is not a strict hiearchy
+> The exact priority varies by element type; the list above is not a strict hierarchy
 
 ### 1. aria-labelledby
 
-This attributes gives you direct control over what assistive technology announces by associating it with a named element elsewhere on the page.
+This attribute gives you direct control over what assistive technology announces by associating it with a named element elsewhere on the page.
 
 - **When to use:** When the text you want to use as a label **already exists** elsewhere on the page.
 - **How it works:** You point this attribute to the `id` of the existing visible text element.
@@ -48,11 +48,11 @@ This attributes gives you direct control over what assistive technology announce
 <button aria-labelledby="dialog-title">X</button>
 ```
 
-> The element you are naming and the element with the name, do not need to be adjacent like the are in the example above. They just need to be on the same page.
+> The element you are naming and the element with the name, do not need to be adjacent like they are in the example above. They just need to be on the same page.
 
 ### 2. aria-label
 
-This attribute gives you direct control over what assistive technology announces by adding an accessible name directly to element you want to be named. Unless `aria-labelledby` is present, a screen reader will always use this as the accessible name over all other methods
+This attribute gives you direct control over what assistive technology announces by adding an accessible name directly to the element you want to name. Unless `aria-labelledby` is present, a screen reader will always use this as the accessible name over all other methods.
 
 - **When to use:** When you need to provide a specific text string that isn't visible on the screen.
 - **Example:** A button displaying an "X" icon can use `aria-label="Close modal"`.
@@ -78,7 +78,7 @@ This is the universally supported, standard method for identifying form controls
 <input type="email" id="user-email" name="email" />
 ```
 
-> The label and the form control do not need to be adjacent like the are in the example above. They just need to be on the same page.
+> The label and the form control do not need to be adjacent like they are in the example above. They just need to be on the same page.
 
 1. **By Nesting:** Wrapping the `<label>` tags around the `<input>` element.
 
@@ -96,7 +96,7 @@ This is the universally supported, standard method for identifying form controls
 This is the default, most common method for labeling interactive elements. Unless overridden by higher-priority ARIA attributes, the browser will automatically extract the literal text written inside the element to use as its accessible name.
 
 - **When to use:** Whenever the element contains visible text that clearly describes its action or destination without needing extra icon-only adjustments.
-- **How it works:** The browser inspects the element to find all internal text, including text in nested tags like `<span>`, `<strong>`, or `<em>`-into a single, clean string of text.
+- **How it works:** The browser inspects the element and combines all internal text, including text in nested tags like `<span>`, `<strong>`, or `<em>`, into a single, clean string of text.
 
 #### Examples
 
@@ -141,7 +141,7 @@ This attribute may be used as a fallback in some cases when no accessible name i
 
 ### How to decide which naming source to use
 
-Start with visible, native HTML first: use real text content for buttons and links, and <label> elements for form controls, because these are the most robust, consistent, and least likely to break across assistive technologies. Only add ARIA when the native options can't express what you need, for example, when an icon-only button needs a label or when you need to reference existing on-page text using aria-labelledby. Prefer `aria-labelledby` over `aria-label` when possible, since it keeps naming tied to visible content and reduces duplication. Reserve title strictly as a last resort and avoid relying on it for anything important.
+Start with visible, native HTML first: use real text content for buttons and links, and `<label>` elements for form controls, because these are the most robust, consistent, and least likely to break across assistive technologies. Only add ARIA when the native options can't express what you need, for example, when an icon-only button needs a label or when you need to reference existing on-page text using aria-labelledby. Prefer `aria-labelledby` over `aria-label` when possible, since it keeps naming tied to visible content and reduces duplication. Reserve title strictly as a last resort and avoid relying on it for anything important.
 
 > The First Rule of ARIA: If you can use a native HTML element or attribute with
 > the semantics and behavior you require, then do so instead of re-purposing an
@@ -183,7 +183,7 @@ Visual indicators should always be paired with text that is part of the accessib
 
 #### The `value` attribute on `<button>` elements
 
-The `value` attribute is not used as the accessible name for standard buttons. Screen readers use the button’s text content instead.
+The `value` attribute is not used as the accessible name for standard buttons. Screen readers use the button's text content instead.
 
 The `value` is primarily used for form submission data, not for labelling the control.
 

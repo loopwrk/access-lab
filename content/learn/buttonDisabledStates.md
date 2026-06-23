@@ -42,7 +42,7 @@ This is an important trade-off: disabling an element natively can reduce the amo
 
 ## The `aria-disabled` alternative
 
-Setting `aria-disabled`="true" on a button does not change how the browser behaves. It only communicates state to assistive technologies.
+Setting `aria-disabled="true"` on a button does not change how the browser behaves. It only communicates state to assistive technologies.
 
 Unlike the native `disabled` attribute, `aria-disabled` does not enforce any interaction rules. It is purely descriptive.
 

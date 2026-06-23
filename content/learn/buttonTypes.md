@@ -13,7 +13,7 @@ summary: The type attribute on a button element controls what the button does
   inside a form. Omitting it leads to one of the most common bugs in web forms.
 ---
 
-Button elements have a`type` attribute. It controls what the button does when activated inside a form. There are three valid values. The choice between them is small in code and large in consequence.
+Button elements have a `type` attribute. It controls what the button does when activated inside a form. There are three valid values. The choice between them is small in code and large in consequence.
 
 ## The three values
 

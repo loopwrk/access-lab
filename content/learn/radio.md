@@ -14,7 +14,7 @@ summary: A radio group lets users pick exactly one option from a small set. The
   group, and the keyboard interaction model.
 ---
 
-Radio buttons are HTML form controls used when a person must select exactly one option from a small, predefined list. Common examples include selecting choosing a payment method or filling out personal details in a survey or application form.
+Radio buttons are HTML form controls used when a person must select exactly one option from a small, predefined list. Common examples include choosing a payment method or filling out personal details in a survey or application form.
 
 For a radio button group to be fully accessible and function correctly for all users, three core requirements must be met:
 

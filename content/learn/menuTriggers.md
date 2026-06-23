@@ -77,4 +77,4 @@ The keyboard behaviour described here applies specifically to the ARIA menu patt
 
 Failing to implement this focus-management behavior is where most menu components break down. To make this work, you must listen for keyboard events and use programming strategies like a rolling `tabindex` or the `aria-activedescendant` attribute to manage which item is currently highlighted.
 
-To learn how to implement the JavaScript required to make these elements accessible, [view this guide on MDN](https://developer.mozilla.org/en-US/docs/Web/Accessibility/Guides/Keyboard-navigable_JavaScript_widgets?utm_source=chatgpt.com).
+To learn how to implement the JavaScript required to make these elements accessible, [view this guide on MDN](https://developer.mozilla.org/en-US/docs/Web/Accessibility/Guides/Keyboard-navigable_JavaScript_widgets).
