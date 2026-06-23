@@ -52,11 +52,12 @@ function buildCss(props: Partial<ButtonProps>): string {
     );
   }
 
-  // Pressed-state tint. For pilled switches the tint is slightly
-  // stronger — the track visibly darkens by a couple of shades when on,
-  // matching the gray-on / darker-gray-off pattern Nuxt UI uses
-  // (without swapping in a brand colour).
-  if (isToggleable(props) || isSwitchable(props)) {
+  // Pressed-state tint, shown only where a pressed look is wanted: toggle
+  // buttons when pressed, and pilled switches when on (the track darkens by a
+  // couple of shades, matching the gray-on / darker-gray-off pattern Nuxt UI
+  // uses, without swapping in a brand colour). An unstyled switch is left
+  // alone - a plain button should not gain a tint just for being switched on.
+  if (isToggleable(props) || isPilledSwitch(props)) {
     const alpha = isPilledSwitch(props) ? "0.25" : "0.18";
     rules.push(
       `.${INSPECTED_CLASS}.${PRESSED_CLASS}{box-shadow:inset 0 0 0 999px rgb(0 0 0 / ${alpha});}`,
@@ -138,7 +139,7 @@ function isSwitchable(props: Partial<ButtonProps>): boolean {
 
 // Unlike isToggleable / isSwitchable above, these treat the "none" behaviour as
 // still being a disclosure / menu. The panel (or popup) is shown and hidden on
-// click regardless of behaviour — only the ARIA differs between behaviours. A
+// click regardless of behaviour - only the ARIA differs between behaviours. A
 // "none" toggle or switch, by contrast, is just a plain button with no state and
 // nothing extra to render, so those two exclude "none".
 function isDisclosure(props: Partial<ButtonProps>): boolean {
@@ -163,16 +164,17 @@ function isInputCheckboxSwitch(props: Partial<ButtonProps>): boolean {
 
 function buildElementClass(props: Partial<ButtonProps>): string | null {
   const tokens: string[] = [];
-  const pressed =
-    (isToggleable(props) && props.togglePressed) || (isSwitchable(props) && props.switchChecked);
+  const showsPressed =
+    (isToggleable(props) && props.togglePressed === true) ||
+    (isPilledSwitch(props) && props.switchChecked === true);
   // The inspected-class marker also gates the iframe shell's change-event
-  // bridge, so input-checkbox-switch needs it unconditionally — otherwise
+  // bridge, so input-checkbox-switch needs it unconditionally - otherwise
   // a click on the rendered checkbox can't flip switchChecked back here.
   const needsInspected =
-    props.focusRingEnabled || isPilledSwitch(props) || pressed || isInputCheckboxSwitch(props);
+    props.focusRingEnabled || isPilledSwitch(props) || showsPressed || isInputCheckboxSwitch(props);
   if (needsInspected) tokens.push(INSPECTED_CLASS);
   if (isPilledSwitch(props)) tokens.push(SWITCH_CLASS);
-  if (pressed) tokens.push(PRESSED_CLASS);
+  if (showsPressed) tokens.push(PRESSED_CLASS);
   return tokens.length ? tokens.join(" ") : null;
 }
 
@@ -319,7 +321,7 @@ function buildInlineStyle(
 
   // Emit border-color whenever the user has set one, regardless of whether a
   // border WIDTH override is active. A bare <button> already has a user-agent
-  // border, so the colour must be able to recolour it — otherwise changing the
+  // border, so the colour must be able to recolour it - otherwise changing the
   // border colour with no width override does nothing visible in the preview.
   if (props.borderColor) {
     declarations.push(`border-color:${props.borderColor}`);
@@ -418,7 +420,7 @@ export function renderButton(props?: Partial<ButtonProps>): RenderedFragment {
   const pilled = isPilledSwitch(props);
   // When the visible label sits outside the inspected element (the
   // pilled <button>'s sibling <span>, or the <span> next to the native
-  // checkbox switch), font-size belongs on that span — not the host
+  // checkbox switch), font-size belongs on that span - not the host
   // element, whose own font-size drives unrelated geometry (the pilled
   // thumb is em-based, and a checkbox ignores font-size entirely).
   const labelOutsideHost = pilled || renderAs === "input-checkbox-switch";
@@ -463,10 +465,10 @@ export function renderButton(props?: Partial<ButtonProps>): RenderedFragment {
 
   // Disclosure pattern: the trigger sits above a reveal panel that
   // appears/disappears with the disclosureExpanded prop. The browser-
-  // native `hidden` attribute handles visibility — assistive tech treats
+  // native `hidden` attribute handles visibility - assistive tech treats
   // the panel as absent when hidden, matching axe's accordion test.
   if (isDisclosure(props)) {
-    // A blank line starts a new paragraph — the plain-text convention authors
+    // A blank line starts a new paragraph - the plain-text convention authors
     // already know (Markdown, email, every text box). Text with no blank line
     // stays a single paragraph. We deliberately do not guess sentence
     // boundaries: that mis-breaks on "e.g." and ignores "?" and "!".
