@@ -11,6 +11,7 @@ export default defineNuxtConfig({
     "@nuxtjs/i18n",
     "@vueuse/nuxt",
     "nuxt-color-picker",
+    "@vercel/analytics",
   ],
 
   // Top-level SSR is on so we can opt routes *out* via routeRules.
