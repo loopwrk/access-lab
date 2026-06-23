@@ -36,8 +36,8 @@ Avoid generic, system-focused terms like "Submit." Instead, describe the real-wo
 
 Single-word or generic labels are completely appropriate when the immediate layout provides unmistakable clarity:
 
-- **Direct Proximity to Input Labels:** If a search input field has a prominent, visible heading (e.g., "Search our catalog"), a nearby button simply labeled "Search" is clear and unambiguous.
-- **Familiar Design Patterns:** Buttons that form part of an established user flow, like a "Next" or "Back" button in a multi-step setup wizard, rely on universal conventions that people naturally recognize without extra text.
+- **Direct Proximity to Input Labels:** If a search input field has a prominent, visible heading (e.g., "Search our catalogue"), a nearby button simply labelled "Search" is clear and unambiguous.
+- **Familiar Design Patterns:** Buttons that form part of an established user flow, like a "Next" or "Back" button in a multi-step setup wizard, rely on universal conventions that people naturally recognise without extra text.
 
 ## The Read-Aloud Test
 

@@ -18,7 +18,7 @@ Buttons can be marked as unavailable in two different ways, and the choice betwe
 
 ## What the Native `disabled` Attribute Does
 
-Setting the native `disabled` attribute on a `<button>` or an `<input type="button">` completely changes its behavior across the browser. It triggers four automatic behaviors:
+Setting the native `disabled` attribute on a `<button>` or an `<input type="button">` completely changes its behaviour across the browser. It triggers four automatic behaviours:
 
 - **Blocks Interactivity:** Click and touch events are stopped by the browser, meaning your JavaScript click handlers will never run.
 - **Removes Keyboard Focus:** The button is dropped from the natural tab order. Users navigating via keyboard (Tab and Shift + Tab) will skip past it entirely.
@@ -60,7 +60,7 @@ Because `aria-disabled` does not provide native styling or behaviour, both must 
 
 ## Choosing Between Disabled and Active States
 
-Many accessibility specialists recommend avoiding the native `disabled` attribute on form submissions in favor of an always-active button paired with clear error messages. A locked, unclickable button does not provide built-in feedback about why it is unavailable. An always-active button, paired with validation feedback, can communicate what needs to be fixed more clearly.
+Many accessibility specialists recommend avoiding the native `disabled` attribute on form submissions in favour of an always-active button paired with clear error messages. A locked, unclickable button does not provide built-in feedback about why it is unavailable. An always-active button, paired with validation feedback, can communicate what needs to be fixed more clearly.
 
 However, there is no Web Content Accessibility Guidelines (WCAG) rule banning the `disabled` attribute. Both strategies can be implemented successfully depending on your use case.
 
@@ -68,5 +68,5 @@ However, there is no Web Content Accessibility Guidelines (WCAG) rule banning th
 
 - **Use `disabled` for permanently locked actions:** If an action cannot be performed under any circumstances (e.g. trying to delete a record that has already been removed), use the native `disabled` attribute to make it completely inert.
 - **Use `aria-disabled` when the element should appear unavailable but still remain operable in your interaction design:** If the button will become available once the user fixes a mistake (like filling out a required form field), use `aria-disabled="true"` so they can click it to discover what needs correcting.
-- **Never communicate state with color alone:** The browser's default faint text color is not enough. Always pair your visual designs with either the native `disabled` attribute or `aria-disabled="true"` so the state is passed to assistive technologies.
+- **Never communicate state with colour alone:** The browser's default faint text colour is not enough. Always pair your visual designs with either the native `disabled` attribute or `aria-disabled="true"` so the state is passed to assistive technologies.
 - **Account for low contrast:** Default browser styling for disabled buttons often reduces visual prominence (for example by lowering opacity or contrast). This can make the control harder to perceive, especially for users with low vision or in high-glare environments.

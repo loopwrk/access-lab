@@ -49,7 +49,7 @@ If you build the pill from scratch, the most accessible foundation is a `<button
 
 `role="switch"` tells assistive technology that this control is a binary setting, and `aria-checked` carries its current value, so a screen reader announces it as _"Dark mode, switch, off"_.
 
-A `<button>` does not automatically flip the value of `aria-checked` when it is clicked - so a small JavaScript event handler is needed. Because a native `<button>` fires its click event on both Space and Enter as well, you don't need to add keyboard support to the event hander:
+A `<button>` does not automatically flip the value of `aria-checked` when it is clicked - so a small JavaScript event handler is needed. Because a native `<button>` fires its click event on both Space and Enter as well, you don't need to add keyboard support to the event handler:
 
 ```js
 const sw = document.querySelector('[role="switch"]');
@@ -60,7 +60,7 @@ sw.addEventListener("click", () => {
 });
 ```
 
-That is now a complete, working switch - it just looks like an ordinary button with no visual indication of whether it is in switched on (`true`) or switched off (`false`). This is one of the reasons why styling it as a pill is so common, because it provides this visual indication.
+That is now a complete, working switch - it just looks like an ordinary button with no visual indication of whether it is switched on (`true`) or switched off (`false`). This is one of the reasons why styling it as a pill is so common, because it provides this visual indication.
 
 The pill appearance is pure CSS, layered on top of the same markup and behaviour. Add a track and thumb for the CSS to paint, keeping the label as visible text:
 

@@ -25,11 +25,11 @@ Button elements have a `type` attribute. It controls what the button does when a
 
 ## Why explicit type matters
 
-A button element with no type attribute defaults to type=submit, according to the HTML specification. Outside a form this has no effect. Inside a form it is one of the most common causes of accidental form submissions.
+A button element with no type attribute defaults to `type=submit`, according to the HTML specification. Outside a form this has no effect. Inside a form it is one of the most common causes of accidental form submissions.
 
 The pattern is easy to miss in code review. A developer adds a button inside a form to expand an extra field, attaches a click handler, and releases the code. Every time the user clicks the toggle, the form submits. The markup looks correct because the developer never thought to set the type explicitly.
 
-Setting the type attribute explicitly makes the intent visible at the place the button is written. type=button for any control that should not submit, type=submit for the one that should. The compiler does not check this. Code review does not always catch it. Writing the attribute by hand on every button is the most reliable defence.
+Setting the type attribute explicitly makes the intent visible at the place the button is written. `type=button` for any control that should not submit, `type=submit` for the one that should.
 
 ## Keyboard activation
 

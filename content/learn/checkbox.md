@@ -25,7 +25,7 @@ To work correctly, a native checkbox requires both an accessible name for assist
 
 ### 1. Explicit Association Using `for` and `id` (Best Practice)
 
-The text label sits right next to the checkbox, using the `for` attribute to point directly to the input's matching `id`. This creates a reliable association. The browser automatically handles the connection, meaning clicks on the text label successfully toggle the checkbox. This ensures clicking the label toggles the checkbox, increasing the effective target area.
+The text label sits right next to the checkbox, using the `for` attribute to point directly to the input's matching `id`. This creates a reliable association. The browser automatically handles the connection, so clicks on the text label toggle the checkbox, which also increases the effective target area.
 
 #### Example
 
@@ -51,7 +51,7 @@ The `<label>` element wraps around both the `<input>` and the visible text conte
 
 ### 3. Invisible Name Using `aria-label` (Use with Caution)
 
-The checkbox relies on an `aria-label` attribute to pass a name to assistive technology, leaving the screen completely blank of visible text. While screen readers will announce the label correctly, users who navigate visually are left without a clear on-screen description of what the checkbox modifies. This can reduce discoverability for voice-control users if the visible label is not present or clearly associated. Only use this approach if the surrounding layout makes the choice completely obvious without a textual caption.
+The checkbox relies on an `aria-label` attribute to pass a name to assistive technology, leaving no visible text on the screen. While screen readers will announce the label correctly, users who navigate visually are left without a clear on-screen description of what the checkbox modifies. This can reduce discoverability for voice-control users if the visible label is not present or clearly associated. Only use this approach if the surrounding layout makes the choice completely obvious without a textual caption.
 
 ```html
 <input type="checkbox" aria-label="Receive weekly marketing updates" />

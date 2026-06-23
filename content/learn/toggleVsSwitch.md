@@ -47,7 +47,7 @@ A useful gut check: read the label out loud.
 | Bold (in a text editor)  | Toggle | Applies an effect to the selection. Off means unstyled text.                   |
 | Mute (in a media player) | Toggle | Applies muting to playback. Off means normal audio.                            |
 | Pin (on a forum post)    | Toggle | Applies a "pinned" mark to the item. Off means the item is in its usual place. |
-| Like or Favorite         | Toggle | Applies the user's endorsement. Off means nothing has been applied.            |
+| Like or Favourite        | Toggle | Applies the user's endorsement. Off means nothing has been applied.            |
 | Wi-Fi                    | Switch | A setting with two real states: connected or offline.                          |
 | Dark mode                | Switch | A theme setting. Off does not mean "no theme" - it means light mode is on.     |
 | Email notifications      | Switch | A delivery setting the user chose.                                             |

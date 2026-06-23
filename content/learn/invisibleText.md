@@ -26,7 +26,7 @@ Accidentally invisible text is one of the easiest bugs to miss before [launching
 
 Screen-reader users will hear the text perfectly and assume the page is fine.
 
-Sighted users will see an empty space or an unlabeled button and might think something in the page is broken.
+Sighted users will see an empty space or an unlabelled button and might think something in the page is broken.
 
 Catching this requires manually inspecting the final computed colours on the screen, which standard quality assurance checks often miss.
 

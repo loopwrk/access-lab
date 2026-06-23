@@ -109,7 +109,7 @@ This is the universally supported, standard method for identifying form controls
 
 ### 4. Visible text content for buttons, links, and similar elements
 
-This is the default, most common method for labeling interactive elements. Unless overridden by higher-priority ARIA attributes, the browser will automatically extract the literal text written inside the element to use as its accessible name.
+This is the default, most common method for labelling interactive elements. Unless overridden by higher-priority ARIA attributes, the browser will automatically extract the literal text written inside the element to use as its accessible name.
 
 - **When to use:** Whenever the element contains visible text that clearly describes its action or destination without needing extra icon-only adjustments.
 - **How it works:** The browser inspects the element and combines all internal text, including text in nested tags like `<span>`, `<strong>`, or `<em>`, into a single, clean string of text.
