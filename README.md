@@ -48,7 +48,7 @@ A persistent header carries:
   - Atkinson Hyperlegible
   - OpenDyslexic
   - Comic Sans ([yes, really](https://www.boia.org/blog/does-comic-sans-benefit-people-with-dyslexia))
-- **Text size** (4-step segmented control: S / M / L / XL - currently 87.5% / 100% / 112.5% / 131.25%)
+- **Text size** (4-step segmented control: S / M / L / XL - currently 100% / 112.5% / 131.25% / 150%)
 - **High-contrast toggle** (forces pure black/white / yellow-on-black override)
 - **Theme switcher** - Light / Dark
 
@@ -184,7 +184,6 @@ A future sidebar group dedicated to forms as a whole (rather than individual for
 
 ### Size options
 
-- "S" is too small and users might want a size larger than "XL" without having to zoom in. Remap so M → S, L → M, XL → L, XL is a new option larger than previously possible. Consider allowing the left nav bar and controls toolbar to grow horizontally by ~15–20%.
 - Audit all elements and fix size consistencies.
 
 ### Light / Dark / High Contrast modes

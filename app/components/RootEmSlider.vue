@@ -18,7 +18,7 @@ const { focusLearnTopic } = useInspectorTab();
           class="inline-flex items-center gap-1 text-(length:--al-font-size-caption) font-semibold text-(--text-muted) uppercase tracking-[0.08em] no-underline cursor-pointer hover:text-(--brand) hover:underline hover:underline-offset-2 focus-visible:text-(--brand) focus-visible:underline focus-visible:underline-offset-2 focus-visible:outline-[3px] focus-visible:outline-(--focus-ring) focus-visible:outline-offset-2 focus-visible:rounded-[2px]"
           @click.prevent="focusLearnTopic('rem-units')"
         >
-          {{ t('controls.simulatedRoot.label') }}
+          {{ t("controls.simulatedRoot.label") }}
           <UIcon
             name="i-lucide-arrow-up-right"
             class="text-(length:--al-font-size-detail) opacity-70"
@@ -35,7 +35,7 @@ const { focusLearnTopic } = useInspectorTab();
         :max="32"
         :step="1"
         color="primary"
-        size="sm"
+        size="md"
         :ui="{
           track: 'bg-(--surface) ring-1 ring-(--border)',
           range: 'bg-(--brand)',
