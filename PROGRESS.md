@@ -33,7 +33,7 @@ Current snapshot of what is built, what is in flight, and what remains. Update t
 ### Inspector
 
 - `app/components/AppInspector.vue` - `UTabs` (`:content="false"`) plus four teleport-target panels (`controls-panel`, `issues-panel`, `manual-panel`, `learn-panel`). Aside is `flex flex-col min-h-0`; inner div is `flex-1 min-h-0 overflow-y-auto`. Tab strip stays pinned; content scrolls within.
-- `app/components/AppSidebar.vue` - nested-accordion `UNavigationMenu` (vertical, `:highlight`). Two `type: "trigger"` groups: Buttons (6 items) and Form Inputs (4 items), each component a child link. Accepts a known axe `aria-allowed-attr` violation in exchange for the highlight line - see AGENTS.md "Sidebar nav".
+- `app/components/AppSidebar.vue` - nested-accordion `UNavigationMenu` (vertical, `:highlight`). Two `type: "trigger"` groups: Buttons (6 items) and Form Inputs (4 items), each component a child link.
 - `app/components/AppBar.vue` - font family picker (four fonts; Comic Sans is offered only where the OS can render it - see "Font availability detection" below), size picker (4 options), high-contrast toggle, light/dark toggle. Reads composable refs via destructure so Vue auto-unwraps in the template; `setMode('light')` / `setMode('dark')` for direct mode switches. **Responsive:** the inline strip is `hidden lg:flex`; below `lg` (which is also the 320 CSS px a desktop user reaches at 400% zoom) the controls collapse into a single "Display settings" trigger that opens a bottom-sheet `UDrawer` hosting `app/components/appbar/DisplayControlsPanel.vue` (same controls, vertical and labelled, 44px targets, `aria-pressed` selection state). Shared option data lives in `app/utils/displayControlOptions.ts`. See "Learn-page mobile responsiveness" below.
 
 ### Preview pipeline
@@ -197,7 +197,6 @@ Superseded 10 June 2026: **Prettier now owns formatting; ESLint checks correctne
 
 - `<html lang="en">` set via `useHead({ htmlAttrs })`.
 - Code-drawer scrollable region: `tabindex="0"` + `role="region"` + locale-driven `aria-label`.
-- Sidebar flattened (was the source of the `<span aria-controls>` Nuxt UI bug). **Later reverted** to a nested accordion for the vertical highlight line, accepting that axe `aria-allowed-attr` violation - see AGENTS.md "Sidebar nav".
 - `@nuxt/hints` removed (eliminated the `__nuxt_hints/lazy-load` 404 + lazy-load info noise).
 - Iframe sandbox attributes documented inline - we accept `allow-scripts allow-same-origin` because axe needs DOM access; we control the iframe source.
 

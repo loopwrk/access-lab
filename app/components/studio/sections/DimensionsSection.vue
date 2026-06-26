@@ -88,6 +88,7 @@ const paddingValue = computed<SpacingValue>({
           :model-value="widthEnabled"
           size="xs"
           color="primary"
+          :aria-label="t('controls.width')"
           @update:model-value="toggleWidth"
         />
       </div>
@@ -113,6 +114,7 @@ const paddingValue = computed<SpacingValue>({
           :model-value="heightEnabled"
           size="xs"
           color="primary"
+          :aria-label="t('controls.height')"
           @update:model-value="toggleHeight"
         />
       </div>
@@ -136,6 +138,7 @@ const paddingValue = computed<SpacingValue>({
           :model-value="paddingEnabled"
           size="xs"
           color="primary"
+          :aria-label="t('controls.padding')"
           @update:model-value="togglePadding"
         />
       </legend>

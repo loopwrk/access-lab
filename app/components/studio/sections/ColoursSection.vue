@@ -58,6 +58,7 @@ const { ratio: contrastRatio, verdict: contrastVerdict } = useContrast(fgTextCol
         :model-value="enabled"
         size="xs"
         color="primary"
+        :aria-label="t('controls.colours')"
         @update:model-value="toggle"
       />
     </legend>
@@ -80,6 +81,7 @@ const { ratio: contrastRatio, verdict: contrastVerdict } = useContrast(fgTextCol
             <button
               type="button"
               class="color-swatch"
+              :aria-label="t('controls.editColorSwatch', { label: t('controls.background') })"
               :disabled="!enabled"
               @click="show"
             >
@@ -96,6 +98,7 @@ const { ratio: contrastRatio, verdict: contrastVerdict } = useContrast(fgTextCol
               :model-value="bgColor"
               size="sm"
               :disabled="!enabled"
+              :aria-label="t('controls.colorHexValue', { label: t('controls.background') })"
               class="w-24 shrink-0"
               @update:model-value="update('bg', String($event))"
             />
@@ -115,6 +118,7 @@ const { ratio: contrastRatio, verdict: contrastVerdict } = useContrast(fgTextCol
             <button
               type="button"
               class="color-swatch"
+              :aria-label="t('controls.editColorSwatch', { label: t('controls.textColor') })"
               :disabled="!enabled"
               @click="show"
             >
@@ -131,6 +135,7 @@ const { ratio: contrastRatio, verdict: contrastVerdict } = useContrast(fgTextCol
               :model-value="fgTextColor"
               size="sm"
               :disabled="!enabled"
+              :aria-label="t('controls.colorHexValue', { label: t('controls.textColor') })"
               class="w-24 shrink-0"
               @update:model-value="update('fgText', String($event))"
             />
@@ -156,6 +161,7 @@ const { ratio: contrastRatio, verdict: contrastVerdict } = useContrast(fgTextCol
           <button
             type="button"
             class="color-swatch"
+            :aria-label="t('controls.editColorSwatch', { label: t('controls.borderColor') })"
             :disabled="!enabled"
             @click="show"
           >
@@ -172,6 +178,7 @@ const { ratio: contrastRatio, verdict: contrastVerdict } = useContrast(fgTextCol
             :model-value="borderColorComputed"
             size="sm"
             :disabled="!enabled"
+            :aria-label="t('controls.colorHexValue', { label: t('controls.borderColor') })"
             class="w-24 shrink-0"
             @update:model-value="update('borderColor', String($event))"
           />

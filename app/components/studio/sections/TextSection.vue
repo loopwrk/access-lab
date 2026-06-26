@@ -27,6 +27,7 @@ const { enabled, toggle } = useToggleableSection(model, {
           :model-value="enabled"
           size="xs"
           color="primary"
+          :aria-label="t('controls.fontSize')"
           @update:model-value="toggle"
         />
       </div>

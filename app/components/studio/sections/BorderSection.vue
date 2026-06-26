@@ -67,6 +67,7 @@ const borderWidthValue = computed<SpacingValue>({
         :model-value="enabled"
         size="xs"
         color="primary"
+        :aria-label="t('controls.borderWidth')"
         @update:model-value="toggle"
       />
     </legend>

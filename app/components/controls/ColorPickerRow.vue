@@ -1,10 +1,12 @@
 <script setup lang="ts">
 const model = defineModel<string>({ required: true });
 
-defineProps<{
+const props = defineProps<{
   label: string;
   disabled?: boolean;
 }>();
+
+const { t } = useI18n();
 
 const SWATCH_CLASS
   = "w-10 h-10 p-1 rounded-md border-2 border-(--border-strong) bg-transparent cursor-pointer shrink-0 "
@@ -30,6 +32,7 @@ const LABEL_HEX_CLASS = "text-(length:--al-font-size-detail) text-(--text-muted)
       <button
         type="button"
         :class="SWATCH_CLASS"
+        :aria-label="t('controls.editColorSwatch', { label: props.label })"
         :disabled="disabled"
         @click="show"
       >
@@ -46,6 +49,7 @@ const LABEL_HEX_CLASS = "text-(length:--al-font-size-detail) text-(--text-muted)
         v-model="model"
         size="sm"
         :disabled="disabled"
+        :aria-label="t('controls.colorHexValue', { label: props.label })"
         class="w-24 shrink-0"
       />
     </div>

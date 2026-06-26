@@ -44,6 +44,7 @@ const focusRingColor = computed({
         :model-value="enabled"
         size="xs"
         color="primary"
+        :aria-label="t('controls.focus')"
         @update:model-value="toggleFocus"
       />
     </legend>
@@ -99,6 +100,7 @@ const focusRingColor = computed({
           <button
             type="button"
             class="color-swatch"
+            :aria-label="t('controls.editColorSwatch', { label: t('controls.focusColor') })"
             :disabled="!enabled"
             @click="show"
           >
@@ -115,6 +117,7 @@ const focusRingColor = computed({
             :model-value="focusRingColor"
             size="sm"
             :disabled="!enabled"
+            :aria-label="t('controls.colorHexValue', { label: t('controls.focusColor') })"
             class="w-24 shrink-0"
             @update:model-value="update('focusRingColor', String($event))"
           />

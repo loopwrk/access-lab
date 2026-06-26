@@ -54,6 +54,7 @@ const styleTargetOptions = computed(() => [
           :model-value="fontSizeEnabled"
           size="xs"
           color="primary"
+          :aria-label="t('controls.fontSize')"
           @update:model-value="toggleFontSize"
         />
       </div>
@@ -80,6 +81,7 @@ const styleTargetOptions = computed(() => [
           :model-value="activeFgTextEnabled"
           size="xs"
           color="primary"
+          :aria-label="t('controls.textColor')"
           @update:model-value="toggleActiveFgText"
         />
       </legend>
@@ -102,6 +104,7 @@ const styleTargetOptions = computed(() => [
             :model-value="inputBgEnabled"
             size="xs"
             color="primary"
+            :aria-label="t('controls.input.background')"
             @update:model-value="toggleInputBg"
           />
         </legend>

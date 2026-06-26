@@ -37,6 +37,8 @@
     "focusWidth": "Focus ring width",
     "focusOffset": "Focus ring offset",
     "focusColor": "Ring colour",
+    "editColorSwatch": "Edit {label}",
+    "colorHexValue": "{label} hex value",
     "toggleBehaviour": "Toggle behaviour",
     "toggleBehaviourNone": "None (plain button)",
     "toggleBehaviourAriaPressed": "aria-pressed (correct)",

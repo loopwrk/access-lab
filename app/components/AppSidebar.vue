@@ -45,6 +45,26 @@ function componentLink(label: string, to: string, icon: string): NavigationMenuI
   };
 }
 
+const navRoot = ref<HTMLElement | null>(null);
+
+function stripDecorativeTriggerAttrs() {
+  const spans = navRoot.value?.querySelectorAll<HTMLElement>('span[data-slot="linkTrailing"]');
+  spans?.forEach((span) => {
+    for (const attr of ["aria-expanded", "aria-controls", "id", "disabled"]) {
+      span.removeAttribute(attr);
+    }
+  });
+}
+
+useMutationObserver(navRoot, stripDecorativeTriggerAttrs, {
+  attributes: true,
+  attributeFilter: ["aria-expanded", "aria-controls", "id", "disabled"],
+  childList: true,
+  subtree: true,
+});
+
+onMounted(() => nextTick(stripDecorativeTriggerAttrs));
+
 const navItems = computed<NavigationMenuItem[][]>(() => [
   [
     {
@@ -53,12 +73,36 @@ const navItems = computed<NavigationMenuItem[][]>(() => [
       class: "text-lg",
       defaultOpen: true,
       children: [
-        componentLink(t("nav.buttonsActionTriggers"), "/components/buttons/action-triggers", "i-lucide-square-mouse-pointer"),
-        componentLink(t("nav.buttonsFormButtons"), "/components/buttons/form-buttons", "i-lucide-send"),
-        componentLink(t("nav.buttonsToggleButtons"), "/components/buttons/toggle-buttons", "i-lucide-circle-power"),
-        componentLink(t("nav.buttonsSwitches"), "/components/buttons/switches", "i-lucide-toggle-right"),
-        componentLink(t("nav.buttonsDisclosureTriggers"), "/components/buttons/disclosure-triggers", "i-lucide-chevrons-down-up"),
-        componentLink(t("nav.buttonsMenuTriggers"), "/components/buttons/menu-triggers", "i-lucide-menu"),
+        componentLink(
+          t("nav.buttonsActionTriggers"),
+          "/components/buttons/action-triggers",
+          "i-lucide-square-mouse-pointer",
+        ),
+        componentLink(
+          t("nav.buttonsFormButtons"),
+          "/components/buttons/form-buttons",
+          "i-lucide-send",
+        ),
+        componentLink(
+          t("nav.buttonsToggleButtons"),
+          "/components/buttons/toggle-buttons",
+          "i-lucide-circle-power",
+        ),
+        componentLink(
+          t("nav.buttonsSwitches"),
+          "/components/buttons/switches",
+          "i-lucide-toggle-right",
+        ),
+        componentLink(
+          t("nav.buttonsDisclosureTriggers"),
+          "/components/buttons/disclosure-triggers",
+          "i-lucide-chevrons-down-up",
+        ),
+        componentLink(
+          t("nav.buttonsMenuTriggers"),
+          "/components/buttons/menu-triggers",
+          "i-lucide-menu",
+        ),
       ],
     },
   ],
@@ -80,27 +124,58 @@ const navItems = computed<NavigationMenuItem[][]>(() => [
 </script>
 
 <template>
-  <aside :aria-label="t('sidebar.ariaLabel')" class="border-r border-(--border) bg-(--bg) shrink-0">
-    <div v-show="open" class="w-[260px] h-full overflow-y-auto">
+  <aside
+    :aria-label="t('sidebar.ariaLabel')"
+    class="border-r border-(--border) bg-(--bg) shrink-0"
+  >
+    <div
+      v-show="open"
+      ref="navRoot"
+      class="w-[260px] h-full overflow-y-auto"
+    >
       <div class="flex items-center justify-between pl-2 pr-2 pt-3">
         <span class="text-lg font-medium text-(--text-primary)">
-          {{ t('nav.components') }}
+          {{ t("nav.components") }}
         </span>
-        <UButton color="neutral" variant="ghost" size="xs" icon="i-lucide-panel-left"
-          :aria-label="t('sidebar.toggleClose')" :aria-pressed="true" @click="collapse" />
+        <UButton
+          color="neutral"
+          variant="ghost"
+          size="xs"
+          icon="i-lucide-panel-left"
+          :aria-label="t('sidebar.toggleClose')"
+          :aria-pressed="true"
+          @click="collapse"
+        />
       </div>
-      <UNavigationMenu :items="navItems" orientation="vertical" variant="link" :highlight="true" color="primary"
-        highlight-color="primary" collapsible :ui="{
+      <UNavigationMenu
+        :items="navItems"
+        orientation="vertical"
+        variant="link"
+        :highlight="true"
+        color="primary"
+        highlight-color="primary"
+        collapsible
+        :ui="{
           link: 'text-md py-2.5 pl-2 pr-1 after:w-0.5',
           linkLabel: 'truncate',
           label: 'text-lg pl-3 pt-3',
           childList: 'ms-2 border-s-2 border-bg',
-        }" />
+        }"
+      />
     </div>
 
-    <div v-show="!open" class="w-[44px] h-full flex flex-col items-center pt-3">
-      <UButton color="neutral" variant="ghost" size="sm" icon="i-lucide-panel-left"
-        :aria-label="t('sidebar.toggleOpen')" @click="expand" />
+    <div
+      v-show="!open"
+      class="w-[44px] h-full flex flex-col items-center pt-3"
+    >
+      <UButton
+        color="neutral"
+        variant="ghost"
+        size="sm"
+        icon="i-lucide-panel-left"
+        :aria-label="t('sidebar.toggleOpen')"
+        @click="expand"
+      />
     </div>
   </aside>
 </template>
