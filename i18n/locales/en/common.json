@@ -11,6 +11,11 @@
   "appBar": {
     "brand": "AccessLab",
     "ariaLabel": "Application bar",
+    "nav": {
+      "ariaLabel": "Site",
+      "contact": "Contact",
+      "support": "Support"
+    },
     "display": {
       "trigger": "Display settings",
       "title": "Display settings",

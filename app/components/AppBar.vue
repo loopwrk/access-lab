@@ -4,13 +4,7 @@ import { sizeOptions } from "~/utils/displayControlOptions";
 
 const { t } = useI18n();
 const { isDark, isHighContrast, setMode, toggleContrast } = useTheme();
-const {
-  family: fontFamily,
-  size: fontSize,
-  availableFontOptions,
-  setFont,
-  setSize,
-} = useFont();
+const { family: fontFamily, size: fontSize, availableFontOptions, setFont, setSize } = useFont();
 const { open: openOnboarding } = useOnboarding();
 
 // On mobile while the reader is open, the logo should not navigate -
@@ -31,6 +25,13 @@ function onLogoClick(event: MouseEvent) {
 }
 
 const displaySettingsOpen = ref(false);
+
+const navLinkClass =
+  "inline-flex items-center rounded-lg px-3 py-2 font-medium no-underline " +
+  "text-(length:--al-font-size-nav) text-(--text-secondary) " +
+  "hover:bg-(--brand-soft) hover:text-(--text-primary) " +
+  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--focus-ring) " +
+  "motion-safe:transition-colors";
 </script>
 
 <template>
@@ -42,16 +43,34 @@ const displaySettingsOpen = ref(false);
     <div class="flex items-center gap-4">
       <NuxtLink
         to="/"
-        class="inline-flex items-center gap-1 font-medium text-(length:--al-font-size-brand) text-(--text-primary) tracking-[-0.01em] no-underline"
+        class="inline-flex items-center gap-1.5 font-medium text-(length:--al-font-size-display) text-(--text-primary) tracking-[-0.01em] no-underline"
         @click="onLogoClick"
       >
         <UIcon
           name="i-lucide-message-square-dot"
-          class="size-4"
+          class="size-5"
           aria-hidden="true"
         />
         <span>{{ t("appBar.brand") }}</span>
       </NuxtLink>
+
+      <nav
+        :aria-label="t('appBar.nav.ariaLabel')"
+        class="flex items-center gap-1"
+      >
+        <NuxtLink
+          to="/contact"
+          :class="navLinkClass"
+        >
+          {{ t("appBar.nav.contact") }}
+        </NuxtLink>
+        <NuxtLink
+          to="/support"
+          :class="navLinkClass"
+        >
+          {{ t("appBar.nav.support") }}
+        </NuxtLink>
+      </nav>
     </div>
 
     <!--
