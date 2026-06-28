@@ -55,6 +55,7 @@
       "name": "Name",
       "email": "Email",
       "message": "Message",
+      "allRequired": "All fields are required.",
       "submit": "Send message",
       "sending": "Sending",
       "nameError": "Please enter your name.",

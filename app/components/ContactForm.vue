@@ -77,6 +77,10 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     class="flex w-full max-w-lg flex-col gap-5"
     @submit="onSubmit"
   >
+    <p class="text-(length:--al-font-size-body) text-(--text-secondary)">
+      {{ t("contact.form.allRequired") }}
+    </p>
+
     <UFormField
       :label="t('contact.form.name')"
       name="name"
