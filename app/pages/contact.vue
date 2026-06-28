@@ -35,5 +35,7 @@ useSeoMeta({
     </p>
 
     <ContactForm class="mt-8" />
+
+    <ContributeSection class="mt-14" />
   </main>
 </template>

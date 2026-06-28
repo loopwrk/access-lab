@@ -67,6 +67,12 @@
       "messageTooLong": "Message must be 5000 characters or fewer.",
       "success": "Thanks for reaching out. Your message has been sent.",
       "error": "Something went wrong. Please try again, or email me directly."
+    },
+    "contribute": {
+      "heading": "Contribute",
+      "body": "AccessLab is free and open source. Found a bug, have a feature in mind, or want to add a new component or Learn article? Open an issue or send a pull request - contributions of every kind are welcome, and a star never goes unnoticed.",
+      "cta": "View the repository on GitHub",
+      "newTab": "(opens in a new tab)"
     }
   },
   "errorPage": {
