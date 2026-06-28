@@ -31,6 +31,7 @@
   --font-size-body: var(--al-font-size-body);
   --font-size-nav: var(--al-font-size-nav);
   --font-size-heading: var(--al-font-size-heading);
+  --font-size-violation-heading: var(--al-font-size-violation-heading);
   --font-size-brand: var(--al-font-size-brand);
   --font-size-alert: var(--al-font-size-alert);
   --font-size-display: var(--al-font-size-display);
@@ -65,6 +66,7 @@
   --color-brand: var(--brand);
   --color-brand-hover: var(--brand-hover);
   --color-brand-press: var(--brand-press);
+  --color-brand-strong: var(--brand-strong);
   --color-brand-soft: var(--brand-soft);
   --color-brand-soft-2: var(--brand-soft-2);
   --color-on-brand: var(--on-brand);

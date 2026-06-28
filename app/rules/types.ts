@@ -78,6 +78,13 @@ export interface DomRule {
   whyItMattersKey?: string;
   /** i18n key for a rule-specific "how to fix" instruction. See whyItMattersKey. */
   howToFixKey?: string;
+  /**
+   * i18n key for the heading shown above this rule's finding detail (the
+   * `none`-check message). Overrides the auto-generated rule-id heading, so
+   * e.g. target-size can label its measurement "Current size" instead of
+   * repeating "Target Size". See whyItMattersKey.
+   */
+  detailLabelKey?: string;
   evaluate: (measurement: DomMeasurement) => ViolationResult | null;
 }
 

@@ -27,6 +27,7 @@ function domRuleToAxeResult(
     learnTopicId: rule.learnTopicId,
     whyItMattersKey: rule.whyItMattersKey,
     howToFixKey: rule.howToFixKey,
+    detailLabelKey: rule.detailLabelKey,
     impact: result.severity,
     tags: rule.tags ?? [],
     nodes: [

@@ -137,10 +137,11 @@
     "learn": "Learn"
   },
   "issues": {
-    "whyItMatters": "Fix It: Why and How",
+    "whyItMatters": "Why and how to fix",
     "whyItMattersOnly": "Why it matters",
     "whySection": "Why it matters",
     "howToFixSection": "How to fix",
+    "elementsAffected": "{count} elements affected",
     "learnMore": "Learn more about this rule",
     "learnMoreInApp": "Read more in the Learn tab",
     "criticalSection": "Critical ({count})",

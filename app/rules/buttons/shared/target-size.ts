@@ -13,10 +13,11 @@ export const targetSizeAA: DomRule = {
   wcag: "SC 2.5.8 Target Size (Minimum) - Level AA",
   tags: ["wcag22aa", "wcag258"],
   description: "Every interactive element must have a bounding box of at least 24×24 CSS pixels.",
-  help: "Button must be at least 24×24 CSS pixels (Level AA)",
+  help: "Button must be at least 24×24 CSS pixels",
   helpUrl: "https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html",
   whyItMattersKey: "rules.targetSizeAa.whyItMatters",
   howToFixKey: "rules.targetSizeAa.howToFix",
+  detailLabelKey: "rules.targetSizeAa.currentSize",
   evaluate(measurement) {
     const w = measurement.targetWidth;
     const h = measurement.targetHeight;
@@ -37,10 +38,11 @@ export const targetSizeAAA: DomRule = {
   tags: ["wcag2aaa", "wcag255"],
   description:
     "For the best touch experience, especially on mobile, targets should be at least 44×44 CSS pixels. This gold-standard size benefits people using touch devices, head wands, eye-tracking, or users who are in transit or navigating an interface while in motion.",
-  help: "Button should be at least 44×44 CSS pixels for Level AAA",
+  help: "Button should be at least 44×44 CSS pixels",
   helpUrl: "https://www.w3.org/WAI/WCAG22/Understanding/target-size-enhanced.html",
   whyItMattersKey: "rules.targetSizeAaa.whyItMatters",
   howToFixKey: "rules.targetSizeAaa.howToFix",
+  detailLabelKey: "rules.targetSizeAaa.currentSize",
   evaluate(measurement) {
     const w = measurement.targetWidth;
     const h = measurement.targetHeight;

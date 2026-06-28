@@ -127,3 +127,52 @@ describe("IssueSection — auto-expand and manual-collapse", () => {
     expect(w.find(".issue-card").exists()).toBe(false);
   });
 });
+
+// A single axe violation carries one node per failing element. The "how to fix"
+// guidance is identical across them, so it must render ONCE (not once per node),
+// with the breadth surfaced as an affected-element count instead. Regression
+// guard for the "HOW TO FIX renders three times" bug.
+describe("IssueSection — multi-node violations", () => {
+  function labelViolation(nodeCount: number): AxeResult {
+    const failureSummary = "Fix any of the following:\n  Element does not have a label";
+    return {
+      id: "label",
+      description: "Ensure every form element has a label",
+      help: "Form elements must have labels",
+      helpUrl: "https://example.com",
+      impact: "critical",
+      tags: ["wcag2a"],
+      nodes: Array.from({ length: nodeCount }, (_, i) => ({
+        html: `<input id="f${i}">`,
+        target: [`#f${i}`],
+        any: [],
+        all: [],
+        none: [],
+        failureSummary,
+      })),
+    };
+  }
+
+  it("reports the affected-element count in the card body", async () => {
+    const { Wrapper } = makeWrapper({ violations: [labelViolation(3)] });
+    const w = await mountSuspended(Wrapper);
+    wrapper = w;
+    await flush();
+    expect(w.text()).toContain("3 elements affected");
+  });
+
+  it("renders the shared fix guidance once, not once per node", async () => {
+    const { Wrapper } = makeWrapper({ violations: [labelViolation(3)] });
+    const w = await mountSuspended(Wrapper);
+    wrapper = w;
+    await flush();
+
+    const fixIt = w.findAll("button").find((b) => b.text().includes("how to fix"));
+    expect(fixIt).toBeTruthy();
+    await fixIt!.trigger("click");
+    await flush();
+
+    const occurrences = w.text().split("Element does not have a label").length - 1;
+    expect(occurrences).toBe(1);
+  });
+});

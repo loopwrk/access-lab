@@ -66,7 +66,7 @@ describe("onboarding Mini visuals", () => {
     const w = await mount(MiniIssue);
     expect(w.text()).toContain("color-contrast");
     expect(w.text()).toContain("AA");
-    expect(w.text()).toContain("Why it matters");
+    expect(w.text()).toContain("Why and how to fix");
   });
 
   it("MiniLearn reuses the pinned heading with a nav label", async () => {

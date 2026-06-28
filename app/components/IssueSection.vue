@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { AxeResult, ImpactValue } from "~/types/axe";
+import type { AxeResult, CheckResult, ImpactValue } from "~/types/axe";
 import type { RuleClassification } from "~/utils/issueFormatting";
 
 const props = defineProps<{
@@ -13,6 +13,10 @@ const props = defineProps<{
 
 const { t } = useI18n();
 const { focusLearnTopic } = useInspectorTab();
+
+const SECTION_LABEL_CLASS =
+  "text-(length:--al-font-size-caption) font-bold uppercase tracking-[0.06em] mt-0 mb-[5px]";
+const SECTION_BODY_CLASS = "text-(length:--al-font-size-detail) leading-normal";
 
 // Violation sections auto-expand as soon as the first issue arrives so the
 // user doesn't have to click to see what failed. Once the user toggles the
@@ -68,6 +72,28 @@ function whyMattersText(violation: AxeResult): string | null {
 function howToFixText(violation: AxeResult): string | null {
   return violation.howToFixKey ? t(violation.howToFixKey) : null;
 }
+
+// A single axe violation carries one node per failing element, and each node
+// repeats the same fix guidance. Collapse them to the distinct messages so the
+// "How to fix" / finding detail render once; the affected-element count is
+// surfaced separately (see issues.elementsAffected).
+function uniqueFailureSummaries(violation: AxeResult): string[] {
+  const summaries = violation.nodes
+    .map((node) => node.failureSummary)
+    .filter((summary): summary is string => Boolean(summary));
+  return [...new Set(summaries)];
+}
+
+function uniqueNoneChecks(violation: AxeResult): CheckResult[] {
+  const seen = new Map<string, CheckResult>();
+  for (const node of violation.nodes) {
+    for (const check of node.none) {
+      const key = `${check.id}::${check.message}`;
+      if (!seen.has(key)) seen.set(key, check);
+    }
+  }
+  return [...seen.values()];
+}
 </script>
 
 <template>
@@ -103,10 +129,15 @@ function howToFixText(violation: AxeResult): string | null {
           :key="violation.id"
           variant="outline"
           class="issue-card"
+          :ui="{
+            header: 'pl-[16px] pr-[18px] sm:pl-[16px] sm:pr-[18px]',
+            body: 'pl-[16px] pr-[18px] sm:pl-[16px] sm:pr-[18px]',
+            footer: 'pl-[16px] pr-[18px] sm:pl-[16px] sm:pr-[18px]',
+          }"
         >
           <template #header>
             <div class="flex flex-col gap-1 max-h-min p-0">
-              <div class="flex flex-wrap items-center gap-1.5 mb-1">
+              <div class="flex flex-wrap items-center gap-1.5 mb-1 p-0">
                 <UBadge
                   :label="formatRuleId(violation.id)"
                   :color="isPass ? 'success' : impactColor(violation.impact)"
@@ -122,7 +153,7 @@ function howToFixText(violation: AxeResult): string | null {
                 />
               </div>
               <h3
-                class="text-(length:--al-font-size-body) text-(--text-primary) leading-[1.3] font-semibold m-0"
+                class="text-(length:--al-font-size-violation-heading) text-(--text-primary) leading-[1.3] font-semibold m-0"
               >
                 {{ violation.help }}
               </h3>
@@ -134,107 +165,107 @@ function howToFixText(violation: AxeResult): string | null {
           >
             {{ violation.description }}
           </p>
+          <p
+            v-if="!isPass && violation.nodes.length > 1"
+            class="text-(length:--al-font-size-detail) text-(--text-muted) mt-1.5 mb-0"
+          >
+            {{ t("issues.elementsAffected", { count: violation.nodes.length }) }}
+          </p>
 
           <template #footer>
             <UCollapsible :default-open="false">
               <UButton
                 variant="ghost"
                 color="neutral"
-                size="xs"
+                size="md"
+                block
                 :label="t(isPass ? 'issues.whyItMattersOnly' : 'issues.whyItMatters')"
+                leading-icon="i-lucide-info"
                 trailing-icon="i-lucide-chevron-down"
-                class="group pl-0"
+                class="group gap-2.5 rounded-lg border border-(--border) bg-(--bg) px-4 py-3 mb-2 hover:bg-(--brand-soft)"
                 :ui="{
-                  label: 'text-(length:--al-font-size-body)',
+                  label:
+                    'flex-1 text-left text-(--text-primary) text-(length:--al-font-size-heading) font-semibold',
+                  leadingIcon: 'size-5 text-(--brand)',
                   trailingIcon:
-                    'group-data-[state=open]:rotate-180 transition-transform duration-200 p-0',
+                    'size-5 text-(--text-muted) group-data-[state=open]:rotate-180 transition-transform duration-200',
                 }"
               />
               <template #content>
                 <div class="flex flex-col gap-2 pt-2 text-(--text-secondary) leading-normal">
                   <div
                     v-if="whyMattersText(violation)"
-                    class="flex flex-col gap-1 py-2 px-2.5 bg-(--brand-soft) rounded border-l-[3px] border-l-(--brand)"
+                    class="flex flex-col rounded-l-none rounded-r-lg border-l-4 border-l-(--brand) bg-(--brand-soft) mb-4 px-[14px] py-[11px]"
                   >
-                    <p
-                      class="text-(length:--al-font-size-caption) font-semibold text-(--text-muted) uppercase tracking-[0.06em] m-0"
-                    >
+                    <p :class="[SECTION_LABEL_CLASS, 'text-(--brand-strong)']">
                       {{ t("issues.whySection") }}
                     </p>
-                    <p class="text-(length:--al-font-size-detail) m-0 leading-normal">
+                    <p :class="[SECTION_BODY_CLASS, 'm-0']">
                       {{ whyMattersText(violation) }}
                     </p>
                   </div>
 
                   <template v-if="!isPass">
-                    <template
-                      v-for="node in violation.nodes"
-                      :key="node.html"
+                    <div
+                      v-for="(summary, si) in uniqueFailureSummaries(violation)"
+                      :key="si"
+                      class="flex flex-col py-2 px-2.5"
                     >
-                      <div
-                        v-if="node.failureSummary"
-                        class="flex flex-col gap-1.5 py-2 px-2.5 rounded-none"
+                      <p :class="SECTION_LABEL_CLASS">
+                        {{ t("issues.howToFixSection") }}
+                      </p>
+                      <template
+                        v-for="(section, sj) in parseFailureSummary(summary)"
+                        :key="sj"
                       >
                         <p
-                          class="text-(length:--al-font-size-caption) font-semibold uppercase tracking-[0.06em] m-0"
+                          class="text-(length:--al-font-size-detail) font-semibold text-(--text-primary) mb-0.5"
+                          :class="{ 'mt-2': sj > 0 }"
                         >
-                          {{ t("issues.howToFixSection") }}
+                          {{ section.directive }}
                         </p>
-                        <template
-                          v-for="(section, si) in parseFailureSummary(node.failureSummary)"
-                          :key="si"
-                        >
-                          <p
-                            class="text-(length:--al-font-size-detail) font-semibold text-(--text-primary) mb-0.5"
+                        <ul class="m-0 px-4.5 flex flex-col gap-1 list-disc">
+                          <li
+                            v-for="(item, ii) in section.items"
+                            :key="ii"
+                            :class="[SECTION_BODY_CLASS, 'text-(--text-secondary)']"
                           >
-                            {{ section.directive }}
-                          </p>
-                          <ul class="m-0 px-4.5 flex flex-col gap-1 list-disc">
-                            <li
-                              v-for="(item, ii) in section.items"
-                              :key="ii"
-                              class="text-(length:--al-font-size-detail) text-(--text-secondary) leading-normal"
-                            >
-                              {{ item }}
-                            </li>
-                          </ul>
-                        </template>
-                      </div>
+                            {{ item }}
+                          </li>
+                        </ul>
+                      </template>
+                    </div>
+
+                    <div
+                      v-if="uniqueNoneChecks(violation).length"
+                      class="flex flex-col gap-1.5"
+                    >
                       <div
-                        v-if="node.none.length"
-                        class="flex flex-col gap-1.5"
+                        v-for="(check, ci) in uniqueNoneChecks(violation)"
+                        :key="ci"
+                        class="flex flex-col"
                       >
-                        <div
-                          v-for="check in node.none"
-                          :key="check.id"
-                          class="flex flex-col gap-0.5"
-                        >
-                          <span
-                            class="text-(length:--al-font-size-caption) font-semibold text-(--text-muted) uppercase"
-                          >
-                            {{ formatRuleId(check.id) }}
-                          </span>
-                          <p
-                            class="text-(length:--al-font-size-detail) text-(--text-secondary) m-0 leading-[1.4]"
-                          >
-                            {{ check.message }}
-                          </p>
-                        </div>
+                        <span :class="SECTION_LABEL_CLASS">
+                          {{
+                            violation.detailLabelKey
+                              ? t(violation.detailLabelKey)
+                              : formatRuleId(check.id)
+                          }}
+                        </span>
+                        <p :class="[SECTION_BODY_CLASS, 'text-(--text-secondary)', 'm-0']">
+                          {{ check.message }}
+                        </p>
                       </div>
-                    </template>
+                    </div>
 
                     <div
                       v-if="howToFixText(violation)"
-                      class="flex flex-col gap-1.5 py-2 px-2.5"
+                      class="flex flex-col py-2 pr-2.5"
                     >
-                      <p
-                        class="text-(length:--al-font-size-caption) font-semibold uppercase tracking-[0.06em] m-0"
-                      >
+                      <p :class="SECTION_LABEL_CLASS">
                         {{ t("issues.howToFixSection") }}
                       </p>
-                      <p
-                        class="text-(length:--al-font-size-detail) text-(--text-secondary) m-0 leading-normal"
-                      >
+                      <p :class="[SECTION_BODY_CLASS, 'text-(--text-secondary)', 'm-0']">
                         {{ howToFixText(violation) }}
                       </p>
                     </div>
@@ -257,7 +288,7 @@ function howToFixText(violation: AxeResult): string | null {
                         :href="violation.helpUrl"
                         target="_blank"
                         rel="noopener noreferrer"
-                        class="inline-flex items-center text-(length:--al-font-size-detail) text-(--brand) no-underline hover:text-(--brand-hover) hover:underline self-start"
+                        class="inline-flex items-center text-(length:--al-font-size-detail) font-semibold text-(--brand) underline hover:text-(--brand-hover) self-start"
                       >
                         {{ t("issues.learnMore") }}
                         <span
