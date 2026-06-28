@@ -128,11 +128,11 @@ function uniqueNoneChecks(violation: AxeResult): CheckResult[] {
           v-for="violation in violations"
           :key="violation.id"
           variant="outline"
-          class="issue-card"
+          :class="`issue-card issue-card--${color}`"
           :ui="{
-            header: 'pl-[16px] pr-[18px] sm:pl-[16px] sm:pr-[18px]',
-            body: 'pl-[16px] pr-[18px] sm:pl-[16px] sm:pr-[18px]',
-            footer: 'pl-[16px] pr-[18px] sm:pl-[16px] sm:pr-[18px]',
+            header: 'pl-4 pr-4.5 sm:pl-4 sm:pr-4.5',
+            body: 'pl-4 pr-4.5 sm:pl-4 sm:pr-4.5',
+            footer: 'pl-4 pr-4.5 sm:pl-4 sm:pr-4.5',
           }"
         >
           <template #header>
@@ -321,3 +321,31 @@ function uniqueNoneChecks(violation: AxeResult): CheckResult[] {
     </template>
   </UCollapsible>
 </template>
+
+<style scoped>
+.issue-card {
+  position: relative;
+}
+
+/* Full-height bar flush to the left edge; the card's rounded-lg + overflow-hidden
+   clip it so it follows the top-left / bottom-left corners like a thick border. */
+.issue-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0.2rem;
+  background: var(--issue-accent, var(--border-strong));
+}
+
+.issue-card--error {
+  --issue-accent: var(--error);
+}
+
+.issue-card--warning {
+  --issue-accent: var(--warning);
+}
+
+.issue-card--success {
+  --issue-accent: var(--success);
+}
+</style>
