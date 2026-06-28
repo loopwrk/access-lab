@@ -1,8 +1,7 @@
 {
   "controls": {
     "resetDefaults": {
-      "label": "Reset CSS styles to browser defaults {learnMoreLink}",
-      "learnMore": "learn more",
+      "label": "Reset CSS styles to browser defaults",
       "action": "Reset"
     },
     "simulatedRoot": {

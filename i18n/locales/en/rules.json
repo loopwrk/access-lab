@@ -1,0 +1,12 @@
+{
+  "rules": {
+    "targetSizeAa": {
+      "whyItMatters": "Small targets are harder to interact with. Larger targets reduce errors for everyone.",
+      "howToFix": "Add padding, or set a min-height and min-width, so the button's box is at least 24×24px. If it must stay visually small, leave at least 24px of clear space around it."
+    },
+    "targetSizeAaa": {
+      "whyItMatters": "Small targets are harder to interact with. Larger targets reduce errors for everyone.",
+      "howToFix": "Add padding, or set a min-height and min-width, so the button's box reaches 44×44px. This is the most comfortable size for touch, and for people using head wands or eye-tracking."
+    }
+  }
+}

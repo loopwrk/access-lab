@@ -9,6 +9,7 @@ import common from "./locales/en/common.json";
 import controls from "./locales/en/controls.json";
 import components from "./locales/en/components.json";
 import learn from "./locales/en/learn.json";
+import rules from "./locales/en/rules.json";
 
 export default defineI18nConfig(() => ({
   legacy: false,
@@ -18,6 +19,7 @@ export default defineI18nConfig(() => ({
       ...controls,
       ...components,
       ...learn,
+      ...rules,
     },
   },
 }));

@@ -92,7 +92,13 @@ export default defineNuxtConfig({
       {
         code: "en",
         name: "English",
-        files: ["en/common.json", "en/controls.json", "en/components.json", "en/learn.json"],
+        files: [
+          "en/common.json",
+          "en/controls.json",
+          "en/components.json",
+          "en/learn.json",
+          "en/rules.json",
+        ],
       },
     ],
     defaultLocale: "en",

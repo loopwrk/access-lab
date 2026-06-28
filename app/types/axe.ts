@@ -36,6 +36,14 @@ export interface AxeResult {
   nodes: NodeResult[];
   learnTopicId?: string;
   /**
+   * Custom/DOM rules only: i18n key for a rule-specific "why it matters"
+   * explainer, preferred over the generic tag-based fallback. Never set on
+   * results that come straight from axe.
+   */
+  whyItMattersKey?: string;
+  /** Custom/DOM rules only: i18n key for a rule-specific "how to fix" instruction. */
+  howToFixKey?: string;
+  /**
    * Custom/DOM rules only: axe rule ids that already report this same finding.
    * When any is present in the axe results, this violation is suppressed in
    * favour of axe's own (see useAllViolations). Never set on results that come

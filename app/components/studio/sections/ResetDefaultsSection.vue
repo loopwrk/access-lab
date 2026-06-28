@@ -7,7 +7,7 @@
  * visual styles the user could have customised through the studio
  * sections (Text, Dimensions, Border, Colours, Focus) get cleared.
  */
-import LearnLink from "~/components/controls/LearnLink.vue";
+import SectionLegend from "~/components/controls/SectionLegend.vue";
 
 const model = defineModel<Record<string, unknown>>({ required: true });
 
@@ -49,25 +49,7 @@ function resetToBrowserDefaults() {
 
 <template>
   <fieldset class="flex flex-col gap-2 border-0 p-0 m-0">
-    <legend class="control-group-title mb-1.5">
-      <i18n-t
-        keypath="controls.resetDefaults.label"
-        tag="span"
-      >
-        <template #learnMoreLink>
-          <!-- The parentheses and link are kept as one no-wrap unit so the
-               line never breaks right after the opening bracket (the link is an
-               inline-flex atomic box, which otherwise allows a wrap there,
-               orphaning the "(" at the end of the line). -->
-          <span class="whitespace-nowrap"
-            >(<LearnLink
-              topic="native-rendering"
-              :label="t('controls.resetDefaults.learnMore')"
-            />)</span
-          >
-        </template>
-      </i18n-t>
-    </legend>
+    <SectionLegend :label="t('controls.resetDefaults.label')" />
     <UButton
       color="primary"
       variant="soft"

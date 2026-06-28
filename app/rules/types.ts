@@ -69,6 +69,15 @@ export interface DomRule {
   tags?: string[];
   /** See Rule.learnTopicId. */
   learnTopicId?: string;
+  /**
+   * i18n key for a rule-specific "why it matters" explainer. When set, the
+   * Issues panel shows this instead of the generic, tag-based fallback so the
+   * card can speak to the rule's real human impact rather than a WCAG-level
+   * blurb. Custom-rule text lives in `i18n/locales/en/rules.json`.
+   */
+  whyItMattersKey?: string;
+  /** i18n key for a rule-specific "how to fix" instruction. See whyItMattersKey. */
+  howToFixKey?: string;
   evaluate: (measurement: DomMeasurement) => ViolationResult | null;
 }
 
