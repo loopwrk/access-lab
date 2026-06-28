@@ -27,6 +27,22 @@
       "theme": "Theme"
     }
   },
+  "support": {
+    "meta": {
+      "title": "Support AccessLab",
+      "description": "AccessLab is a free, open-source playground for learning accessibility. If it has helped you, please consider supporting me."
+    },
+    "title": "Support",
+    "back": "Back to AccessLab",
+    "intro": "AccessLab is a free, open-source platform for learning accessibility.",
+    "kofi": {
+      "kicker": "Buy me a coffee",
+      "heading": "Has AccessLab helped you?",
+      "body": "AccessLab is free and open source. Your contribution helps me keep building it, writing new lessons, pay for hosting and keeping the web a little more usable for everyone. Thank you for the support!.",
+      "cta": "Support Me on Ko-fi",
+      "newTab": "(opens in a new tab)"
+    }
+  },
   "errorPage": {
     "ariaLabel": "Error notice",
     "title404": "404: page not found",

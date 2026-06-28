@@ -19,6 +19,9 @@
 @import "@fontsource/comic-neue/400.css";
 @import "@fontsource/comic-neue/700.css";
 
+/* Quicksand (Ko-fi brand font, applied only to the Ko-fi support button) */
+@import "@fontsource/quicksand/700.css";
+
 @theme static {
   --font-sans: var(--al-font);
   --font-mono: var(--al-font-mono);

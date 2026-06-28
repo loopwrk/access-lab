@@ -20,6 +20,9 @@ importers:
       '@fontsource/comic-neue':
         specifier: ^5.2.7
         version: 5.2.7
+      '@fontsource/quicksand':
+        specifier: ^5.2.10
+        version: 5.2.10
       '@iconify-json/lucide':
         specifier: ^1.2.108
         version: 1.2.111
@@ -890,6 +893,9 @@ packages:
 
   '@fontsource/comic-neue@5.2.7':
     resolution: {integrity: sha512-tNi0Nxbz0QMwHvZWJSP5G0SXq8CeX5b+K3l3q/afPmJ/WlQ+i3/NfOYWBzsojCZko1lNplfmjbsOGMuBs4WmcA==}
+
+  '@fontsource/quicksand@5.2.10':
+    resolution: {integrity: sha512-rck0ccT6vJF9RnbSW2ON1grq5qFZvjVOGvYIUixATXF8mNh4KglD+8Sn8QpRgKQBSBJF5yOR3SBYBWPg/Y8YbQ==}
 
   '@humanfs/core@0.19.2':
     resolution: {integrity: sha512-UhXNm+CFMWcbChXywFwkmhqjs3PRCmcSa/hfBgLIb7oQ5HNb1wS0icWsGtSAUNgefHeI+eBrA8I1fxmbHsGdvA==}
@@ -7876,6 +7882,8 @@ snapshots:
   '@fontsource/atkinson-hyperlegible@5.2.8': {}
 
   '@fontsource/comic-neue@5.2.7': {}
+
+  '@fontsource/quicksand@5.2.10': {}
 
   '@humanfs/core@0.19.2':
     dependencies:
