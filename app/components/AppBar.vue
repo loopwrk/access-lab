@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import DisplayControlsPanel from "./appbar/DisplayControlsPanel.vue";
 import { sizeOptions } from "~/utils/displayControlOptions";
+const { showOnboardingReplay = true } = defineProps<{
+  showOnboardingReplay?: boolean;
+}>();
 
 const { t } = useI18n();
 const { isDark, isHighContrast, setMode, toggleContrast } = useTheme();
@@ -83,7 +86,7 @@ const navLinkClass =
       <!-- Replay the onboarding. Studio-only: the modal lives in the
            studio layout, hidden while the reader is open. -->
       <UTooltip
-        v-if="!readModeOpen"
+        v-if="!readModeOpen && showOnboardingReplay"
         :text="t('onboarding.replay')"
       >
         <UButton

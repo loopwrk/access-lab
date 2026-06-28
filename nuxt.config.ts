@@ -15,7 +15,7 @@ export default defineNuxtConfig({
   ],
 
   // Top-level SSR is on so we can opt routes *out* via routeRules.
-  // (Nuxt's hybrid rendering only works in this direction — you
+  // (Nuxt's hybrid rendering only works in this direction - you
   // can't be globally-off-with-route-exceptions.) See `routeRules`
   // below for the per-route split.
 
@@ -36,6 +36,13 @@ export default defineNuxtConfig({
     },
   },
 
+  runtimeConfig: {
+    public: {
+      // Web3Forms public access key
+      web3formsAccessKey: "480bce79-e752-4481-8af1-da12fa3417e2",
+    },
+  },
+
   css: ["~/assets/css/main.css"],
 
   colorMode: {
@@ -53,7 +60,7 @@ export default defineNuxtConfig({
   },
 
   routeRules: {
-    // `/` redirects to a default component via `pages/index.vue` —
+    // `/` redirects to a default component via `pages/index.vue` -
     // prerender so the redirect HTML is served straight from the
     // edge with no server round-trip.
     "/": { prerender: true },
@@ -72,7 +79,7 @@ export default defineNuxtConfig({
 
   vite: {
     optimizeDeps: {
-      include: ["@vue/devtools-core", "@vue/devtools-kit"],
+      include: ["@vue/devtools-core", "@vue/devtools-kit", "zod"],
     },
   },
 
