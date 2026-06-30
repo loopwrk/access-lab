@@ -228,7 +228,7 @@ async function copyContent(mode: "inline" | "class" | "css" | "js") {
           </UFieldGroup>
 
           <div
-            class="al-code-region overflow-auto focus-visible:outline-[3px] focus-visible:outline-(--focus-ring) focus-visible:outline-offset-[-3px]"
+            class="al-code-region bg-(--color-surface) overflow-auto focus-visible:outline-[3px] focus-visible:outline-(--focus-ring) focus-visible:outline-offset-[-3px]"
             :style="{ height: `${effectiveHeight}px` }"
             tabindex="0"
             role="region"
@@ -248,7 +248,7 @@ async function copyContent(mode: "inline" | "class" | "css" | "js") {
             <ProsePre
               v-if="renderedHtml && codeView === 'html'"
               language="html"
-              class="-my-5 text-(--color-text-brand) bg-color-pre-bg"
+              class="-my-5 text-(--color-text-primary) bg-(--color-pre-bg)"
               :code="prettifiedHtml"
             >
               {{ prettifiedHtml }}
@@ -256,7 +256,7 @@ async function copyContent(mode: "inline" | "class" | "css" | "js") {
             <ProsePre
               v-else-if="hasCss && codeView === 'css'"
               language="css"
-              class="-my-5 text-(--color-text-brand) bg-color-pre-bg"
+              class="-my-5 text-(--color-text-brand) bg-(--color-pre-bg)"
               :code="prettifiedCss"
             >
               {{ prettifiedCss }}
@@ -264,7 +264,7 @@ async function copyContent(mode: "inline" | "class" | "css" | "js") {
             <ProsePre
               v-else-if="hasJs && codeView === 'js'"
               language="javascript"
-              class="-my-5 text-(--color-text-brand) bg-color-pre-bg"
+              class="-my-5 text-(--color-text-brand) bg-(--color-pre-bg)"
               :code="prettifiedJs"
             >
               {{ prettifiedJs }}

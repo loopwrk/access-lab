@@ -172,11 +172,11 @@
 
 /* ── Dark theme ────────────────────────────────────────��─────────── */
 .theme-dark {
-  --bg: #0f1114;
+  --bg: rgb(10, 12, 14);
   --surface: #1a1b22;
   --surface-2: oklch(0.1598 0.0434 268.14);
   --surface-3: oklch(0.1395 0.0048 262.8);
-  --border: #2a2532;
+  --border: #352e41;
   --border-strong: #6e5f8e;
   --text-primary: #ece7ff;
   --text-secondary: #a6b4cc;

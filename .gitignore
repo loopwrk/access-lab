@@ -34,3 +34,7 @@ plan.md
 design-system
 AGENTS.md
 NOTES.md
+
+# Storybook auto-import artifacts
+/auto-imports.d.ts
+/components.d.ts
