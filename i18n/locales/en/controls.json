@@ -1,11 +1,21 @@
 {
   "controls": {
-    "resetDefaults": {
-      "label": "Reset CSS styles to browser defaults",
-      "action": "Reset"
+    "reset": {
+      "action": "Reset all",
+      "ariaLabel": "Reset all control-panel values to defaults",
+      "enabledTitle": "Reset every changed value in this panel to its default",
+      "disabledTitle": "No changes to reset"
     },
-    "simulatedRoot": {
-      "label": "Root Em (rem) value"
+    "rootRem": {
+      "trigger": "Root rem",
+      "title": "Preview root size",
+      "description": "Sets {rem} for every component in the preview.",
+      "unit": "px",
+      "equals": "= 1rem",
+      "learn": "Learn about the preview root size",
+      "slider": "Root em (rem) value",
+      "presetsGroup": "Preset sizes",
+      "pixelsWord": "pixels"
     },
     "label": "Button label",
     "labelPlaceholder": "Trigger click event",

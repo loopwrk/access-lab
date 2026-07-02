@@ -48,6 +48,10 @@ const preview: Preview = {
       return {
         components: { story },
         setup() {
+          // Popover content teleports to <body>, so the theme must also sit on <html>.
+          const all = ["theme-light", "light", "theme-dark", "dark", "theme-high-contrast"];
+          document.documentElement.classList.remove(...all);
+          document.documentElement.classList.add(...themeClass.split(" "));
           return { themeClass };
         },
         template: `<div :class="themeClass" style="min-height:100vh;padding:32px;background:var(--bg)"><story /></div>`,

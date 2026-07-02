@@ -2,7 +2,6 @@
 import type { BaseButtonProps } from "~/types/button";
 import type { MenuBehaviour } from "../shared/types";
 import { menuTriggerDefinition } from "./definition";
-import ResetDefaultsSection from "~/components/studio/sections/ResetDefaultsSection.vue";
 import ContentSection from "~/components/studio/sections/ContentSection.vue";
 import AriaSection from "~/components/studio/sections/AriaSection.vue";
 import MenuStateSection from "~/components/studio/sections/MenuStateSection.vue";
@@ -42,9 +41,6 @@ usePreviewMessage({
 
 <template>
   <div class="flex flex-col gap-4">
-    <ResetDefaultsSection v-model="model" />
-    <USeparator />
-
     <ContentSection v-model="model" />
     <USeparator />
 

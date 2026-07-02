@@ -2,7 +2,13 @@
 import type { TabsItem } from "@nuxt/ui";
 
 const { t } = useI18n();
-const { activeTab } = useInspectorTab();
+const { activeTab, focusLearnTopic } = useInspectorTab();
+const { simulatedRootPx } = useUnitConversion();
+
+const rootRemOpen = ref(false);
+usePreviewIframeOutsideClick(() => {
+  if (rootRemOpen.value) rootRemOpen.value = false;
+});
 
 const tabItems = computed<TabsItem[]>(() => [
   { label: t("inspector.controls"), value: "controls" },
@@ -10,6 +16,18 @@ const tabItems = computed<TabsItem[]>(() => [
   { label: t("inspector.manual"), value: "manual" },
   { label: t("inspector.learn"), value: "learn" },
 ]);
+
+const rootRemLabels = computed(() => ({
+  trigger: t("controls.rootRem.trigger"),
+  title: t("controls.rootRem.title"),
+  description: t("controls.rootRem.description", { rem: "1rem" }),
+  unit: t("controls.rootRem.unit"),
+  equals: t("controls.rootRem.equals"),
+  learn: t("controls.rootRem.learn"),
+  slider: t("controls.rootRem.slider"),
+  presetsGroup: t("controls.rootRem.presetsGroup"),
+  pixelsWord: t("controls.rootRem.pixelsWord"),
+}));
 </script>
 
 <template>
@@ -32,7 +50,21 @@ const tabItems = computed<TabsItem[]>(() => [
         :aria-label="t('inspector.controls')"
         class="p-4"
       >
-        <RootEmSlider />
+        <div class="-mt-4 -mx-4 mb-4 border-b border-(--border)">
+          <ControlsUtilityRow>
+            <template #start>
+              <RootRemControl
+                v-model="simulatedRootPx"
+                v-model:open="rootRemOpen"
+                :labels="rootRemLabels"
+                @learn="focusLearnTopic('rem-units')"
+              />
+            </template>
+            <template #end>
+              <div :id="UTILITY_RESET_CELL_ID" />
+            </template>
+          </ControlsUtilityRow>
+        </div>
       </div>
 
       <div

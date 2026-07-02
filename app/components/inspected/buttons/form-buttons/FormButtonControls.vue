@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { BaseButtonProps } from "~/types/button";
 import { formButtonDefinition } from "./definition";
-import ResetDefaultsSection from "~/components/studio/sections/ResetDefaultsSection.vue";
 import ContentSection from "~/components/studio/sections/ContentSection.vue";
 import AriaSection from "~/components/studio/sections/AriaSection.vue";
 import TextSection from "~/components/studio/sections/TextSection.vue";
@@ -71,9 +70,6 @@ watch(() => model.value.renderAs, (newRenderAs) => {
 
 <template>
   <div class="flex flex-col gap-4">
-    <ResetDefaultsSection v-model="model" />
-    <USeparator />
-
     <ContentSection v-model="model" />
     <USeparator />
 

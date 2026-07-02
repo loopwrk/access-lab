@@ -33,7 +33,7 @@ function closeIfOpen() {
 }
 
 onClickOutside(triggerRef, closeIfOpen, {
-  ignore: ["[data-slot=\"content\"]"],
+  ignore: [".al-variant-pop"],
 });
 
 usePreviewIframeOutsideClick(closeIfOpen);
@@ -132,7 +132,7 @@ function maybeTranslate(value?: string): string {
         :modal="false"
         :dismissible="true"
         :ui="{
-          content: 'min-w-[480px] rounded-none bg-(--surface) border border-(--border-strong) shadow-lg',
+          content: 'al-variant-pop min-w-[480px] rounded-none bg-(--surface) border border-(--border-strong) shadow-lg',
         }"
       >
         <button

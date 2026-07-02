@@ -38,3 +38,6 @@ NOTES.md
 # Storybook auto-import artifacts
 /auto-imports.d.ts
 /components.d.ts
+
+# Storybook build output
+storybook-static

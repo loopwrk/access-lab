@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { SelectProps, SelectLabelAssociation } from "./definition";
-import ResetDefaultsSection from "~/components/studio/sections/ResetDefaultsSection.vue";
 import ControlCardCheckbox from "~/components/controls/ControlCardCheckbox.vue";
 import SectionLegend from "~/components/controls/SectionLegend.vue";
 
@@ -82,9 +81,6 @@ usePreviewMessage({
 
 <template>
   <div class="flex flex-col gap-4">
-    <ResetDefaultsSection v-model="model" />
-    <USeparator />
-
     <UFormField class="flex flex-col">
       <template #label>
         <span class="control-group-title">{{ t("controls.select.label") }}</span>

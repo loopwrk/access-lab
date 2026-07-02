@@ -54,6 +54,7 @@ const TARGET_IDS = [
   "preview-toolbar-variant",
   "preview-toolbar-wrappers",
   "controls-panel",
+  "controls-utility-reset",
   "issues-panel",
   "manual-panel",
   "learn-panel",
@@ -142,6 +143,7 @@ describe("ComponentStudio — teleport resolution", () => {
     expect(childCount("manual-panel")).toBeGreaterThan(0);
     expect(childCount("learn-panel")).toBeGreaterThan(0);
     expect(childCount("controls-panel")).toBeGreaterThan(0);
+    expect(childCount("controls-utility-reset")).toBeGreaterThan(0); // reset teleported into the row
     expect(childCount("preview-toolbar-variant")).toBeGreaterThan(0); // variants present
     expect(childCount("preview-toolbar-wrappers")).toBeGreaterThan(0); // wrappers available
   });

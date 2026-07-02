@@ -9,7 +9,7 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { INSPECTOR_PANEL_IDS, PREVIEW_IFRAME_ID } from "../../app/utils/domIds";
+import { INSPECTOR_PANEL_IDS, PREVIEW_IFRAME_ID, UTILITY_RESET_CELL_ID } from "../../app/utils/domIds";
 
 describe("INSPECTOR_PANEL_IDS", () => {
   it("maps each inspector tab to its expected id", () => {
@@ -27,7 +27,8 @@ describe("INSPECTOR_PANEL_IDS", () => {
   });
 
   it("uses ids that are safe to drop straight into an id selector", () => {
-    for (const id of [...Object.values(INSPECTOR_PANEL_IDS), PREVIEW_IFRAME_ID]) {
+    const all = [...Object.values(INSPECTOR_PANEL_IDS), PREVIEW_IFRAME_ID, UTILITY_RESET_CELL_ID];
+    for (const id of all) {
       expect(id).toMatch(/^[a-z][a-z0-9-]*$/);
     }
   });
@@ -36,5 +37,11 @@ describe("INSPECTOR_PANEL_IDS", () => {
 describe("PREVIEW_IFRAME_ID", () => {
   it("is the host-side preview iframe id", () => {
     expect(PREVIEW_IFRAME_ID).toBe("preview-iframe");
+  });
+});
+
+describe("UTILITY_RESET_CELL_ID", () => {
+  it("is the reset control's teleport target in the utility row", () => {
+    expect(UTILITY_RESET_CELL_ID).toBe("controls-utility-reset");
   });
 });

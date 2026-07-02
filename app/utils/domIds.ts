@@ -24,3 +24,6 @@ if (import.meta.dev) {
 
 /** The host-side id on the preview iframe element. */
 export const PREVIEW_IFRAME_ID = "preview-iframe";
+
+/** Teleport target: ComponentStudio's Reset control lands here, in the utility row's end cell. */
+export const UTILITY_RESET_CELL_ID = "controls-utility-reset";

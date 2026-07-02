@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { CheckboxProps, CheckboxLabelAssociation, CheckboxGroupMode } from "./definition";
-import ResetDefaultsSection from "~/components/studio/sections/ResetDefaultsSection.vue";
 import ControlCardCheckbox from "~/components/controls/ControlCardCheckbox.vue";
 import SectionLegend from "~/components/controls/SectionLegend.vue";
 import LearnLink from "~/components/controls/LearnLink.vue";
@@ -173,9 +172,6 @@ usePreviewMessage({
 
 <template>
   <div class="flex flex-col gap-4">
-    <ResetDefaultsSection v-model="model" />
-    <USeparator />
-
     <!-- Label / accessible name -->
     <UFormField class="flex flex-col">
       <template #label>

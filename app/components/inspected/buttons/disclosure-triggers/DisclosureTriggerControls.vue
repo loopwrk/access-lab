@@ -2,7 +2,6 @@
 import type { BaseButtonProps } from "~/types/button";
 import type { DisclosureBehaviour } from "../shared/types";
 import { disclosureTriggerDefinition } from "./definition";
-import ResetDefaultsSection from "~/components/studio/sections/ResetDefaultsSection.vue";
 import ContentSection from "~/components/studio/sections/ContentSection.vue";
 import AriaSection from "~/components/studio/sections/AriaSection.vue";
 import DisclosureStateSection from "~/components/studio/sections/DisclosureStateSection.vue";
@@ -41,9 +40,6 @@ usePreviewMessage({
 
 <template>
   <div class="flex flex-col gap-4">
-    <ResetDefaultsSection v-model="model" />
-    <USeparator />
-
     <ContentSection v-model="model" />
     <USeparator />
 

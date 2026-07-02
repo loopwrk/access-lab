@@ -29,7 +29,7 @@ function closeIfOpen() {
 }
 
 onClickOutside(triggerRef, closeIfOpen, {
-  ignore: ["[data-slot=\"content\"]"],
+  ignore: [".al-wrappers-pop"],
 });
 
 usePreviewIframeOutsideClick(closeIfOpen);
@@ -70,7 +70,7 @@ function select(key: string) {
         :modal="false"
         :dismissible="true"
         :ui="{
-          content: 'min-w-[12rem] rounded-none bg-(--surface) border border-(--border-strong) shadow-lg',
+          content: 'al-wrappers-pop min-w-[12rem] rounded-none bg-(--surface) border border-(--border-strong) shadow-lg',
         }"
       >
         <button

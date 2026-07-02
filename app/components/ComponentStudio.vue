@@ -13,6 +13,18 @@ const props = defineProps<{
 const { t } = useI18n();
 const { focusLearnTopic } = useInspectorTab();
 const { previewRef, componentProps } = useInspectedComponent(props.definition);
+
+const { dirty: canReset, reset: resetToDefaults } = useComponentReset(
+  componentProps,
+  props.definition.defaultProps,
+);
+
+const resetLabels = computed(() => ({
+  action: t("controls.reset.action"),
+  ariaLabel: t("controls.reset.ariaLabel"),
+  enabledTitle: t("controls.reset.enabledTitle"),
+  disabledTitle: t("controls.reset.disabledTitle"),
+}));
 const {
   activeComponentName,
   activeLearnTopicId,
@@ -60,7 +72,10 @@ watch(availableContextWrappers, (next) => {
 
 const toast = useToast();
 
-interface FormSubmittedEntry { name: string; value: string }
+interface FormSubmittedEntry {
+  name: string;
+  value: string;
+}
 
 /**
  * Build the description text for the form-submitted toast. Each
@@ -73,26 +88,32 @@ function buildSubmittedDescription(entries: FormSubmittedEntry[]): string {
   return entries.map((e) => `${e.name}=${e.value}`).join(", ");
 }
 
-const formSubmittedAction = computed(() => [{
-  label: t("studio.toasts.formSubmittedLink"),
-  onClick: () => focusLearnTopic("form-wrapping"),
-  color: "neutral" as const,
-  variant: "link" as const,
-}]);
+const formSubmittedAction = computed(() => [
+  {
+    label: t("studio.toasts.formSubmittedLink"),
+    onClick: () => focusLearnTopic("form-wrapping"),
+    color: "neutral" as const,
+    variant: "link" as const,
+  },
+]);
 
-const imageSubmitAction = computed(() => [{
-  label: t("studio.toasts.imageSubmitLink"),
-  onClick: () => focusLearnTopic("image-button-coordinates"),
-  color: "neutral" as const,
-  variant: "link" as const,
-}]);
+const imageSubmitAction = computed(() => [
+  {
+    label: t("studio.toasts.imageSubmitLink"),
+    onClick: () => focusLearnTopic("image-button-coordinates"),
+    color: "neutral" as const,
+    variant: "link" as const,
+  },
+]);
 
-const submitNoFormAction = computed(() => [{
-  label: t("studio.toasts.submitNoFormLink"),
-  onClick: () => focusLearnTopic("button-types"),
-  color: "neutral" as const,
-  variant: "link" as const,
-}]);
+const submitNoFormAction = computed(() => [
+  {
+    label: t("studio.toasts.submitNoFormLink"),
+    onClick: () => focusLearnTopic("button-types"),
+    color: "neutral" as const,
+    variant: "link" as const,
+  },
+]);
 
 usePreviewMessage({
   "demo:click": () => {
@@ -186,6 +207,13 @@ onBeforeUnmount(() => {
       v-model="enabledWrappers"
       :options="availableContextWrappers"
       :element-name="props.definition.tagName"
+    />
+  </Teleport>
+  <Teleport :to="`#${UTILITY_RESET_CELL_ID}`">
+    <ResetControl
+      :disabled="!canReset"
+      :labels="resetLabels"
+      @reset="resetToDefaults"
     />
   </Teleport>
   <Teleport
