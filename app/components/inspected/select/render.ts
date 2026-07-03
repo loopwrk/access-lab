@@ -1,6 +1,6 @@
 import type { SelectProps } from "./definition";
 import type { RenderedFragment } from "~/types/component";
-import { escapeHtml } from "~/utils/escapeHtml";
+import { escapeAttribute, escapeHtml } from "~/utils/escapeHtml";
 import { inlineStyleAttribute } from "~/utils/inlineStyleAttribute";
 import { valueFromLabel } from "~/utils/valueFromLabel";
 
@@ -16,7 +16,7 @@ function renderOptions(options: string[], selected: string): string {
     .map((label) => {
       const value = valueFromLabel(label);
       const isSelected = label === selected;
-      return `<option value="${escapeHtml(value)}"${
+      return `<option value="${escapeAttribute(value)}"${
         isSelected ? " selected" : ""
       }>${escapeHtml(label)}</option>`;
     })
@@ -29,12 +29,12 @@ function renderSelectAttrs(props: Partial<SelectProps>, extraAttrs: string[] = [
   // selecting an option inside the preview had no effect - the next
   // re-render overwrote the user's choice.
   const attrs: string[] = ['class="al-inspected-element"', ...extraAttrs];
-  if (props.name) attrs.push(`name="${escapeHtml(props.name)}"`);
+  if (props.name) attrs.push(`name="${escapeAttribute(props.name)}"`);
   if (props.labelAssociation === "for-id") attrs.push('id="al-select"');
   if (props.required) attrs.push("required");
   if (props.disabled) attrs.push("disabled");
   if (props.labelAssociation === "aria-label" && props.label) {
-    attrs.push(`aria-label="${escapeHtml(props.label)}"`);
+    attrs.push(`aria-label="${escapeAttribute(props.label)}"`);
   }
   return attrs.join(" ");
 }
@@ -129,7 +129,7 @@ function renderDivCombobox(props: Partial<SelectProps>): string {
     triggerAttrs.push(`aria-controls="${COMBOBOX_POPUP_ID}"`);
   }
   if (props.labelAssociation === "aria-label" && props.label) {
-    triggerAttrs.push(`aria-label="${escapeHtml(props.label)}"`);
+    triggerAttrs.push(`aria-label="${escapeAttribute(props.label)}"`);
   }
   const trigger =
     `<div ${triggerAttrs.join(" ")}${style}>` +
@@ -148,7 +148,7 @@ function renderDivCombobox(props: Partial<SelectProps>): string {
   // controls match the label against the current options and adopt it.
   const optionRows = options
     .map((label) => {
-      return `<div data-al-pick="${escapeHtml(label)}"${optionRoleAttr}>${escapeHtml(label)}</div>`;
+      return `<div data-al-pick="${escapeAttribute(label)}"${optionRoleAttr}>${escapeHtml(label)}</div>`;
     })
     .join("");
   // The popup's hidden state mirrors the host-owned comboboxOpen prop (the

@@ -1,7 +1,7 @@
 import type { RadioProps } from "./definition";
 import type { RenderedFragment } from "~/types/component";
 import { associateLabel } from "~/utils/associateLabel";
-import { escapeHtml } from "~/utils/escapeHtml";
+import { escapeAttribute, escapeHtml } from "~/utils/escapeHtml";
 import { inlineStyleAttribute } from "~/utils/inlineStyleAttribute";
 import { valueFromLabel } from "~/utils/valueFromLabel";
 
@@ -21,8 +21,8 @@ function inputTag(attrs: InputAttrs): string {
   const parts: string[] = [
     "type=\"radio\"",
     `id="${attrs.id}"`,
-    `name="${escapeHtml(attrs.name)}"`,
-    `value="${escapeHtml(attrs.value)}"`,
+    `name="${escapeAttribute(attrs.name)}"`,
+    `value="${escapeAttribute(attrs.value)}"`,
     // `data-al-child-index` routes the change event through the
     // iframe's `demo:click-child` bridge so the host knows which
     // option the user picked and can update `selectedItem` to match.
@@ -32,7 +32,7 @@ function inputTag(attrs: InputAttrs): string {
   if (attrs.required) parts.push("required");
   if (attrs.disabled) parts.push("disabled");
   if (attrs.ariaLabel)
-    parts.push(`aria-label="${escapeHtml(attrs.ariaLabel)}"`);
+    parts.push(`aria-label="${escapeAttribute(attrs.ariaLabel)}"`);
   return `<input ${parts.join(" ")}${attrs.style} />`;
 }
 

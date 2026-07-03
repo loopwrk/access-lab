@@ -1,7 +1,7 @@
 import type { CheckboxProps } from "./definition";
 import type { RenderedFragment } from "~/types/component";
 import { associateLabel } from "~/utils/associateLabel";
-import { escapeHtml } from "~/utils/escapeHtml";
+import { escapeAttribute, escapeHtml } from "~/utils/escapeHtml";
 import { inlineStyleAttribute } from "~/utils/inlineStyleAttribute";
 
 interface InputAttrs {
@@ -41,8 +41,8 @@ function inputTag(
   const parts: string[] = [
     "type=\"checkbox\"",
     `id="${attrs.id}"`,
-    `name="${escapeHtml(attrs.name)}"`,
-    `value="${escapeHtml(attrs.value)}"`,
+    `name="${escapeAttribute(attrs.name)}"`,
+    `value="${escapeAttribute(attrs.value)}"`,
   ];
   if (inspected) parts.push(`class="al-inspected-element"`);
   if (attrs.checked) parts.push("checked");
@@ -53,7 +53,7 @@ function inputTag(
   // still honours the prop so the user can see the resulting markup.
   if (ariaChecked) parts.push(`aria-checked="${attrs.checked}"`);
   if (attrs.ariaLabel)
-    parts.push(`aria-label="${escapeHtml(attrs.ariaLabel)}"`);
+    parts.push(`aria-label="${escapeAttribute(attrs.ariaLabel)}"`);
   // `indeterminate` is JS-only — see preview-shell.html for the
   // post-render hook that reads this marker.
   if (indeterminate) parts.push("data-al-indeterminate");
@@ -190,7 +190,7 @@ function renderDivCheckboxRow(
     }
 
     case "aria-label":
-      attrs.push(`aria-label="${escapeHtml(labelText)}"`);
+      attrs.push(`aria-label="${escapeAttribute(labelText)}"`);
       return `<div ${attrs.join(" ")}></div>`;
 
     case "none":

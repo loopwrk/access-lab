@@ -1,6 +1,7 @@
 import type { ButtonProps, ButtonRenderAs } from "./types";
 import type { CssLength } from "~/composables/useUnitConversion";
 import type { RenderedFragment } from "~/types/component";
+import { escapeAttribute, escapeHtml } from "~/utils/escapeHtml";
 import { joinStyleDeclarations } from "~/utils/joinStyleDeclarations";
 
 const DEFAULT_LABEL = "Button Label";
@@ -16,14 +17,6 @@ const INPUT_TYPE_BY_RENDER_AS: Partial<Record<ButtonRenderAs, string>> = {
   "input-button": "button",
   "input-reset": "reset",
 };
-
-function escapeHtml(value: string): string {
-  return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-}
-
-function escapeAttribute(value: string): string {
-  return escapeHtml(value).replace(/"/g, "&quot;");
-}
 
 const INSPECTED_CLASS = "al-inspected-element";
 const PRESSED_CLASS = "al-pressed";

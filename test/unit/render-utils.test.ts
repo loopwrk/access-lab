@@ -6,15 +6,15 @@
 
 import { describe, expect, it } from "vitest";
 import { associateLabel } from "../../app/utils/associateLabel";
-import { escapeHtml } from "../../app/utils/escapeHtml";
+import { escapeAttribute, escapeHtml } from "../../app/utils/escapeHtml";
 import { formatCssLength } from "../../app/utils/formatCssLength";
 import { inlineStyleAttribute } from "../../app/utils/inlineStyleAttribute";
 import { valueFromLabel } from "../../app/utils/valueFromLabel";
 
 describe("escapeHtml", () => {
-  it("escapes ampersands, angle brackets, and double quotes", () => {
+  it("escapes ampersands and angle brackets, leaving quotes literal for text content", () => {
     expect(escapeHtml('<a href="x">Fish & chips</a>')).toBe(
-      "&lt;a href=&quot;x&quot;&gt;Fish &amp; chips&lt;/a&gt;",
+      '&lt;a href="x"&gt;Fish &amp; chips&lt;/a&gt;',
     );
   });
 
@@ -41,11 +41,21 @@ describe("escapeHtml", () => {
     expect(escapeHtml(escapeHtml("<"))).toBe("&amp;lt;");
   });
 
+  it("does not escape quotes (text content never needs it)", () => {
+    expect(escapeHtml(`it's a "value"`)).toBe(`it's a "value"`);
+  });
+});
+
+describe("escapeAttribute", () => {
+  it("escapes double quotes on top of the text escapes", () => {
+    expect(escapeAttribute('Find "x" & <more>')).toBe("Find &quot;x&quot; &amp; &lt;more&gt;");
+  });
+
   // Every attribute the renderers emit is double-quoted, so single quotes
   // never need escaping inside them. Leaving `'` untouched keeps labels
   // like "it's" readable in the code drawer.
   it("does not escape single quotes (attributes are always double-quoted)", () => {
-    expect(escapeHtml("it's a 'value'")).toBe("it's a 'value'");
+    expect(escapeAttribute("it's a 'value'")).toBe("it's a 'value'");
   });
 });
 

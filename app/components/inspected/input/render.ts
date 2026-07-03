@@ -1,7 +1,7 @@
 import type { InputProps, InputTextStyleSlice } from "./definition";
 import type { RenderedFragment } from "~/types/component";
 import { associateLabel } from "~/utils/associateLabel";
-import { escapeHtml } from "~/utils/escapeHtml";
+import { escapeAttribute, escapeHtml } from "~/utils/escapeHtml";
 import { formatCssLength } from "~/utils/formatCssLength";
 import { inlineStyleAttribute } from "~/utils/inlineStyleAttribute";
 import { joinStyleDeclarations } from "~/utils/joinStyleDeclarations";
@@ -37,21 +37,21 @@ interface InputAttrs {
 
 function inputTag(attrs: InputAttrs): string {
   const parts: string[] = [
-    `type="${escapeHtml(attrs.type)}"`,
+    `type="${escapeAttribute(attrs.type)}"`,
     `id="${attrs.id}"`,
-    `name="${escapeHtml(attrs.name)}"`,
+    `name="${escapeAttribute(attrs.name)}"`,
   ];
   if (attrs.autocomplete) {
-    parts.push(`autocomplete="${escapeHtml(attrs.autocomplete)}"`);
+    parts.push(`autocomplete="${escapeAttribute(attrs.autocomplete)}"`);
   }
   if (attrs.placeholder) {
-    parts.push(`placeholder="${escapeHtml(attrs.placeholder)}"`);
+    parts.push(`placeholder="${escapeAttribute(attrs.placeholder)}"`);
   }
   if (attrs.required) parts.push("required");
   if (attrs.disabled) parts.push("disabled");
-  if (attrs.title) parts.push(`title="${escapeHtml(attrs.title)}"`);
+  if (attrs.title) parts.push(`title="${escapeAttribute(attrs.title)}"`);
   if (attrs.ariaLabel)
-    parts.push(`aria-label="${escapeHtml(attrs.ariaLabel)}"`);
+    parts.push(`aria-label="${escapeAttribute(attrs.ariaLabel)}"`);
   if (attrs.ariaDescribedby) {
     parts.push(`aria-describedby="${attrs.ariaDescribedby}"`);
   }
