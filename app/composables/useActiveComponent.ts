@@ -1,3 +1,5 @@
+import type { ComponentDefinition } from "~/types/component";
+
 export function useActiveComponent() {
   const activeComponentName = useState<string | null>(
     "al-active-component-name",
@@ -13,7 +15,7 @@ export function useActiveComponent() {
    * Concept tags declared by the active component's definition. Kept
    * for documentation / potential future search use but no longer
    * drives the LearnPanel pinning - see `activeRelatedLearnTopicIds`
-   * below. Set by `ComponentStudio` on mount, cleared on unmount.
+   * below.
    */
   const activeRelevantConcepts = useState<LearnConceptId[]>(
     "al-active-component-relevant-concepts",
@@ -31,10 +33,32 @@ export function useActiveComponent() {
     () => [],
   );
 
+  /**
+   * Adopt a definition as the active component. ComponentStudio calls this
+   * on mount (and clearActiveComponent on unmount), so the four refs above
+   * always change together - readers like PreviewToolbar and LearnPanel
+   * never see a half-updated component.
+   */
+  function setActiveComponent(definition: ComponentDefinition) {
+    activeComponentName.value = definition.name;
+    activeLearnTopicId.value = definition.primaryLearnTopicId ?? null;
+    activeRelevantConcepts.value = definition.relevantConcepts ?? [];
+    activeRelatedLearnTopicIds.value = definition.relatedLearnTopicIds ?? [];
+  }
+
+  function clearActiveComponent() {
+    activeComponentName.value = null;
+    activeLearnTopicId.value = null;
+    activeRelevantConcepts.value = [];
+    activeRelatedLearnTopicIds.value = [];
+  }
+
   return {
     activeComponentName,
     activeLearnTopicId,
     activeRelevantConcepts,
     activeRelatedLearnTopicIds,
+    setActiveComponent,
+    clearActiveComponent,
   };
 }

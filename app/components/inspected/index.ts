@@ -11,6 +11,19 @@ import { radioDefinition } from "./radio/definition";
 import { selectDefinition } from "./select/definition";
 
 /**
+ * Erase a definition's specific prop type for registry storage. The studio
+ * consumes every definition through the untyped prop-bag shape (props flow
+ * through useState + v-model as Record<string, unknown>), so this is the one
+ * sanctioned place that erasure happens - definitions themselves stay fully
+ * typed against their own prop interfaces.
+ */
+function asRegistryEntry<P>(
+  definition: ComponentDefinition<P>,
+): ComponentDefinition<Record<string, unknown>> {
+  return definition as unknown as ComponentDefinition<Record<string, unknown>>;
+}
+
+/**
  * Registry of every inspected component the studio can render. Keyed
  * by ComponentId.
  */
@@ -18,36 +31,16 @@ export const inspectedComponents: Record<
   ComponentId,
   ComponentDefinition<Record<string, unknown>>
 > = {
-  "buttons-action-triggers": actionTriggerDefinition as unknown as ComponentDefinition<
-    Record<string, unknown>
-  >,
-  "buttons-form-buttons": formButtonDefinition as unknown as ComponentDefinition<
-    Record<string, unknown>
-  >,
-  "buttons-toggle-buttons": toggleButtonDefinition as unknown as ComponentDefinition<
-    Record<string, unknown>
-  >,
-  "buttons-switches": switchDefinition as unknown as ComponentDefinition<
-    Record<string, unknown>
-  >,
-  "buttons-disclosure-triggers": disclosureTriggerDefinition as unknown as ComponentDefinition<
-    Record<string, unknown>
-  >,
-  "buttons-menu-triggers": menuTriggerDefinition as unknown as ComponentDefinition<
-    Record<string, unknown>
-  >,
-  "input": inputDefinition as unknown as ComponentDefinition<
-    Record<string, unknown>
-  >,
-  "checkbox": checkboxDefinition as unknown as ComponentDefinition<
-    Record<string, unknown>
-  >,
-  "radio": radioDefinition as unknown as ComponentDefinition<
-    Record<string, unknown>
-  >,
-  "select": selectDefinition as unknown as ComponentDefinition<
-    Record<string, unknown>
-  >,
+  "buttons-action-triggers": asRegistryEntry(actionTriggerDefinition),
+  "buttons-form-buttons": asRegistryEntry(formButtonDefinition),
+  "buttons-toggle-buttons": asRegistryEntry(toggleButtonDefinition),
+  "buttons-switches": asRegistryEntry(switchDefinition),
+  "buttons-disclosure-triggers": asRegistryEntry(disclosureTriggerDefinition),
+  "buttons-menu-triggers": asRegistryEntry(menuTriggerDefinition),
+  input: asRegistryEntry(inputDefinition),
+  checkbox: asRegistryEntry(checkboxDefinition),
+  radio: asRegistryEntry(radioDefinition),
+  select: asRegistryEntry(selectDefinition),
 };
 
 export function getDefinition(

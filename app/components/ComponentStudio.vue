@@ -11,7 +11,9 @@ const props = defineProps<{
 }>();
 
 const { t } = useI18n();
-const { componentProps } = useInspectedComponent(props.definition);
+// previewRef is bound by `<PreviewIframe ref="previewRef">` in the template;
+// the composable's render pipeline posts into the iframe through it.
+const { previewRef, componentProps } = useInspectedComponent(props.definition);
 
 const { dirty: canReset, reset: resetToDefaults } = useComponentReset(
   componentProps,
@@ -24,12 +26,7 @@ const resetLabels = computed(() => ({
   enabledTitle: t("controls.reset.enabledTitle"),
   disabledTitle: t("controls.reset.disabledTitle"),
 }));
-const {
-  activeComponentName,
-  activeLearnTopicId,
-  activeRelevantConcepts,
-  activeRelatedLearnTopicIds,
-} = useActiveComponent();
+const { setActiveComponent, clearActiveComponent } = useActiveComponent();
 
 const renderAs = computed({
   get: () => (componentProps.value.renderAs as string | undefined) ?? "",
@@ -87,32 +84,25 @@ function buildSubmittedDescription(entries: FormSubmittedEntry[]): string {
   return entries.map((e) => `${e.name}=${e.value}`).join(", ");
 }
 
-const formSubmittedAction = computed(() => [
-  {
-    label: t("studio.toasts.formSubmittedLink"),
-    onClick: () => openLearnTopic("form-wrapping"),
-    color: "neutral" as const,
-    variant: "link" as const,
-  },
-]);
+/**
+ * A toast's optional "learn more" action. Every case shares this shape (one
+ * neutral link); the label and topic stay per-case because the copy is part
+ * of the lesson - each toast answers a different "why did that happen?".
+ */
+function learnTopicToastAction(labelKey: string, topicId: string) {
+  return computed(() => [
+    {
+      label: t(labelKey),
+      onClick: () => openLearnTopic(topicId),
+      color: "neutral" as const,
+      variant: "link" as const,
+    },
+  ]);
+}
 
-const imageSubmitAction = computed(() => [
-  {
-    label: t("studio.toasts.imageSubmitLink"),
-    onClick: () => openLearnTopic("image-button-coordinates"),
-    color: "neutral" as const,
-    variant: "link" as const,
-  },
-]);
-
-const submitNoFormAction = computed(() => [
-  {
-    label: t("studio.toasts.submitNoFormLink"),
-    onClick: () => openLearnTopic("button-types"),
-    color: "neutral" as const,
-    variant: "link" as const,
-  },
-]);
+const formSubmittedAction = learnTopicToastAction("studio.toasts.formSubmittedLink", "form-wrapping");
+const imageSubmitAction = learnTopicToastAction("studio.toasts.imageSubmitLink", "image-button-coordinates");
+const submitNoFormAction = learnTopicToastAction("studio.toasts.submitNoFormLink", "button-types");
 
 usePreviewMessage({
   "demo:click": () => {
@@ -167,19 +157,8 @@ usePreviewMessage({
   },
 });
 
-onMounted(() => {
-  activeComponentName.value = props.definition.name;
-  activeLearnTopicId.value = props.definition.primaryLearnTopicId ?? null;
-  activeRelevantConcepts.value = props.definition.relevantConcepts ?? [];
-  activeRelatedLearnTopicIds.value = props.definition.relatedLearnTopicIds ?? [];
-});
-
-onBeforeUnmount(() => {
-  activeComponentName.value = null;
-  activeLearnTopicId.value = null;
-  activeRelevantConcepts.value = [];
-  activeRelatedLearnTopicIds.value = [];
-});
+onMounted(() => setActiveComponent(props.definition));
+onBeforeUnmount(clearActiveComponent);
 </script>
 
 <template>
