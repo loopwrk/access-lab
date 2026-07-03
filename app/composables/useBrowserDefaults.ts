@@ -1,4 +1,9 @@
-// app/composables/useBrowserDefaults.ts
+/**
+ * Probe the browser's user-agent styling for a bare element, resolved in the
+ * light color scheme to match the always-light preview iframe. One of three
+ * sizing composables: useButtonStudioDefaults layers hardcoded fallbacks over
+ * this probe, and useNaturalSize measures rendered intrinsic size through it.
+ */
 export function useBrowserDefaults(tagName: string) {
   const probedKey = `browser-defaults-${tagName}`;
   const defaults = useState<Record<string, string>>(probedKey, () => ({}));

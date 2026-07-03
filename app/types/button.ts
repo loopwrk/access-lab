@@ -7,6 +7,8 @@ export interface ButtonContentProps {
   name?: string;
   src?: string;
   alt?: string;
+  /** Whether the visible content is the label text or an icon glyph. */
+  contentType?: "text" | "icon";
 }
 
 export interface ButtonStyleProps {
@@ -30,8 +32,10 @@ export interface ButtonStyleProps {
 
 export interface ButtonAriaProps {
   ariaLabel?: string;
+}
+
+export interface ButtonStateProps {
   disabled?: boolean;
-  contentType?: "text" | "icon";
 }
 
 export interface ButtonFocusProps {
@@ -45,4 +49,5 @@ export interface BaseButtonProps
   extends ButtonContentProps,
   ButtonStyleProps,
   ButtonAriaProps,
+  ButtonStateProps,
   ButtonFocusProps {}

@@ -99,7 +99,7 @@ function focusContent() {
       :id="PREVIEW_IFRAME_ID"
       ref="iframe"
       src="/preview-shell.html"
-      title="Component preview"
+      :title="t('preview.iframeTitle')"
       sandbox="allow-scripts allow-same-origin allow-forms"
       class="w-full h-full border-none bg-white"
     />

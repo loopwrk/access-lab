@@ -124,6 +124,7 @@
   },
   "preview": {
     "title": "Preview",
+    "iframeTitle": "Component preview",
     "titleLearnLink": "Open the Learn topic for {name}",
     "focusContent": "Focus content",
     "focusContentAria": "Focus the inspected element inside the preview",

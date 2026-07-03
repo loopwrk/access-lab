@@ -19,7 +19,10 @@ export interface CssLength {
 
 const DEFAULT_ROOT_PX = 16;
 
-const SLIDER_REFERENCE_PX = 16;
+// Sliders resolve rem against a fixed 16px base rather than the simulated
+// root: a slider's position represents the value the user chose, and must
+// not jump when the root-rem demo changes the simulated root font-size.
+const FIXED_SLIDER_BASE_PX = 16;
 
 const REM_DECIMAL_PLACES = 2;
 
@@ -34,7 +37,7 @@ export function useUnitConversion() {
 
   function lengthToSliderPx(cssLength: CssLength | null | undefined): number {
     if (!cssLength) return 0;
-    if (cssLength.unit === "rem") return cssLength.value * SLIDER_REFERENCE_PX;
+    if (cssLength.unit === "rem") return cssLength.value * FIXED_SLIDER_BASE_PX;
     return cssLength.value;
   }
 
@@ -51,7 +54,7 @@ export function useUnitConversion() {
   function fromSliderPx(pxValue: number, unit: CssUnit): CssLength {
     if (unit === "rem") {
       return {
-        value: parseFloat((pxValue / SLIDER_REFERENCE_PX).toFixed(REM_DECIMAL_PLACES)),
+        value: parseFloat((pxValue / FIXED_SLIDER_BASE_PX).toFixed(REM_DECIMAL_PLACES)),
         unit: "rem",
       };
     }
@@ -65,7 +68,7 @@ export function useUnitConversion() {
 
   function displayStep(pxStep: number, unit: CssUnit): number {
     if (unit === "rem") {
-      return parseFloat((pxStep / SLIDER_REFERENCE_PX).toFixed(REM_DECIMAL_PLACES));
+      return parseFloat((pxStep / FIXED_SLIDER_BASE_PX).toFixed(REM_DECIMAL_PLACES));
     }
     return pxStep;
   }

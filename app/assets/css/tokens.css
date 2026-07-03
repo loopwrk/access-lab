@@ -23,8 +23,8 @@
   --al-font-size-body: 0.875rem; /* 14px — muted text, code */
   --al-font-size-nav: 0.84375rem; /* 13.5px — sidebar items */
   --al-font-size-heading: 0.9375rem; /* 15px — preview title */
-  --al-font-violation-heading: 1rem; /* 15px — preview title */
-  --al-font-size-brand: 0.9375rem; /* 15px — brand mark */
+  --al-font-violation-heading: 1rem; /* 16px — violation card headings */
+  --al-font-size-brand: 0.9375rem; /* 15px — brand mark + emphasised labels (onboarding titles, popover value labels) */
   --al-font-size-display: 1.125rem; /* 18px — large icons / display text */
   --al-font-size-alert: 0.875rem /* 14px — toast / alert body */;
 

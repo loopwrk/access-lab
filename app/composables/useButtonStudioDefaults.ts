@@ -1,4 +1,5 @@
 import type { ComputedRef } from "vue";
+import { rgbToHex } from "~/utils/rgbToHex";
 
 export interface ButtonStudioDefaults {
   width: number;
@@ -22,14 +23,12 @@ const HARDCODED: ButtonStudioDefaults = {
   borderColor: "#888888",
 };
 
-function rgbToHex(rgbStr: string | undefined): string {
-  if (!rgbStr || !rgbStr.includes("rgb")) return "";
-  const match = rgbStr.match(/\d+/g);
-  if (!match) return "";
-  const [r = 0, g = 0, b = 0] = match.map(Number);
-  return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
-}
-
+/**
+ * Control-panel defaults for the button family: UA-probed values from
+ * useBrowserDefaults where the probe can supply them, hardcoded fallbacks
+ * where it cannot. One of three sizing composables - see also
+ * useNaturalSize (intrinsic size of the rendered content).
+ */
 export function useButtonStudioDefaults(
   tagName: string,
 ): ComputedRef<ButtonStudioDefaults> {

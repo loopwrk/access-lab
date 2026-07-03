@@ -1,9 +1,16 @@
 import type { Ref } from "vue";
 import type { CssLength } from "~/composables/useUnitConversion";
-import type { ButtonContentProps, ButtonStyleProps, ButtonAriaProps } from "~/types/button";
+import type { ButtonContentProps, ButtonStyleProps } from "~/types/button";
 
-type NaturalSizeModel = Partial<ButtonContentProps & ButtonStyleProps & ButtonAriaProps>;
+type NaturalSizeModel = Partial<ButtonContentProps & ButtonStyleProps>;
 
+/**
+ * Measure the intrinsic (content-driven) size of the inspected element as
+ * currently configured - label / icon, font-size, padding, borders - using
+ * useBrowserDefaults' hidden probe element. One of three sizing composables:
+ * useBrowserDefaults probes UA styling, useButtonStudioDefaults derives the
+ * control-panel defaults from that probe.
+ */
 export function useNaturalSize(model: Ref<NaturalSizeModel>, tagName: string) {
   const unitConv = useUnitConversion();
   const { defaults: browserDefaults, measureIntrinsicSize } = useBrowserDefaults(tagName);

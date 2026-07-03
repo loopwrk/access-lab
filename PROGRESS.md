@@ -288,6 +288,8 @@ A full audit for duplication, modularity, and convention drift. The button famil
 
 ### File map
 
+Hand-maintained - check entries against the real tree when you touch this section. Last verified: 3 July 2026.
+
 ```
 access-lab/
 ├── AGENTS.md                       # Conventions + operational quick-start. Read every session.
@@ -301,7 +303,7 @@ access-lab/
 ├── package.json                    # Dependencies + scripts. packageManager: pnpm@10.33.4.
 ├── vitest.config.ts                # vitest project layout (unit + nuxt).
 ├── content/
-│   └── learn/                      # 16 Learn topic markdown files.
+│   └── learn/                      # 22 Learn topic markdown files.
 ├── i18n/
 │   └── locales/en/                 # common.json, controls.json, components.json, learn.json.
 ├── public/
@@ -318,8 +320,8 @@ access-lab/
     │   ├── tokens.css              # CSS custom properties per mode.
     │   └── main.css                # Tailwind v4 @import + @theme static.
     ├── types/
-    │   ├── component.ts            # ComponentDefinition<P>, ControlSchema, ComponentId.
-    │   ├── button.ts               # BaseButtonProps + Content/Style/Aria/Focus sub-types.
+    │   ├── component.ts            # ComponentDefinition<P>, ComponentId, variants, wrappers.
+    │   ├── button.ts               # BaseButtonProps + Content/Style/Aria/State/Focus sub-types.
     │   ├── axe.ts                  # AxeResult, AxeState - shared writer + reader types.
     │   └── typography.ts           # FontSize.
     ├── utils/
@@ -329,7 +331,7 @@ access-lab/
     │   ├── learnConcepts.ts        # Closed-vocabulary concept tag list.
     │   ├── prettifyCss.ts          # CSS pretty-printer (display only).
     │   └── prettifyHtml.ts         # HTML pretty-printer (display only).
-    ├── composables/                # 25 files - see Composables section above.
+    ├── composables/                # 28 files - see Composables section above.
     ├── components/
     │   ├── ComponentStudio.vue     # Mounts iframe + teleports all 4 panels.
     │   ├── PreviewIframe.vue       # Sandboxed iframe + render queue.
@@ -348,16 +350,20 @@ access-lab/
     │   ├── LearnPanel.vue          # Inspector picker (pinned + categorised).
     │   ├── LearnTree.vue           # Read-mode tree (UContentNavigation).
     │   ├── MobileBlocker.vue       # Below-lg overlay.
-    │   ├── RootEmSlider.vue        # Simulated rem-baseline slider.
+    │   ├── ControlsUtilityRow.vue  # Two-cell layout row atop the Controls tab.
+    │   ├── RootRemControl.vue      # Root-rem chip + popover (simulated root px).
+    │   ├── ResetControl.vue        # Reset-all button (teleported per component).
+    │   ├── OnboardingModal.vue     # First-run guided tour.
     │   ├── LengthValueInput.vue    # Number + unit input (px / rem).
     │   ├── content/proseA.vue      # Nuxt Content prose override (external-link icon).
     │   ├── controls/
     │   │   ├── LengthControl.vue   # Slider + value input.
     │   │   ├── SplitSpacingControl.vue # Merge / split 4-sided.
     │   │   └── ColorPickerRow.vue  # Swatch + label + hex input atom.
-    │   ├── studio/sections/  # 11 sections: Reset, Content, Aria, Text,
-    │   │                           # Dimensions, Border, Colours, Focus,
-    │   │                           # ToggleState, SwitchState, DisclosureState, MenuState.
+    │   ├── studio/sections/        # 11 sections (typed to the button family):
+    │   │                           # Content, Aria, Text, Dimensions, Border,
+    │   │                           # Colours, Focus, ToggleState, SwitchState,
+    │   │                           # DisclosureState, MenuState.
     │   └── inspected/
     │       ├── index.ts            # ComponentId → ComponentDefinition registry.
     │       ├── buttons/            # shared/ + 6 pattern dirs.
@@ -448,7 +454,7 @@ Read for context first, then trace a single user interaction end-to-end.
 - **Token chain.** `tokens.css` → `@theme static` → `app.config.ts` → `--ui-*` overrides. Every colour flows through this; no shortcuts.
 - **Iframe boundary.** App UI = Nuxt UI. Inspected components = bare HTML in the iframe. They communicate exclusively via `postMessage` with origin checking. The iframe is sandboxed; `allow-scripts allow-same-origin` is intentional for axe.
 - **`defineModel` of the bag.** A single `Partial<BaseButtonProps>` ref passes through every control section via `defineModel`. Sections read/write through `useModelUpdater(model).update(key, value)` - direct mutation, not spread.
-- **Three-engine audit.** axe-core in iframe + prop-based rules on the host + DOM-rules on iframe-side measurements. Three `useState` keys, merged by `useAllViolations()`. The Issues panel and toolbar badges consume the merge.
+- **Three-engine audit.** axe-core in iframe + prop-based rules on the host + DOM-rules on iframe-side measurements. Shared state accessors in `useAxeResults.ts` (`useAxeResults` / `useCustomViolations` / `useDomViolations` / `useDomMeasurement`), merged by `useAllViolations()`; `useAxeCounts` derives the badge counts from that same merge.
 - **Teleport for cross-layout injection.** `ComponentStudio` teleports controls + 3 panels into stable-id targets in the layout. The layout owns DOM structure; the page owns content.
 - **VueUse for lifecycle.** Never `setTimeout` directly; never `addEventListener` directly. `useEventListener`, `useTimeoutFn`, `useDebounceFn` give automatic cleanup.
 - **`useState` for cross-component state.** Pinia is gone. Composables that wrap `useState` are the canonical state-sharing primitive.
