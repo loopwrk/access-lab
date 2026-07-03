@@ -58,7 +58,7 @@ These are global, always reachable, and persisted across sessions (cookie + loca
 
 For every inspected component, the Controls tab exposes the props that meaningfully affect accessibility. Sections are composed per-component from a shared library, so visiting a new component feels familiar:
 
-- **Reset to browser defaults** - at the top of every component's controls. One click strips every override and shows what the bare element looks like in the current browser.
+- **Reset all** - in the utility row at the top of the Controls tab. One click returns every control-panel value (content, ARIA, styling, behaviour) to the component's defaults; the variant and wrapper chips above the preview are toolbar-owned and are left as chosen. The button stays disabled while nothing differs from the defaults.
 - **Content section** - label / aria-label / value / name / disabled. Each component picks the relevant subset.
 - **Label association (form inputs)** - `for`/`id` vs wrapping vs `aria-label` vs none. The anti-patterns are present so the user can see what each choice produces.
 - **Group mode (checkbox / radio)** - `<fieldset>` + `<legend>` vs visible heading only. The "no fieldset" path is an anti-pattern axe-core misses - a custom rule catches it.
@@ -68,7 +68,7 @@ For every inspected component, the Controls tab exposes the props that meaningfu
 - **Focus indicator** - width, offset, colour.
 - **Pattern-specific sections** - Toggle State, Switch State, Disclosure State, Menu State. Each surfaces the ARIA contract for that pattern with both correct and incorrect choices on the same control.
 
-A global rem-baseline slider lets the user simulate a non-default root font-size - the rem demo: every rem-based control resolves against that baseline, so the user sees what happens when their site's root is, say, 14px instead of 16.
+The Root rem control (the utility row's other cell) simulates a non-default root font-size - the rem demo: a chip opens a popover with a slider (8-32px) and quick presets, and every rem-based control resolves against the chosen baseline, so the user sees what happens when their site's root is, say, 14px instead of 16.
 
 ## Live issues panel
 
@@ -105,7 +105,7 @@ Each pane has two copy buttons: **Copy inline** copies the exact markup, and **C
 - **Styling:** Tailwind CSS v4 with CSS-first `@theme static` configuration (no `tailwind.config.ts`).
 - **State:** `useState('<key>', init)` for cross-component reactive state, wrapped by setup-context composables that expose the public API. No Pinia.
 - **Accessibility engine:** `axe-core 4.11.4` running inside the preview iframe, complemented by a prop-based custom-rule engine and a DOM-measurement-based engine in the host.
-- **Persistence:** LocalStorage for personal preferences (theme, font, font-size, control-settings, code-drawer height, contrast). Cookie for color-mode preference (so SSR can pre-render the right theme on `/learn/*`).
+- **Persistence:** LocalStorage for personal preferences (theme, font, text size, high-contrast, code-drawer height, first-run onboarding state). Cookie for color-mode preference (so SSR can pre-render the right theme on `/learn/*`). Control-panel values are per-session: they survive route changes but reset on reload.
 - **Build target:** Static (`nuxt generate`). Hybrid rendering: `/components/**` is `ssr: false`, `/learn/**` is `ssr: true`.
 
 ## Local setup
