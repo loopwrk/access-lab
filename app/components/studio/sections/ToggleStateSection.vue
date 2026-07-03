@@ -13,7 +13,6 @@ const model = defineModel<ToggleProps>({ required: true });
 const { update } = useModelUpdater(model);
 
 const { t } = useI18n();
-const { focusLearnTopic } = useInspectorTab();
 
 const behaviour = computed(() => model.value.toggleBehaviour ?? "none");
 
@@ -56,7 +55,7 @@ const OPTIONS: { value: ToggleBehaviour; labelKey: string }[] = [
           <a
             href="#topic-button-disabled-states"
             class="control-label-link"
-            @click.stop.prevent="focusLearnTopic('button-disabled-states')"
+            @click.stop.prevent="openLearnTopic('button-disabled-states')"
           >
             {{ t("controls.disabled") }}
           </a>

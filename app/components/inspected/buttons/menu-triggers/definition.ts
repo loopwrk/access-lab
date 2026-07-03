@@ -39,7 +39,6 @@ export const menuTriggerDefinition: ComponentDefinition<ButtonProps> = {
   // in-anchor lesson.
   contextWrappers: [linkWrapper],
 
-  controls: [],
 
   domRules: [targetSizeAA, targetSizeAAA],
 

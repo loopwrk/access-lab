@@ -109,7 +109,6 @@ export const checkboxDefinition: ComponentDefinition<CheckboxProps> = {
     },
   ],
   contextWrappers: [formSubmitWrapper],
-  controls: [],
   rules: [
     checkboxGroupNoFieldset,
     checkboxAriaCheckedRedundant,

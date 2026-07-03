@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { AxeResult, CheckResult, ImpactValue } from "~/types/axe";
-import type { RuleClassification } from "~/utils/issueFormatting";
+import { severityBucket, type RuleClassification } from "~/utils/issueFormatting";
 
 const props = defineProps<{
   color: "error" | "warning" | "success";
@@ -12,7 +12,6 @@ const props = defineProps<{
 }>();
 
 const { t } = useI18n();
-const { focusLearnTopic } = useInspectorTab();
 
 const SECTION_LABEL_CLASS =
   "text-(length:--al-font-size-caption) font-bold uppercase tracking-[0.06em] mt-0 mb-[5px]";
@@ -42,12 +41,10 @@ function onOpenChange(next: boolean) {
 }
 
 function impactColor(impact: ImpactValue | undefined): "error" | "warning" | "info" | "neutral" {
-  switch (impact) {
+  switch (severityBucket(impact)) {
     case "critical":
-    case "serious":
       return "error";
-    case "moderate":
-    case "minor":
+    case "warning":
       return "warning";
     default:
       return "neutral";
@@ -275,7 +272,7 @@ function uniqueNoneChecks(violation: AxeResult): CheckResult[] {
                         v-if="violation.learnTopicId"
                         type="button"
                         class="inline-flex items-center text-(length:--al-font-size-detail) text-(--brand) bg-transparent border-0 p-0 cursor-pointer hover:text-(--brand-hover) hover:underline self-start"
-                        @click="focusLearnTopic(violation.learnTopicId)"
+                        @click="openLearnTopic(violation.learnTopicId)"
                       >
                         {{ t("issues.learnMoreInApp") }}
                         <span

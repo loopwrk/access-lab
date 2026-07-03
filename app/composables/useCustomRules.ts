@@ -1,42 +1,15 @@
-import type { Rule, ViolationResult } from "~/rules/types";
+import type { Rule } from "~/rules/types";
 import type { AxeResult } from "~/types/axe";
+import { axeResultFromRule } from "~/utils/axeResultFromRule";
 
-function violationToAxeResult(
-  rule: Rule,
-  result: ViolationResult,
-  tagName: string,
-): AxeResult {
-  return {
-    id: rule.id,
-    description: rule.description,
-    help: rule.help,
-    helpUrl: rule.helpUrl ?? "",
-    learnTopicId: rule.learnTopicId,
-    supersededByAxe: rule.supersededByAxe,
-    impact: result.severity,
-    tags: rule.tags ?? [],
-    nodes: [
-      {
-        html: `<${tagName}>`,
-        impact: result.severity,
-        target: [tagName],
-        any: [],
-        all: [],
-        none: [
-          {
-            id: rule.id,
-            impact: result.severity,
-            message: result.message,
-            data: null,
-          },
-        ],
-      },
-    ],
-  };
-}
-
+/**
+ * Prop-based rule engine. `evaluate` runs every registered rule against the
+ * current prop bag and publishes the firing rules to the shared
+ * custom-violations state, where useAllViolations and useAxeCounts merge
+ * them with axe + DOM-rule findings.
+ */
 export function useCustomRules(rules: Rule[], tagName: string) {
-  const customViolations = useState<AxeResult[]>("custom-violations", () => []);
+  const customViolations = useCustomViolations();
 
   function evaluate(props: Record<string, unknown>) {
     const results: AxeResult[] = [];
@@ -44,16 +17,12 @@ export function useCustomRules(rules: Rule[], tagName: string) {
     for (const rule of rules) {
       const result = rule.evaluate(props);
       if (result) {
-        results.push(violationToAxeResult(rule, result, tagName));
+        results.push(axeResultFromRule(rule, result, tagName));
       }
     }
 
     customViolations.value = results;
   }
 
-  function clear() {
-    customViolations.value = [];
-  }
-
-  return { customViolations, evaluate, clear };
+  return { customViolations, evaluate };
 }

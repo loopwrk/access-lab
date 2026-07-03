@@ -9,7 +9,6 @@ interface Props {
 }
 
 const { t } = useI18n();
-const { focusLearnTopic } = useInspectorTab();
 
 const props = withDefaults(defineProps<Props>(), {
   elementName: () => "element",
@@ -145,7 +144,7 @@ function select(key: string) {
           focus-visible:border-b-(color:--brand)
           focus-visible:outline-[3px] focus-visible:outline-(--focus-ring) focus-visible:outline-offset-[2px]
         "
-        @click.prevent="focusLearnTopic(selectedWrapper!.learnTopicId!)"
+        @click.prevent="openLearnTopic(selectedWrapper!.learnTopicId!)"
       >
         <span class="sr-only">
           {{ t('wrapperToggles.containerLearnPrefix') }} {{ selectedWrapper.label }}

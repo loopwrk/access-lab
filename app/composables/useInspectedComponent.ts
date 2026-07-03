@@ -34,7 +34,7 @@ export function useInspectedComponent(
     render: (html: string, css?: string, rootFontSize?: number) => void;
   } | null>(null);
 
-  const componentProps = useState<Partial<Record<string, unknown>>>(
+  const componentProps = useState<Record<string, unknown>>(
     `inspected-component-props:${definition.id}`,
     () => ({ ...definition.defaultProps }),
   );

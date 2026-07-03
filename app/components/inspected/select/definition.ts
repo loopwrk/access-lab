@@ -86,7 +86,6 @@ export const selectDefinition: ComponentDefinition<SelectProps> = {
     },
   ],
   contextWrappers: [formSubmitWrapper],
-  controls: [],
   rules: [selectNoLabel, selectOptionsEmpty, selectNotKeyboard],
   primaryLearnTopicId: "select",
   relatedLearnTopicIds: ["accessible-name", "vague-label", "native-rendering", "form-wrapping"],

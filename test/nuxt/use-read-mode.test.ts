@@ -5,9 +5,9 @@
  * — and close() restores that path and clears the stash (falling back to "/"
  * when nothing was stashed). isOpen / activeTopicId derive from the route.
  *
- * useInspectorTab.focusLearnTopic is the single entry point the rest of the
- * studio calls (control labels, issues panel, toolbar); it forwards to open(),
- * so it must stash + navigate the same way.
+ * openLearnTopic is the single entry point the rest of the studio calls
+ * (control labels, issues panel, toolbar); it forwards to open(), so it must
+ * stash + navigate the same way.
  *
  * Driven through the real Nuxt router so the route-derived computeds are
  * exercised honestly. The composable's open/switchTopic/close fire navigation
@@ -21,15 +21,13 @@ import { mountSuspended } from "@nuxt/test-utils/runtime";
 import { flushPromises } from "@vue/test-utils";
 import { defineComponent, h } from "vue";
 import { useRoute, useRouter, useState } from "#imports";
-import { useReadMode } from "~/composables/useReadMode";
-import { useInspectorTab } from "~/composables/useInspectorTab";
+import { openLearnTopic, useReadMode } from "~/composables/useReadMode";
 
 let api: {
   route: ReturnType<typeof useRoute>;
   router: ReturnType<typeof useRouter>;
   returnPath: { value: string | null };
   readMode: ReturnType<typeof useReadMode>;
-  inspector: ReturnType<typeof useInspectorTab>;
 };
 
 beforeAll(async () => {
@@ -40,7 +38,6 @@ beforeAll(async () => {
         router: useRouter(),
         returnPath: useState<string | null>("studio-return-path", () => null),
         readMode: useReadMode(),
-        inspector: useInspectorTab(),
       };
       return () => h("div");
     },
@@ -120,9 +117,9 @@ describe("useReadMode", () => {
   });
 });
 
-describe("useInspectorTab.focusLearnTopic", () => {
+describe("openLearnTopic", () => {
   it("forwards to the reader: stashes the studio path and opens the topic", async () => {
-    api.inspector.focusLearnTopic("vague-label");
+    openLearnTopic("vague-label");
     expect(api.returnPath.value).toBe(STUDIO_PATH);
     await waitForPath("/learn/vague-label");
     expect(api.route.path).toBe("/learn/vague-label");

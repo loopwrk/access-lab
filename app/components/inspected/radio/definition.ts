@@ -63,7 +63,6 @@ export const radioDefinition: ComponentDefinition<RadioProps> = {
     },
   ],
   contextWrappers: [formSubmitWrapper],
-  controls: [],
   rules: [radioGroupNoFieldset],
   primaryLearnTopicId: "radio",
   relatedLearnTopicIds: [

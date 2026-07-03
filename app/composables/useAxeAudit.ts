@@ -1,5 +1,4 @@
 import { PREVIEW_MESSAGE, type HostBoundMessage } from "~/types/preview-messages";
-import type { DomMeasurement } from "~/rules/types";
 import type { AxeResult } from "~/types/axe";
 
 function asAxeResults(value: unknown): AxeResult[] {
@@ -17,10 +16,7 @@ export function useAxeAudit(iframeRef: {
   const isReady = computed(() => state.value.isReady);
   const errorMessage = computed(() => state.value.errorMessage);
 
-  const measurement = useState<DomMeasurement | null>(
-    "dom-measurement",
-    () => null,
-  );
+  const measurement = useDomMeasurement();
 
   function resetState() {
     state.value.isReady = false;

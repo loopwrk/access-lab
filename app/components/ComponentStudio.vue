@@ -11,8 +11,7 @@ const props = defineProps<{
 }>();
 
 const { t } = useI18n();
-const { focusLearnTopic } = useInspectorTab();
-const { previewRef, componentProps } = useInspectedComponent(props.definition);
+const { componentProps } = useInspectedComponent(props.definition);
 
 const { dirty: canReset, reset: resetToDefaults } = useComponentReset(
   componentProps,
@@ -91,7 +90,7 @@ function buildSubmittedDescription(entries: FormSubmittedEntry[]): string {
 const formSubmittedAction = computed(() => [
   {
     label: t("studio.toasts.formSubmittedLink"),
-    onClick: () => focusLearnTopic("form-wrapping"),
+    onClick: () => openLearnTopic("form-wrapping"),
     color: "neutral" as const,
     variant: "link" as const,
   },
@@ -100,7 +99,7 @@ const formSubmittedAction = computed(() => [
 const imageSubmitAction = computed(() => [
   {
     label: t("studio.toasts.imageSubmitLink"),
-    onClick: () => focusLearnTopic("image-button-coordinates"),
+    onClick: () => openLearnTopic("image-button-coordinates"),
     color: "neutral" as const,
     variant: "link" as const,
   },
@@ -109,7 +108,7 @@ const imageSubmitAction = computed(() => [
 const submitNoFormAction = computed(() => [
   {
     label: t("studio.toasts.submitNoFormLink"),
-    onClick: () => focusLearnTopic("button-types"),
+    onClick: () => openLearnTopic("button-types"),
     color: "neutral" as const,
     variant: "link" as const,
   },

@@ -66,7 +66,6 @@ function makeDef(over: Partial<ComponentDefinition> = {}): ComponentDefinition {
     name: "Test Component",
     tagName: "button",
     defaultProps: { renderAs: "a", wrappers: [] },
-    controls: [],
     rules: [],
     manualChecklist: [],
     render: () => ({ html: "<button>x</button>" }),

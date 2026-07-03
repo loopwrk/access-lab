@@ -103,7 +103,6 @@ export const switchDefinition: ComponentDefinition<ButtonProps> = {
 
   contextWrappers: [formWrapper, linkWrapper],
 
-  controls: [],
 
   domRules: [targetSizeAA, targetSizeAAA],
 

@@ -2,7 +2,7 @@
 import type { TabsItem } from "@nuxt/ui";
 
 const { t } = useI18n();
-const { activeTab, focusLearnTopic } = useInspectorTab();
+const { activeTab } = useInspectorTab();
 const { simulatedRootPx } = useUnitConversion();
 
 const rootRemOpen = ref(false);
@@ -57,7 +57,7 @@ const rootRemLabels = computed(() => ({
                 v-model="simulatedRootPx"
                 v-model:open="rootRemOpen"
                 :labels="rootRemLabels"
-                @learn="focusLearnTopic('rem-units')"
+                @learn="openLearnTopic('rem-units')"
               />
             </template>
             <template #end>

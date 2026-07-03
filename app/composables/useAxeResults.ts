@@ -1,13 +1,39 @@
+import type { DomMeasurement } from "~/rules/types";
 import type { AxeResult, AxeState } from "~/types/axe";
+import { severityBucket } from "~/utils/issueFormatting";
 
+// Keys for the audit state shared across the pipeline. They live only inside
+// these accessors - every reader and writer resolves the same state through
+// the function, so a key typo is impossible rather than a silent empty store.
+const AXE_RESULTS_KEY = "al-axe-results";
+const CUSTOM_VIOLATIONS_KEY = "al-custom-violations";
+const DOM_VIOLATIONS_KEY = "al-dom-violations";
+const DOM_MEASUREMENT_KEY = "al-dom-measurement";
+
+/** Raw axe-core output posted from the preview iframe (written by useAxeAudit). */
 export function useAxeResults() {
-  return useState<AxeState>("axe-results", () => ({
+  return useState<AxeState>(AXE_RESULTS_KEY, () => ({
     violations: [],
     passes: [],
     incomplete: [],
     isReady: false,
     errorMessage: null,
   }));
+}
+
+/** Violations from the prop-based rule engine (written by useCustomRules). */
+export function useCustomViolations() {
+  return useState<AxeResult[]>(CUSTOM_VIOLATIONS_KEY, () => []);
+}
+
+/** Violations from the DOM-measurement rule engine (written by useDomRules). */
+export function useDomViolations() {
+  return useState<AxeResult[]>(DOM_VIOLATIONS_KEY, () => []);
+}
+
+/** Latest element measurement posted by the preview iframe (written by useAxeAudit). */
+export function useDomMeasurement() {
+  return useState<DomMeasurement | null>(DOM_MEASUREMENT_KEY, () => null);
 }
 
 /**
@@ -32,8 +58,8 @@ function withoutAxeDuplicates(
 
 export function useAllViolations() {
   const axeState = useAxeResults();
-  const customViolations = useState<AxeResult[]>("custom-violations", () => []);
-  const domViolations = useState<AxeResult[]>("dom-violations", () => []);
+  const customViolations = useCustomViolations();
+  const domViolations = useDomViolations();
 
   const allViolations = computed(() => {
     const axeViolations = axeState.value.violations;
@@ -47,39 +73,20 @@ export function useAllViolations() {
   return { allViolations };
 }
 
+/**
+ * Counts for the toolbar badges, derived from the same merged list the
+ * Issues panel renders (useAllViolations), so the two can never disagree.
+ */
 export function useAxeCounts() {
   const axeState = useAxeResults();
-  const customViolations = useState<AxeResult[]>("custom-violations", () => []);
-  const domViolations = useState<AxeResult[]>("dom-violations", () => []);
-
-  const isCritical = (impact: string | null | undefined) =>
-    impact === "critical" || impact === "serious";
-  const isWarning = (impact: string | null | undefined) =>
-    impact === "moderate" || impact === "minor";
-
-  // Same axe-wins suppression as useAllViolations, so the toolbar badges and
-  // the Issues panel always agree on the counts.
-  const effectiveCustom = computed(() =>
-    withoutAxeDuplicates(customViolations.value, axeState.value.violations),
-  );
-  const effectiveDom = computed(() =>
-    withoutAxeDuplicates(domViolations.value, axeState.value.violations),
-  );
+  const { allViolations } = useAllViolations();
 
   const criticalCount = computed(
-    () =>
-      axeState.value.violations.filter((v) => isCritical(v.impact)).length
-      + effectiveCustom.value.filter((v) => isCritical(v.impact)).length
-      + effectiveDom.value.filter((v) => isCritical(v.impact)).length,
+    () => allViolations.value.filter((v) => severityBucket(v.impact) === "critical").length,
   );
-
   const warningCount = computed(
-    () =>
-      axeState.value.violations.filter((v) => isWarning(v.impact)).length
-      + effectiveCustom.value.filter((v) => isWarning(v.impact)).length
-      + effectiveDom.value.filter((v) => isWarning(v.impact)).length,
+    () => allViolations.value.filter((v) => severityBucket(v.impact) === "warning").length,
   );
-
   const passingCount = computed(() => axeState.value.passes.length);
 
   return { criticalCount, warningCount, passingCount };

@@ -1,13 +1,12 @@
 <script setup lang="ts">
 defineProps<{ topic: string; label: string }>();
-const { focusLearnTopic } = useInspectorTab();
 </script>
 
 <template>
   <a
     :href="`#topic-${topic}`"
     class="control-label-link"
-    @click.stop.prevent="focusLearnTopic(topic)"
+    @click.stop.prevent="openLearnTopic(topic)"
   >
     {{ label }}
     <UIcon

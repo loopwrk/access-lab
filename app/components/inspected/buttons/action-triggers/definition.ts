@@ -37,7 +37,6 @@ export const actionTriggerDefinition: ComponentDefinition<ButtonProps> = {
 
   contextWrappers: [formWrapper, linkWrapper],
 
-  controls: [],
 
   domRules: [targetSizeAA, targetSizeAAA],
 

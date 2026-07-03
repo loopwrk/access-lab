@@ -1,10 +1,11 @@
 type ImpactValue = "minor" | "moderate" | "serious" | "critical" | null;
 
 /**
- * A rule that evaluates against a component's prop values. Runs in the host
- * page; cheap, synchronous, no DOM access.
+ * Metadata shared by both rule engines - the prop-based `Rule` and the
+ * DOM-measurement `DomRule`. A firing rule is translated into the shared
+ * AxeResult shape by `~/utils/axeResultFromRule`.
  */
-export interface Rule {
+export interface RuleBase {
   id: string;
   title: string;
   wcag: string;
@@ -20,12 +21,31 @@ export interface Rule {
   learnTopicId?: string;
   /**
    * axe-core rule ids that already report this same problem. When any is
-   * present in the axe results, this custom rule's violation is suppressed so
+   * present in the axe results, this rule's violation is suppressed so
    * axe's own finding wins (see useAllViolations). Use only for the rare
-   * custom rule that overlaps a real axe rule rather than filling a gap axe
+   * rule that overlaps a real axe rule rather than filling a gap axe
    * misses - most custom rules exist precisely because axe is silent.
    */
   supersededByAxe?: string[];
+  /**
+   * i18n key for a rule-specific "why it matters" explainer. When set, the
+   * Issues panel shows this instead of the generic, tag-based fallback so the
+   * card can speak to the rule's real human impact rather than a WCAG-level
+   * blurb. Custom-rule text lives in `i18n/locales/en/rules.json`.
+   */
+  whyItMattersKey?: string;
+  /** i18n key for a rule-specific "how to fix" instruction. See whyItMattersKey. */
+  howToFixKey?: string;
+  /**
+   * i18n key for the heading shown above this rule's finding detail (the
+   * `none`-check message). Overrides the auto-generated rule-id heading, so
+   * e.g. target-size can label its measurement "Current size" instead of
+   * repeating "Target Size". See whyItMattersKey.
+   */
+  detailLabelKey?: string;
+}
+
+export interface Rule extends RuleBase {
   evaluate: (props: Record<string, unknown>) => ViolationResult | null;
 }
 
@@ -59,32 +79,7 @@ export interface DomMeasurement {
  * container together). Measurement is captured inside the iframe; the rule's
  * evaluate fn runs in the host page using the posted measurement.
  */
-export interface DomRule {
-  id: string;
-  title: string;
-  wcag: string;
-  description: string;
-  help: string;
-  helpUrl?: string;
-  tags?: string[];
-  /** See Rule.learnTopicId. */
-  learnTopicId?: string;
-  /**
-   * i18n key for a rule-specific "why it matters" explainer. When set, the
-   * Issues panel shows this instead of the generic, tag-based fallback so the
-   * card can speak to the rule's real human impact rather than a WCAG-level
-   * blurb. Custom-rule text lives in `i18n/locales/en/rules.json`.
-   */
-  whyItMattersKey?: string;
-  /** i18n key for a rule-specific "how to fix" instruction. See whyItMattersKey. */
-  howToFixKey?: string;
-  /**
-   * i18n key for the heading shown above this rule's finding detail (the
-   * `none`-check message). Overrides the auto-generated rule-id heading, so
-   * e.g. target-size can label its measurement "Current size" instead of
-   * repeating "Target Size". See whyItMattersKey.
-   */
-  detailLabelKey?: string;
+export interface DomRule extends RuleBase {
   evaluate: (measurement: DomMeasurement) => ViolationResult | null;
 }
 

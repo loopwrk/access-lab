@@ -168,7 +168,6 @@ export const inputDefinition: ComponentDefinition<InputProps> = {
     },
   ],
   contextWrappers: [formSubmitWrapper],
-  controls: [],
   rules: [
     placeholderContrast,
     ariaLabelWithoutVisibleLabel,

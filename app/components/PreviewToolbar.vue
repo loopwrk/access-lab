@@ -1,7 +1,6 @@
 <script setup lang="ts">
 const { t } = useI18n();
 const { activeComponentName, activeLearnTopicId } = useActiveComponent();
-const { focusLearnTopic } = useInspectorTab();
 const { criticalCount, warningCount, passingCount } = useAxeCounts();
 const { allViolations } = useAllViolations();
 
@@ -10,12 +9,12 @@ const previewTitle = computed(
 );
 const criticalViolationIds = computed(() =>
   allViolations.value
-    .filter((v) => v.impact === "critical" || v.impact === "serious")
+    .filter((v) => severityBucket(v.impact) === "critical")
     .map((v) => v.id),
 );
 const warningViolationIds = computed(() =>
   allViolations.value
-    .filter((v) => v.impact === "moderate" || v.impact === "minor")
+    .filter((v) => severityBucket(v.impact) === "warning")
     .map((v) => v.id),
 );
 </script>
@@ -31,7 +30,7 @@ const warningViolationIds = computed(() =>
             focus-visible:text-(--brand) focus-visible:underline focus-visible:underline-offset-[3px]
             focus-visible:outline-[3px] focus-visible:outline-(--focus-ring) focus-visible:outline-offset-[3px]
             focus-visible:rounded-sm
-          " @click.prevent="focusLearnTopic(activeLearnTopicId)">
+          " @click.prevent="openLearnTopic(activeLearnTopicId)">
           {{ previewTitle }}
           <UIcon name="i-lucide-arrow-up-right" class="size-4 inline-block ml-0.5 opacity-70 align-[-2px]"
             aria-hidden="true" />

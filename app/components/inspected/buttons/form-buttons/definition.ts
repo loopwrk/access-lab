@@ -37,7 +37,6 @@ export const formButtonDefinition: ComponentDefinition<ButtonProps> = {
 
   contextWrappers: [formWrapper, linkWrapper, buttonWrapper],
 
-  controls: [],
 
   domRules: [targetSizeAA, targetSizeAAA],
 

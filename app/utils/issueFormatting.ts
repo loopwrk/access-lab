@@ -16,6 +16,19 @@ export function formatRuleId(id: string): string {
     .join(" ");
 }
 
+export type SeverityBucket = "critical" | "warning";
+
+/**
+ * Group an axe impact into the studio's two severity buckets: critical
+ * (axe critical/serious) and warning (axe moderate/minor). The toolbar
+ * badge counts and the issue-card colours both read this one grouping.
+ */
+export function severityBucket(impact: string | null | undefined): SeverityBucket | null {
+  if (impact === "critical" || impact === "serious") return "critical";
+  if (impact === "moderate" || impact === "minor") return "warning";
+  return null;
+}
+
 export type RuleClassification = "A" | "AA" | "AAA" | "Best Practice";
 
 const TAG_TO_LEVEL: Array<[string, "A" | "AA" | "AAA"]> = [

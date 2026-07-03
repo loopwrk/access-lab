@@ -16,10 +16,14 @@ import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import { defineComponent, h, nextTick } from "vue";
 import type { ComputedRef, Ref } from "vue";
-import { useState } from "#imports";
 import { useCustomRules } from "~/composables/useCustomRules";
 import { useDomRules } from "~/composables/useDomRules";
-import { useAllViolations, useAxeCounts, useAxeResults } from "~/composables/useAxeResults";
+import {
+  useAllViolations,
+  useAxeCounts,
+  useAxeResults,
+  useDomMeasurement,
+} from "~/composables/useAxeResults";
 import type { DomMeasurement, DomRule, Rule } from "~/rules/types";
 import type { AxeResult, AxeState, ImpactValue } from "~/types/axe";
 
@@ -100,7 +104,7 @@ beforeAll(async () => {
       const custom = useCustomRules([ruleSerious, ruleModerate, ruleNever, ruleSupersedable], "button");
       useDomRules([domRuleCritical]);
       const axe = useAxeResults();
-      const measurement = useState<DomMeasurement | null>("dom-measurement", () => null);
+      const measurement = useDomMeasurement();
       const { allViolations } = useAllViolations();
       const counts = useAxeCounts();
       api = { custom, axe, measurement, allViolations, ...counts };
@@ -113,7 +117,7 @@ beforeAll(async () => {
 beforeEach(async () => {
   api.axe.value.violations = [];
   api.axe.value.passes = [];
-  api.custom.clear();
+  api.custom.customViolations.value = [];
   api.measurement.value = null;
   await nextTick();
 });

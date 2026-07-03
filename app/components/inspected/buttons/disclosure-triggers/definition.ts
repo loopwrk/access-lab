@@ -43,7 +43,6 @@ export const disclosureTriggerDefinition: ComponentDefinition<ButtonProps> = {
 
   contextWrappers: [formWrapper, linkWrapper],
 
-  controls: [],
 
   domRules: [targetSizeAA, targetSizeAAA],
 

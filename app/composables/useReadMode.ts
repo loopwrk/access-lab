@@ -33,3 +33,13 @@ export function useReadMode() {
 
   return { activeTopicId, isOpen, open, close, switchTopic };
 }
+
+/**
+ * Open a Learn topic in the reader - the single entry point the studio uses
+ * (control labels, issues panel, toolbar, toasts). Resolves useReadMode
+ * lazily at call time, so a component with a learn link never touches the
+ * router during setup.
+ */
+export function openLearnTopic(topicId: string) {
+  useReadMode().open(topicId);
+}

@@ -11,7 +11,6 @@ interface Props {
 }
 
 const { t } = useI18n();
-const { focusLearnTopic } = useInspectorTab();
 
 const props = withDefaults(defineProps<Props>(), {
   placeholder: () => "",
@@ -98,7 +97,7 @@ function select(key: string) {
 
 function openSeeAlso(topicId: string) {
   isOpen.value = false;
-  focusLearnTopic(topicId);
+  openLearnTopic(topicId);
 }
 
 const { te } = useI18n();

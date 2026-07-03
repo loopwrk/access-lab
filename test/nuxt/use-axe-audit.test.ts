@@ -7,7 +7,7 @@
  *     message (else null); dom:measurement stores the DOM measurement;
  *   - resetState on mount clears the shared audit state.
  *
- * Nuxt env: it's useState-backed (useAxeResults + dom-measurement) and attaches
+ * Nuxt env: it's useState-backed (useAxeResults + useDomMeasurement) and attaches
  * a window message listener. We drive it with synthetic MessageEvents whose
  * `source` we force to match (or not match) the fake iframe contentWindow.
  */
@@ -16,9 +16,8 @@ import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import { defineComponent, h, nextTick } from "vue";
 import type { Ref } from "vue";
-import { useState } from "#imports";
 import { useAxeAudit } from "~/composables/useAxeAudit";
-import { useAxeResults } from "~/composables/useAxeResults";
+import { useAxeResults, useDomMeasurement } from "~/composables/useAxeResults";
 import type { AxeState } from "~/types/axe";
 import type { DomMeasurement } from "~/rules/types";
 
@@ -34,7 +33,7 @@ beforeAll(async () => {
     setup() {
       useAxeAudit(iframeRef);
       state = useAxeResults();
-      measurement = useState<DomMeasurement | null>("dom-measurement", () => null);
+      measurement = useDomMeasurement();
       return () => h("div");
     },
   });
