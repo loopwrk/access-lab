@@ -30,6 +30,13 @@ const colorMode = vi.hoisted(() => ({ value: "light", preference: "light" }));
 mockNuxtImport("useColorMode", () => () => colorMode);
 
 const stubs = {
+  // NuxtLink resolves the router at render time, which this mount environment.
+  // The bar's links are not under test here, so an anchor stand-in keeps the
+  // mount honest.
+  NuxtLink: {
+    props: ["to"],
+    template: `<a :href="typeof to === 'string' ? to : '#'"><slot /></a>`,
+  },
   UDrawer: {
     props: ["open", "title", "description", "ui"],
     emits: ["update:open"],

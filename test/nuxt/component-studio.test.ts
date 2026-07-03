@@ -13,8 +13,10 @@
  *   - the wrapper-availability watcher clears a selected context wrapper that the
  *     newly-chosen variant no longer allows, and keeps one that still applies.
  *
- * The live iframe render, real toast rendering, and real teleported panels are
- * integration concerns left to Part D.
+ * The render WIRING is also pinned here (see "render wiring" below): mounting
+ * the studio must deliver the definition's markup to PreviewIframe.render
+ * through the previewRef template binding. The live iframe render, real toast
+ * rendering, and real teleported panels are integration concerns left to Part D.
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -28,10 +30,11 @@ import type { ComponentDefinition } from "~/types/component";
 const toastAdd = vi.hoisted(() => vi.fn());
 mockNuxtImport("useToast", () => () => ({ add: toastAdd }));
 
+const renderSpy = vi.hoisted(() => vi.fn());
 const PreviewIframeStub = defineComponent({
   name: "PreviewIframe",
   setup(_, { expose }) {
-    expose({ render: () => {} }); // useInspectedComponent calls previewRef.value?.render
+    expose({ render: renderSpy }); // useInspectedComponent calls previewRef.value?.render
     return () => h("div", { class: "preview-iframe-stub" });
   },
 });
@@ -96,6 +99,7 @@ beforeEach(() => {
     document.body.appendChild(el);
   }
   toastAdd.mockClear();
+  renderSpy.mockClear();
 });
 
 afterEach(() => {
@@ -145,6 +149,31 @@ describe("ComponentStudio — teleport resolution", () => {
     expect(childCount("controls-utility-reset")).toBeGreaterThan(0); // reset teleported into the row
     expect(childCount("preview-toolbar-variant")).toBeGreaterThan(0); // variants present
     expect(childCount("preview-toolbar-wrappers")).toBeGreaterThan(0); // wrappers available
+  });
+});
+
+describe("ComponentStudio — render wiring (previewRef seam)", () => {
+  // Guards the July 2026 regression class: `<PreviewIframe ref="previewRef">`
+  // lost its setup binding, useInspectedComponent rendered into a ref that
+  // stayed null, and every suite stayed green while the iframe showed nothing.
+  // The unit suites cover the queue and the teleports; THIS is the plug
+  // between them.
+  it("delivers the rendered markup to the preview on mount", async () => {
+    await mountStudio(makeDef());
+    await vi.waitFor(() => expect(renderSpy).toHaveBeenCalled());
+    expect(renderSpy.mock.lastCall?.[0]).toContain("<button>x</button>");
+  });
+
+  it("re-renders into the preview when the prop bag changes", async () => {
+    await mountStudio(
+      makeDef({ render: (p) => ({ html: `<button>${String(p.label ?? "x")}</button>` }) }),
+    );
+    await vi.waitFor(() => expect(renderSpy).toHaveBeenCalled());
+    renderSpy.mockClear();
+
+    cp.value = { ...cp.value, label: "Changed" };
+    await vi.waitFor(() => expect(renderSpy).toHaveBeenCalled());
+    expect(renderSpy.mock.lastCall?.[0]).toContain("<button>Changed</button>");
   });
 });
 

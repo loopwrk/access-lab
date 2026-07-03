@@ -23,7 +23,16 @@ mockNuxtImport("useAsyncData", () => () => ({ data: ref(asyncData.data), status:
 
 const TopicPage = (await import("~/pages/learn/[topicId].vue")).default;
 
-const STUBS = { ContentRenderer: { template: "<div class=\"content-stub\" />" } };
+const STUBS = {
+  ContentRenderer: { template: "<div class=\"content-stub\" />" },
+  // The not-found state renders a UButton :to link; NuxtLink resolves the
+  // router at render time, which this mount environment does not provide
+  // (UNITTESTS.md A3). Navigation itself is covered by use-read-mode.test.ts.
+  NuxtLink: {
+    props: ["to"],
+    template: `<a :href="typeof to === 'string' ? to : '#'"><slot /></a>`,
+  },
+};
 
 async function mountTopic(data: MockDoc | null, status: string, route = "/learn/checkbox") {
   asyncData.data = data;

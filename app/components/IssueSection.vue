@@ -125,7 +125,7 @@ function uniqueNoneChecks(violation: AxeResult): CheckResult[] {
           v-for="violation in violations"
           :key="violation.id"
           variant="outline"
-          :class="`issue-car issue-card--${color} bg-(--color-surface)`"
+          :class="`issue-card issue-card--${color} bg-(--color-surface)`"
           :ui="{
             header: 'pl-4 pr-4.5 sm:pl-4 sm:pr-4.5',
             body: 'pl-4 pr-4.5 sm:pl-4 sm:pr-4.5',
