@@ -1,9 +1,20 @@
 <script setup lang="ts">
 import type { TabsItem } from "@nuxt/ui";
+import type { FontSize } from "~/types/typography";
 
 const { t } = useI18n();
 const { activeTab } = useInspectorTab();
 const { simulatedRootPx } = useUnitConversion();
+const { size: textSize } = useFont();
+
+const INSPECTOR_WIDTH_BY_TEXT_SIZE: Record<FontSize, string> = {
+  "100%": "404.8px",
+  "112.5%": "440px",
+  "131.25%": "475px",
+  "150%": "513px",
+};
+
+const inspectorWidth = computed(() => INSPECTOR_WIDTH_BY_TEXT_SIZE[textSize.value]);
 
 const rootRemOpen = ref(false);
 usePreviewIframeOutsideClick(() => {
@@ -33,7 +44,8 @@ const rootRemLabels = computed(() => ({
 <template>
   <aside
     :aria-label="t('inspector.ariaLabel')"
-    class="w-[440px] shrink-0 flex flex-col min-h-0 border-l border-(--border) bg-(--bg)"
+    :style="{ width: inspectorWidth }"
+    class="shrink-0 flex flex-col min-h-0 border-l border-(--border) bg-(--bg)"
   >
     <InspectorTabBar
       v-model="activeTab"
