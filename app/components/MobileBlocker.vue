@@ -25,17 +25,23 @@ const { t } = useI18n();
         <h1
           class="m-0 text-balance text-(length:--al-font-size-heading) font-semibold text-(--text-primary) leading-tight"
         >
-          {{ t('mobileBlocker.title') }}
+          {{ t("mobileBlocker.title") }}
         </h1>
-        <p class="m-0 text-balance text-left text-(length:--al-font-size-body) text-(--text-secondary) leading-normal">
-          {{ t('mobileBlocker.p1') }}
+        <p
+          class="m-0 text-balance text-(length:--al-font-size-body) text-(--text-secondary) leading-normal"
+        >
+          {{ t("mobileBlocker.p1") }}
         </p>
-        <p class="m-0 text-balance text-(length:--al-font-size-detail) text-(--text-muted) font-medium">
-          {{ t('mobileBlocker.footer') }}
+        <p
+          class="m-0 text-balance text-(length:--al-font-size-detail) text-(--text-muted) font-medium"
+        >
+          {{ t("mobileBlocker.footer") }}
         </p>
-        <p class="m-0 text-balance text-(length:--al-font-size-detail) text-(--text-primary) font-medium">
+        <p
+          class="m-0 text-balance text-(length:--al-font-size-detail) text-(--text-primary) font-medium"
+        >
           <NuxtLink to="/learn">
-            <span> {{ t('mobileBlocker.learnLink') }}</span>
+            <span> {{ t("mobileBlocker.learnLink") }}</span>
             <UIcon
               name="i-lucide-arrow-up-right"
               class="text-(length:--al-font-size-detail) opacity-70"
