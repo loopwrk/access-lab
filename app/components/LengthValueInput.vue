@@ -1,22 +1,30 @@
 <script setup lang="ts">
-import type { CssLength, CssUnit } from "~/composables/useUnitConversion";
-import { useUnitConversion } from "~/composables/useUnitConversion";
+/**
+ * Numeric value + unit dropdown for a CssLength. Presentational (relative
+ * imports, no Nuxt composables) so it renders in Storybook; the app passes
+ * the simulated root font-size via `rootPx` for px↔rem conversion.
+ */
+import { computed } from "vue";
+import type { CssLength, CssUnit } from "../composables/useUnitConversion";
+import { CSS_UNIT_OPTIONS, convertCssLength, sliderDisplayStep } from "../utils/cssUnits";
 
 const model = defineModel<CssLength>({ required: true });
 
 const props = withDefaults(defineProps<{
   disabled?: boolean;
   pxStep?: number;
+  /** Root font-size used for px↔rem conversion; the app passes the simulated root. */
+  rootPx?: number;
+  /** Id for the numeric input so an external label's `for` attribute can target it. */
+  inputId?: string;
 }>(), {
   disabled: false,
   pxStep: 1,
+  rootPx: 16,
+  inputId: undefined,
 });
 
-const unitConv = useUnitConversion();
-
-const unitAwareStep = computed(() =>
-  unitConv.displayStep(props.pxStep, model.value.unit),
-);
+const unitAwareStep = computed(() => sliderDisplayStep(props.pxStep, model.value.unit));
 
 function onValueInput(event: Event) {
   const next = Number((event.target as HTMLInputElement).value);
@@ -27,37 +35,46 @@ function onValueInput(event: Event) {
 function onUnitChange(event: Event) {
   const nextUnit = (event.target as HTMLSelectElement).value as CssUnit;
   if (nextUnit === model.value.unit) return;
-  model.value = unitConv.convertLength(model.value, nextUnit);
+  model.value = convertCssLength(model.value, nextUnit, props.rootPx);
 }
 </script>
 
 <template>
   <div
-    class="inline-flex items-stretch h-7 border border-(--border-strong) rounded-md bg-(--surface) overflow-hidden focus-within:outline-[3px] focus-within:outline-(--focus-ring) focus-within:outline-offset-0"
-    :class="{ 'opacity-50 pointer-events-none': disabled }"
+    class="inline-flex items-stretch h-[34px] border border-(--border) rounded-[2px] bg-(--surface) overflow-hidden focus-within:outline-[3px] focus-within:outline-(--focus-ring) focus-within:outline-offset-0"
+    :class="{ 'pointer-events-none': disabled }"
   >
     <input
-      class="length-pill-value w-[52px] border-none bg-transparent px-1.5 text-right text-(--brand) font-medium font-mono tabular-nums text-(length:--al-font-size-body) focus:outline-none"
+      :id="inputId"
+      class="length-pill-value w-[46px] border-none bg-transparent text-center text-(--text-primary) font-semibold tabular-nums text-(length:--al-font-size-heading) focus:outline-none disabled:text-(--text-muted)"
       type="number"
       :value="model.value"
       :step="unitAwareStep"
       :disabled="disabled"
       @input="onValueInput"
     >
-    <select
-      class="length-pill-unit border-none border-l border-l-(--border-strong) bg-(--surface-2) pl-2 pr-4 text-(--text-muted) font-mono text-(length:--al-font-size-body) cursor-pointer focus:outline-none disabled:cursor-not-allowed"
-      :value="model.unit"
-      :disabled="disabled"
-      @change="onUnitChange"
-    >
-      <option
-        v-for="option in unitConv.unitOptions"
-        :key="option.value"
-        :value="option.value"
+    <span class="relative inline-flex items-stretch">
+      <select
+        class="length-pill-unit h-full border-none border-l border-l-(--border) bg-(--surface-2) pl-[5px] pr-5 text-(--text-secondary) font-medium text-(length:--al-font-size-caption) cursor-pointer focus:outline-none disabled:cursor-not-allowed disabled:text-(--text-muted)"
+        :value="model.unit"
+        :disabled="disabled"
+        @change="onUnitChange"
       >
-        {{ option.label }}
-      </option>
-    </select>
+        <option
+          v-for="option in CSS_UNIT_OPTIONS"
+          :key="option.value"
+          :value="option.value"
+        >
+          {{ option.label }}
+        </option>
+      </select>
+      <UIcon
+        name="i-lucide-chevron-down"
+        class="pointer-events-none absolute right-1 top-1/2 -translate-y-1/2 size-3"
+        :class="disabled ? 'text-(--text-muted)' : 'text-(--text-secondary)'"
+        aria-hidden="true"
+      />
+    </span>
   </div>
 </template>
 
@@ -75,9 +92,5 @@ function onUnitChange(event: Event) {
 .length-pill-unit {
   appearance: none;
   -webkit-appearance: none;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'><path fill='%23888' d='M6 8L2 4h8z'/></svg>");
-  background-repeat: no-repeat;
-  background-position: right 6px center;
-  background-size: 8px;
 }
 </style>

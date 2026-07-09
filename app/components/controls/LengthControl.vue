@@ -9,6 +9,7 @@ const props = defineProps<{
   max: number;
   step: number;
   disabled?: boolean;
+  inputId?: string;
 }>();
 
 const unitConv = useUnitConversion();
@@ -17,8 +18,8 @@ const sliderPx = computed(() =>
   model.value ? unitConv.lengthToSliderPx(model.value) : props.fallbackPx,
 );
 
-const lengthValue = computed<CssLength>(() =>
-  model.value ?? { value: props.fallbackPx, unit: "px" },
+const lengthValue = computed<CssLength>(
+  () => model.value ?? { value: props.fallbackPx, unit: "px" },
 );
 
 function onSliderChange(value: number) {
@@ -28,7 +29,7 @@ function onSliderChange(value: number) {
 </script>
 
 <template>
-  <div class="flex items-center gap-3">
+  <div class="flex items-center gap-2">
     <USlider
       :model-value="sliderPx"
       :min="min"
@@ -38,12 +39,19 @@ function onSliderChange(value: number) {
       color="primary"
       size="sm"
       class="flex-1"
+      :ui="{
+        track: 'bg-(--brand-soft-2) rounded-full',
+        range: 'bg-(--brand) rounded-full',
+        thumb: 'bg-(--bg) ring-(--brand) size-4 border-3 border-(--brand) rounded-full',
+      }"
       @update:model-value="onSliderChange(Number($event))"
     />
     <LengthValueInput
-      v-if="!disabled"
       :model-value="lengthValue"
+      :disabled="disabled"
       :px-step="step"
+      :root-px="unitConv.simulatedRootPx.value"
+      :input-id="inputId"
       @update:model-value="model = $event"
     />
   </div>

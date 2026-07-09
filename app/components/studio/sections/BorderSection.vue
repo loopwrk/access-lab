@@ -2,6 +2,7 @@
 import type { BaseButtonProps } from "~/types/button";
 import type { ButtonStudioDefaults } from "~/composables/useButtonStudioDefaults";
 import type { SpacingValue } from "~/components/controls/SplitSpacingControl.vue";
+import SpacingModeToggle from "~/components/controls/SpacingModeToggle.vue";
 import SplitSpacingControl from "~/components/controls/SplitSpacingControl.vue";
 
 const props = defineProps<{ defaults: ButtonStudioDefaults }>();
@@ -41,6 +42,8 @@ const { enabled, toggle } = useToggleableSection(model, {
   }),
 });
 
+const borderIndependent = ref(false);
+
 const borderWidthValue = computed<SpacingValue>({
   get: () => ({
     shorthand: model.value.borderWidth,
@@ -63,16 +66,23 @@ const borderWidthValue = computed<SpacingValue>({
   <fieldset class="flex flex-col gap-3 border-0 p-0 m-0">
     <legend class="flex items-center justify-between w-full mb-1.5">
       <span class="control-group-title">{{ t('controls.borderWidth') }}</span>
-      <USwitch
-        :model-value="enabled"
-        size="xs"
-        color="primary"
-        :aria-label="t('controls.borderWidth')"
-        @update:model-value="toggle"
-      />
+      <span class="flex items-center gap-2">
+        <SpacingModeToggle
+          v-model="borderIndependent"
+          :disabled="!enabled"
+        />
+        <USwitch
+          :model-value="enabled"
+          size="xs"
+          color="primary"
+          :aria-label="t('controls.borderWidth')"
+          @update:model-value="toggle"
+        />
+      </span>
     </legend>
     <SplitSpacingControl
       v-model="borderWidthValue"
+      v-model:independent="borderIndependent"
       :fallback-px="defaults.borderWidth"
       :min="0"
       :max="20"

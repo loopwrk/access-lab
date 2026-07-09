@@ -3,6 +3,7 @@ import type { BaseButtonProps } from "~/types/button";
 import type { ButtonStudioDefaults } from "~/composables/useButtonStudioDefaults";
 import type { SpacingValue } from "~/components/controls/SplitSpacingControl.vue";
 import LengthControl from "~/components/controls/LengthControl.vue";
+import SpacingModeToggle from "~/components/controls/SpacingModeToggle.vue";
 import SplitSpacingControl from "~/components/controls/SplitSpacingControl.vue";
 
 const props = defineProps<{
@@ -58,6 +59,8 @@ const { enabled: paddingEnabled, toggle: togglePadding } = useToggleableSection(
     paddingLeft: undefined,
   }),
 });
+
+const paddingIndependent = ref(false);
 
 const paddingValue = computed<SpacingValue>({
   get: () => ({
@@ -132,18 +135,25 @@ const paddingValue = computed<SpacingValue>({
     </div>
 
     <fieldset class="flex flex-col gap-3 border-0 p-0 m-0">
-      <legend class="flex items-center justify-between w-full mb-1.5">
+      <legend class="flex items-center justify-between w-full mb-3">
         <span class="control-group-title">{{ t("controls.padding") }}</span>
-        <USwitch
-          :model-value="paddingEnabled"
-          size="xs"
-          color="primary"
-          :aria-label="t('controls.padding')"
-          @update:model-value="togglePadding"
-        />
+        <span class="flex items-center gap-2">
+          <SpacingModeToggle
+            v-model="paddingIndependent"
+            :disabled="!paddingEnabled"
+          />
+          <USwitch
+            :model-value="paddingEnabled"
+            size="xs"
+            color="primary"
+            :aria-label="t('controls.padding')"
+            @update:model-value="togglePadding"
+          />
+        </span>
       </legend>
       <SplitSpacingControl
         v-model="paddingValue"
+        v-model:independent="paddingIndependent"
         :fallback-px="defaults.padding"
         :min="0"
         :max="120"

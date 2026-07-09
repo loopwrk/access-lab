@@ -12,6 +12,10 @@ export interface SpacingValue {
 
 const model = defineModel<SpacingValue>({ required: true });
 
+// Linked/independent mode is owned by the parent section, which renders the
+// SpacingModeToggle chip in its legend row next to the enable switch.
+const independent = defineModel<boolean>("independent", { default: false });
+
 const props = defineProps<{
   fallbackPx: number;
   min: number;
@@ -20,14 +24,15 @@ const props = defineProps<{
   disabled?: boolean;
 }>();
 
-const split = ref(false);
-const effectiveSplit = computed(() => !props.disabled && split.value);
+const { t } = useI18n();
+
+const effectiveIndependent = computed(() => !props.disabled && independent.value);
 
 const sides = [
-  { id: "top", key: "top", label: "T" },
-  { id: "right", key: "right", label: "R" },
-  { id: "bottom", key: "bottom", label: "B" },
-  { id: "left", key: "left", label: "L" },
+  { id: "top", key: "top", labelKey: "controls.spacing.top" },
+  { id: "right", key: "right", labelKey: "controls.spacing.right" },
+  { id: "bottom", key: "bottom", labelKey: "controls.spacing.bottom" },
+  { id: "left", key: "left", labelKey: "controls.spacing.left" },
 ] as const;
 
 function setShorthand(value: CssLength | undefined) {
@@ -47,27 +52,12 @@ function sideValue(side: "top" | "right" | "bottom" | "left") {
 
 <template>
   <div :class="[disabled ? 'opacity-50' : '']">
-    <UFormField class="control-field [&>div]:w-full [&_label]:w-full">
-      <template #label>
-        <span class="flex items-center justify-between w-full">
-          <span />
-          <UButton
-            size="xs"
-            variant="ghost"
-            color="primary"
-            class="pr-0"
-            :disabled="disabled"
-            :icon="effectiveSplit ? 'i-lucide-square' : 'i-lucide-grid-3x3'"
-            trailing
-            @click="split = !split"
-          >
-            {{ effectiveSplit ? 'Merge' : 'Split' }}
-          </UButton>
-        </span>
-      </template>
-
+    <div
+      v-if="!effectiveIndependent"
+      class="flex flex-col"
+    >
+      <span class="spacing-side-label">{{ t("controls.spacing.allSides") }}</span>
       <LengthControl
-        v-if="!effectiveSplit"
         :model-value="model.shorthand"
         :fallback-px="fallbackPx"
         :min="min"
@@ -76,32 +66,44 @@ function sideValue(side: "top" | "right" | "bottom" | "left") {
         :disabled="disabled"
         @update:model-value="setShorthand"
       />
+    </div>
 
+    <div
+      v-else
+      class="grid grid-cols-2 gap-3.5"
+    >
       <div
-        v-else
-        class="flex flex-col gap-2"
+        v-for="side in sides"
+        :key="side.id"
+        class="flex flex-col"
       >
-        <div
-          v-for="side in sides"
-          :key="side.id"
-          class="flex items-center gap-2"
-        >
-          <label
-            :for="`split-${side.id}`"
-            class="control-split-label"
-          >{{ side.label }}</label>
-          <LengthControl
-            :id="`split-${side.id}`"
-            :model-value="sideValue(side.key)"
-            :fallback-px="fallbackPx"
-            :min="min"
-            :max="max"
-            :step="step"
-            :disabled="disabled"
-            @update:model-value="setSide(side.key, $event)"
-          />
-        </div>
+        <label
+          :for="`split-${side.id}`"
+          class="spacing-side-label"
+        >{{ t(side.labelKey) }}</label>
+        <LengthControl
+          :model-value="sideValue(side.key)"
+          :fallback-px="fallbackPx"
+          :min="min"
+          :max="max"
+          :step="step"
+          :disabled="disabled"
+          :input-id="`split-${side.id}`"
+          @update:model-value="setSide(side.key, $event)"
+        />
       </div>
-    </UFormField>
+    </div>
   </div>
 </template>
+
+<style scoped>
+.spacing-side-label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+</style>

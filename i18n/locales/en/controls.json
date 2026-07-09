@@ -17,6 +17,15 @@
       "presetsGroup": "Preset sizes",
       "pixelsWord": "pixels"
     },
+    "spacing": {
+      "linked": "Linked",
+      "independent": "Independent",
+      "allSides": "All sides",
+      "top": "Top",
+      "right": "Right",
+      "bottom": "Bottom",
+      "left": "Left"
+    },
     "label": "Button label",
     "labelPlaceholder": "Trigger click event",
     "labelPlaceholderSubmit": "e.g. Save changes",

@@ -10,6 +10,14 @@
  *
  */
 
+import {
+  CSS_UNIT_OPTIONS,
+  FIXED_SLIDER_BASE_PX,
+  REM_DECIMAL_PLACES,
+  convertCssLength,
+  sliderDisplayStep,
+} from "~/utils/cssUnits";
+
 export type CssUnit = "px" | "rem";
 
 export interface CssLength {
@@ -18,13 +26,6 @@ export interface CssLength {
 }
 
 const DEFAULT_ROOT_PX = 16;
-
-// Sliders resolve rem against a fixed 16px base rather than the simulated
-// root: a slider's position represents the value the user chose, and must
-// not jump when the root-rem demo changes the simulated root font-size.
-const FIXED_SLIDER_BASE_PX = 16;
-
-const REM_DECIMAL_PLACES = 2;
 
 export function useUnitConversion() {
   const simulatedRootPx = useState<number>("al-simulated-root-px", () => DEFAULT_ROOT_PX);
@@ -62,15 +63,7 @@ export function useUnitConversion() {
   }
 
   function convertLength(cssLength: CssLength, targetUnit: CssUnit): CssLength {
-    if (cssLength.unit === targetUnit) return cssLength;
-    return fromPx(lengthToPx(cssLength), targetUnit);
-  }
-
-  function displayStep(pxStep: number, unit: CssUnit): number {
-    if (unit === "rem") {
-      return parseFloat((pxStep / FIXED_SLIDER_BASE_PX).toFixed(REM_DECIMAL_PLACES));
-    }
-    return pxStep;
+    return convertCssLength(cssLength, targetUnit, simulatedRootPx.value);
   }
 
   function isCssLength(value: unknown): value is CssLength {
@@ -98,21 +91,16 @@ export function useUnitConversion() {
     return false;
   }
 
-  const unitOptions: { label: string; value: CssUnit }[] = [
-    { label: "px", value: "px" },
-    { label: "rem", value: "rem" },
-  ];
-
   return {
     simulatedRootPx,
-    unitOptions,
+    unitOptions: CSS_UNIT_OPTIONS,
     lengthToPx,
     lengthToSliderPx,
     formatLength: formatCssLength,
     fromPx,
     fromSliderPx,
     convertLength,
-    displayStep,
+    displayStep: sliderDisplayStep,
     isCssLength,
     resolveProps,
     hasRem,
