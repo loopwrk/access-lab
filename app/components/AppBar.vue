@@ -59,7 +59,7 @@ const navLinkClass =
 
       <nav
         :aria-label="t('appBar.nav.ariaLabel')"
-        class="flex items-center gap-1"
+        class="hidden md:flex items-center gap-1"
       >
         <NuxtLink
           to="/contact"
