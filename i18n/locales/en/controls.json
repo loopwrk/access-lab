@@ -18,13 +18,28 @@
       "pixelsWord": "pixels"
     },
     "spacing": {
-      "linked": "Linked",
-      "independent": "Independent",
+      "individualPadding": "Individual padding",
+      "individualBorderWidth": "Individual border width",
       "allSides": "All sides",
       "top": "Top",
       "right": "Right",
       "bottom": "Bottom",
       "left": "Left"
+    },
+    "override": {
+      "customise": "Customise",
+      "useDefault": "Use default",
+      "browserDefault": "Browser default",
+      "auto": "auto",
+      "customiseAriaBrowserDefault": "Customise {property} — currently browser default, {value}",
+      "customiseAriaAuto": "Customise {property} — currently auto, {value}",
+      "removeAriaBrowserDefault": "Use default for {property} — remove override, browser default is {value}",
+      "removeAriaAuto": "Use default for {property} — remove override, auto is {value}",
+      "announceCustomiseBrowserDefault": "{property}: customising — starting from the browser default ({value}).",
+      "announceCustomiseAuto": "{property}: customising — starting from auto ({value}).",
+      "announceRemoveBrowserDefault": "{property}: override removed — the browser default applies ({value}).",
+      "announceRemoveAuto": "{property}: override removed — auto applies ({value}).",
+      "sidesDetail": "top {top}, right {right}, bottom {bottom}, left {left}"
     },
     "label": "Button label",
     "labelPlaceholder": "Trigger click event",

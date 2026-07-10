@@ -2,6 +2,8 @@
 import type { BaseButtonProps } from "~/types/button";
 import type { ButtonStudioDefaults } from "~/composables/useButtonStudioDefaults";
 import type { SpacingValue } from "~/components/controls/SplitSpacingControl.vue";
+import { formatPxReadout } from "~/utils/spacingSides";
+import OverrideRow from "~/components/controls/OverrideRow.vue";
 import SpacingModeToggle from "~/components/controls/SpacingModeToggle.vue";
 import SplitSpacingControl from "~/components/controls/SplitSpacingControl.vue";
 
@@ -11,11 +13,11 @@ const model = defineModel<Partial<BaseButtonProps>>({ required: true });
 const unitConv = useUnitConversion();
 const { t } = useI18n();
 
-const { enabled, toggle } = useToggleableSection(model, {
+const { enabled: customised, toggle } = useToggleableSection(model, {
   // Border WIDTH only. `borderColor` is owned by ColoursSection (its control
   // lives there). Listing it here too made toggling either section flip the
   // other on, because both seed/clear the same key and a section reads as
-  // "enabled" when any of its keys is non-null.
+  // "customised" when any of its keys is non-null.
   keys: [
     "borderWidth",
     "borderTopWidth",
@@ -44,6 +46,12 @@ const { enabled, toggle } = useToggleableSection(model, {
 
 const borderIndependent = ref(false);
 
+// The UA default border is uniform, so take-over always starts Linked.
+function customise() {
+  borderIndependent.value = false;
+  toggle(true);
+}
+
 const borderWidthValue = computed<SpacingValue>({
   get: () => ({
     shorthand: model.value.borderWidth,
@@ -60,26 +68,26 @@ const borderWidthValue = computed<SpacingValue>({
     model.value.borderLeftWidth = next.left;
   },
 });
+
+useSpacingLinkCollapse(borderIndependent, customised, borderWidthValue);
 </script>
 
 <template>
-  <fieldset class="flex flex-col gap-3 border-0 p-0 m-0">
-    <legend class="flex items-center justify-between w-full mb-1.5">
-      <span class="control-group-title">{{ t('controls.borderWidth') }}</span>
-      <span class="flex items-center gap-2">
-        <SpacingModeToggle
-          v-model="borderIndependent"
-          :disabled="!enabled"
-        />
-        <USwitch
-          :model-value="enabled"
-          size="xs"
-          color="primary"
-          :aria-label="t('controls.borderWidth')"
-          @update:model-value="toggle"
-        />
-      </span>
-    </legend>
+  <OverrideRow
+    group
+    :label="t('controls.borderWidth')"
+    :customised="customised"
+    default-kind="browserDefault"
+    :default-value="formatPxReadout(defaults.borderWidth)"
+    @customise="customise"
+    @use-default="toggle(false)"
+  >
+    <template #legend-extra>
+      <SpacingModeToggle
+        v-model="borderIndependent"
+        :label="t('controls.spacing.individualBorderWidth')"
+      />
+    </template>
     <SplitSpacingControl
       v-model="borderWidthValue"
       v-model:independent="borderIndependent"
@@ -87,7 +95,6 @@ const borderWidthValue = computed<SpacingValue>({
       :min="0"
       :max="20"
       :step="1"
-      :disabled="!enabled"
     />
-  </fieldset>
+  </OverrideRow>
 </template>

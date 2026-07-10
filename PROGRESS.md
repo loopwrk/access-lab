@@ -10,7 +10,7 @@ Current snapshot of what is built, what is in flight, and what remains. Update t
 
 **What runs today:** the full Studio shell, all four inspector tabs (Controls, Issues, Manual, Learn), the three-engine audit pipeline (axe-core + prop-based custom rules + DOM-based rules), the Read Mode reader at `/learn/<topicId>`, and ten inspected components - six in the button family plus four form inputs.
 
-**What's not done:** Part D of the test plan - Playwright end-to-end journeys plus the axe-playwright AAA gate on the app's own chrome. The unit and Nuxt-component suites are otherwise extensive: UNITTESTS.md Parts A through C are complete (359 unit + 252 Nuxt-component tests passing).
+**What's not done:** Part D of the test plan - Playwright end-to-end journeys plus the axe-playwright AAA gate on the app's own chrome. The unit and Nuxt-component suites are otherwise extensive: UNITTESTS.md Parts A through C are complete (391 unit + 274 Nuxt-component tests passing; see NOTES.md "Nuxt suite first-test timeouts" for a machine-load flake that is not real breakage).
 
 ---
 
@@ -164,6 +164,16 @@ The codebase no longer hand-rolls lifecycle bookkeeping for events, timers, or d
 The fix for "preview-shell.html accumulates per-component branches" (refactoring backlog item 9). The shell now reports a trigger activation as a plain **`demo:activate` fact** when the trigger sits inside an element marked **`data-al-interaction`**; the component's own controls decide what it means (e.g. flip `disclosureExpanded` / `menuOpen`). The marker lives on the studio **wrapper**, not the trigger, so the copied button stays clean semantic markup.
 
 Why it matters: a **new** component needing a host-driven interaction (the common case - disclosure and menu triggers are open/close/active-state driven) adds the marker in its renderer plus a `usePreviewMessage({ "demo:activate": ... })` listener, and **never edits the shell**. The per-component logic grows on the host, where it is unit-testable, instead of in the shared static file.
+
+### Reveal-on-take-over rows replace switch + disabled controls (July 2026, in progress)
+
+Width, Height, Padding, and Border width now use `OverrideRow` (`app/components/controls/OverrideRow.vue`): a row is either a **fact** (a "Browser default" / "auto" readout + a Customise button; the resolved value appears in a tooltip on hover or keyboard focus, and always rides in the button accessible names) or an **override** (the live controls + a Use default button). Tooltips app-wide now read at the caption size, one step up from Nuxt UI's default (`app.config.ts` `ui.tooltip`). Nothing renders disabled or at `opacity-50`; controls exist only where an override exists. Model semantics are unchanged (unset key = browser default), and rows derive their state from the model, so reset-all collapses them for free (`useToggleableSection` survives as the derive/seed helper - its switch UI does not).
+
+Behaviour worth knowing: take-over seeds from reality (`useNaturalSize` for dimensions, the UA probe for padding, border width, and font size - `ButtonStudioDefaults.paddingSides` is new; font size seeds in rem deliberately, the rem-units lesson). Four-sided rows always reveal in "All sides" mode seeded from the probed top value, so an asymmetric UA default (Chrome buttons: `padding: 1px 6px`) tightens the box slightly at take-over - the accepted trade-off for an honest linked readout; its fact line and tooltip still state the true four-value default. Returning to All sides after individual edits pulls every side to the top value (`useSpacingLinkCollapse`). Width/height facts say **auto** (the real CSS default), not "browser default" - the UA stylesheet doesn't size them, the content does. Focus moves to the first revealed control on take-over and back to Customise on removal; both transitions are announced via a per-row polite live region; button accessible names carry the current default and lead with the visible label (WCAG 2.5.3). Copy lives under `controls.override.*`.
+
+The linked/individual mode toggle (`SpacingModeToggle`) is an icon-only button (Figma's padding glyph, brand-blue stroke, left-side tooltip carrying the accessible name) with two variants: "outline" (the legend chip the app uses) and "solid" (mirrors the segmented content pickers' active/inactive styling; unused in-app so far). Both are in Storybook (`SpacingModeToggle.stories.ts`).
+
+**Still on the old switch pattern** (follow-up sessions): the form inputs' `InputStyleSection` (font size + colours), Colours, Focus indicator - the panel is deliberately mixed mid-migration. The button family's font size (`TextSection`) migrated with the rest. Coverage: `test/nuxt/override-row.test.ts` (behaviour), `test/unit/spacing-sides.test.ts` (fact-line formatting), `test/nuxt/section-toggle-isolation.test.ts` (re-pinned without the switch).
 
 The shell posts `demo:activate` then **falls through** to the submit/reset heuristic rather than returning, so "the trigger was activated" and "this is a submit-typed button with no form" stay independent facts - a type-less `<button>` both toggles its panel and surfaces the same "no form to submit to" lesson as everywhere else. `demo:click` is now posted only for un-migrated triggers.
 
@@ -357,6 +367,7 @@ access-lab/
     │   ├── LengthValueInput.vue    # Number + unit input (px / rem).
     │   ├── content/proseA.vue      # Nuxt Content prose override (external-link icon).
     │   ├── controls/
+    │   │   ├── OverrideRow.vue     # Fact line ⇄ revealed controls (take-over pattern).
     │   │   ├── LengthControl.vue   # Slider + value input.
     │   │   ├── SplitSpacingControl.vue # Merge / split 4-sided.
     │   │   └── ColorPickerRow.vue  # Swatch + label + hex input atom.

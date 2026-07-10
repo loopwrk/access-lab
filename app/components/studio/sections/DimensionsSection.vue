@@ -2,7 +2,14 @@
 import type { BaseButtonProps } from "~/types/button";
 import type { ButtonStudioDefaults } from "~/composables/useButtonStudioDefaults";
 import type { SpacingValue } from "~/components/controls/SplitSpacingControl.vue";
+import {
+  formatPxReadout,
+  formatSideCss,
+  formatSidesCssText,
+  sidesUniform,
+} from "~/utils/spacingSides";
 import LengthControl from "~/components/controls/LengthControl.vue";
+import OverrideRow from "~/components/controls/OverrideRow.vue";
 import SpacingModeToggle from "~/components/controls/SpacingModeToggle.vue";
 import SplitSpacingControl from "~/components/controls/SplitSpacingControl.vue";
 
@@ -16,33 +23,32 @@ const { update } = useModelUpdater(model);
 const unitConv = useUnitConversion();
 const { t } = useI18n();
 
-// Derived so the switches flip off when the model is cleared from
-// elsewhere (e.g. the reset-to-defaults control).
-const widthEnabled = computed(() => model.value.width != null);
-const heightEnabled = computed(() => model.value.height != null);
+// Derived from the model so rows also collapse when the keys are cleared
+// from elsewhere (e.g. the reset-to-defaults control).
+const widthCustomised = computed(() => model.value.width != null);
+const heightCustomised = computed(() => model.value.height != null);
 
-function toggleWidth(value: boolean | "indeterminate") {
-  update(
-    "width",
-    value === true
-      ? unitConv.fromPx(props.naturalSize.width || props.defaults.width, "px")
-      : undefined,
-  );
+const defaultWidthPx = computed(() => props.naturalSize.width || props.defaults.width);
+const defaultHeightPx = computed(() => props.naturalSize.height || props.defaults.height);
+
+function customiseWidth() {
+  update("width", unitConv.fromPx(defaultWidthPx.value, "px"));
 }
 
-function toggleHeight(value: boolean | "indeterminate") {
-  update(
-    "height",
-    value === true
-      ? unitConv.fromPx(props.naturalSize.height || props.defaults.height, "px")
-      : undefined,
-  );
+function customiseHeight() {
+  update("height", unitConv.fromPx(defaultHeightPx.value, "px"));
 }
 
-const { enabled: paddingEnabled, toggle: togglePadding } = useToggleableSection(model, {
+const paddingUniform = computed(() => sidesUniform(props.defaults.paddingSides));
+
+const { enabled: paddingCustomised, toggle: togglePadding } = useToggleableSection(model, {
   keys: ["padding", "paddingTop", "paddingRight", "paddingBottom", "paddingLeft"],
+  // Take-over lands in "All sides", so the seed is one linked value: the
+  // probed top. For a browser's asymmetric default (Chrome's 1px 6px) this
+  // tightens the box slightly at take-over; the fact line and its tooltip
+  // still state the true four-value default.
   enable: () => {
-    const length = unitConv.fromPx(props.defaults.padding, "px");
+    const length = unitConv.fromPx(props.defaults.paddingSides.top, "px");
     return {
       padding: length,
       paddingTop: length,
@@ -62,6 +68,28 @@ const { enabled: paddingEnabled, toggle: togglePadding } = useToggleableSection(
 
 const paddingIndependent = ref(false);
 
+function customisePadding() {
+  paddingIndependent.value = false;
+  togglePadding(true);
+}
+
+const paddingDefaultValue = computed(() =>
+  paddingUniform.value
+    ? formatPxReadout(props.defaults.paddingSides.top)
+    : formatSidesCssText(props.defaults.paddingSides),
+);
+
+const paddingDefaultDetail = computed(() => {
+  if (paddingUniform.value) return undefined;
+  const sides = props.defaults.paddingSides;
+  return t("controls.override.sidesDetail", {
+    top: formatSideCss(sides.top),
+    right: formatSideCss(sides.right),
+    bottom: formatSideCss(sides.bottom),
+    left: formatSideCss(sides.left),
+  });
+});
+
 const paddingValue = computed<SpacingValue>({
   get: () => ({
     shorthand: model.value.padding,
@@ -78,79 +106,64 @@ const paddingValue = computed<SpacingValue>({
     model.value.paddingLeft = next.left;
   },
 });
+
+useSpacingLinkCollapse(paddingIndependent, paddingCustomised, paddingValue);
 </script>
 
 <template>
   <div class="flex flex-col gap-3">
-    <div>
-      <div class="flex items-center justify-between mb-2">
-        <span class="control-group-title font-medium text-(--text-secondary)">{{
-          t("controls.width")
-        }}</span>
-        <USwitch
-          :model-value="widthEnabled"
-          size="xs"
-          color="primary"
-          :aria-label="t('controls.width')"
-          @update:model-value="toggleWidth"
-        />
-      </div>
-      <div :class="widthEnabled ? '' : 'opacity-50'">
-        <LengthControl
-          :model-value="model.width"
-          :fallback-px="naturalSize.width || defaults.width"
-          :min="16"
-          :max="400"
-          :step="10"
-          :disabled="!widthEnabled"
-          @update:model-value="model.width = $event"
-        />
-      </div>
-    </div>
+    <OverrideRow
+      :label="t('controls.width')"
+      :customised="widthCustomised"
+      default-kind="auto"
+      :default-value="formatPxReadout(defaultWidthPx)"
+      @customise="customiseWidth"
+      @use-default="update('width', undefined)"
+    >
+      <LengthControl
+        :model-value="model.width"
+        :fallback-px="defaultWidthPx"
+        :min="16"
+        :max="400"
+        :step="10"
+        @update:model-value="model.width = $event"
+      />
+    </OverrideRow>
 
-    <div>
-      <div class="flex items-center justify-between mb-2">
-        <span class="control-group-title font-medium text-(--text-secondary)">{{
-          t("controls.height")
-        }}</span>
-        <USwitch
-          :model-value="heightEnabled"
-          size="xs"
-          color="primary"
-          :aria-label="t('controls.height')"
-          @update:model-value="toggleHeight"
-        />
-      </div>
-      <div :class="heightEnabled ? '' : 'opacity-50'">
-        <LengthControl
-          :model-value="model.height"
-          :fallback-px="naturalSize.height || defaults.height"
-          :min="16"
-          :max="400"
-          :step="10"
-          :disabled="!heightEnabled"
-          @update:model-value="model.height = $event"
-        />
-      </div>
-    </div>
+    <OverrideRow
+      :label="t('controls.height')"
+      :customised="heightCustomised"
+      default-kind="auto"
+      :default-value="formatPxReadout(defaultHeightPx)"
+      @customise="customiseHeight"
+      @use-default="update('height', undefined)"
+    >
+      <LengthControl
+        :model-value="model.height"
+        :fallback-px="defaultHeightPx"
+        :min="16"
+        :max="400"
+        :step="10"
+        @update:model-value="model.height = $event"
+      />
+    </OverrideRow>
 
-    <fieldset class="flex flex-col gap-3 border-0 p-0 m-0">
-      <legend class="flex items-center justify-between w-full mb-3">
-        <span class="control-group-title">{{ t("controls.padding") }}</span>
-        <span class="flex items-center gap-2">
-          <SpacingModeToggle
-            v-model="paddingIndependent"
-            :disabled="!paddingEnabled"
-          />
-          <USwitch
-            :model-value="paddingEnabled"
-            size="xs"
-            color="primary"
-            :aria-label="t('controls.padding')"
-            @update:model-value="togglePadding"
-          />
-        </span>
-      </legend>
+    <OverrideRow
+      group
+      :label="t('controls.padding')"
+      :customised="paddingCustomised"
+      default-kind="browserDefault"
+      :default-value="paddingDefaultValue"
+      :default-value-detail="paddingDefaultDetail"
+      @customise="customisePadding"
+      @use-default="togglePadding(false)"
+    >
+      <template #legend-extra>
+        <SpacingModeToggle
+          v-model="paddingIndependent"
+          :label="t('controls.spacing.individualPadding')"
+        />
+      </template>
       <SplitSpacingControl
         v-model="paddingValue"
         v-model:independent="paddingIndependent"
@@ -158,8 +171,7 @@ const paddingValue = computed<SpacingValue>({
         :min="0"
         :max="120"
         :step="2"
-        :disabled="!paddingEnabled"
       />
-    </fieldset>
+    </OverrideRow>
   </div>
 </template>

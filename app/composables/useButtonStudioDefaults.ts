@@ -1,11 +1,24 @@
 import type { ComputedRef } from "vue";
 import { rgbToHex } from "~/utils/rgbToHex";
 
+export interface SpacingSides {
+  top: number;
+  right: number;
+  bottom: number;
+  left: number;
+}
+
 export interface ButtonStudioDefaults {
   width: number;
   height: number;
   fontSize: number;
   padding: number;
+  /**
+   * UA padding per side. Browsers style buttons asymmetrically (Chrome
+   * resolves `padding: 1px 6px`), so a single number cannot seed a
+   * take-over without visibly changing the preview.
+   */
+  paddingSides: SpacingSides;
   borderWidth: number;
   bg: string;
   fgText: string;
@@ -17,6 +30,7 @@ const HARDCODED: ButtonStudioDefaults = {
   height: 21,
   fontSize: 14,
   padding: 0,
+  paddingSides: { top: 0, right: 0, bottom: 0, left: 0 },
   borderWidth: 2,
   bg: "#EFEFEF",
   fgText: "#000000",
@@ -47,6 +61,12 @@ export function useButtonStudioDefaults(
       height: HARDCODED.height,
       fontSize: num("fontSize") ?? HARDCODED.fontSize,
       padding: num("paddingTop") ?? HARDCODED.padding,
+      paddingSides: {
+        top: num("paddingTop") ?? HARDCODED.paddingSides.top,
+        right: num("paddingRight") ?? HARDCODED.paddingSides.right,
+        bottom: num("paddingBottom") ?? HARDCODED.paddingSides.bottom,
+        left: num("paddingLeft") ?? HARDCODED.paddingSides.left,
+      },
       borderWidth: num("borderTopWidth") ?? HARDCODED.borderWidth,
       bg: rgbToHex(styles?.["backgroundColor"]) || HARDCODED.bg,
       fgText: rgbToHex(styles?.color) || HARDCODED.fgText,

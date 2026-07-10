@@ -1,5 +1,3 @@
-// Relative import so Storybook's plain-Vite build (no `~` alias) can load
-// this module through LengthValueInput; type-only, erased at compile time.
 import type { CssLength, CssUnit } from "../composables/useUnitConversion";
 
 /** The unit choices every length control offers. */
